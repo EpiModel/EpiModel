@@ -23,7 +23,7 @@ past ones.
 ### Using the Cumulative Edgelist
 
 The creation and update of the cumulative edgelist is done through the
-[`EpiModel::update_cumulative_edgelist`](http://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+[`EpiModel::update_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
 function.
 
 ``` r
@@ -59,13 +59,13 @@ the networks.
 ### Accessing the Cumulative Edgelist
 
 Cumulative edge-list refers to nodes with their Unique Ids. See
-[`help("unique_id-tools", package = "EpiModel")`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
+[`help("unique_id-tools", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
 for more information.
 
 #### For a Specific Network
 
 Accessing the cumulative edge-list of a given network is done using the
-[`EpiModel::get_cumulative_edgelist`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+[`EpiModel::get_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
 function.
 
 ``` r
@@ -80,7 +80,7 @@ The returned `el_cuml` object is a
 3.  `start`: the time-step where the edge was created.
 4.  `stop`: the last time-step the edge was active.
 
-[`EpiModel::get_cumulative_edgelist`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+[`EpiModel::get_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
 will **always** return a [`tibble`](https://tibble.tidyverse.org/) with
 this 4 columns, even if the cumulative edgelist has not been calculated
 for this particular network or if no edges are present. In these cases,
@@ -100,7 +100,7 @@ instance (from 1 to `length(vector)` inclusive).
 
 We often want to get the cumulative edgelist over several networks as
 one.
-[`EpiModel::get_cumulative_edgelists_df`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
+[`EpiModel::get_cumulative_edgelists_df`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
 function provide such functionality.
 
 ``` r
@@ -111,7 +111,7 @@ The `networks` argument can be a vector of network position or `NULL`.
 In this latter case, all networks will be selected.
 
 The output of this function is similar to
-[`EpiModel::get_cumulative_edgelist`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+[`EpiModel::get_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
 with the addition of a `network` column, indicating for each edge the
 networks it exists on.
 
@@ -119,7 +119,7 @@ networks it exists on.
 
 A typical use of the cumulative edgelist is the trace the contacts of a
 node over given number of steps. The
-[`EpiModel::get_partners`](http://epimodel.github.io/EpiModel/reference/get_partners.md)
+[`EpiModel::get_partners`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
 function simplifies this process:
 
 ``` r

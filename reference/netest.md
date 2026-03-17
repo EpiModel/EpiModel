@@ -4,9 +4,9 @@ Estimates statistical network models using the exponential random graph
 modeling (ERGM) framework with extensions for dynamic/temporal models
 (STERGM). This is typically the first step in the network modeling
 pipeline, followed by
-[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) for
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) for
 model diagnostics and
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) for
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md) for
 epidemic simulation.
 
 ## Usage
@@ -62,11 +62,11 @@ netest(
 - coef.diss:
 
   An object of class `disscoef` output from the
-  [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  [`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
   function. This encodes the average partnership duration(s) and the
   corresponding dissolution model coefficients. For models with vital
   dynamics (arrivals and departures), the `d.rate` argument in
-  [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  [`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
   should be set to adjust for the competing risk of node departure.
 
 - constraints:
@@ -119,9 +119,9 @@ netest(
 ## Value
 
 A fitted network model object of class `netest`. This object is passed
-to [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) for
+to [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) for
 diagnostics and to
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) for
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md) for
 epidemic simulation. Use [`print()`](https://rdrr.io/r/base/print.html)
 to view the model form, including the formation formula, target
 statistics, and dissolution model. Use
@@ -136,10 +136,10 @@ functions that estimate static and dynamic network models. Network model
 estimation is the first step in simulating a stochastic network epidemic
 model in `EpiModel`. The output from `netest` is a necessary input for
 running the epidemic simulations in
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md). With
-a fitted network model, one should always first proceed to model
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
+With a fitted network model, one should always first proceed to model
 diagnostics, available through the
-[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md)
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md)
 function, to check model fit. A detailed description of fitting these
 models, along with examples, may be found in the [Network Modeling for
 Epidemics](https://epimodel.github.io/sismid/) tutorials.
@@ -212,25 +212,25 @@ help page in the `ergm.ego` package. An example is below.
 The network modeling pipeline in EpiModel typically follows these steps:
 
 1.  Initialize a network:
-    [`network_initialize`](http://epimodel.github.io/EpiModel/reference/network_initialize.md)
+    [`network_initialize`](https://epimodel.github.io/EpiModel/reference/network_initialize.md)
 
 2.  Specify formation and dissolution: a formation formula (e.g.,
     `~edges + concurrent`) with target statistics, and dissolution
     coefficients via
-    [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+    [`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
 
 3.  Estimate the network model: `netest()`
 
 4.  Diagnose model fit:
-    [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md)
+    [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md)
 
 5.  Simulate the epidemic:
-    [`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+    [`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)
     with
-    [`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md),
-    [`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md),
+    [`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+    [`init.net`](https://epimodel.github.io/EpiModel/reference/init.net.md),
     and
-    [`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+    [`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 
 ## References
 
@@ -248,17 +248,17 @@ Statistical Software. 2018; 84(8): 1-47.
 ## See also
 
 Use
-[`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+[`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
 to compute dissolution coefficients before estimation. Use
-[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) to
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) to
 diagnose the fitted network model, and
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) to
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md) to
 simulate epidemic spread over a simulated dynamic network consistent
 with the model fit. Parameterize the epidemic simulation with
-[`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md),
-[`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md),
+[`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+[`init.net`](https://epimodel.github.io/EpiModel/reference/init.net.md),
 and
-[`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 
 ## Examples
 
@@ -313,7 +313,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x5562b4671bd8>
+#> <environment: 0x563ba6ab0bb0>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 

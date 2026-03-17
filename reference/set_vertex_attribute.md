@@ -35,7 +35,7 @@ Returns an object of class `network`.
 
 This function is used in `EpiModel` workflows to set vertex attributes
 on an initialized empty network object (see
-[`network_initialize()`](http://epimodel.github.io/EpiModel/reference/network_initialize.md)).
+[`network_initialize()`](https://epimodel.github.io/EpiModel/reference/network_initialize.md)).
 
 ## Examples
 

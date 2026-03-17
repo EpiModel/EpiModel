@@ -24,7 +24,7 @@ use_scenario(param, scenario)
 
 An updated list object of class `param.net`, which can be passed to the
 EpiModel function
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## scenario
 

@@ -1,9 +1,9 @@
 # Specify Controls by Network
 
 This utility function allows specification of certain
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 controls to vary by network. The
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 control arguments currently supporting `multilayer` specifications are
 `nwstats.formula`, `set.control.ergm`, `set.control.tergm`, and
 `tergmLite.track.duration`.

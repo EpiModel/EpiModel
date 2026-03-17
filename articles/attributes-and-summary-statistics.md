@@ -43,7 +43,7 @@ positional ID but do not impact the unique ID.
 #### Accessing Attributes
 
 The
-[`EpiModel::get_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`EpiModel::get_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 function will extract the vector of a given *attribute*. In its simplest
 form, we can pull a complete *attribute vector* from `dat` like so:
 
@@ -56,7 +56,7 @@ nodes. `active` is a vector of size *current number of nodes*. With
 values being either 1 or 0 depending on whether a node is active or not.
 
 Trying to extract an *attribute* that does not exist will cause
-[`EpiModel::get_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`EpiModel::get_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 to throw an error.
 
 #### Modifying Attributes
@@ -86,12 +86,12 @@ Let’s break down this very simple yet perfectly valid module.
 1.  Pull the `age` *attribute vector* as we did in the previous section.
 2.  Create a vector `new_age` incrementing all ages by one.
 3.  Update the `dat` object with the
-    [`EpiModel::set_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+    [`EpiModel::set_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
     function.
 4.  Return the Updated `dat` object.
 
 We can see that
-[`EpiModel::set_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`EpiModel::set_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 takes as arguments:
 
 - The `dat` object to update.
@@ -99,7 +99,7 @@ takes as arguments:
 - The new values for this vector (here `new_age`).
 
 When using
-[`EpiModel::set_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md),
+[`EpiModel::set_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md),
 there are several things to note:
 
 - The function does not modify the `dat` object, it merely returns a
@@ -120,7 +120,7 @@ The above example describes the recommended way to work with attribute:
 
 These functions have other arguments that are described in the
 documentation: see
-[`help("net-accessor", package = "EpiModel")`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`help("net-accessor", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 for further details.
 
 ## Historical Nodal Attributes
@@ -188,7 +188,7 @@ The steps in the code are as follows:
     label “viral_load”.
 5.  Return the `dat` object.
 
-[`EpiModel::record_attr_history`](http://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+[`EpiModel::record_attr_history`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
 takes five arguments:
 
 1.  The `dat` object.
@@ -201,7 +201,7 @@ takes five arguments:
     `viral_load[infected]`)
 
 Note that
-[`EpiModel::record_attr_history`](http://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+[`EpiModel::record_attr_history`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
 requires a set of `posit_id`s. Internally, the function will convert
 them to `unique_id`s so the *Attribute History* will not be affected by
 nodes entering or leaving the population over time.
@@ -219,7 +219,7 @@ steps.
 
 The *Attribute History* is meant to be accessed once the `netsim`
 simulation is complete. At that point, we can use the
-[`EpiModel::get_attr_history`](http://epimodel.github.io/EpiModel/reference/get_attr_history.md)
+[`EpiModel::get_attr_history`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
 function to access the histories that we have recorded, like so:
 
 ``` r
@@ -282,9 +282,9 @@ which stores the size of the population at each time step.
 
 Inside a module, *Epidemic Trackers* are accessed and modified with the
 functions
-[`EpiModel::get_epi`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`EpiModel::get_epi`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 and
-[`EpiModel::set_epi`](http://epimodel.github.io/EpiModel/reference/net-accessor.md).
+[`EpiModel::set_epi`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
 Below is an updated new version of our `aging_module` above with the
 addition of epidemic trackers.
 
@@ -321,13 +321,13 @@ with `mutate_epi`, but here we do it on the fly to demonstrate
 `get_epi`).
 
 We extract the mean age at the previous time step using
-[`EpiModel::get_epi`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`EpiModel::get_epi`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 and set the second argument as `at - 1`. After all the calculations are
 complete, we store `mean_age` and `age_change` in `dat` using
-[`EpiModel::set_epi`](http://epimodel.github.io/EpiModel/reference/net-accessor.md).
+[`EpiModel::set_epi`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
 
 - Similarly to
-  [`EpiModel::set_attr`](http://epimodel.github.io/EpiModel/reference/net-accessor.md),
+  [`EpiModel::set_attr`](https://epimodel.github.io/EpiModel/reference/net-accessor.md),
   `dat` is not modified directly and need to be assigned back to itself.
   Also, the value we store must be a scalar.
 - Trying to access an *Epidemic Trackers* that do not exist results in
@@ -340,7 +340,7 @@ simulation has completed. We access them simply by calling
 `as.data.frame` on a `netsim` object or by using the plot or summary
 functions within by EpiModel. Note also that you can perform derived
 summary statistic calculations after a `netsim` call is complete with
-[`EpiModel::mutate_epi`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md).
+[`EpiModel::mutate_epi`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md).
 
 ### Custom Epidemic Trackers
 
@@ -353,7 +353,7 @@ run the custom trackers passed to the `.tracker.list` argument of
 
 We call a *tracker function* a `function` that takes `dat` as arguments
 and outputs a scalar value. Every *tracker function* is run by
-[`EpiModel::netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`EpiModel::netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 at each time step.
 
 ``` r
@@ -490,7 +490,7 @@ simulation step. The value outputted reflect the state of the simulation
 When working with complex research-level models, we sometimes want to
 inspect the state of an object without stopping the simulation. The
 function
-[`EpiModel::record_raw_object`](http://epimodel.github.io/EpiModel/reference/record_raw_object.md)
+[`EpiModel::record_raw_object`](https://epimodel.github.io/EpiModel/reference/record_raw_object.md)
 allows the user to save any object during the simulation.
 
 ``` r

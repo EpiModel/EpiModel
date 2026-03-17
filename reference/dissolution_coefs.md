@@ -15,7 +15,7 @@ dissolution_coefs(dissolution, duration, d.rate = 0)
 - dissolution:
 
   Right-hand sided STERGM dissolution formula (see
-  [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)).
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)).
   See below for list of supported dissolution models.
 
 - duration:
@@ -53,7 +53,7 @@ A list of class `disscoef` with the following elements:
 
 This function performs two calculations for dissolution coefficients
 used in a network model estimated with
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md):
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md):
 
 1.  **Transformation:** the mean durations of edges in a network are
     mathematically transformed to logit coefficients.
@@ -65,8 +65,8 @@ used in a network model estimated with
 
 The current dissolution models supported by this function and in network
 model estimation in
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md) are
-as follows:
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+are as follows:
 
 - `~offset(edges)`: a homogeneous dissolution model in which the edge
   duration is the same for all partnerships. This requires specifying

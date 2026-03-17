@@ -2,7 +2,7 @@
 
 This function prints progress from deterministic compartmental models
 simulated with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) to the
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) to the
 console.
 
 ## Usage

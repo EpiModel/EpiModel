@@ -15,14 +15,14 @@ set_transmat(dat, del, at)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - del:
 
   Discordant edgelist created within
-  [`infection.net()`](http://epimodel.github.io/EpiModel/reference/infection.net.md)
+  [`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
   and
-  [`infection.2g.net()`](http://epimodel.github.io/EpiModel/reference/infection.2g.net.md).
+  [`infection.2g.net()`](https://epimodel.github.io/EpiModel/reference/infection.2g.net.md).
 
 - at:
 
@@ -35,6 +35,6 @@ The updated `netsim_dat` main list object.
 ## Details
 
 This internal function works within the parent
-[`infection.net()`](http://epimodel.github.io/EpiModel/reference/infection.net.md)
+[`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
 functions to save the transmission matrix created at time step `at` to
 the main `netsim_dat` class object `dat`.

@@ -2,7 +2,7 @@
 
 This function transfers the data from the main `icm_dat` class data
 object to the output `out` object at the end of each simulation in
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 ## Usage
 
@@ -29,11 +29,11 @@ saveout.icm(dat, s, out = NULL)
 A list with the following elements:
 
 - **param:** the epidemic parameters passed into the model through
-  [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md),
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
   with additional parameters added as necessary.
 
 - **control:** the control settings passed into the model through
-  [`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md),
+  [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md),
   with additional controls added as necessary.
 
 - **epi:** a list of data frames, one for each epidemiological output

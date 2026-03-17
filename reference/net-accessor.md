@@ -68,7 +68,7 @@ append_core_attr(dat, at, n.new)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - item:
 
@@ -123,9 +123,9 @@ The `append_core_attr` function initializes the attributes necessary for
 EpiModel to work (the four core attributes are: "active", "unique_id",
 "entrTime", and "exitTime"). These attributes are used in the
 initialization phase of the simulation, to create the nodes (see
-[`initialize.net()`](http://epimodel.github.io/EpiModel/reference/initialize.net.md));
+[`initialize.net()`](https://epimodel.github.io/EpiModel/reference/initialize.net.md));
 and also used when adding nodes during the simulation (see
-[`arrivals.net()`](http://epimodel.github.io/EpiModel/reference/arrivals.net.md)).
+[`arrivals.net()`](https://epimodel.github.io/EpiModel/reference/arrivals.net.md)).
 
 ## Mutability
 

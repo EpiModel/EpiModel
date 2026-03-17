@@ -3,7 +3,7 @@
 This function simulates recovery from the infected state either to a
 distinct recovered state (SIR model type) or back to a susceptible state
 (SIS model type), for use in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -17,7 +17,7 @@ recovery.2g.net(dat, at)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 

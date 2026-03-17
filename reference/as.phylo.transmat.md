@@ -15,7 +15,7 @@ as.phylo(x, vertex.exit.times = NULL, ...)
 - x:
 
   An object of class `transmat`, the output from
-  [`get_transmat()`](http://epimodel.github.io/EpiModel/reference/get_transmat.md).
+  [`get_transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md).
 
 - vertex.exit.times:
 
@@ -35,7 +35,7 @@ A `phylo` class object.
 ## Details
 
 Converts a
-[`transmat()`](http://epimodel.github.io/EpiModel/reference/get_transmat.md)
+[`transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
 object containing information about the history of a simulated infection
 into a [`ape::phylo`](https://rdrr.io/pkg/ape/man/read.tree.html) object
 representation suitable for plotting as a tree with

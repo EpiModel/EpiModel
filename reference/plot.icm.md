@@ -2,7 +2,7 @@
 
 Plots epidemiological data from a stochastic individual contact model
 simulated with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 ## Usage
 
@@ -183,7 +183,7 @@ prevalence of any compartment is the compartment size divided by the
 total population size; 2) for two-group models, the prevalence of any
 compartment is the compartment size divided by the group population
 size. For any prevalences that are not automatically calculated, the
-[`mutate_epi()`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+[`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
 function may be used to add new variables to the `icm` object to plot or
 analyze.
 
@@ -194,7 +194,7 @@ specify `qnts=FALSE`.
 
 ## See also
 
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md)
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
 
 ## Examples
 

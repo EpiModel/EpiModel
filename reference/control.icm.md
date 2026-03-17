@@ -1,7 +1,7 @@
 # Control Settings for Stochastic Individual Contact Models
 
 Sets the controls for stochastic individual contact models simulated
-with [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+with [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 ## Usage
 
@@ -45,33 +45,33 @@ control.icm(
 
   Module to initialize the model at the outset, with the default
   function of
-  [`initialize.icm()`](http://epimodel.github.io/EpiModel/reference/initialize.icm.md).
+  [`initialize.icm()`](https://epimodel.github.io/EpiModel/reference/initialize.icm.md).
 
 - infection.FUN:
 
   Module to simulate disease infection, with the default function of
-  [`infection.icm()`](http://epimodel.github.io/EpiModel/reference/infection.icm.md).
+  [`infection.icm()`](https://epimodel.github.io/EpiModel/reference/infection.icm.md).
 
 - recovery.FUN:
 
   Module to simulate disease recovery, with the default function of
-  [`recovery.icm()`](http://epimodel.github.io/EpiModel/reference/recovery.icm.md).
+  [`recovery.icm()`](https://epimodel.github.io/EpiModel/reference/recovery.icm.md).
 
 - departures.FUN:
 
   Module to simulate departures or exits, with the default function of
-  [`departures.icm()`](http://epimodel.github.io/EpiModel/reference/departures.icm.md).
+  [`departures.icm()`](https://epimodel.github.io/EpiModel/reference/departures.icm.md).
 
 - arrivals.FUN:
 
   Module to simulate arrivals or entries, with the default function of
-  [`arrivals.icm()`](http://epimodel.github.io/EpiModel/reference/arrivals.icm.md).
+  [`arrivals.icm()`](https://epimodel.github.io/EpiModel/reference/arrivals.icm.md).
 
 - prevalence.FUN:
 
   Module to calculate disease prevalence at each time step, with the
   default function of
-  [`prevalence.icm()`](http://epimodel.github.io/EpiModel/reference/prevalence.icm.md).
+  [`prevalence.icm()`](https://epimodel.github.io/EpiModel/reference/prevalence.icm.md).
 
 - verbose:
 
@@ -102,10 +102,10 @@ An `EpiModel` object of class `control.icm`.
 
 `control.icm` sets the required control settings for any stochastic
 individual contact model solved with the
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) function.
-Controls are required for both base model types and when passing
-original process modules. For all base models, the `type` argument is a
-necessary parameter and it has no default.
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
+function. Controls are required for both base model types and when
+passing original process modules. For all base models, the `type`
+argument is a necessary parameter and it has no default.
 
 ## New Modules
 
@@ -115,7 +115,7 @@ recovery, demographics, and other processes. Core modules are those
 listed in the `.FUN` arguments. For each module, there is a default
 function used in the simulation. The default infection module, for
 example, is contained in the
-[`infection.icm()`](http://epimodel.github.io/EpiModel/reference/infection.icm.md)
+[`infection.icm()`](https://epimodel.github.io/EpiModel/reference/infection.icm.md)
 function.
 
 For original models, one may substitute replacement module functions for
@@ -125,8 +125,8 @@ at each time step by passing a module function via the `...` argument.
 ## See also
 
 Use
-[`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md)
+[`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
 to specify model parameters and
-[`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md)
+[`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md)
 to specify the initial conditions. Run the parameterized model with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).

@@ -2,7 +2,7 @@
 
 This function transfers the data from the main `netsim_dat` object to
 the output `out` object at the end of each simulation in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -16,7 +16,7 @@ saveout.net(dat, s, out = NULL)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - s:
 
@@ -31,11 +31,11 @@ saveout.net(dat, s, out = NULL)
 A list with the following elements:
 
 - **param:** the epidemic parameters passed into the model through
-  [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md),
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md),
   with additional parameters added as necessary.
 
 - **control:** the control settings passed into the model through
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md),
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md),
   with additional controls added as necessary.
 
 - **epi:** a list of data frames, one for each epidemiological output

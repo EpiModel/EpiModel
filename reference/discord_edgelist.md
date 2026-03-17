@@ -16,7 +16,7 @@ discord_edgelist(dat, at, network = 1, infstat = "i", include.network = FALSE)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 
@@ -54,7 +54,7 @@ object that is requested as output in `netsim` simulations with the
 ## Details
 
 This internal function works within the parent
-[`infection.net()`](http://epimodel.github.io/EpiModel/reference/infection.net.md)
+[`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
 function to pull the current edgelist from the dynamic network object,
 look up the disease status of the head and tails on the edge, and subset
 the list to those edges with one susceptible and one infected node.
@@ -66,5 +66,5 @@ can be a vector of length greater than 1: `infstat = c("i", "a")`.
 
 ## See also
 
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md),
-[`infection.net()`](http://epimodel.github.io/EpiModel/reference/infection.net.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+[`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)

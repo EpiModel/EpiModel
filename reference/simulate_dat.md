@@ -3,7 +3,7 @@
 This function simulates a dynamic network over one or multiple time
 steps for TERGMs or one or multiple cross-sectional network panels for
 ERGMs, for use in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 modeling. Network statistics are also extracted and saved if
 `save.nwstats == TRUE` and `resimulate.network == FALSE`.
 
@@ -19,7 +19,7 @@ simulate_dat(dat, at, network = 1L, nsteps = 1L)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 

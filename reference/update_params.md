@@ -1,7 +1,7 @@
 # Update Model Parameters for Stochastic Network Models
 
 Updates epidemic model parameters originally set with
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 and adds new parameters.
 
 ## Usage
@@ -24,14 +24,14 @@ update_params(param, new.param.list)
 
 An updated list object of class `param.net`, which can be passed to the
 EpiModel function
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Details
 
 This function can update any original parameters specified with
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 and add new parameters. This function would be used if the inputs to
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 were a long list of fixed model parameters that needed supplemental
 replacements or additions for particular model runs (e.g., changing an
 intervention efficacy parameter but leaving all other parameters fixed).

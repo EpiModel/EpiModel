@@ -22,4 +22,4 @@ The updated `icm_dat` class main data object.
 ## See also
 
 This is an initialization module for
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).

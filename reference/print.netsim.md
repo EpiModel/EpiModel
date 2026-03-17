@@ -17,7 +17,7 @@ print(x, nwstats = TRUE, digits = 3, network = 1, ...)
 - x:
 
   An object of class `netsim`, from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - nwstats:
 
@@ -59,7 +59,7 @@ were saved during the simulation):
 
 The formation, duration, and dissolution statistics tables are computed
 and displayed in the same way as for
-[`print.netdx()`](http://epimodel.github.io/EpiModel/reference/print.netdx.md).
+[`print.netdx()`](https://epimodel.github.io/EpiModel/reference/print.netdx.md).
 Each table contains the columns `Target`, `Sim Mean`, `Pct Diff`,
 `Sim SE`, `Z Score`, `SD(Sim Means)`, and `SD(Statistic)`. The
 `Sim Mean` column is the mean statistic value across all time steps and
@@ -81,7 +81,7 @@ models where demographic turnover can shift network structure).
 type. In a homogeneous dissolution model (`~offset(edges)`), all dyads
 are of the `edges` type. The statistic of interest is the mean age of
 extant edges, compared against the target duration from
-[`dissolution_coefs()`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
+[`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
 
 *Dissolution statistics*: same row structure as the duration table. The
 statistic of interest is the edge dissolution rate (proportion of edges
@@ -95,6 +95,6 @@ requirements is printed instead.
 
 ## See also
 
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md),
-[`print.netdx()`](http://epimodel.github.io/EpiModel/reference/print.netdx.md),
-[`summary.netsim()`](http://epimodel.github.io/EpiModel/reference/summary.netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+[`print.netdx()`](https://epimodel.github.io/EpiModel/reference/print.netdx.md),
+[`summary.netsim()`](https://epimodel.github.io/EpiModel/reference/summary.netsim.md).

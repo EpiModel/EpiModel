@@ -15,7 +15,7 @@ prevalence.net(dat, at)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 
@@ -28,7 +28,7 @@ The updated `netsim_dat` main list object.
 ## Details
 
 This network utility is used during the
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 simulation process to efficiently query the current size of each state
 or compartment in the model at any given timestep. For a two-group
 network, the current state size for each group and overall is provided.

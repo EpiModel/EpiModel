@@ -1,7 +1,7 @@
 # Control Settings for Deterministic Compartmental Models
 
 Sets the controls for deterministic compartmental models simulated with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 ## Usage
 
@@ -86,10 +86,10 @@ An `EpiModel` object of class `control.dcm`.
 
 `control.dcm` sets the required control settings for any deterministic
 compartmental models solved with the
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) function.
-Controls are required for both base model types and original models. For
-all base models, the `type` argument is a necessary parameter and it has
-no default.
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md)
+function. Controls are required for both base model types and original
+models. For all base models, the `type` argument is a necessary
+parameter and it has no default.
 
 ## ODE Solver
 
@@ -110,14 +110,14 @@ run. These model forms may be used as templates to write original model
 functions.
 
 These new models may be input and solved with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) using the
-`new.mod` argument, which requires as input a model function.
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) using
+the `new.mod` argument, which requires as input a model function.
 
 ## See also
 
 Use
-[`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md)
+[`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md)
 to specify model parameters and
-[`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md)
+[`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
 to specify the initial conditions. Run the parameterized model with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).

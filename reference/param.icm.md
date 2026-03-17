@@ -144,14 +144,14 @@ An `EpiModel` object of class `param.icm`.
 
 `param.icm` sets the epidemic parameters for the stochastic individual
 contact models simulated with the
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) function.
-Models may use the base types, for which these parameters are used, or
-new process modules which may use these parameters (but not
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
+function. Models may use the base types, for which these parameters are
+used, or new process modules which may use these parameters (but not
 necessarily).
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
-[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+[`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md).
 One-group and two-group models are available, where the former assumes a
 homogeneous mixing in the population and the latter assumes some form of
 heterogeneous mixing between two distinct partitions in the population
@@ -175,7 +175,7 @@ to balancing.
 To build original models outside of the base models, new process modules
 may be constructed to replace the existing modules or to supplement the
 existing set. These are passed into the control settings in
-[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+[`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md).
 New modules may use either the existing model parameters named here, an
 original set of parameters, or a combination of both. The `...` allows
 the user to pass an arbitrary set of original model parameters into
@@ -186,8 +186,8 @@ modules.
 ## See also
 
 Use
-[`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md)
+[`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md)
 to specify the initial conditions and
-[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md)
+[`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md)
 to specify the control settings. Run the parameterized model with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).

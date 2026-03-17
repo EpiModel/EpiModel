@@ -75,13 +75,13 @@ nodal attributes. Nodal attribute dynamics in `ndtv` movies require a
 temporally extended attribute (TEA) containing a standard R color for
 each node at each time step. By default, the `EpiModel` package uses
 TEAs to store disease status history in network model simulations run in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 But that status TEA is in numeric format (0, 1, 2). The `color_tea`
 function transforms those numeric values of that disease status TEA into
 a TEA with color values in order to visualize status changes in `ndtv`.
 
 The convention in
-[`plot.netsim()`](http://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+[`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
 is to color the susceptible nodes as blue, infected nodes as red, and
 recovered nodes as green. Alternate colors may be specified using the
 `new.sus`, `new.inf`, and `new.rec` parameters, respectively.
@@ -89,9 +89,9 @@ recovered nodes as green. Alternate colors may be specified using the
 Using the `color_tea` function with a `netsim` object requires that TEAs
 for disease status be used and that the `networkDynamic` object be saved
 in the output: `tergmListe` must be set to `FALSE` in
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 
 ## See also
 
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md) and
-the `ndtv` package documentation.
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+and the `ndtv` package documentation.

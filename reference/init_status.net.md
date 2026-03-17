@@ -15,7 +15,7 @@ init_status.net(dat)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Value
 
@@ -31,7 +31,8 @@ either as a set of random draws from a binomial distribution or as the
 exact number specified. In either case, the specific nodes infected are
 a random sample from the network. In contrast, a set of specific nodes
 may be infected by passing a vector containing the status of each node
-to [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+to
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 For the initially infected nodes, this module sets the time of infection
 as \\t_1\\, the starting time of network simulations. For models with
@@ -48,4 +49,4 @@ time loop starts.
 ## See also
 
 This is an initialization module for
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).

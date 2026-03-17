@@ -2,7 +2,7 @@
 
 This function returns a 0 argument function that can be used as a
 generator function in the `random.params` argument of the
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 function.
 
 ## Usage
@@ -29,9 +29,9 @@ A 0 argument generator function to sample one of the values from the
 
 ## See also
 
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 and
-[`generate_random_params()`](http://epimodel.github.io/EpiModel/reference/generate_random_params.md)
+[`generate_random_params()`](https://epimodel.github.io/EpiModel/reference/generate_random_params.md)
 
 ## Examples
 

@@ -25,12 +25,12 @@ merge(
 - x:
 
   An `EpiModel` object of class
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - y:
 
   Another `EpiModel` object of class
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md),
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
   with the identical model parameterization as `x`.
 
 - keep.transmat:
@@ -59,9 +59,9 @@ merge(
 - param.error:
 
   If `TRUE`, if `x` and `y` have different params (in
-  [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md))
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md))
   or controls (passed in
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md))
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md))
   an error will prevent the merge. Use `FALSE` to override that check.
 
 - keep.diss.stats:
@@ -75,13 +75,13 @@ merge(
 ## Value
 
 An `EpiModel` object of class
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 containing the data from both `x` and `y`.
 
 ## Details
 
 This merge function combines the results of two independent simulations
-of [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+of [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 class models, simulated under separate function calls. The model
 parameterization between the two calls must be exactly the same, except
 for the number of simulations in each call. This allows for manual

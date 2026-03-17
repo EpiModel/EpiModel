@@ -1,7 +1,7 @@
 # Create the Unique Identifiers for New Nodes
 
 This function is called by
-[`append_core_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
 and appends new `unique_ids` to the created nodes. It also keeps track
 of the already used `unique_ids` with the `dat$run$last_unique_id`
 variable.
@@ -18,7 +18,7 @@ update_unique_ids(dat, n.new)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - n.new:
 

@@ -23,17 +23,17 @@ initialize.net(x, param, init, control, s)
 - param:
 
   An `EpiModel` object of class
-  [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md).
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md).
 
 - init:
 
   An `EpiModel` object of class
-  [`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md).
+  [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md).
 
 - control:
 
   An `EpiModel` object of class
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 
 - s:
 

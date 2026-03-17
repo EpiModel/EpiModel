@@ -2,7 +2,7 @@
 
 Plots epidemiological and network data from a stochastic network model
 simulated with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -191,7 +191,7 @@ plot(
   If `type="formation","duration","dissolution"`, statistics to plot.
   For `type = "formation"`, `stats` are among those specified in
   `nwstats.formula` of
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md);
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md);
   for `type = "duration", "dissolution"`, `stats` are among those of the
   dissolution model (without
   [`offset()`](https://rdrr.io/r/stats/offset.html)). The default is to
@@ -265,7 +265,7 @@ plot(
 
 This plot function can produce three types of plots with a stochastic
 network model simulated through
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md):
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md):
 
 1.  **`type="epi"`**: epidemic model results (e.g., disease prevalence
     and incidence) may be plotted.
@@ -289,7 +289,7 @@ network model simulated through
     `netest` otherwise.
 
 4.  **`type="duration","dissolution"`**: as in
-    [`plot.netdx()`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md);
+    [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md);
     supported in `plot.netsim` only when the dissolution model is
     `~offset(edges)`, `tergmLite` is `FALSE`, and `save.network` is
     `TRUE`.
@@ -312,7 +312,7 @@ prevalence of any compartment is the compartment size divided by the
 total population size; 2) for two-group models, the prevalence of any
 compartment is the compartment size divided by the group population
 size. For any prevalences that are not automatically calculated, the
-[`mutate_epi()`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+[`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
 function may be used to add new variables to the `netsim` object to plot
 or analyze.
 
@@ -335,7 +335,7 @@ the disease prevalence is closest to the average across all simulations,
 ## See also
 
 [`network::plot.network`](https://rdrr.io/pkg/network/man/plot.network.html),
-[`mutate_epi()`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+[`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
 
 ## Examples
 

@@ -26,7 +26,7 @@ A fully instantiated `param` list.
 ## `random.params`
 
 The `random.params` argument to the
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 function must be a named list of functions that each return a value that
 can be used as the argument with the same name. In the example below,
 `param_random` is a function factory provided by EpiModel for `act.rate`

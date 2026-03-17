@@ -1,8 +1,8 @@
 # ggplot2 Geom for Quantile Bands
 
 Plots quantile bands given a data.frame with stochastic model results
-from [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) or
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+from [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) or
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 

@@ -16,8 +16,9 @@ get_nwstats(x, sim = NULL, network = 1, mode = c("data.frame", "list"))
 - x:
 
   An `EpiModel` object of class
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
-  or [`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  or
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md).
 
 - sim:
 

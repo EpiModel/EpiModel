@@ -1,14 +1,14 @@
 # Dynamic Network Model Diagnostics
 
 Runs diagnostic simulations on an ERGM/STERGM estimated with
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md) to
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md) to
 assess whether the fitted model reproduces the intended network
 features. Both static (cross-sectional) and dynamic (temporal)
 diagnostics are supported. This is the recommended second step in the
 network modeling pipeline, after estimation with
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md) and
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md) and
 before epidemic simulation with
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -53,7 +53,7 @@ netdx(
   verify dissolution dynamics). Static diagnostics are only available
   when the model was fit with the edges dissolution approximation
   (`edapprox = TRUE` in
-  [`netest`](http://epimodel.github.io/EpiModel/reference/netest.md)).
+  [`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)).
 
 - nsteps:
 
@@ -126,16 +126,16 @@ netdx(
 A list of class `netdx`. Use
 [`print()`](https://rdrr.io/r/base/print.html) to view summary tables of
 formation statistics, duration, and dissolution diagnostics. Use
-[`plot.netdx`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+[`plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
 to visualize these diagnostics over time. Use
-[`as.data.frame.netdx()`](http://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.md)
+[`as.data.frame.netdx()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.md)
 to extract timed edgelists (if `keep.tedgelist = TRUE`).
 
 ## Details
 
 The `netdx` function handles dynamic network diagnostics for network
 models fit with the
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md)
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)
 function. Given the fitted model, `netdx` simulates a specified number
 of dynamic networks for a specified number of time steps per simulation.
 The network statistics in `nwstats.formula` are saved for each time
@@ -143,9 +143,9 @@ step. Summary statistics for the formation model terms, as well as
 dissolution model and relational duration statistics, are then
 calculated and can be accessed when printing or plotting the `netdx`
 object. See
-[`print.netdx`](http://epimodel.github.io/EpiModel/reference/print.netdx.md)
+[`print.netdx`](https://epimodel.github.io/EpiModel/reference/print.netdx.md)
 and
-[`plot.netdx`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+[`plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
 for details on printing and plotting.
 
 ## Control Arguments
@@ -191,7 +191,7 @@ vital dynamics (arrivals/departures).
 
 After running `netdx`, use
 [`print()`](https://rdrr.io/r/base/print.html) and
-[`plot.netdx`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+[`plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
 to inspect the results. Key indicators of a good model fit include:
 
 - **Formation statistics:** The "Sim Mean" should be close to the
@@ -199,7 +199,7 @@ to inspect the results. Key indicators of a good model fit include:
 
 - **Duration statistics** (dynamic only): The simulated mean edge
   durations should match the values passed to
-  [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
+  [`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
 
 - **Dissolution statistics** (dynamic only): The simulated dissolution
   rates should be approximately `1 / duration`.
@@ -209,19 +209,19 @@ increased burn-in (via `set.control.ergm`), or the target statistics may
 be incompatible (e.g., specifying more edges than the network can
 support). If durations are off but formation is correct, verify that
 `d.rate` was correctly specified in
-[`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+[`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
 for models with vital dynamics.
 
 ## See also
 
 Estimate the network model with
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md)
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)
 before running diagnostics. Plot diagnostics with
-[`plot.netdx`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+[`plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
 and print summary tables with
-[`print.netdx`](http://epimodel.github.io/EpiModel/reference/print.netdx.md).
+[`print.netdx`](https://epimodel.github.io/EpiModel/reference/print.netdx.md).
 After diagnostics confirm a good fit, simulate the epidemic with
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Examples
 

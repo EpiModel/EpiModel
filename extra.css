@@ -1,0 +1,49 @@
+/* EpiModel pkgdown custom styles — matching SISMID course site typography */
+
+/* Google Fonts — Atkinson Hyperlegible (body) + Open Sans (headings) */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+/* Body text */
+body {
+  font-family: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.page-header h1 {
+  font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
+  font-weight: 700;
+}
+
+/* Navbar */
+.navbar {
+  font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
+  font-weight: 600;
+}
+
+/* Navbar brand / package name */
+.navbar .navbar-brand {
+  font-weight: 700;
+}
+
+/* Sidebar (reference pages) */
+.sidebar nav {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+/* Code blocks — keep readable monospace */
+pre, code, .sourceCode {
+  font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/* Footer */
+footer {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+/* Reference topic titles in the index */
+.section h2 {
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 0.3rem;
+}

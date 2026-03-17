@@ -2,7 +2,7 @@
 
 Plots epidemiological data from a deterministic compartment epidemic
 model solved with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 ## Usage
 
@@ -130,7 +130,7 @@ plot(
 
 This function plots epidemiological outcomes from a deterministic
 compartmental model solved with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 Depending on the number of model runs (sensitivity analyses) and number
 of groups, the default plot is the fractional proportion of each
 compartment in the model over time. The specific compartments or flows
@@ -152,7 +152,7 @@ rules:
 
 ## Color Palettes
 
-Since [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md)
+Since [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md)
 supports multiple run sensitivity models, plotting the results of such
 models uses a complex color scheme for distinguishing runs. This is
 accomplished using the
@@ -178,7 +178,7 @@ override those names with the `leg.name` argument.
 
 ## See also
 
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md),
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md),
 [`RColorBrewer::brewer.pal.info`](https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html)
 
 ## Examples

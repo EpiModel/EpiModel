@@ -53,15 +53,15 @@ An `EpiModel` object of class `init.icm`.
 ## Details
 
 The initial conditions for a model solved with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) should be
-input into the `init.icm` function. This function handles initial
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) should
+be input into the `init.icm` function. This function handles initial
 conditions for both base models and original models using new modules.
 
 ## See also
 
 Use
-[`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md)
+[`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
 to specify model parameters and
-[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md)
+[`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md)
 to specify the control settings. Run the parameterized model with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).

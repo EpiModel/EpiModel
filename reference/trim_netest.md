@@ -47,10 +47,10 @@ removed.
 With larger, more complex network structures with epidemic models, it is
 generally useful to reduce the memory footprint of the fitted TERGM
 model object (estimated with
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)).
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)).
 This utility function removes all but the bare essentials needed for
 simulating a network model with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 The function always trims the environments of `object$constraints` and
 `object$coef.diss$dissolution`.
@@ -72,7 +72,7 @@ environments of `object$formation`,
 By default all objects are removed from these trimmed environments.
 Specific objects may be retained by passing their names as the `keep`
 argument. For the output of `trim_netest` to be usable in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 simulation, any objects referenced in the formulas should be included in
 the `keep` argument.
 

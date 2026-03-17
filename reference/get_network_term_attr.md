@@ -2,7 +2,7 @@
 
 Given a simulated network, outputs a character vector of vertex
 attributes to be used in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 simulations.
 
 ## Usage

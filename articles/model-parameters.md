@@ -55,7 +55,7 @@ control <- control.net(type = "SIS", nsims = 1, nsteps = 250, verbose = FALSE)
 ### Scenario Definitions
 
 To define the scenarios, we will make use of the
-[`EpiModel::create_scenario_list`](http://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
+[`EpiModel::create_scenario_list`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
 function. It takes a specially formatted `data.frame` as input and
 outputs a list of scenarios usable by EpiModel.
 
@@ -123,7 +123,7 @@ We now have a named list of scenarios. We will run all the scenarios,
 combine there results and plot the number of susceptible and infected
 over time to show what happened. To do so, we loop over all 3 scenarios
 and use
-[`EpiModel::use_scenario`](http://epimodel.github.io/EpiModel/reference/use_scenario.md)
+[`EpiModel::use_scenario`](https://epimodel.github.io/EpiModel/reference/use_scenario.md)
 function to create a new `sc.param` object to be used for the simulation
 parameters.
 
@@ -453,7 +453,7 @@ We kept the `inf.prob` parameter fixed at `0.3`, and then defined a
 - `act.rate` uses the `param_random` [function
   factory](https://adv-r.hadley.nz/function-factories.html) defined by
   EpiModel (see
-  [`?EpiModel::param_random`](http://epimodel.github.io/EpiModel/reference/param_random.md)).
+  [`?EpiModel::param_random`](https://epimodel.github.io/EpiModel/reference/param_random.md)).
   In this case, each simulation will sample one of the three defined
   values in the vector with equal probability.
 - `dummy.param` is a function with no argument that returns a random

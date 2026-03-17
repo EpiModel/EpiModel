@@ -15,7 +15,7 @@ infection.net(dat, at)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 
@@ -33,7 +33,7 @@ The main steps in this infection module are as follows:
     disease status.
 
 2.  Call
-    [`discord_edgelist()`](http://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
+    [`discord_edgelist()`](https://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
     to get the current discordant edgelist given step 1.
 
 3.  Determine the transmission rates (e.g., as a function of group).
@@ -51,5 +51,5 @@ The main steps in this infection module are as follows:
 
 ## See also
 
-[`discord_edgelist()`](http://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
+[`discord_edgelist()`](https://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
 is used within `infection.net` to obtain a discordant edgelist.

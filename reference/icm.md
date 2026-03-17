@@ -14,17 +14,17 @@ icm(param, init, control)
 - param:
 
   Model parameters, as an object of class
-  [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md).
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md).
 
 - init:
 
   Initial conditions, as an object of class
-  [`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md).
+  [`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md).
 
 - control:
 
   Control settings, as an object of class
-  [`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+  [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md).
 
 ## Value
 
@@ -62,13 +62,13 @@ existing processes with a new one contained in an original module.
 ## See also
 
 Extract the model results with
-[`as.data.frame.icm()`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md).
+[`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md).
 Summarize the time-specific model results with
-[`summary.icm()`](http://epimodel.github.io/EpiModel/reference/summary.icm.md).
+[`summary.icm()`](https://epimodel.github.io/EpiModel/reference/summary.icm.md).
 Plot the model results with
-[`plot.icm()`](http://epimodel.github.io/EpiModel/reference/plot.icm.md).
+[`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md).
 Plot a compartment flow diagram with
-[`comp_plot()`](http://epimodel.github.io/EpiModel/reference/comp_plot.md).
+[`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md).
 
 ## Examples
 

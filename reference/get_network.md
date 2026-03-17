@@ -33,9 +33,9 @@ get_network(x, network = 1L, ...)
 - x:
 
   An `EpiModel` object of class
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md),
-  [`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md), or
-  `netsim_dat`.
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md),
+  or `netsim_dat`.
 
 - ...:
 
@@ -75,13 +75,13 @@ object (if `collapse = FALSE`) or a static `network` object (if
 
 This function requires that the network object is saved during the
 network simulation while running either
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md) or
-[`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md). For
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md) or
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md). For
 the former, that is specified by setting the `save.network` parameter in
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 to `TRUE`. For the latter, that is specified with the `keep.tnetwork`
 parameter directly in
-[`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md).
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md).
 
 ## Examples
 

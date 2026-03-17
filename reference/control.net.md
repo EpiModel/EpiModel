@@ -1,7 +1,7 @@
 # Control Settings for Stochastic Network Models
 
 Sets the controls for stochastic network models simulated with
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -105,7 +105,7 @@ control.net(
 
   Number of time steps of the cumulative edgelist to retain. See help
   for
-  [`update_cumulative_edgelist`](http://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+  [`update_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
   for options.
 
 - attr.rules:
@@ -124,58 +124,58 @@ control.net(
 - initialize.FUN:
 
   Module to initialize the model at time 1, with the default function of
-  [`initialize.net`](http://epimodel.github.io/EpiModel/reference/initialize.net.md).
+  [`initialize.net`](https://epimodel.github.io/EpiModel/reference/initialize.net.md).
 
 - resim_nets.FUN:
 
   Module to resimulate the network at each time step, with the default
   function of
-  [`resim_nets`](http://epimodel.github.io/EpiModel/reference/resim_nets.md).
+  [`resim_nets`](https://epimodel.github.io/EpiModel/reference/resim_nets.md).
 
 - summary_nets.FUN:
 
   Module to extract summary statistics of the network at each time step,
   with the default function of
-  [`summary_nets`](http://epimodel.github.io/EpiModel/reference/summary_nets.md).
+  [`summary_nets`](https://epimodel.github.io/EpiModel/reference/summary_nets.md).
 
 - infection.FUN:
 
   Module to simulate disease infection, with the default function of
-  [`infection.net`](http://epimodel.github.io/EpiModel/reference/infection.net.md).
+  [`infection.net`](https://epimodel.github.io/EpiModel/reference/infection.net.md).
 
 - recovery.FUN:
 
   Module to simulate disease recovery, with the default function of
-  [`recovery.net`](http://epimodel.github.io/EpiModel/reference/recovery.net.md).
+  [`recovery.net`](https://epimodel.github.io/EpiModel/reference/recovery.net.md).
 
 - departures.FUN:
 
   Module to simulate departure or exit, with the default function of
-  [`departures.net`](http://epimodel.github.io/EpiModel/reference/departures.net.md).
+  [`departures.net`](https://epimodel.github.io/EpiModel/reference/departures.net.md).
 
 - arrivals.FUN:
 
   Module to simulate arrivals or entries, with the default function of
-  [`arrivals.net`](http://epimodel.github.io/EpiModel/reference/arrivals.net.md).
+  [`arrivals.net`](https://epimodel.github.io/EpiModel/reference/arrivals.net.md).
 
 - nwupdate.FUN:
 
   Module to handle updating of network structure and nodal attributes
   due to exogenous epidemic model processes, with the default function
   of
-  [`nwupdate.net`](http://epimodel.github.io/EpiModel/reference/nwupdate.net.md).
+  [`nwupdate.net`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md).
 
 - prevalence.FUN:
 
   Module to calculate disease prevalence at each time step, with the
   default function of
-  [`prevalence.net`](http://epimodel.github.io/EpiModel/reference/prevalence.net.md).
+  [`prevalence.net`](https://epimodel.github.io/EpiModel/reference/prevalence.net.md).
 
 - verbose.FUN:
 
   Module to print simulation progress to screen, with the default
   function of
-  [`verbose.net`](http://epimodel.github.io/EpiModel/reference/verbose.net.md).
+  [`verbose.net`](https://epimodel.github.io/EpiModel/reference/verbose.net.md).
 
 - module.order:
 
@@ -196,7 +196,7 @@ control.net(
 
   A right-hand sided ERGM formula that includes network statistics of
   interest, with the default to the formation formula terms. Supports
-  [`multilayer`](http://epimodel.github.io/EpiModel/reference/multilayer.md)
+  [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   specification.
 
 - save.transmat:
@@ -256,7 +256,7 @@ control.net(
 
   If `TRUE`, track duration information for models in `tergmLite`
   simulations. Supports
-  [`multilayer`](http://epimodel.github.io/EpiModel/reference/multilayer.md)
+  [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   specification.
 
 - set.control.ergm:
@@ -266,7 +266,7 @@ control.net(
   In `netsim`, this is only used when initializing the network with
   `edapprox = TRUE`. All other simulations in `netsim` use `tergm`.
   Supports
-  [`multilayer`](http://epimodel.github.io/EpiModel/reference/multilayer.md)
+  [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   specification.
 
 - set.control.tergm:
@@ -274,9 +274,9 @@ control.net(
   Control arguments passed to
   [`tergm::simulate_formula.network`](https://rdrr.io/pkg/tergm/man/simulate.tergm.html).
   See the help file for
-  [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) for
+  [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) for
   details and examples on specifying this parameter. Supports
-  [`multilayer`](http://epimodel.github.io/EpiModel/reference/multilayer.md)
+  [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   specification.
 
 - save.diss.stats:
@@ -302,7 +302,7 @@ control.net(
   before the first network is simulated, and the `i + 1`th function will
   be called after the `i`th network is simulated. (Note that `at = 0L`
   is used for initial cross-sectional simulations in
-  [`sim_nets_t1`](http://epimodel.github.io/EpiModel/reference/sim_nets_t1.md).)
+  [`sim_nets_t1`](https://epimodel.github.io/EpiModel/reference/sim_nets_t1.md).)
   The function(s) should return the `netsim_dat` object with any updates
   needed to correctly represent the network states for calls to
   `simulate` and/or `summary`. This can be useful if nodal attributes
@@ -321,7 +321,7 @@ An EpiModel object of class `control.net`.
 
 `control.net` sets the required control settings for any network model
 solved with the
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 function. Controls are required for both base model types and when
 passing original process modules. For an overview of control settings
 for base models, consult the [Network Modeling for
@@ -343,7 +343,7 @@ There are three rules available for each attribute value:
 - **`t1`**: new nodes will be assigned this attribute in proportion to
   the distribution of that attribute among nodes at time 1 (that is, the
   proportions set in the original network for
-  [`netest`](http://epimodel.github.io/EpiModel/reference/netest.md)).
+  [`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)).
 
 - **`Value`**: all new nodes will be assigned this specific value, with
   no variation. For example, the rules list
@@ -394,7 +394,7 @@ demographics, and other processes. Core modules are those listed in the
 `.FUN` arguments. For each module, there is a default function used in
 the simulation. The default infection module, for example, is contained
 in the
-[`infection.net`](http://epimodel.github.io/EpiModel/reference/infection.net.md)
+[`infection.net`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
 function.
 
 For original models, one may substitute replacement module functions for
@@ -420,8 +420,8 @@ c("arrivals.FUN", "infections.FUN")))
 ## See also
 
 Use
-[`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 to specify model parameters and
-[`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md)
+[`init.net`](https://epimodel.github.io/EpiModel/reference/init.net.md)
 to specify the initial conditions. Run the parameterized model with
-[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).

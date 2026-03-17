@@ -14,17 +14,17 @@ initialize.icm(param, init, control)
 - param:
 
   An `EpiModel` object of class
-  [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md).
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md).
 
 - init:
 
   An `EpiModel` object of class
-  [`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md).
+  [`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md).
 
 - control:
 
   An `EpiModel` object of class
-  [`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+  [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md).
 
 ## Value
 

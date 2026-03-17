@@ -56,7 +56,7 @@ An `EpiModel` object of class `init.net`.
 ## Details
 
 The initial conditions for a model solved with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 should be input into the `init.net` function. This function handles
 initial conditions for both base models and new modules. For an overview
 of specifying initial conditions across a variety of base network
@@ -66,11 +66,11 @@ Epidemics](https://epimodel.github.io/sismid/) tutorials.
 ## See also
 
 Use
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 to specify model parameters and
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 to specify the control settings. Run the parameterized model with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Examples
 

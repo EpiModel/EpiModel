@@ -1,7 +1,7 @@
 # Plot Dynamic Network Model Diagnostics
 
 Plots dynamic network model diagnostics calculated in
-[`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md).
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md).
 
 ## Usage
 
@@ -63,7 +63,7 @@ plot(
 
   Statistics to plot. For `type = "formation"`, `stats` are among those
   specified in the call to
-  [`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md);
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md);
   for `type = "duration", "dissolution"`, `stats` are among those of the
   dissolution model (without
   [`offset()`](https://rdrr.io/r/stats/offset.html)). The default is to
@@ -172,7 +172,7 @@ within that function. The `formation` plot shows the summary statistics
 requested in `nwstats.formula`, where the default includes those
 statistics in the network model formation formula specified in the
 original call to
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md).
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md).
 
 The `duration` plot shows the average age of existing edges at each time
 step, up until the maximum time step requested. The age is used as an
@@ -199,7 +199,7 @@ plot window is also based on the number of statistics.
 
 ## See also
 
-[`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md)
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
 
 ## Examples
 

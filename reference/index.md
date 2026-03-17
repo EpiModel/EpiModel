@@ -1,372 +1,632 @@
 # Package index
 
-## All functions
+## Core Simulation Functions
 
-- [`EpiModel-package`](http://epimodel.github.io/EpiModel/reference/EpiModel-package.md)
-  [`EpiModel`](http://epimodel.github.io/EpiModel/reference/EpiModel-package.md)
+Primary functions for estimating network models, running epidemic
+simulations, and diagnosing model fit.
+
+- [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) :
+  Deterministic Compartmental Models
+- [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) :
+  Stochastic Individual Contact Models
+- [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  : Stochastic Network Models
+- [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+  : Dynamic Network Model Estimation
+- [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) :
+  Dynamic Network Model Diagnostics
+- [`EpiModel-package`](https://epimodel.github.io/EpiModel/reference/EpiModel-package.md)
+  [`EpiModel`](https://epimodel.github.io/EpiModel/reference/EpiModel-package.md)
   : Mathematical Modeling of Infectious Disease Dynamics
 
-- [`InitErgmTerm.absdiffby()`](http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffby.md)
-  : Definition for absdiffby ERGM Term
+## Model Inputs
 
-- [`InitErgmTerm.absdiffnodemix()`](http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffnodemix.md)
-  : Definition for absdiffnodemix ERGM Term
+Functions to specify parameters, initial conditions, and control
+settings for each model class, plus network setup utilities.
 
-- [`InitErgmTerm.fuzzynodematch()`](http://epimodel.github.io/EpiModel/reference/InitErgmTerm.fuzzynodematch.md)
-  : Definition for fuzzynodematch ERGM Term
-
-- [`add_vertices()`](http://epimodel.github.io/EpiModel/reference/add_vertices.md)
-  : Fast Version of network::add.vertices for Edgelist-formatted Network
-
-- [`apportion_lr()`](http://epimodel.github.io/EpiModel/reference/apportion_lr.md)
-  : Apportion Using the Largest Remainder Method
-
-- [`arrive_nodes()`](http://epimodel.github.io/EpiModel/reference/arrive_nodes.md)
-  : Arrive New Nodes to the netsim_dat Object
-
-- [`as.data.frame(`*`<dcm>`*`)`](http://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md)
-  : Extract Model Data for Deterministic Compartmental Models
-
-- [`as.data.frame(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
-  [`as.data.frame(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
-  : Extract Model Data for Stochastic Models
-
-- [`as.data.frame(`*`<netdx>`*`)`](http://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.md)
-  : Extract Timed Edgelists for netdx Objects
-
-- [`as.epi.data.frame()`](http://epimodel.github.io/EpiModel/reference/as.epi.data.frame.md)
-  : Validate and Convert to epi.data.frame
-
-- [`as.network(`*`<transmat>`*`)`](http://epimodel.github.io/EpiModel/reference/as.network.transmat.md)
-  : Convert transmat Infection Tree into a network Object
-
-- [`as.phylo(`*`<transmat>`*`)`](http://epimodel.github.io/EpiModel/reference/as.phylo.transmat.md)
-  : Convert transmat Infection Tree into a phylo Object
-
-- [`as_cumulative_edgelist()`](http://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md)
-  :
-
-  Convert an object to a `cumulative_edgelist`
-
-- [`as_tibble_edgelist()`](http://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.md)
-  : Convert an Edgelist into a Tibble
-
-- [`check_degdist_bal()`](http://epimodel.github.io/EpiModel/reference/check_degdist_bal.md)
-  : Check Degree Distribution for Balance in Target Statistics
-
-- [`color_tea()`](http://epimodel.github.io/EpiModel/reference/color_tea.md)
-  :
-
-  Create a TEA Variable for Infection Status for `ndtv` Animations
-
-- [`comp_plot()`](http://epimodel.github.io/EpiModel/reference/comp_plot.md)
-  : Plot Compartment Diagram for Epidemic Models
-
-- [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
-  : Control Settings for Deterministic Compartmental Models
-
-- [`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md)
-  : Control Settings for Stochastic Individual Contact Models
-
-- [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
-  : Control Settings for Stochastic Network Models
-
-- [`create_dat_object()`](http://epimodel.github.io/EpiModel/reference/create_dat_object.md)
-  : Create a Minimal netsim_dat Main List Object for a Network Model
-
-- [`create_scenario_list()`](http://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
-  : Make a list of EpiModel scenarios from a data.frame of scenarios
-
-- [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) :
-  Deterministic Compartmental Models
-
-- [`dedup_cumulative_edgelist()`](http://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md)
-  : Deduplicate a cumulative edgelist by combining overlapping edges
-
-- [`delete_edges()`](http://epimodel.github.io/EpiModel/reference/delete_edges.md)
-  : Remove Edges That Include Specified Vertices
-
-- [`delete_vertices()`](http://epimodel.github.io/EpiModel/reference/delete_vertices.md)
-  : Fast Version of network::delete.vertices for Edgelist-formatted
-  Network
-
-- [`depart_nodes()`](http://epimodel.github.io/EpiModel/reference/depart_nodes.md)
-  : Depart Nodes from the netsim_dat Object
-
-- [`dissolution_coefs()`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
-  : Dissolution Coefficients for Stochastic Network Models
-
-- [`edgelist_censor()`](http://epimodel.github.io/EpiModel/reference/edgelist_censor.md)
-  : Table of Edge Censoring
-
-- [`epiweb()`](http://epimodel.github.io/EpiModel/reference/epiweb.md) :
-  EpiModel Web
-
-- [`generate_random_params()`](http://epimodel.github.io/EpiModel/reference/generate_random_params.md)
-  : Generate Values for Random Parameters
-
-- [`geom_bands()`](http://epimodel.github.io/EpiModel/reference/geom_bands.md)
-  : ggplot2 Geom for Quantile Bands
-
-- [`get_adj_list()`](http://epimodel.github.io/EpiModel/reference/get_adj_list.md)
-  : Returns an adjacency list from an edge list
-
-- [`get_attr_history()`](http://epimodel.github.io/EpiModel/reference/get_attr_history.md)
-  : Extract the Attributes History from Network Simulations
-
-- [`get_connected_nodes()`](http://epimodel.github.io/EpiModel/reference/get_connected_nodes.md)
-  : Returns all the node connected directly or indirectly to a set of
-  nodes
-
-- [`get_cumulative_degree()`](http://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md)
-  : Return the Cumulative Degree of a Set of Index Nodes
-
-- [`get_cumulative_edgelist()`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
-  : Get a Cumulative Edgelist From a Specified Network
-
-- [`get_cumulative_edgelists_df()`](http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
-  : Get the Cumulative Edgelists of a Model
-
-- [`get_current_timestep()`](http://epimodel.github.io/EpiModel/reference/get_current_timestep.md)
-  : Return the Current Timestep
-
-- [`get_degree()`](http://epimodel.github.io/EpiModel/reference/get_degree.md)
-  : Get Individual Degree from Network or Edgelist
-
-- [`get_edgelist()`](http://epimodel.github.io/EpiModel/reference/get_edgelist.md)
-  : Get an Edgelist From the Specified Network
-
-- [`get_edgelists_df()`](http://epimodel.github.io/EpiModel/reference/get_edgelists_df.md)
-  : Get the Edgelist(s) from the Specified Network(s)
-
-- [`get_formula_term_attr()`](http://epimodel.github.io/EpiModel/reference/get_formula_term_attr.md)
-  : Output ERGM Formula Attributes into a Character Vector
-
-- [`get_network()`](http://epimodel.github.io/EpiModel/reference/get_network.md)
-  : Extract Network Objects from Network Simulations
-
-- [`get_network_attributes()`](http://epimodel.github.io/EpiModel/reference/get_network_attributes.md)
-  : Get Network Attributes from a Network Object
-
-- [`get_network_term_attr()`](http://epimodel.github.io/EpiModel/reference/get_network_term_attr.md)
-  : Output Network Attributes into a Character Vector
-
-- [`get_nwstats()`](http://epimodel.github.io/EpiModel/reference/get_nwstats.md)
-  : Extract Network Statistics from netsim or netdx Object
-
-- [`get_param_set()`](http://epimodel.github.io/EpiModel/reference/get_param_set.md)
-  : Extract the Parameter Set from Network Simulations
-
-- [`get_partners()`](http://epimodel.github.io/EpiModel/reference/get_partners.md)
-  : Return the Historical Contacts (Partners) of a Set of Index Nodes
-
-- [`get_sims()`](http://epimodel.github.io/EpiModel/reference/get_sims.md)
-  : Extract Network Simulations
-
-- [`get_subnet_adj_list()`](http://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.md)
-  : Return an adjacency list of subnets
-
-- [`is.transmat()`](http://epimodel.github.io/EpiModel/reference/get_transmat.md)
-  [`get_transmat()`](http://epimodel.github.io/EpiModel/reference/get_transmat.md)
-  : Extract Transmissions Matrix from Network Epidemic Model
-
-- [`get_vertex_attribute()`](http://epimodel.github.io/EpiModel/reference/get_vertex_attribute.md)
-  : Get Vertex Attribute on Network Object
-
-- [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) :
-  Stochastic Individual Contact Models
-
-- [`increment_timestep()`](http://epimodel.github.io/EpiModel/reference/increment_timestep.md)
-  : Increment the Current Timestep
-
-- [`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md)
+- [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md)
+  : Epidemic Parameters for Deterministic Compartmental Models
+- [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
+  : Epidemic Parameters for Stochastic Individual Contact Models
+- [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  : Epidemic Parameters for Stochastic Network Models
+- [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
   : Initial Conditions for Deterministic Compartmental Models
-
-- [`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md)
+- [`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md)
   : Initial Conditions for Stochastic Individual Contact Models
-
-- [`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md)
+- [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
   : Initial Conditions for Stochastic Network Models
-
-- [`is_active_posit_ids()`](http://epimodel.github.io/EpiModel/reference/is_active_posit_ids.md)
-  : Are These Nodes Active (Positional IDs)
-
-- [`is_active_unique_ids()`](http://epimodel.github.io/EpiModel/reference/is_active_unique_ids.md)
-  : Are These Nodes Active (Unique IDs)
-
-- [`make_restart_point()`](http://epimodel.github.io/EpiModel/reference/make_restart_point.md)
-  :
-
-  Make a Lightweight Restart Point From a `netsim` Object with tergmLite
-
-- [`merge(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/merge.icm.md)
-  : Merge Data across Stochastic Individual Contact Model Simulations
-
-- [`merge(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/merge.netsim.md)
-  : Merge Model Simulations across netsim Objects
-
-- [`modules.icm`](http://epimodel.github.io/EpiModel/reference/modules.icm.md)
-  : Modules for Stochastic Individual Contact Models
-
-- [`modules.net`](http://epimodel.github.io/EpiModel/reference/modules.net.md)
-  : Modules for Stochastic Network Models
-
-- [`multilayer()`](http://epimodel.github.io/EpiModel/reference/multilayer.md)
+- [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
+  : Control Settings for Deterministic Compartmental Models
+- [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md)
+  : Control Settings for Stochastic Individual Contact Models
+- [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  : Control Settings for Stochastic Network Models
+- [`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  : Dissolution Coefficients for Stochastic Network Models
+- [`network_initialize()`](https://epimodel.github.io/EpiModel/reference/network_initialize.md)
+  : Initialize Network Object
+- [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   : Specify Controls by Network
 
-- [`mutate_epi()`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md)
-  : Add New Epidemiology Variables
+## dat Object Accessors
 
-- [`get_attr_list()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`append_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`remove_node_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_epi_list()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_epi()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_epi()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_epi()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_param_list()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_param()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_param()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_param()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_control_list()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_control()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_network_control()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_control()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_control()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_init_list()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_core_attributes()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`append_core_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+Get and set node-level attributes, parameters, epidemic trackers,
+control settings, and initial conditions on the internal dat object used
+by network and ICM modules.
+
+- [`get_attr_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_epi_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_param_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_control_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_network_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_init_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
   : Functions to Access and Edit the Main netsim_dat Object in Network
   Models
 
-- [`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md) :
-  Dynamic Network Model Diagnostics
+- [`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
+  : Extract the Attributes History from Network Simulations
 
-- [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md) :
-  Dynamic Network Model Estimation
+- [`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md)
+  : Proportional Table of Vertex Attributes
 
-- [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md) :
-  Stochastic Network Models
+- [`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md)
+  : Update Vertex Attributes for Incoming Vertices
 
-- [`network_initialize()`](http://epimodel.github.io/EpiModel/reference/network_initialize.md)
-  : Initialize Network Object
-
-- [`nwupdate.net()`](http://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
-  : Dynamic Network Updates
-
-- [`overwrite_attrs()`](http://epimodel.github.io/EpiModel/reference/overwrite_attrs.md)
+- [`overwrite_attrs()`](https://epimodel.github.io/EpiModel/reference/overwrite_attrs.md)
   :
 
   Helper to use a `data.frame` to initialize some attributes
 
-- [`padded_vector()`](http://epimodel.github.io/EpiModel/reference/padded_vector.md)
-  : Grow a Vector to a Given Size, Padding it With Empty Elements
+- [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
+  : Extract the Parameter Set from Network Simulations
 
-- [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md)
-  : Epidemic Parameters for Deterministic Compartmental Models
+- [`epi_trackers()`](https://epimodel.github.io/EpiModel/reference/epi_trackers.md)
+  : Function to run the user-provided epi trackers
 
-- [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md)
-  : Epidemic Parameters for Stochastic Individual Contact Models
+- [`delete_attr()`](https://epimodel.github.io/EpiModel/reference/delete_attr.md)
+  : Delete Elements from Attribute List
 
-- [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
-  : Epidemic Parameters for Stochastic Network Models
+## Network and Edgelist Functions
 
-- [`param.net_from_table()`](http://epimodel.github.io/EpiModel/reference/param.net_from_table.md)
-  : Parameters List for Stochastic Network Models from a Formatted Data
-  Frame
+Tools for working with network edgelists, partnership queries,
+discordant pairs, cumulative edgelists, and network attributes.
 
-- [`param.net_to_table()`](http://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
+- [`discord_edgelist()`](https://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
+  : Discordant Edgelist
+
+- [`get_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_edgelist.md)
+  : Get an Edgelist From the Specified Network
+
+- [`get_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_edgelists_df.md)
+  : Get the Edgelist(s) from the Specified Network(s)
+
+- [`get_degree()`](https://epimodel.github.io/EpiModel/reference/get_degree.md)
+  : Get Individual Degree from Network or Edgelist
+
+- [`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
+  : Return the Historical Contacts (Partners) of a Set of Index Nodes
+
+- [`get_discordant_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.md)
+  : Get Discordant Edgelist Based on Specified Status Variable
+
+- [`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+  : Get a Cumulative Edgelist From a Specified Network
+
+- [`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
+  : Get the Cumulative Edgelists of a Model
+
+- [`get_cumulative_degree()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md)
+  : Return the Cumulative Degree of a Set of Index Nodes
+
+- [`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md)
   :
 
-  Coerce a list of parameters to a `long.param.df`
+  Convert an object to a `cumulative_edgelist`
 
-- [`param_random()`](http://epimodel.github.io/EpiModel/reference/param_random.md)
-  : Create a Value Sampler for Random Parameters
+- [`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+  : Update a Cumulative Edgelist of the Specified Network
 
-- [`plot(`*`<dcm>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.dcm.md)
-  : Plot Data from a Deterministic Compartmental Epidemic Model
+- [`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md)
+  : Deduplicate a cumulative edgelist by combining overlapping edges
 
-- [`plot(`*`<epi.data.frame>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.epi.data.frame.md)
-  : Plot Epidemic Model Results From a Netsim Data.Frame
+- [`as_tibble_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.md)
+  : Convert an Edgelist into a Tibble
 
-- [`plot(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  : Plot Data from a Stochastic Individual Contact Epidemic Model
+- [`edgelist_censor()`](https://epimodel.github.io/EpiModel/reference/edgelist_censor.md)
+  : Table of Edge Censoring
 
-- [`plot(`*`<netdx>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.netdx.md)
-  : Plot Dynamic Network Model Diagnostics
+- [`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md)
+  : Extract Network Objects from Network Simulations
 
-- [`plot(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.netsim.md)
-  : Plot Data from a Stochastic Network Epidemic Model
+- [`set_network()`](https://epimodel.github.io/EpiModel/reference/set_network.md)
+  : Set Network State During netsim Simulation
 
-- [`plot(`*`<transmat>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.transmat.md)
-  : Plot transmat Infection Tree in Three Styles
+- [`get_nwparam()`](https://epimodel.github.io/EpiModel/reference/get_nwparam.md)
+  : Extract Network Model Parameters
 
-- [`print(`*`<dcm>`*`)`](http://epimodel.github.io/EpiModel/reference/print.dcm.md)
-  : Print Method for DCM Objects
+- [`get_network_attributes()`](https://epimodel.github.io/EpiModel/reference/get_network_attributes.md)
+  : Get Network Attributes from a Network Object
 
-- [`print(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/print.icm.md)
-  : Print Method for ICM Objects
+- [`get_attr_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_epi_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_param_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_control_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_network_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_init_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`add_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  : Functions to Access and Edit the Main netsim_dat Object in Network
+  Models
 
-- [`print(`*`<netdx>`*`)`](http://epimodel.github.io/EpiModel/reference/print.netdx.md)
-  : Utility Function for Printing netdx Object
+- [`get_vertex_attribute()`](https://epimodel.github.io/EpiModel/reference/get_vertex_attribute.md)
+  : Get Vertex Attribute on Network Object
 
-- [`print(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/print.netsim.md)
-  : Print Method for Network Model Simulations
-
-- [`get_forward_reachable()`](http://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
-  [`get_backward_reachable()`](http://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
-  : Get the Forward or Backward Reachable Nodes for a Set of Nodes
-
-- [`record_attr_history()`](http://epimodel.github.io/EpiModel/reference/record_attr_history.md)
-  : Record Attribute History
-
-- [`record_raw_object()`](http://epimodel.github.io/EpiModel/reference/record_raw_object.md)
-  : Record an Arbitrary Object During a Simulation
-
-- [`set_current_timestep()`](http://epimodel.github.io/EpiModel/reference/set_current_timestep.md)
-  : Set the Current Timestep
-
-- [`set_transmat()`](http://epimodel.github.io/EpiModel/reference/set_transmat.md)
-  : Save Transmission Matrix
-
-- [`set_vertex_attribute()`](http://epimodel.github.io/EpiModel/reference/set_vertex_attribute.md)
+- [`set_vertex_attribute()`](https://epimodel.github.io/EpiModel/reference/set_vertex_attribute.md)
   : Set Vertex Attribute on Network Object
 
-- [`summary(`*`<dcm>`*`)`](http://epimodel.github.io/EpiModel/reference/summary.dcm.md)
-  : Summary Model Statistics
+- [`add_vertices()`](https://epimodel.github.io/EpiModel/reference/add_vertices.md)
+  : Fast Version of network::add.vertices for Edgelist-formatted Network
 
-- [`summary(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/summary.icm.md)
-  : Summary Model Statistics
+- [`delete_vertices()`](https://epimodel.github.io/EpiModel/reference/delete_vertices.md)
+  : Fast Version of network::delete.vertices for Edgelist-formatted
+  Network
 
-- [`summary(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/summary.netsim.md)
-  : Summary Model Statistics
+- [`delete_edges()`](https://epimodel.github.io/EpiModel/reference/delete_edges.md)
+  : Remove Edges That Include Specified Vertices
 
-- [`trim_netest()`](http://epimodel.github.io/EpiModel/reference/trim_netest.md)
+- [`copy_datattr_to_nwattr()`](https://epimodel.github.io/EpiModel/reference/copy_datattr_to_nwattr.md)
+  :
+
+  Copy Vertex Attributes from the `netsim_dat` List to the Network
+  Objects
+
+- [`copy_nwattr_to_datattr()`](https://epimodel.github.io/EpiModel/reference/copy_nwattr_to_datattr.md)
+  :
+
+  Copy Vertex Attributes From Network to `netsim_dat` List
+
+## Output Extraction and Analysis
+
+Convert simulation output to data frames, extract networks and
+transmission matrices, derive new statistics, and merge or truncate
+results.
+
+- [`as.data.frame(`*`<dcm>`*`)`](https://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md)
+  : Extract Model Data for Deterministic Compartmental Models
+- [`as.data.frame(`*`<icm>`*`)`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  [`as.data.frame(`*`<netsim>`*`)`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  : Extract Model Data for Stochastic Models
+- [`as.data.frame(`*`<netdx>`*`)`](https://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.md)
+  : Extract Timed Edgelists for netdx Objects
+- [`as.epi.data.frame()`](https://epimodel.github.io/EpiModel/reference/as.epi.data.frame.md)
+  : Validate and Convert to epi.data.frame
+- [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+  : Extract Network Simulations
+- [`is.transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
+  [`get_transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
+  : Extract Transmissions Matrix from Network Epidemic Model
+- [`set_transmat()`](https://epimodel.github.io/EpiModel/reference/set_transmat.md)
+  : Save Transmission Matrix
+- [`as.network(`*`<transmat>`*`)`](https://epimodel.github.io/EpiModel/reference/as.network.transmat.md)
+  : Convert transmat Infection Tree into a network Object
+- [`as.phylo(`*`<transmat>`*`)`](https://epimodel.github.io/EpiModel/reference/as.phylo.transmat.md)
+  : Convert transmat Infection Tree into a phylo Object
+- [`get_nwstats()`](https://epimodel.github.io/EpiModel/reference/get_nwstats.md)
+  : Extract Network Statistics from netsim or netdx Object
+- [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+  : Add New Epidemiology Variables
+- [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
+  : Truncate Simulation Time Series
+- [`merge(`*`<icm>`*`)`](https://epimodel.github.io/EpiModel/reference/merge.icm.md)
+  : Merge Data across Stochastic Individual Contact Model Simulations
+- [`merge(`*`<netsim>`*`)`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
+  : Merge Model Simulations across netsim Objects
+
+## Visualization
+
+Plot methods for epidemic trajectories, network diagnostics,
+transmission trees, and interactive exploration.
+
+- [`plot(`*`<dcm>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.dcm.md)
+  : Plot Data from a Deterministic Compartmental Epidemic Model
+
+- [`plot(`*`<icm>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  : Plot Data from a Stochastic Individual Contact Epidemic Model
+
+- [`plot(`*`<netsim>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+  : Plot Data from a Stochastic Network Epidemic Model
+
+- [`plot(`*`<netdx>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+  : Plot Dynamic Network Model Diagnostics
+
+- [`plot(`*`<transmat>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.transmat.md)
+  : Plot transmat Infection Tree in Three Styles
+
+- [`plot(`*`<epi.data.frame>`*`)`](https://epimodel.github.io/EpiModel/reference/plot.epi.data.frame.md)
+  : Plot Epidemic Model Results From a Netsim Data.Frame
+
+- [`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md)
+  : Plot Compartment Diagram for Epidemic Models
+
+- [`geom_bands()`](https://epimodel.github.io/EpiModel/reference/geom_bands.md)
+  : ggplot2 Geom for Quantile Bands
+
+- [`epiweb()`](https://epimodel.github.io/EpiModel/reference/epiweb.md)
+  : EpiModel Web
+
+- [`brewer_ramp()`](https://epimodel.github.io/EpiModel/reference/brewer_ramp.md)
+  : RColorBrewer Color Ramp for EpiModel Plots
+
+- [`color_tea()`](https://epimodel.github.io/EpiModel/reference/color_tea.md)
+  :
+
+  Create a TEA Variable for Infection Status for `ndtv` Animations
+
+## Print and Summary Methods
+
+- [`print(`*`<dcm>`*`)`](https://epimodel.github.io/EpiModel/reference/print.dcm.md)
+  : Print Method for DCM Objects
+- [`print(`*`<icm>`*`)`](https://epimodel.github.io/EpiModel/reference/print.icm.md)
+  : Print Method for ICM Objects
+- [`print(`*`<netsim>`*`)`](https://epimodel.github.io/EpiModel/reference/print.netsim.md)
+  : Print Method for Network Model Simulations
+- [`print(`*`<netdx>`*`)`](https://epimodel.github.io/EpiModel/reference/print.netdx.md)
+  : Utility Function for Printing netdx Object
+- [`summary(`*`<dcm>`*`)`](https://epimodel.github.io/EpiModel/reference/summary.dcm.md)
+  : Summary Model Statistics
+- [`summary(`*`<icm>`*`)`](https://epimodel.github.io/EpiModel/reference/summary.icm.md)
+  : Summary Model Statistics
+- [`summary(`*`<netsim>`*`)`](https://epimodel.github.io/EpiModel/reference/summary.netsim.md)
+  : Summary Model Statistics
+- [`summary(`*`<netest>`*`)`](https://epimodel.github.io/EpiModel/reference/summary.netest.md)
+  : Summary for Network Model Fit
+- [`print_nwstats_table()`](https://epimodel.github.io/EpiModel/reference/print_nwstats_table.md)
+  : Print Helper For Network Stats Tables
+- [`make_stats_table()`](https://epimodel.github.io/EpiModel/reference/make_stats_table.md)
+  : Create a Summary Table of Simulation Statistics
+
+## Built-in ICM Modules
+
+Default module functions for stochastic individual contact models.
+
+- [`initialize.icm()`](https://epimodel.github.io/EpiModel/reference/initialize.icm.md)
+  : Initialization: icm Module
+- [`infection.icm()`](https://epimodel.github.io/EpiModel/reference/infection.icm.md)
+  : Primary Infection Module for icm
+- [`infection.icm.bip()`](https://epimodel.github.io/EpiModel/reference/infection.icm.bip.md)
+  : Primary Infection Module for icm
+- [`recovery.icm()`](https://epimodel.github.io/EpiModel/reference/recovery.icm.md)
+  : Recovery: icm Module
+- [`recovery.icm.bip()`](https://epimodel.github.io/EpiModel/reference/recovery.icm.bip.md)
+  : Recovery: icm Module
+- [`arrivals.icm()`](https://epimodel.github.io/EpiModel/reference/arrivals.icm.md)
+  : Arrivals: icm Module
+- [`arrivals.icm.bip()`](https://epimodel.github.io/EpiModel/reference/arrivals.icm.bip.md)
+  : Arrivals: Bipartite icm Module
+- [`departures.icm()`](https://epimodel.github.io/EpiModel/reference/departures.icm.md)
+  : Departure: icm Module
+- [`departures.icm.bip()`](https://epimodel.github.io/EpiModel/reference/departures.icm.bip.md)
+  : Departure: Bipartite icm Module
+- [`prevalence.icm()`](https://epimodel.github.io/EpiModel/reference/prevalence.icm.md)
+  : Get Epidemic Output from icm Model
+- [`prevalence.icm.bip()`](https://epimodel.github.io/EpiModel/reference/prevalence.icm.bip.md)
+  : Get Epidemic Output from icm Model
+- [`init_status.icm()`](https://epimodel.github.io/EpiModel/reference/init_status.icm.md)
+  : Disease Status Initialization Module for icm
+- [`saveout.icm()`](https://epimodel.github.io/EpiModel/reference/saveout.icm.md)
+  : Save icm Data to Output List Format
+- [`verbose.icm()`](https://epimodel.github.io/EpiModel/reference/verbose.icm.md)
+  : Progress Print Module for Stochastic Individual Contact Models
+- [`modules.icm`](https://epimodel.github.io/EpiModel/reference/modules.icm.md)
+  : Modules for Stochastic Individual Contact Models
+- [`test_icm()`](https://epimodel.github.io/EpiModel/reference/test_icm.md)
+  : Test the Model Output from a Stochastic Individual Contact Model
+
+## Built-in Network Modules
+
+Default module functions for stochastic network models.
+
+- [`initialize.net()`](https://epimodel.github.io/EpiModel/reference/initialize.net.md)
+  : Initialization: netsim Module
+- [`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
+  : Primary Infection Module for netsim
+- [`infection.2g.net()`](https://epimodel.github.io/EpiModel/reference/infection.2g.net.md)
+  : Primary Infection Module for netsim
+- [`recovery.net()`](https://epimodel.github.io/EpiModel/reference/recovery.net.md)
+  : Recovery: netsim Module
+- [`recovery.2g.net()`](https://epimodel.github.io/EpiModel/reference/recovery.2g.net.md)
+  : Recovery: netsim Module
+- [`arrivals.net()`](https://epimodel.github.io/EpiModel/reference/arrivals.net.md)
+  : Arrivals: netsim Module
+- [`arrivals.2g.net()`](https://epimodel.github.io/EpiModel/reference/arrivals.2g.net.md)
+  : Arrivals: netsim Module
+- [`departures.net()`](https://epimodel.github.io/EpiModel/reference/departures.net.md)
+  : Departures: netsim Module
+- [`departures.2g.net()`](https://epimodel.github.io/EpiModel/reference/departures.2g.net.md)
+  : Departures: netsim Module
+- [`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
+  : Dynamic Network Updates
+- [`edges_correct()`](https://epimodel.github.io/EpiModel/reference/edges_correct.md)
+  : Adjustment for the Edges Coefficient with Changing Network Size
+- [`prevalence.net()`](https://epimodel.github.io/EpiModel/reference/prevalence.net.md)
+  : Get Epidemic Output from netsim Model
+- [`init_status.net()`](https://epimodel.github.io/EpiModel/reference/init_status.net.md)
+  : Disease Status Initialization Module for netsim
+- [`saveout.net()`](https://epimodel.github.io/EpiModel/reference/saveout.net.md)
+  : Save netsim Data to Output List Format
+- [`verbose.net()`](https://epimodel.github.io/EpiModel/reference/verbose.net.md)
+  : Progress Print Module for Stochastic Network Models
+- [`process_out.net()`](https://epimodel.github.io/EpiModel/reference/process_out.net.md)
+  : Save a List of netsim Data to Output List Format
+- [`modules.net`](https://epimodel.github.io/EpiModel/reference/modules.net.md)
+  : Modules for Stochastic Network Models
+- [`test_net()`](https://epimodel.github.io/EpiModel/reference/test_net.md)
+  : Test the Model Output from a Network Model
+
+## DCM ODE Systems
+
+Built-in ODE model functions for deterministic compartmental models (SI,
+SIR, SIS; one-group and two-group; open and closed populations).
+
+- [`mod_SI_1g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SI_1g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SI_2g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SI_2g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIR_1g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIR_1g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIR_2g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIR_2g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIS_1g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIS_1g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIS_2g_cl()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  [`mod_SIS_2g_op()`](https://epimodel.github.io/EpiModel/reference/dcm.mods.md)
+  : Deterministic Compartmental Model Functions
+- [`saveout.dcm()`](https://epimodel.github.io/EpiModel/reference/saveout.dcm.md)
+  : Save dcm Data to Output List Format
+- [`verbose.dcm()`](https://epimodel.github.io/EpiModel/reference/verbose.dcm.md)
+  : Progress Print Module for Deterministic Compartmental Models
+- [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
+  : Cross Checking of Inputs for Deterministic Compartmental Models
+- [`crosscheck.icm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.icm.md)
+  : Cross Checking of Inputs for Stochastic Individual Contact Models
+- [`crosscheck.net()`](https://epimodel.github.io/EpiModel/reference/crosscheck.net.md)
+  : Cross Checking of Inputs for Stochastic Network Models
+
+## Extension API
+
+Functions for building custom modules with arbitrary disease states,
+demographics, and interventions. These are the building blocks for the
+EpiModel extension framework.
+
+- [`create_dat_object()`](https://epimodel.github.io/EpiModel/reference/create_dat_object.md)
+  : Create a Minimal netsim_dat Main List Object for a Network Model
+
+- [`arrive_nodes()`](https://epimodel.github.io/EpiModel/reference/arrive_nodes.md)
+  : Arrive New Nodes to the netsim_dat Object
+
+- [`depart_nodes()`](https://epimodel.github.io/EpiModel/reference/depart_nodes.md)
+  : Depart Nodes from the netsim_dat Object
+
+- [`get_current_timestep()`](https://epimodel.github.io/EpiModel/reference/get_current_timestep.md)
+  : Return the Current Timestep
+
+- [`set_current_timestep()`](https://epimodel.github.io/EpiModel/reference/set_current_timestep.md)
+  : Set the Current Timestep
+
+- [`increment_timestep()`](https://epimodel.github.io/EpiModel/reference/increment_timestep.md)
+  : Increment the Current Timestep
+
+- [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+  : Record Attribute History
+
+- [`record_raw_object()`](https://epimodel.github.io/EpiModel/reference/record_raw_object.md)
+  : Record an Arbitrary Object During a Simulation
+
+- [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
+  : Simulate a Network for a Specified Number of Time Steps
+
+- [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  :
+
+  Make a Lightweight Restart Point From a `netsim` Object with tergmLite
+
+- [`get_args()`](https://epimodel.github.io/EpiModel/reference/get_args.md)
+  : Get Arguments from EpiModel Parameterization Functions
+
+- [`get_modules()`](https://epimodel.github.io/EpiModel/reference/get_modules.md)
+  : Get the List of Modules
+
+- [`set_modules()`](https://epimodel.github.io/EpiModel/reference/set_modules.md)
+  : Set the List of Modules
+
+- [`remove_modules()`](https://epimodel.github.io/EpiModel/reference/remove_modules.md)
+  : Remove a Set of Modules From the Module List
+
+- [`make_module_list()`](https://epimodel.github.io/EpiModel/reference/make_module_list.md)
+  : Populate the Module List After the Initialization Module is run
+
+- [`get_unique_ids()`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
+  [`get_posit_ids()`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
+  : Convert Unique Identifiers to/from Positional Identifiers
+
+- [`is_active_posit_ids()`](https://epimodel.github.io/EpiModel/reference/is_active_posit_ids.md)
+  : Are These Nodes Active (Positional IDs)
+
+- [`is_active_unique_ids()`](https://epimodel.github.io/EpiModel/reference/is_active_unique_ids.md)
+  : Are These Nodes Active (Unique IDs)
+
+- [`init_nets()`](https://epimodel.github.io/EpiModel/reference/init_nets.md)
+  : Network Data and Stats Initialization
+
+- [`resim_nets()`](https://epimodel.github.io/EpiModel/reference/resim_nets.md)
+  : Resimulate Dynamic Network at Time 2+
+
+- [`sim_nets_t1()`](https://epimodel.github.io/EpiModel/reference/sim_nets_t1.md)
+  : Initialize Networks Used in netsim
+
+- [`summary_nets()`](https://epimodel.github.io/EpiModel/reference/summary_nets.md)
+  : Extract Summary Statistics of Networks Used in netsim
+
+- [`trim_netest()`](https://epimodel.github.io/EpiModel/reference/trim_netest.md)
   :
 
   Function to Reduce the Size of a `netest` Object
 
-- [`truncate_sim()`](http://epimodel.github.io/EpiModel/reference/truncate_sim.md)
-  : Truncate Simulation Time Series
+- [`check_degdist_bal()`](https://epimodel.github.io/EpiModel/reference/check_degdist_bal.md)
+  : Check Degree Distribution for Balance in Target Statistics
 
-- [`get_unique_ids()`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
-  [`get_posit_ids()`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
-  : Convert Unique Identifiers to/from Positional Identifiers
+## Reachability Analysis
 
-- [`update_cumulative_edgelist()`](http://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
-  : Update a Cumulative Edgelist of the Specified Network
+Identify transmission chains and reachable nodes in a network.
 
-- [`update_dissolution()`](http://epimodel.github.io/EpiModel/reference/update_dissolution.md)
-  : Adjust Dissolution Component of Network Model Fit
+- [`get_forward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  [`get_backward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  : Get the Forward or Backward Reachable Nodes for a Set of Nodes
+- [`get_adj_list()`](https://epimodel.github.io/EpiModel/reference/get_adj_list.md)
+  : Returns an adjacency list from an edge list
+- [`get_subnet_adj_list()`](https://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.md)
+  : Return an adjacency list of subnets
+- [`get_connected_nodes()`](https://epimodel.github.io/EpiModel/reference/get_connected_nodes.md)
+  : Returns all the node connected directly or indirectly to a set of
+  nodes
 
-- [`update_params()`](http://epimodel.github.io/EpiModel/reference/update_params.md)
+## Scenarios and Parameter Tools
+
+Create and apply parameter scenarios for sensitivity analyses, including
+table-based parameter input and random parameter generation.
+
+- [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
+  : Make a list of EpiModel scenarios from a data.frame of scenarios
+
+- [`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md)
+  : Apply a scenario object to a param.net object
+
+- [`update_params()`](https://epimodel.github.io/EpiModel/reference/update_params.md)
   : Update Model Parameters for Stochastic Network Models
 
-- [`use_scenario()`](http://epimodel.github.io/EpiModel/reference/use_scenario.md)
-  : Apply a scenario object to a param.net object
+- [`param.net_from_table()`](https://epimodel.github.io/EpiModel/reference/param.net_from_table.md)
+  : Parameters List for Stochastic Network Models from a Formatted Data
+  Frame
+
+- [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
+  :
+
+  Coerce a list of parameters to a `long.param.df`
+
+- [`param_random()`](https://epimodel.github.io/EpiModel/reference/param_random.md)
+  : Create a Value Sampler for Random Parameters
+
+- [`generate_random_params()`](https://epimodel.github.io/EpiModel/reference/generate_random_params.md)
+  : Generate Values for Random Parameters
+
+- [`format_param()`](https://epimodel.github.io/EpiModel/reference/format_param.md)
+  :
+
+  Format One Parameter for Printing with the `print.param.xxx` Functions
+
+## Custom ERGM Terms
+
+Custom exponential-family random graph model terms provided by EpiModel
+for use in network model formulas.
+
+- [`InitErgmTerm.fuzzynodematch()`](https://epimodel.github.io/EpiModel/reference/InitErgmTerm.fuzzynodematch.md)
+  : Definition for fuzzynodematch ERGM Term
+- [`InitErgmTerm.absdiffby()`](https://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffby.md)
+  : Definition for absdiffby ERGM Term
+- [`InitErgmTerm.absdiffnodemix()`](https://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffnodemix.md)
+  : Definition for absdiffnodemix ERGM Term
+- [`get_formula_term_attr()`](https://epimodel.github.io/EpiModel/reference/get_formula_term_attr.md)
+  : Output ERGM Formula Attributes into a Character Vector
+- [`get_network_term_attr()`](https://epimodel.github.io/EpiModel/reference/get_network_term_attr.md)
+  : Output Network Attributes into a Character Vector
+
+## Utilities
+
+- [`ssample()`](https://epimodel.github.io/EpiModel/reference/ssample.md)
+  : Stable Sampling Function
+
+- [`padded_vector()`](https://epimodel.github.io/EpiModel/reference/padded_vector.md)
+  : Grow a Vector to a Given Size, Padding it With Empty Elements
+
+- [`apportion_lr()`](https://epimodel.github.io/EpiModel/reference/apportion_lr.md)
+  : Apportion Using the Largest Remainder Method
+
+- [`mcat()`](https://epimodel.github.io/EpiModel/reference/mcat.md) :
+  Write Out Test Progress to Console
+
+- [`idgroup()`](https://epimodel.github.io/EpiModel/reference/idgroup.md)
+  : Group Numbers for Two-Group Network
+
+- [`update_dissolution()`](https://epimodel.github.io/EpiModel/reference/update_dissolution.md)
+  : Adjust Dissolution Component of Network Model Fit
+
+- [`update_list()`](https://epimodel.github.io/EpiModel/reference/update_list.md)
+  :
+
+  Update List `x` Using the Elements of List `new.x`.
+
+- [`common_updater()`](https://epimodel.github.io/EpiModel/reference/common_updater.md)
+  : Update Either the "param" or "control" List
+
+- [`check_attr_lengths()`](https://epimodel.github.io/EpiModel/reference/check_attr_lengths.md)
+  :
+
+  Check that All Attributes in the Main `netsim_dat` Object are of Equal
+  Length
+
+- [`check_end_horizon_control()`](https://epimodel.github.io/EpiModel/reference/check_end_horizon_control.md)
+  : Check the format of the end.horizon control
+
+- [`trigger_end_horizon()`](https://epimodel.github.io/EpiModel/reference/trigger_end_horizon.md)
+  : Function to Trigger the End Horizon
+
+- [`netsim_cond_msg()`](https://epimodel.github.io/EpiModel/reference/netsim_cond_msg.md)
+  :
+
+  Message to Find in Which Module a `condition` Occurred
+
+- [`netsim_error_logger()`](https://epimodel.github.io/EpiModel/reference/netsim_error_logger.md)
+  : Handle the Logging of Traceback and Dumping of Frames on Error
+
+- [`tedgelist_to_toggles()`](https://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.md)
+  : Convert Timed Edgelist to Matrix of Toggles
+
+- [`toggles_to_diss_stats()`](https://epimodel.github.io/EpiModel/reference/toggles_to_diss_stats.md)
+  : Convert Matrix of Toggles to Dissolution and Duration Statistics

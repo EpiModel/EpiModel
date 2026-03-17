@@ -16,7 +16,7 @@ print(x, ...)
 - x:
 
   An object of class `dcm`, from
-  [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+  [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 - ...:
 
@@ -31,7 +31,7 @@ Given a `dcm` object, `print.dcm` displays:
   and number of groups.
 
 - **Model parameters**: all parameters passed via
-  [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md),
+  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
   excluding internal bookkeeping parameters (`groups`, `vital`).
 
 - **Model output**: the names of all epidemic output variables stored in

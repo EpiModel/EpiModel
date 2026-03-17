@@ -16,7 +16,7 @@ get_transmat(x, sim = 1, deduplicate = TRUE)
 - x:
 
   An `EpiModel` object of class
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - sim:
 

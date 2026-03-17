@@ -76,7 +76,7 @@ Features include:
 
 - **Interventions:** Same intervention system as DCM, natively supported
   by
-  [param.icm](http://epimodel.github.io/EpiModel/reference/param.icm.md).
+  [param.icm](https://epimodel.github.io/EpiModel/reference/param.icm.md).
 
 - **Vital dynamics:** Optional births and deaths, as in DCM.
 
@@ -96,11 +96,11 @@ packages. Install any missing packages with
 
 ## See also
 
-[dcm](http://epimodel.github.io/EpiModel/reference/dcm.md) and
-[param.dcm](http://epimodel.github.io/EpiModel/reference/param.dcm.md)
+[dcm](https://epimodel.github.io/EpiModel/reference/dcm.md) and
+[param.dcm](https://epimodel.github.io/EpiModel/reference/param.dcm.md)
 for the DCM modeling API;
-[icm](http://epimodel.github.io/EpiModel/reference/icm.md) and
-[param.icm](http://epimodel.github.io/EpiModel/reference/param.icm.md)
+[icm](https://epimodel.github.io/EpiModel/reference/icm.md) and
+[param.icm](https://epimodel.github.io/EpiModel/reference/param.icm.md)
 for the ICM modeling API.
 
 ## Examples

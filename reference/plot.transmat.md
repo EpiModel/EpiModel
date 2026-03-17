@@ -16,7 +16,7 @@ plot(x, style = c("phylo", "network", "transmissionTimeline"), ...)
 - x:
 
   A
-  [`transmat()`](http://epimodel.github.io/EpiModel/reference/get_transmat.md)
+  [`transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
   object to be plotted.
 
 - style:

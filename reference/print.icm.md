@@ -16,7 +16,7 @@ print(x, ...)
 - x:
 
   An object of class `icm`, from
-  [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+  [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 - ...:
 
@@ -30,7 +30,7 @@ Given an `icm` object, `print.icm` displays:
   number of simulations, number of time steps, and number of groups.
 
 - **Model parameters**: all parameters passed via
-  [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md),
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
   excluding internal bookkeeping parameters (`groups`, `vital`).
 
 - **Model output**: the names of all epidemic output variables stored in

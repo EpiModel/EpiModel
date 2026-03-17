@@ -2,7 +2,7 @@
 
 This function prints progress from stochastic individual contact models
 simulated with
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) to the
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) to the
 console.
 
 ## Usage

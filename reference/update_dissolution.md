@@ -1,7 +1,7 @@
 # Adjust Dissolution Component of Network Model Fit
 
 Adjusts the dissolution component of a dynamic ERGM fit using the
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
 function with the edges dissolution approximation method.
 
 ## Usage
@@ -15,20 +15,20 @@ update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE)
 - old.netest:
 
   An object of class `netest`, from the
-  [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
   function.
 
 - new.coef.diss:
 
   An object of class `disscoef`, from the
-  [`dissolution_coefs()`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  [`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
   function.
 
 - nested.edapprox:
 
   Logical. If `edapprox = TRUE` the dissolution model is an initial
   segment of the formation model (see details in
-  [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)).
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)).
 
 ## Value
 

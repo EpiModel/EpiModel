@@ -5,14 +5,14 @@
 ### BREAKING CHANGES
 
 - Changed the default ODE solver in
-  [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
+  [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
   from `"rk4"` (fixed-step Runge-Kutta 4) to `"lsoda"` (adaptive
   step-size). The `"lsoda"` solver automatically adjusts its internal
   step size, preventing numerical instability (negative compartment
   sizes, NaN values) that could occur with `"rk4"` for models with high
   transmission rates or stiff dynamics. Users who require the previous
   behavior can set `odemethod = "rk4"` explicitly in
-  [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md).
+  [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md).
   The `"lsoda"` method is also the default solver in the `deSolve`
   package.
 
@@ -20,20 +20,20 @@
 
 - Added support for sensitivity analysis on initial conditions in DCM
   models. Vector-valued arguments in
-  [`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md)
+  [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
   (e.g., `i.num = c(1, 5, 10)`) now produce multiple model runs, one per
   element, just like vector-valued parameters in
-  [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md).
+  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md).
   Vectors may be used in both
-  [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md)
+  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md)
   and
-  [`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md)
+  [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
   simultaneously, provided all vectors have the same length. Plotting,
   `as.data.frame`, `summary`, and `print` methods all work with the
   multi-run output. Closes
   [\#408](https://github.com/EpiModel/EpiModel/issues/408).
 - Redesigned the
-  [`epiweb()`](http://epimodel.github.io/EpiModel/reference/epiweb.md)
+  [`epiweb()`](https://epimodel.github.io/EpiModel/reference/epiweb.md)
   Shiny applications for both DCM and ICM model classes with a modern
   interface built on bslib (Bootstrap 5), the Atkinson Hyperlegible
   font, and interactive plotly visualizations.
@@ -53,7 +53,7 @@
 - Export a `make_restart_point` function that takes in a `netsim`
   simulation object, truncate it to the smallest set of elements
   required to restart new simulations from. See
-  [`?make_restart_point`](http://epimodel.github.io/EpiModel/reference/make_restart_point.md).
+  [`?make_restart_point`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md).
 - Refactored `truncate_sim` into an S3 generic with class-specific
   methods for supported object classes. `truncate_sim` now supports the
   `dcm` model class, along with `icm` and `netsim` classes as previously
@@ -86,7 +86,7 @@
 ### OTHER
 
 - Added `requireNamespace` checks for `DT` and `plotly` in
-  [`epiweb()`](http://epimodel.github.io/EpiModel/reference/epiweb.md)
+  [`epiweb()`](https://epimodel.github.io/EpiModel/reference/epiweb.md)
   to provide clear installation instructions if these packages are
   missing.
 - Fix bug where the `ellipsis` (`...`) was not passed correctly to the
@@ -102,7 +102,7 @@
 - Make `as.data.frame.icm` and `as.data.frame.net` resistant to cases
   where some summary statistic (“epi”) trackers are smaller than the
   rest, usually due to restarting. See
-  [`?as.data.frame.icm`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  [`?as.data.frame.icm`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
   and `?as.data.frame.net`.
 - Store core nodal attributes as integers for improved performance.
 - Store `epi` trackers as integers by default for improved performance.
@@ -138,7 +138,7 @@
 - Export `overwrite_attrs`, a helper function to overwrite the
   attributes of the nodes with a `data.frame` at the start of the
   simulation. (see
-  [`?overwrite_attrs`](http://epimodel.github.io/EpiModel/reference/overwrite_attrs.md)).
+  [`?overwrite_attrs`](https://epimodel.github.io/EpiModel/reference/overwrite_attrs.md)).
 - `as.data.frame` for model classes `netsim` and `icm` now assign the
   `epi.data.frame` class in addition to `data.frame`.
 - Add the `plot.epi.data.frame` method to plot `epi.data.frame` similar
@@ -247,7 +247,7 @@ CRAN release: 2022-10-01
 - `netdx` now calculates additional summary statistics to quantify
   variability within and across simulations for model diagnostics. See
   the help page for the associated print function for futher details:
-  [`help("print.netdx")`](http://epimodel.github.io/EpiModel/reference/print.netdx.md).
+  [`help("print.netdx")`](https://epimodel.github.io/EpiModel/reference/print.netdx.md).
 - `get_transmat` adds a `deduplicate` argument to randomly select one
   transmitting act in the case that multiple potential transmissions
   occur within a time step to the newly infected person.
@@ -294,7 +294,7 @@ CRAN release: 2022-07-19
   similar to the duration \> 1 time step case.
 - `netdx` now supports heterogeneous dissolution model diagnostics. See
   the example in
-  [`help("netdx")`](http://epimodel.github.io/EpiModel/reference/netdx.md).
+  [`help("netdx")`](https://epimodel.github.io/EpiModel/reference/netdx.md).
 - `plot.netsim` now supports `type = "duration","dissolution"` for
   homogeneous (“edges-only”) dissolution models.
 - Network model parameters can now be supplied to `param.net` via a
@@ -400,7 +400,7 @@ CRAN release: 2021-11-09
 - Addition of the `get_param_set` function that extracts from a `netsim`
   object the set of parameters used by each simulation. See the help
   page:
-  [`help("get_param_set")`](http://epimodel.github.io/EpiModel/reference/get_param_set.md).
+  [`help("get_param_set")`](https://epimodel.github.io/EpiModel/reference/get_param_set.md).
 - Developed a mechanism to store nodal attribute history over the course
   of a `netsim` simulation. See the vignette, “Working with attributes
   and summary statistics.”
@@ -464,7 +464,7 @@ CRAN release: 2021-06-25
   `nwstats.formula` arguments in `control.net`.
 - Developed a general storage and printing mechanism for the recently
   developed random parameterization interface. See the help page
-  [`help("param.net")`](http://epimodel.github.io/EpiModel/reference/param.net.md).
+  [`help("param.net")`](https://epimodel.github.io/EpiModel/reference/param.net.md).
 - Cleaned up the handling of the initial network simulation in
   `initialize.net`, so that the user-facing code in that function is
   more readable, and the more complex code is put in `sim_nets_t1`.
@@ -1422,7 +1422,7 @@ CRAN release: 2014-10-01
   adjustment, so the module should be set to NULL in `control.net`. The
   latter performs the printing of simulation results to the console.
   Both functions are now listed in the modules help file accessed by:
-  [`help(modules.net)`](http://epimodel.github.io/EpiModel/reference/modules.net.md).
+  [`help(modules.net)`](https://epimodel.github.io/EpiModel/reference/modules.net.md).
 - Evaluation of parameters, initial conditions, and control settings in
   the core parameterization functions is now more stable, and also more
   flexible. Defaults for the fixed arguments are now included in the

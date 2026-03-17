@@ -20,9 +20,9 @@ Models (ERGMs). It supports three model classes:
 
 Each model class follows a unified API: `param.*()`, `init.*()`,
 `control.*()` for inputs, then
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md),
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md), or
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md) to
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md),
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md), or
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md) to
 run simulations. All have `as.data.frame`, `plot`, `summary`, and
 `print` S3 methods.
 
@@ -302,7 +302,7 @@ pairs), `set_transmat` (transmission events).
 with `idsElig <- which(active == 1 & status == "e" & statusTime < at)`.
 
 **Extension model setup:** Set `type = NULL` in
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 and pass custom module functions (e.g., `infection.FUN = my_infect`).
 
 **Key control.net parameters:** `resimulate.network = TRUE` (for

@@ -2,7 +2,7 @@
 
 This function transfers the data from a list of the main `netsim_dat`
 objects to the output `out` object at the end of all simulations in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -34,7 +34,7 @@ A list of class `netsim` with the following elements:
 - **stats:** a list containing two sublists, `nwstats` for any network
   statistics saved in the simulation, and `transmat` for the
   transmission matrix saved in the simulation. See
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
   for further details.
 
 - **network:** a list of `networkDynamic` objects, one for each model

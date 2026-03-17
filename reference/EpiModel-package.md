@@ -64,28 +64,28 @@ to simulate specific diseases for research questions.
 EpiModel uses three model setup functions for each model class to input
 the necessary parameters, initial conditions, and control settings:
 
-- [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md),
-  [`param.icm()`](http://epimodel.github.io/EpiModel/reference/param.icm.md),
+- [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
   and
-  [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md)
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
   are used to input epidemic parameters for each of the three model
   classes. Parameters include the rate of contacts or acts between
   actors, the probability of transmission per contact, and recovery and
   demographic rates for models that include those transitions.
 
-- [`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md),
-  [`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md),
+- [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md),
+  [`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md),
   and
-  [`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md)
+  [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
   are used to input the initial conditions for each class. The main
   conditions are limited to the numbers or, if applicable, the specific
   agents in the population who are infected or recovered at the
   simulation outset.
 
-- [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md),
-  [`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md),
+- [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md),
+  [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md),
   and
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
   are used to specify the remaining control settings for each
   simulation. The core controls for base model types include the disease
   type, number of time steps, and number of simulations. Controls are
@@ -97,15 +97,15 @@ the necessary parameters, initial conditions, and control settings:
 With the models parameterized, the functions for simulating epidemic
 models are:
 
-- [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) for
+- [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) for
   deterministic compartmental models.
 
-- [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) for
+- [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) for
   individual contact models.
 
 - Network models are simulated in a three-step process:
 
-  1.  [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md)
+  1.  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
       estimates the statistical model for the network structure itself
       (i.e., how partnerships form and dissolve over time given the
       parameterization of those processes). This function is a wrapper
@@ -115,15 +115,15 @@ models are:
       these formation and dissolution processes collected from an
       egocentric sample of the population.
 
-  2.  [`netdx()`](http://epimodel.github.io/EpiModel/reference/netdx.md)
+  2.  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
       runs diagnostics on the dynamic model fit by simulating the base
       network over time to ensure the model fits the targets for
       formation and dissolution.
 
-  3.  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+  3.  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
       simulates the stochastic network epidemic models, with a given
       network model fit in
-      [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md).
+      [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md).
       Here the function requires this model fit object along with the
       parameters, initial conditions, and control settings as defined
       above.

@@ -144,14 +144,14 @@ An `EpiModel` object of class `param.dcm`.
 
 `param.dcm` sets the epidemic parameters for deterministic compartmental
 models solved with the
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) function.
-The models may use the base types, for which these parameters are used,
-or original model specifications for which these parameters may be used
-(but not necessarily).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md)
+function. The models may use the base types, for which these parameters
+are used, or original model specifications for which these parameters
+may be used (but not necessarily).
 
 For base models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
-[`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md).
+[`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md).
 One-group and two-group models are available, where the former assumes a
 homogeneous mixing in the population and the latter assumes some form of
 heterogeneous mixing between two distinct partitions in the population
@@ -189,11 +189,11 @@ user's responsibility with these original models.
 ## See also
 
 Use
-[`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md)
+[`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
 to specify the initial conditions and
-[`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
+[`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
 to specify the control settings. Run the parameterized model with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 ## Examples
 

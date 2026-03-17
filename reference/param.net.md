@@ -2,7 +2,7 @@
 
 Sets the epidemic parameters for stochastic network models simulated
 with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Usage
 
@@ -136,7 +136,7 @@ An `EpiModel` object of class `param.net`.
 
 `param.net` sets the epidemic parameters for the stochastic network
 models simulated with the
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 function. Models may use the base types, for which these parameters are
 used, or new process modules which may use these parameters (but not
 necessarily). A detailed description of network model parameterization
@@ -145,7 +145,7 @@ Epidemics](https://epimodel.github.io/sismid/) tutorials.
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 One-group and two-group models are available, where the latter assumes a
 heterogeneous mixing between two distinct partitions in the population
 (e.g., men and women). Specifying any two-group parameters (those with a
@@ -161,7 +161,7 @@ duration in time, and thus no changes may occur within them over time.
 In contrast, network models allow for partnership durations defined by
 the dynamic network model, summarized in the model dissolution
 coefficients calculated in
-[`dissolution_coefs()`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
+[`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md).
 Therefore, the `act.rate` parameter has a different interpretation here,
 where it is the number of transmissible acts *per partnership* per unit
 time.
@@ -191,9 +191,9 @@ generator would be completed per individual simulation. This is possible
 by passing a list named `random.params` into `param.net`, with each
 element of `random.params` a named generator function. See the help page
 and examples in
-[`generate_random_params()`](http://epimodel.github.io/EpiModel/reference/generate_random_params.md).
+[`generate_random_params()`](https://epimodel.github.io/EpiModel/reference/generate_random_params.md).
 A simple factory function for sampling is provided with
-[`param_random()`](http://epimodel.github.io/EpiModel/reference/param_random.md)
+[`param_random()`](https://epimodel.github.io/EpiModel/reference/param_random.md)
 but any function will do.
 
 ## Using a Parameter data.frame
@@ -225,7 +225,7 @@ provided in the "Working with Model Parameters in EpiModel" vignette.
 To build original models outside of the base models, new process modules
 may be constructed to replace the existing modules or to supplement the
 existing set. These are passed into the control settings in
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 New modules may use either the existing model parameters named here, an
 original set of parameters, or a combination of both. The `...` allows
 the user to pass an arbitrary set of original model parameters into
@@ -236,11 +236,11 @@ modules.
 ## See also
 
 Use
-[`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md)
+[`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
 to specify the initial conditions and
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 to specify the control settings. Run the parameterized model with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Examples
 

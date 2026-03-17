@@ -1,7 +1,7 @@
 # Arrivals: netsim Module
 
 This function simulates new arrivals into the network for use in
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 simulations.
 
 ## Usage
@@ -16,7 +16,7 @@ arrivals.2g.net(dat, at)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - at:
 
@@ -28,4 +28,4 @@ The updated `netsim_dat` main list object.
 
 ## See also
 
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)

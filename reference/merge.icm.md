@@ -2,7 +2,7 @@
 
 Merges epidemiological data from two independent simulations of
 stochastic individual contact models from
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 ## Usage
 
@@ -16,12 +16,12 @@ merge(x, y, ...)
 - x:
 
   An `EpiModel` object of class
-  [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+  [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 - y:
 
   Another `EpiModel` object of class
-  [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md), with
+  [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md), with
   the identical model parameterization as `x`.
 
 - ...:
@@ -31,13 +31,13 @@ merge(x, y, ...)
 ## Value
 
 An `EpiModel` object of class
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md)
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
 containing the data from both `x` and `y`.
 
 ## Details
 
 This merge function combines the results of two independent simulations
-of [`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) class
+of [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) class
 models, simulated under separate function calls. The model
 parameterization between the two calls must be exactly the same, except
 for the number of simulations in each call. This allows for manual

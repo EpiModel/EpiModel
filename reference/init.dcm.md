@@ -53,8 +53,8 @@ An `EpiModel` object of class `init.dcm`.
 ## Details
 
 The initial conditions for a model solved with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md) should be
-input into the `init.dcm` function. This function handles initial
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) should
+be input into the `init.dcm` function. This function handles initial
 conditions for both base model types and original models.
 
 Original models may use the parameter names listed as arguments here, a
@@ -65,11 +65,11 @@ from the model are output.
 ## Sensitivity Analyses
 
 Like
-[`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md),
+[`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
 initial conditions may be specified as vectors of length greater than
 one to run sensitivity analyses over initial conditions. When
 `sens.param = TRUE` in
-[`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
+[`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
 (the default), each element of the vector produces a separate model run.
 If both parameters and initial conditions have vector values, all
 vectors must have the same length.
@@ -77,11 +77,11 @@ vectors must have the same length.
 ## See also
 
 Use
-[`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md)
+[`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md)
 to specify model parameters and
-[`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
+[`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
 to specify the control settings. Run the parameterized model with
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 ## Examples
 

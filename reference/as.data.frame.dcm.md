@@ -15,7 +15,7 @@ as.data.frame(x, row.names = NULL, optional = FALSE, run = NULL, ...)
 - x:
 
   An `EpiModel` object of class
-  [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+  [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md).
 
 - row.names:
 
@@ -45,7 +45,7 @@ A data frame containing the data from `x`.
 ## Details
 
 Model output from
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md)
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md)
 simulations are available as a data frame with this helper function. The
 output data frame will include columns for time, the size of each
 compartment, the overall population size (the sum of compartment sizes),

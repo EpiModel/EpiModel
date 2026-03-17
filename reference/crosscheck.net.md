@@ -1,12 +1,12 @@
 # Cross Checking of Inputs for Stochastic Network Models
 
 This function checks that the estimation object from
-[`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md) and
-the three parameter lists from
-[`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md),
-[`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md),
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+and the three parameter lists from
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+[`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md),
 and
-[`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 are consistent.
 
 ## Usage
@@ -20,22 +20,22 @@ crosscheck.net(x, param, init, control)
 - x:
 
   An `EpiModel` object of class
-  [`netest()`](http://epimodel.github.io/EpiModel/reference/netest.md).
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md).
 
 - param:
 
   An `EpiModel` object of class
-  [`param.net()`](http://epimodel.github.io/EpiModel/reference/param.net.md).
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md).
 
 - init:
 
   An `EpiModel` object of class
-  [`init.net()`](http://epimodel.github.io/EpiModel/reference/init.net.md).
+  [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md).
 
 - control:
 
   An `EpiModel` object of class
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md).
 
 ## Value
 

@@ -3,9 +3,9 @@
 Simulates stochastic network epidemic models for infectious disease.
 This is typically the final step in the network modeling pipeline, after
 network estimation with
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md) and
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md) and
 model diagnostics with
-[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md).
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md).
 
 ## Usage
 
@@ -27,7 +27,7 @@ netsim(x, param, init, control)
 - param:
 
   Model parameters, as an object of class
-  [`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md).
+  [`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md).
   Includes transmission probability (`inf.prob`), act rate (`act.rate`),
   recovery rate (`rec.rate`), and demographic rates for models with
   vital dynamics. Custom parameters for extended models may also be
@@ -36,7 +36,7 @@ netsim(x, param, init, control)
 - init:
 
   Initial conditions, as an object of class
-  [`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md).
+  [`init.net`](https://epimodel.github.io/EpiModel/reference/init.net.md).
   Specifies the initial number of infected nodes (`i.num`) and, for SIR
   models, recovered nodes (`r.num`). For two-group models, the
   corresponding `.g2` parameters are also required.
@@ -44,7 +44,7 @@ netsim(x, param, init, control)
 - control:
 
   Control settings, as an object of class
-  [`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md).
+  [`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md).
   Key settings include `type` (disease model: `"SI"`, `"SIR"`, or
   `"SIS"`), `nsteps` (number of time steps), `nsims` (number of
   simulations), `tergmLite` (lightweight mode for performance), and
@@ -69,7 +69,7 @@ A list of class `netsim` with the following elements:
 - **stats:** a list containing two sublists, `nwstats` for any network
   statistics saved in the simulation, and `transmat` for the
   transmission matrix saved in the simulation. See
-  [`control.net()`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
   for further details.
 
 - **network:** a list of lists of `networkDynamic` or `networkLite`
@@ -79,7 +79,7 @@ If `control$raw.output == TRUE`: A list of the raw (pre-processed)
 `netsim_dat` objects, for use in simulation continuation.
 
 The `epi` data can be extracted as a data frame with
-[`as.data.frame.netsim()`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md),
+[`as.data.frame.netsim()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md),
 with options for per-simulation values (`out = "vals"`), means
 (`out = "mean"`), standard deviations (`out = "sd"`), or quantiles
 (`out = "qnt"`).
@@ -111,7 +111,7 @@ EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html)
 section of the [Network Modeling for
 Epidemics](https://epimodel.github.io/sismid/) course materials. The
 list of modules within `netsim` available for modification is listed in
-[`modules.net()`](http://epimodel.github.io/EpiModel/reference/modules.net.md).
+[`modules.net()`](https://epimodel.github.io/EpiModel/reference/modules.net.md).
 
 ## Module Pipeline
 
@@ -119,40 +119,40 @@ At each time step, `netsim` executes a series of modules in sequence.
 For base models, the default pipeline is:
 
 1.  **Network resimulation**
-    ([`resim_nets`](http://epimodel.github.io/EpiModel/reference/resim_nets.md)):
+    ([`resim_nets`](https://epimodel.github.io/EpiModel/reference/resim_nets.md)):
     updates the network structure (if `resimulate.network = TRUE`).
 
 2.  **Infection**
-    ([`infection.net`](http://epimodel.github.io/EpiModel/reference/infection.net.md)):
+    ([`infection.net`](https://epimodel.github.io/EpiModel/reference/infection.net.md)):
     simulates disease transmission across discordant edges (where one
     partner is susceptible and the other is infected).
 
 3.  **Recovery**
-    ([`recovery.net`](http://epimodel.github.io/EpiModel/reference/recovery.net.md)):
+    ([`recovery.net`](https://epimodel.github.io/EpiModel/reference/recovery.net.md)):
     simulates recovery from infection (SIR and SIS models only).
 
 4.  **Departures**
-    ([`departures.net`](http://epimodel.github.io/EpiModel/reference/departures.net.md)):
+    ([`departures.net`](https://epimodel.github.io/EpiModel/reference/departures.net.md)):
     simulates node exits from the network (if vital dynamics are
     enabled).
 
 5.  **Arrivals**
-    ([`arrivals.net`](http://epimodel.github.io/EpiModel/reference/arrivals.net.md)):
+    ([`arrivals.net`](https://epimodel.github.io/EpiModel/reference/arrivals.net.md)):
     simulates new node entries into the network (if vital dynamics are
     enabled).
 
 6.  **Prevalence**
-    ([`prevalence.net`](http://epimodel.github.io/EpiModel/reference/prevalence.net.md)):
+    ([`prevalence.net`](https://epimodel.github.io/EpiModel/reference/prevalence.net.md)):
     calculates summary statistics.
 
 See
-[`modules.net()`](http://epimodel.github.io/EpiModel/reference/modules.net.md)
+[`modules.net()`](https://epimodel.github.io/EpiModel/reference/modules.net.md)
 for full details on each module.
 
 ## Performance and tergmLite
 
 Setting `tergmLite = TRUE` in
-[`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 uses a lightweight network representation (`networkLite`) that is
 substantially faster than the full `networkDynamic` representation,
 often by a factor of 20–50x. This is recommended for large networks or
@@ -170,7 +170,7 @@ epidemic and demographic dynamics.
 
 For models with multiple overlapping network layers (e.g., sexual and
 needle-sharing networks), pass a list of
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md)
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)
 objects to the `x` argument, one per network layer. Each layer has its
 own formation/dissolution dynamics but shares the same node set. See the
 `multilayer` documentation and `test-multinets.R` for examples.
@@ -179,12 +179,12 @@ own formation/dissolution dynamics but shares the same node set. See the
 
 Simulations can be checkpointed and restarted if interrupted. Set
 `.checkpoint.steps` and `.checkpoint.dir` in
-[`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 to enable automatic checkpointing. To restart a simulation from a prior
 `netsim` output, pass the `netsim` object as `x` and set `control$start`
 to one greater than the final time step of the prior simulation. See the
 Checkpointing Simulations section of
-[`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 for full details.
 
 ## References
@@ -196,21 +196,21 @@ Statistical Software. 2018; 84(8): 1-47.
 ## See also
 
 Estimate the network model with
-[`netest`](http://epimodel.github.io/EpiModel/reference/netest.md) and
+[`netest`](https://epimodel.github.io/EpiModel/reference/netest.md) and
 diagnose model fit with
-[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) before
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) before
 running simulations. Extract model results with
-[`as.data.frame.netsim()`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md).
+[`as.data.frame.netsim()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md).
 Summarize the time-specific model results with
-[`summary.netsim()`](http://epimodel.github.io/EpiModel/reference/summary.netsim.md).
+[`summary.netsim()`](https://epimodel.github.io/EpiModel/reference/summary.netsim.md).
 Plot the model results with
-[`plot.netsim()`](http://epimodel.github.io/EpiModel/reference/plot.netsim.md).
+[`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md).
 Extract the network with
-[`get_network`](http://epimodel.github.io/EpiModel/reference/get_network.md),
+[`get_network`](https://epimodel.github.io/EpiModel/reference/get_network.md),
 the transmission matrix with
-[`get_transmat`](http://epimodel.github.io/EpiModel/reference/get_transmat.md),
+[`get_transmat`](https://epimodel.github.io/EpiModel/reference/get_transmat.md),
 and derive new epi statistics with
-[`mutate_epi`](http://epimodel.github.io/EpiModel/reference/mutate_epi.md).
+[`mutate_epi`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md).
 
 ## Examples
 

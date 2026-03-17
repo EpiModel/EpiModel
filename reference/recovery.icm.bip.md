@@ -3,7 +3,7 @@
 This function simulates recovery from the infected state either to a
 distinct recovered state (SIR model type) or back to a susceptible state
 (SIS model type), for use in
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 
 ## Usage
 

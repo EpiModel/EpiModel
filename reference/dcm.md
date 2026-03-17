@@ -14,17 +14,17 @@ dcm(param, init, control)
 - param:
 
   Model parameters, as an object of class
-  [`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md).
+  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md).
 
 - init:
 
   Initial conditions, as an object of class
-  [`init.dcm()`](http://epimodel.github.io/EpiModel/reference/init.dcm.md).
+  [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md).
 
 - control:
 
   Control settings, as an object of class
-  [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md).
+  [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md).
 
 ## Value
 
@@ -65,13 +65,13 @@ Package deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
 ## See also
 
 Extract the model results with
-[`as.data.frame.dcm()`](http://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md).
+[`as.data.frame.dcm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md).
 Summarize the time-specific model results with
-[`summary.dcm()`](http://epimodel.github.io/EpiModel/reference/summary.dcm.md).
+[`summary.dcm()`](https://epimodel.github.io/EpiModel/reference/summary.dcm.md).
 Plot the model results with
-[`plot.dcm()`](http://epimodel.github.io/EpiModel/reference/plot.dcm.md).
+[`plot.dcm()`](https://epimodel.github.io/EpiModel/reference/plot.dcm.md).
 Plot a compartment flow diagram with
-[`comp_plot()`](http://epimodel.github.io/EpiModel/reference/comp_plot.md).
+[`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md).
 
 ## Examples
 

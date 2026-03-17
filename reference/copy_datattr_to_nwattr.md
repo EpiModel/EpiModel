@@ -16,7 +16,7 @@ copy_datattr_to_nwattr(dat)
 
   Main `netsim_dat` object containing a `networkDynamic` object and
   other initialization information passed from
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## Value
 
@@ -24,8 +24,8 @@ The updated `netsim_dat` main list object.
 
 ## See also
 
-[`get_formula_term_attr()`](http://epimodel.github.io/EpiModel/reference/get_formula_term_attr.md),
-[`get_attr_prop()`](http://epimodel.github.io/EpiModel/reference/get_attr_prop.md),
-[`auto_update_attr()`](http://epimodel.github.io/EpiModel/reference/auto_update_attr.md),
+[`get_formula_term_attr()`](https://epimodel.github.io/EpiModel/reference/get_formula_term_attr.md),
+[`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md),
+[`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md),
 and
-[`copy_nwattr_to_datattr()`](http://epimodel.github.io/EpiModel/reference/copy_nwattr_to_datattr.md).
+[`copy_nwattr_to_datattr()`](https://epimodel.github.io/EpiModel/reference/copy_nwattr_to_datattr.md).

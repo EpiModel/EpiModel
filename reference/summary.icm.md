@@ -36,7 +36,7 @@ a time of interest.
 
 ## See also
 
-[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md)
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
 
 ## Examples
 

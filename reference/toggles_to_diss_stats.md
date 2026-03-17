@@ -13,7 +13,7 @@ toggles_to_diss_stats(toggles, coef.diss, nsteps, nw, time.start = 0L)
 - toggles:
 
   A matrix of toggles, as produced by
-  [`tedgelist_to_toggles()`](http://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.md).
+  [`tedgelist_to_toggles()`](https://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.md).
 
 - coef.diss:
 

@@ -1,7 +1,7 @@
 # Parameters List for Stochastic Network Models from a Formatted Data Frame
 
 Sets the epidemic parameters for stochastic network models with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 using a specially formatted data frame of parameters.
 
 ## Usage
@@ -19,7 +19,7 @@ param.net_from_table(long.param.df)
 ## Value
 
 A list object of class `param.net`, which can be passed to
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md).
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 ## long.param.df
 

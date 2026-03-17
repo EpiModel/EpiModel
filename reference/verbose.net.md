@@ -2,7 +2,7 @@
 
 This function prints progress from stochastic network models simulated
 with
-[`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md) to
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md) to
 the console.
 
 ## Usage
@@ -17,7 +17,7 @@ verbose.net(x, type, s = 1, at = 2)
 
   If the `type` is "startup", then an object of class `control.net`;
   otherwise, an object of class `netsim_dat`, the main data object in
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   simulations.
 
 - type:

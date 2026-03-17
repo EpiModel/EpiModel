@@ -42,7 +42,7 @@ input a model run number. See examples below.
 
 ## See also
 
-[`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md)
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md)
 
 ## Examples
 
