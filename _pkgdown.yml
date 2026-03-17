@@ -1,11 +1,317 @@
-url: http://epimodel.github.io/EpiModel/
+url: https://epimodel.github.io/EpiModel/
+
 template:
   bootstrap: 5
+  bslib:
+    base_font:
+      google: "Atkinson Hyperlegible"
+    heading_font:
+      google: "Open Sans"
+    primary: "#1a6b54"
+    link-color: "#1a6b54"
+    navbar-bg: "#181825"
+    navbar-dark-color: "#cdd6f4"
+    navbar-dark-hover-color: "#ffffff"
+  includes:
+    in_header: |
+      <link rel="icon" href="https://epimodel.github.io/sismid/images/movie.gif" type="image/gif">
 
 home:
   links:
     - text: "EpiModel project"
       href: "https://www.epimodel.org/"
-    - text: "Training materials"
-      href: "https://epimodel.github.io/epimodel-training/"
+    - text: "SISMID course materials"
+      href: "https://epimodel.github.io/sismid/"
+    - text: "EpiModel Gallery"
+      href: "https://github.com/EpiModel/EpiModel-Gallery"
 
+navbar:
+  bg: dark
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/EpiModel/EpiModel
+      aria-label: GitHub
+
+articles:
+  - title: "Getting Started"
+    contents:
+      - Intro
+  - title: "Model Configuration"
+    contents:
+      - model-parameters
+      - network-objects
+      - attributes-and-summary-statistics
+
+reference:
+  - title: "Core Simulation Functions"
+    desc: >
+      Primary functions for estimating network models, running epidemic
+      simulations, and diagnosing model fit.
+    contents:
+      - dcm
+      - icm
+      - netsim
+      - netest
+      - netdx
+      - EpiModel-package
+
+  - title: "Model Inputs"
+    desc: >
+      Functions to specify parameters, initial conditions, and control
+      settings for each model class, plus network setup utilities.
+    contents:
+      - param.dcm
+      - param.icm
+      - param.net
+      - init.dcm
+      - init.icm
+      - init.net
+      - control.dcm
+      - control.icm
+      - control.net
+      - dissolution_coefs
+      - network_initialize
+      - multilayer
+
+  - title: "dat Object Accessors"
+    desc: >
+      Get and set node-level attributes, parameters, epidemic trackers,
+      control settings, and initial conditions on the internal dat object
+      used by network and ICM modules.
+    contents:
+      - net-accessor
+      - get_attr_history
+      - get_attr_prop
+      - get_core_attributes
+      - auto_update_attr
+      - overwrite_attrs
+      - get_param_set
+      - epi_trackers
+      - delete_attr
+
+  - title: "Network and Edgelist Functions"
+    desc: >
+      Tools for working with network edgelists, partnership queries,
+      discordant pairs, cumulative edgelists, and network attributes.
+    contents:
+      - discord_edgelist
+      - get_edgelist
+      - get_edgelists_df
+      - get_degree
+      - get_partners
+      - get_discordant_edgelist
+      - get_cumulative_edgelist
+      - get_cumulative_edgelists_df
+      - get_cumulative_degree
+      - as_cumulative_edgelist
+      - update_cumulative_edgelist
+      - dedup_cumulative_edgelist
+      - as_tibble_edgelist
+      - edgelist_censor
+      - get_network
+      - set_network
+      - get_nwparam
+      - get_network_attributes
+      - get_network_control
+      - get_vertex_attribute
+      - set_vertex_attribute
+      - add_vertices
+      - delete_vertices
+      - delete_edges
+      - copy_datattr_to_nwattr
+      - copy_nwattr_to_datattr
+
+  - title: "Output Extraction and Analysis"
+    desc: >
+      Convert simulation output to data frames, extract networks and
+      transmission matrices, derive new statistics, and merge or
+      truncate results.
+    contents:
+      - as.data.frame.dcm
+      - as.data.frame.icm
+      - as.data.frame.netdx
+      - as.epi.data.frame
+      - get_sims
+      - get_transmat
+      - set_transmat
+      - is.transmat
+      - as.network.transmat
+      - as.phylo.transmat
+      - get_nwstats
+      - mutate_epi
+      - truncate_sim
+      - merge.icm
+      - merge.netsim
+
+  - title: "Visualization"
+    desc: >
+      Plot methods for epidemic trajectories, network diagnostics,
+      transmission trees, and interactive exploration.
+    contents:
+      - plot.dcm
+      - plot.icm
+      - plot.netsim
+      - plot.netdx
+      - plot.transmat
+      - plot.epi.data.frame
+      - comp_plot
+      - geom_bands
+      - epiweb
+      - brewer_ramp
+      - color_tea
+
+  - title: "Print and Summary Methods"
+    contents:
+      - print.dcm
+      - print.icm
+      - print.netsim
+      - print.netdx
+      - summary.dcm
+      - summary.icm
+      - summary.netsim
+      - summary.netest
+      - print_nwstats_table
+      - make_stats_table
+
+  - title: "Built-in ICM Modules"
+    desc: >
+      Default module functions for stochastic individual contact models.
+    contents:
+      - initialize.icm
+      - infection.icm
+      - infection.icm.bip
+      - recovery.icm
+      - recovery.icm.bip
+      - arrivals.icm
+      - arrivals.icm.bip
+      - departures.icm
+      - departures.icm.bip
+      - prevalence.icm
+      - prevalence.icm.bip
+      - init_status.icm
+      - saveout.icm
+      - verbose.icm
+      - modules.icm
+      - test_icm
+
+  - title: "Built-in Network Modules"
+    desc: >
+      Default module functions for stochastic network models.
+    contents:
+      - initialize.net
+      - infection.net
+      - infection.2g.net
+      - recovery.net
+      - recovery.2g.net
+      - arrivals.net
+      - arrivals.2g.net
+      - departures.net
+      - departures.2g.net
+      - nwupdate.net
+      - edges_correct
+      - prevalence.net
+      - init_status.net
+      - saveout.net
+      - verbose.net
+      - process_out.net
+      - modules.net
+      - test_net
+
+  - title: "DCM ODE Systems"
+    desc: >
+      Built-in ODE model functions for deterministic compartmental models
+      (SI, SIR, SIS; one-group and two-group; open and closed populations).
+    contents:
+      - dcm.mods
+      - saveout.dcm
+      - verbose.dcm
+      - crosscheck.dcm
+      - crosscheck.icm
+      - crosscheck.net
+
+  - title: "Extension API"
+    desc: >
+      Functions for building custom modules with arbitrary disease states,
+      demographics, and interventions. These are the building blocks for
+      the EpiModel extension framework.
+    contents:
+      - create_dat_object
+      - arrive_nodes
+      - depart_nodes
+      - get_current_timestep
+      - set_current_timestep
+      - increment_timestep
+      - record_attr_history
+      - record_raw_object
+      - simulate_dat
+      - make_restart_point
+      - get_args
+      - get_modules
+      - set_modules
+      - remove_modules
+      - make_module_list
+      - unique_id-tools
+      - is_active_posit_ids
+      - is_active_unique_ids
+      - init_nets
+      - resim_nets
+      - sim_nets_t1
+      - summary_nets
+      - trim_netest
+      - check_degdist_bal
+
+  - title: "Reachability Analysis"
+    desc: >
+      Identify transmission chains and reachable nodes in a network.
+    contents:
+      - reachable-nodes
+      - get_adj_list
+      - get_subnet_adj_list
+      - get_connected_nodes
+
+  - title: "Scenarios and Parameter Tools"
+    desc: >
+      Create and apply parameter scenarios for sensitivity analyses,
+      including table-based parameter input and random parameter generation.
+    contents:
+      - create_scenario_list
+      - use_scenario
+      - update_params
+      - param.net_from_table
+      - param.net_to_table
+      - param_random
+      - generate_random_params
+      - format_param
+
+  - title: "Custom ERGM Terms"
+    desc: >
+      Custom exponential-family random graph model terms provided by
+      EpiModel for use in network model formulas.
+    contents:
+      - InitErgmTerm.fuzzynodematch
+      - InitErgmTerm.absdiffby
+      - InitErgmTerm.absdiffnodemix
+      - get_formula_term_attr
+      - get_network_term_attr
+
+  - title: "Utilities"
+    contents:
+      - ssample
+      - padded_vector
+      - apportion_lr
+      - mcat
+      - idgroup
+      - update_dissolution
+      - update_list
+      - common_updater
+      - check_attr_lengths
+      - check_end_horizon_control
+      - trigger_end_horizon
+      - netsim_cond_msg
+      - netsim_error_logger
+      - tedgelist_to_toggles
+      - toggles_to_diss_stats
