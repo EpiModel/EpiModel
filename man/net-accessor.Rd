@@ -25,6 +25,7 @@
 \alias{get_init}
 \alias{add_init}
 \alias{set_init}
+\alias{get_core_attributes}
 \alias{append_core_attr}
 \title{Functions to Access and Edit the Main netsim_dat Object in Network Models}
 \usage{
@@ -74,6 +75,8 @@ add_init(dat, item)
 
 set_init(dat, item, value)
 
+get_core_attributes()
+
 append_core_attr(dat, at, n.new)
 }
 \arguments{
@@ -120,6 +123,10 @@ These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 functions allow a safe and efficient way to retrieve and mutate
 the main \code{netsim_dat} class object of network models
 (typical variable name \code{dat}).
+
+This function returns an exhaustive named list of the attributes managed by
+EpiModel itself. It can be used to check the validity of an attributes list
+and of its types.
 }
 \section{Core Attribute}{
 

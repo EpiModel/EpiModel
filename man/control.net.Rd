@@ -158,8 +158,8 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of raw data (one per simulation) instead
 of a cleaned and formatted \code{netsim} object.}
 
-\item{future.use.plan}{If \code{TRUE}, \code{netsim} will use the user-defined \code{future::plan} for its parallelization.
-Otherwise, \code{multisession} is used with \code{workers = ncores}.}
+\item{future.use.plan}{If \code{FALSE}, \code{netsim} will use \code{multisession} is used with \verb{workers = ncores for its parallelization. If }TRUE\verb{, }netsim\verb{will use the user defined plan from}globalEnv\verb{. Finally, it can take the output of a }future::tweak()\verb{call to setup a user defined temporary plan within}netsim`.
+Which can be useful for distributed computation (HPC).}
 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
 simulations. Supports \code{\link{multilayer}} specification.}
