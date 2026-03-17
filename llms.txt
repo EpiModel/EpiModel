@@ -9,7 +9,7 @@ Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](h
 [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
 
   
-![](https://www.epimodel.org/movie.gif)
+![](https://epimodel.github.io/sismid/images/movie.gif)
 
 Tools for simulating mathematical models of infectious disease dynamics.
 Epidemic model classes include deterministic compartmental models,

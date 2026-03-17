@@ -5,7 +5,7 @@
 | Package:  | EpiModel   |
 | Type:     | Package    |
 | Version:  | 2.6.0      |
-| Date:     | 2026-02-26 |
+| Date:     | 2026-03-17 |
 | License:  | GPL-3      |
 | LazyLoad: | yes        |
 
