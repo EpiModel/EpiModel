@@ -4,6 +4,10 @@ These `get_`, `set_`, `append_`, and `add_` functions allow a safe and
 efficient way to retrieve and mutate the main `netsim_dat` class object
 of network models (typical variable name `dat`).
 
+This function returns an exhaustive named list of the attributes managed
+by EpiModel itself. It can be used to check the validity of an
+attributes list and of its types.
+
 ## Usage
 
 ``` r
@@ -52,6 +56,8 @@ get_init(dat, item, override.null.error = FALSE)
 add_init(dat, item)
 
 set_init(dat, item, value)
+
+get_core_attributes()
 
 append_core_attr(dat, at, n.new)
 ```

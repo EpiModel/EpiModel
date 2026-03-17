@@ -240,6 +240,7 @@
   [`get_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
   [`add_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
   [`set_init()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_core_attributes()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
   [`append_core_attr()`](http://epimodel.github.io/EpiModel/reference/net-accessor.md)
   : Functions to Access and Edit the Main netsim_dat Object in Network
   Models

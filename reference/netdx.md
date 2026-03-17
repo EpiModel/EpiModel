@@ -117,10 +117,9 @@ netdx(
 
 - future.use.plan:
 
-  If `TRUE`, `netsim` will use the user-defined
-  [`future::plan`](https://future.futureverse.org/reference/plan.html)
-  for its parallelization. Otherwise, `multisession` is used with
-  `workers = ncores`.
+  If `FALSE`, `netdx` will use `multisession` is used with
+  `workers = ncores for its parallelization. If `TRUE`, `netdx`will use the user defined plan from`globalEnv`. Finally, it can take the output of a `future::tweak()`call to setup a user defined temporary plan within`netdx\`.
+  Which can be useful for distributed computation (HPC).
 
 ## Value
 

@@ -274,8 +274,8 @@ of a cleaned and formatted <code>netsim</code> object.</p></dd>
 
 
 <dt id="arg-future-use-plan">future.use.plan<a class="anchor" aria-label="anchor" href="#arg-future-use-plan"></a></dt>
-<dd><p>If <code>TRUE</code>, <code>netsim</code> will use the user-defined <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::plan</a></code> for its parallelization.
-Otherwise, <code>multisession</code> is used with <code>workers = ncores</code>.</p></dd>
+<dd><p>If <code>FALSE</code>, <code>netsim</code> will use <code>multisession</code> is used with <code>workers = ncores for its parallelization. If </code>TRUE<code>, </code>netsim<code>will use the user defined plan from</code>globalEnv<code>. Finally, it can take the output of a </code>future::tweak()<code>call to setup a user defined temporary plan within</code>netsim`.
+Which can be useful for distributed computation (HPC).</p></dd>
 
 
 <dt id="arg-tergmlite-track-duration">tergmLite.track.duration<a class="anchor" aria-label="anchor" href="#arg-tergmlite-track-duration"></a></dt>
