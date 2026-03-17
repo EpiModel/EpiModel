@@ -2,7 +2,7 @@
 
 [![CRAN Version](https://img.shields.io/badge/Version-2.6.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.6.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
 
-<br> <img src="https://www.epimodel.org/movie.gif" align="right"/>
+<br> <img src="https://epimodel.github.io/sismid/images/movie.gif" align="right"/>
 
 Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy application programming interface (API) for extending these templates to address novel scientific research aims.
 
