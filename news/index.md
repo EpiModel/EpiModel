@@ -2,6 +2,8 @@
 
 ## EpiModel 2.6.0
 
+CRAN release: 2026-03-19
+
 ### BREAKING CHANGES
 
 - Changed the default ODE solver in
