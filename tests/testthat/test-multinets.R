@@ -1,6 +1,7 @@
 context("Multi-Layer Network Models")
 
 test_that("netsim runs with multiple networks, with open or closed population", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 
@@ -207,6 +208,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
 })
 
 test_that("multilayer specifications", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
 
   dc1 <- dissolution_coefs(~offset(edges), 1, 0)

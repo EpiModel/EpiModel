@@ -30,6 +30,7 @@ mod1 <- dcm(param, init, control)
 mod1 <- mutate_epi(mod1, prev = i.num/num)
 plot(mod1, y = "prev")
 
+\donttest{
 # Network model example
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -55,5 +56,6 @@ mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
                                       (s.num + s.num.g2))
 as.data.frame(mod1)
 as.data.frame(mod1, out = "mean")
+}
 
 }

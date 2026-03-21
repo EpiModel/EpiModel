@@ -72,6 +72,7 @@ is specified with the \code{keep.tnetwork} parameter directly in
 \code{\link[=netdx]{netdx()}}.
 }
 \examples{
+\donttest{
 # Set up network and TERGM formula
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -103,6 +104,7 @@ get_network(mod, sim = 2)
 
 ## Extract and collapse the network from simulation 1 at time step 5
 get_network(mod, collapse = TRUE, at = 5)
+}
 
 }
 \keyword{extract}

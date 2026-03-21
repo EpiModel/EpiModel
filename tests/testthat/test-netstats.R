@@ -30,6 +30,7 @@ param <- param.net(inf.prob = 0.03)
 init <- init.net()
 
 test_that("nw stats in full tergm", {
+  skip_on_cran()
   control <- control.net(type = "SI", nsteps = 5, nsims = 1, ncores = 1,
                          resimulate.network = TRUE, tergmLite = FALSE,
                          nwstats.formula = ~edges +
@@ -61,6 +62,7 @@ test_that("nw stats in full tergm", {
 })
 
 test_that("nw stats in tergmLite", {
+  skip_on_cran()
   control <- control.net(type = "SI", nsteps = 5, nsims = 1, ncores = 1,
                          resimulate.network = TRUE, tergmLite = TRUE,
                          nwstats.formula = ~edges +
@@ -91,6 +93,7 @@ test_that("nw stats in tergmLite", {
 })
 
 test_that("tergm and tergmLite produce equal non-durational statistics", {
+  skip_on_cran()
   set.seed(0)
   control <- control.net(type = NULL, 
                          nsims = 1, 

@@ -162,6 +162,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' ## Example SIR model parameterization with fixed and random parameters
 #' # Network model estimation
 #' nw <- network_initialize(n = 100)
@@ -196,6 +197,7 @@
 #'
 #' # Parameter sets can be extracted with:
 #' get_param_set(sim)
+#' }
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                       a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,

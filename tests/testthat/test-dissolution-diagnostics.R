@@ -1,6 +1,7 @@
 context("Dissolution Diagnostics")
 
 test_that("simulation diagnostics work as expected", {
+  skip_on_cran()
 
   ## direct implementation of dissolution statistics based on tedgelist
   simulate_diss_stats <- function(est, nsteps, dyad_indexer) {
@@ -172,6 +173,7 @@ test_that("simulation diagnostics work as expected", {
 })
 
 test_that("netsim produces a networkDynamic with the expected data.frame when resimulate.network = FALSE", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
@@ -216,6 +218,7 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
 })
 
 test_that("netsim produces a networkDynamic with the expected data.frame when resimulate.network = TRUE", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
@@ -267,6 +270,7 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
 })
 
 test_that("tedgelist_to_toggles functions as expected", {
+  skip_on_cran()
   logit <- function(p) log(p/(1-p))
   density <- 1/50
   D <- 10

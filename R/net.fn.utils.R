@@ -487,6 +487,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' duration approaches the length of the simulation.
 #'
 #' @examples
+#' \donttest{
 #' # Initialize and parameterize network model
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -503,6 +504,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' # Calculate censoring
 #' edgelist_censor(el)
+#' }
 #'
 edgelist_censor <- function(el) {
   # left censored
@@ -770,6 +772,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' nw <- network_initialize(n = 500)
 #'
 #' set.seed(1)
@@ -790,6 +793,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' deg.el
 #'
 #' identical(as.integer(ergm.method), deg.net, deg.el)
+#' }
 #'
 get_degree <- function(x) {
   if (inherits(x, "network")) {
@@ -842,6 +846,7 @@ get_degree <- function(x) {
 #' plot(mod2b)
 #' head(as.data.frame(mod2b))
 #'
+#' \donttest{
 #' # ICM example
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
@@ -857,6 +862,7 @@ get_degree <- function(x) {
 #' mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
 #' plot(mod2b)
 #' head(as.data.frame(mod2b))
+#' }
 #'
 truncate_sim <- function(x, at, reset.time) {
   UseMethod("truncate_sim")
@@ -1137,6 +1143,7 @@ make_restart_point <- function(sim_obj, time_attrs,
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges + concurrent
 #' target.stats <- c(50, 25)
@@ -1148,6 +1155,7 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'
 #' est.small <- trim_netest(est)
 #' print(object.size(est.small), units = "KB")
+#' }
 #'
 trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
                         keep = character(0)) {

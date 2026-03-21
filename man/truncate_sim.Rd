@@ -55,6 +55,7 @@ mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
 plot(mod2b)
 head(as.data.frame(mod2b))
 
+\donttest{
 # ICM example
 param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
@@ -70,5 +71,6 @@ head(as.data.frame(mod2a))
 mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
 plot(mod2b)
 head(as.data.frame(mod2b))
+}
 
 }

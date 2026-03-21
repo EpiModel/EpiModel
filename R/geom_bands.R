@@ -17,6 +17,7 @@
 #' @keywords plot
 #'
 #' @examples
+#' \donttest{
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 250, nsims = 5)
@@ -32,6 +33,7 @@
 #'               lower = 0.1, upper = 0.9, fill = "firebrick") +
 #'    geom_line(data = df.mean, mapping = aes(time, i.num)) +
 #'    theme_minimal()
+#' }
 #'
 geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
   stat_summary(mapping,

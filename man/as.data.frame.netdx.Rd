@@ -27,6 +27,7 @@ This function extracts timed edgelists for objects of class
 \code{as.data.frame} function.
 }
 \examples{
+\donttest{
 # Initialize and parameterize the network model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -45,6 +46,7 @@ as.data.frame(dx, sim = 1)
 
 # Extract data from all simulations
 as.data.frame(dx)
+}
 
 }
 \keyword{extract}

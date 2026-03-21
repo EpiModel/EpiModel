@@ -132,6 +132,7 @@ middle 95\\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 where they are plotted by default, specify \code{qnts=FALSE}.
 }
 \examples{
+\donttest{
 ## Example 1: Plotting multiple compartment values from SIR model
 param <- param.icm(inf.prob = 0.5, act.rate = 0.5, rec.rate = 0.02)
 init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
@@ -154,6 +155,7 @@ plot(mod2, y = "i.num", mean.line = FALSE, sim.lines = TRUE)
 par(mfrow = c(1, 2))
 plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
+}
 
 }
 \seealso{

@@ -30,6 +30,7 @@ generating the vector of degrees using a query of the edgelist. It is even
 faster if the parameter \code{x} is already transformed into an edgelist.
 }
 \examples{
+\donttest{
 nw <- network_initialize(n = 500)
 
 set.seed(1)
@@ -50,5 +51,6 @@ deg.el <- get_degree(el)
 deg.el
 
 identical(as.integer(ergm.method), deg.net, deg.el)
+}
 
 }

@@ -28,7 +28,7 @@ size of the parameter) named \code{parameter.name_1},
 }
 
 \examples{
-
+\donttest{
 # Setup network
 nw <- network_initialize(n = 50)
 
@@ -66,4 +66,5 @@ control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
 get_param_set(mod)
+}
 }
