@@ -18,12 +18,10 @@ template:
 
 home:
   links:
-    - text: "EpiModel project"
-      href: "https://www.epimodel.org/"
-    - text: "SISMID course materials"
+    - text: "NME Course Materials"
       href: "https://epimodel.github.io/sismid/"
     - text: "EpiModel Gallery"
-      href: "https://github.com/EpiModel/EpiModel-Gallery"
+      href: "https://epimodel.github.io/EpiModel-Gallery/"
 
 navbar:
   bg: dark

@@ -45,7 +45,7 @@ remotes::install_github("EpiModel/EpiModel")
 
 ### The EpiModel Gallery
 
-The <a href="https://github.com/EpiModel/EpiModel-Gallery" target="_blank">EpiModel Gallery</a>  contains templates of extensions to EpiModel, for now focused on network-based mathematical modeling class. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or else to contribute them directly.
+The <a href="https://epimodel.github.io/EpiModel-Gallery/" target="_blank">EpiModel Gallery</a> contains annotated tutorials for extending EpiModel, focused on stochastic network models. Each example includes a worked walkthrough with code annotations, flow diagrams, and parameter references. We will be continuing to add new examples to the gallery, and encourage users to either file requests for new examples or else to contribute them directly.
 
 ### Citation
 
