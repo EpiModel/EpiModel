@@ -35,7 +35,7 @@ If you are interested in the stochastic network model class, we suggest learning
 
 1. The best place to start is our primary main methods paper, published in the *Journal of Statistical Software* at the reference below. 
 2. After that, we suggest you work through the Network Modeling for Epidemics course materials to understand some of the background network theory and see how to run parameterize and run built-in network models.
-3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of the NME course, and look at the variety of extension model templates in our **EpiModel Gallery** (<https://github.com/EpiModel/EpiModel-Gallery>).
+3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of the NME course, and look at the variety of extension model templates in our **EpiModel Gallery** (<https://epimodel.github.io/EpiModel-Gallery/>).
 4. Some of the latest developments in EpiModel are related to working with network model inputs and outputs, which are covered in these advanced topics vignettes within the package:
 
 - Working With Model Parameters in EpiModel
