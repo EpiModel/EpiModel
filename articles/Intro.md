@@ -46,7 +46,7 @@ learning about using **EpiModel** with the following sequence:
     should then consult the model extension materials of the NME course,
     and look at the variety of extension model templates in our
     **EpiModel Gallery**
-    (<https://github.com/EpiModel/EpiModel-Gallery>).
+    (<https://epimodel.github.io/EpiModel-Gallery/>).
 4.  Some of the latest developments in EpiModel are related to working
     with network model inputs and outputs, which are covered in these
     advanced topics vignettes within the package:

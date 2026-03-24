@@ -30,7 +30,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/EpiModel/EpiModel/blob/v2.6.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -107,7 +107,7 @@
 <h2 class="pkg-version" data-toc-text="2.4.0" id="epimodel-240">EpiModel 2.4.0<a class="anchor" aria-label="anchor" href="#epimodel-240"></a></h2><p class="text-muted">CRAN release: 2023-06-20</p>
 <div class="section level3">
 <h3 id="new-features-2-4-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-4-0"></a></h3>
-<ul><li>Stochastic network models, simulated with <code>netsim</code>, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the <a href="https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets" class="external-link">EpiModel Gallery</a>.</li>
+<ul><li>Stochastic network models, simulated with <code>netsim</code>, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the <a href="https://epimodel.github.io/EpiModel-Gallery/examples/multinets/">EpiModel Gallery</a>.</li>
 <li>Add a <code>get_cumulative_degree</code> function with an interface similar to <code>get_partners</code>. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.</li>
 <li>Generic <code>get_network</code> and <code>set_network</code> functions created for more consistent access to the network objects within <code>netsim_dat</code> class objects.</li>
 </ul></div>
@@ -155,7 +155,7 @@
 <h3 id="bug-fixes-2-3-1">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-3-1"></a></h3>
 <ul><li>Fix <code>get_sims</code> not properly subsetting <code>el.cuml</code> and <code>_last_unique_id</code>.</li>
 <li>Fix parallel memory leak in <code>netsim</code>.</li>
-<li>Rework the network resimulation module to allow for working with observed network data. See this <a href="https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData" class="external-link">EpiModel Gallery Example</a>.</li>
+<li>Rework the network resimulation module to allow for working with observed network data. See this <a href="https://epimodel.github.io/EpiModel-Gallery/examples/observed-network-data/">EpiModel Gallery Example</a>.</li>
 <li>Fix error message for tergmLite/resimulate.network collision</li>
 </ul></div>
 <div class="section level3">

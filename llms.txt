@@ -79,11 +79,13 @@ the Discussions board here.
 
 ### The EpiModel Gallery
 
-The [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery)
-contains templates of extensions to EpiModel, for now focused on
-network-based mathematical modeling class. We will be continuing to add
-new examples the gallery, and encourage users to either file requests
-for new examples or else to contribute them directly.
+The [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/)
+contains annotated tutorials for extending EpiModel, focused on
+stochastic network models. Each example includes a worked walkthrough
+with code annotations, flow diagrams, and parameter references. We will
+be continuing to add new examples to the gallery, and encourage users to
+either file requests for new examples or else to contribute them
+directly.
 
 ### Citation
 

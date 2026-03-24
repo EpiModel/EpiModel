@@ -181,7 +181,7 @@ CRAN release: 2023-06-20
   multi-layer networks. These are networks with a common common node set
   but different edge set (e.g., home-based and community-based contact
   layers). An example implementation can be found at the [EpiModel
-  Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets).
+  Gallery](https://epimodel.github.io/EpiModel-Gallery/examples/multinets/).
 - Add a `get_cumulative_degree` function with an interface similar to
   `get_partners`. This function helps look up cumulative degree over a
   time period (e.g., number of partners over the past year) for a
@@ -261,7 +261,7 @@ CRAN release: 2022-10-01
 - Fix parallel memory leak in `netsim`.
 - Rework the network resimulation module to allow for working with
   observed network data. See this [EpiModel Gallery
-  Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
+  Example](https://epimodel.github.io/EpiModel-Gallery/examples/observed-network-data/).
 - Fix error message for tergmLite/resimulate.network collision
 
 ### OTHER

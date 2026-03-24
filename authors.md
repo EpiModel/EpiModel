@@ -17,7 +17,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/EpiModel/EpiModel/blob/v2.6.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/EpiModel/EpiModel/blob/main/inst/CITATION)
 
 Jenness SM, Goodreau SM, Morris M. EpiModel: An R Package for
 Mathematical Modeling of Infectious Disease over Networks. Journal of
