@@ -9,8 +9,8 @@ template:
       google: "Open Sans"
     primary: "#1a6b54"
     link-color: "#1a6b54"
-    navbar-bg: "#181825"
-    navbar-dark-color: "#cdd6f4"
+    navbar-bg: "#4682B4"
+    navbar-dark-color: "#ffffff"
     navbar-dark-hover-color: "#ffffff"
   includes:
     in_header: |
