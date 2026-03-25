@@ -15,18 +15,18 @@ body {
 h1, h2, h3, h4, h5, h6,
 .page-header h1 {
   font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Navbar */
 .navbar {
   font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Navbar brand / package name */
 .navbar .navbar-brand {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Sidebar (reference pages) */
