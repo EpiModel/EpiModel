@@ -24,7 +24,7 @@ home:
       href: "https://epimodel.github.io/EpiModel-Gallery/"
 
 navbar:
-  bg: dark
+  type: dark
   structure:
     left: [intro, reference, articles, news]
     right: [search, github]
