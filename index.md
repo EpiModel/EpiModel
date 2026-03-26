@@ -116,9 +116,7 @@ EpiModel and its [extension
 packages](https://github.com/EpiModel/EpiModelHIV) have been used in the
 following scientific journal articles. A list of these articles can be
 accessed in a [wiki
-page](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature)
-or on
-[Zotero](https://www.zotero.org/groups/2486200/epimodel_literature/library).
+page](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature).
 (If you are aware of others, send us an email at
 <samuel.m.jenness@emory.edu> to be included in this list.)
 
