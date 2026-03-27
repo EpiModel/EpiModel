@@ -42,7 +42,8 @@ plot.epi.data.frame <- function(x, y = NULL, sims = NULL, legend = NULL,
   ntemp <- list(
     epi = df2epi(x),
     control = list(
-      nsteps = max(x$time),
+      nsteps = max(x$time) - min(x$time),
+      start = min(x$time),
       nsims = max(x$sim)
     )
   )
