@@ -45,7 +45,7 @@ remotes::install_github("EpiModel/EpiModel")
 
 ### The EpiModel Gallery
 
-The <a href="https://github.com/EpiModel/EpiModel-Gallery" target="_blank">EpiModel Gallery</a>  contains templates of extensions to EpiModel, for now focused on network-based mathematical modeling class. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or else to contribute them directly.
+The <a href="https://epimodel.github.io/EpiModel-Gallery/" target="_blank">EpiModel Gallery</a> contains annotated tutorials for extending EpiModel, focused on stochastic network models. Each example includes a worked walkthrough with code annotations, flow diagrams, and parameter references. We will be continuing to add new examples to the gallery, and encourage users to either file requests for new examples or else to contribute them directly.
 
 ### Citation
 
@@ -61,7 +61,7 @@ The primary support for the development of these software tools and statistical 
 
 ### EpiModel in the Scientific Literature
 
-EpiModel and its [extension packages](https://github.com/EpiModel/EpiModelHIV) have been used in the following scientific journal articles. A list of these articles can be accessed in a [wiki page](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature) or on [Zotero](https://www.zotero.org/groups/2486200/epimodel_literature/library). (If you are aware of others, send us an email at [samuel.m.jenness\@emory.edu](mailto:samuel.m.jenness@emory.edu) to be included in this list.)
+EpiModel and its [extension packages](https://github.com/EpiModel/EpiModelHIV) have been used in the following scientific journal articles. A list of these articles can be accessed in a [wiki page](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature). (If you are aware of others, send us an email at [samuel.m.jenness\@emory.edu](mailto:samuel.m.jenness@emory.edu) to be included in this list.)
 
 ### Copyright
 

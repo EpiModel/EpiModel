@@ -79,7 +79,7 @@
 
 ### NEW FEATURES
 
--   Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets).
+-   Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/examples/multinets/).
 -   Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.
 -   Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
 
@@ -120,7 +120,7 @@
 
 -   Fix `get_sims` not properly subsetting `el.cuml` and `_last_unique_id`.
 -   Fix parallel memory leak in `netsim`.
--   Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
+-   Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://epimodel.github.io/EpiModel-Gallery/examples/observed-network-data/).
 -   Fix error message for tergmLite/resimulate.network collision
 
 ### OTHER
