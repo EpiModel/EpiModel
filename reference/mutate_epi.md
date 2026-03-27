@@ -37,6 +37,7 @@ mod1 <- mutate_epi(mod1, prev = i.num/num)
 plot(mod1, y = "prev")
 
 
+# \donttest{
 # Network model example
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -196,4 +197,5 @@ as.data.frame(mod1, out = "mean")
 #> 8  0.04000000 0.013333333 17.86942
 #> 9  0.04000000 0.013333333  0.00000
 #> 10 0.04666667 0.020000000 36.49123
+# }
 ```

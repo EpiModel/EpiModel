@@ -245,6 +245,7 @@ to specify the control settings. Run the parameterized model with
 ## Examples
 
 ``` r
+# \donttest{
 ## Example SIR model parameterization with fixed and random parameters
 # Network model estimation
 nw <- network_initialize(n = 100)
@@ -343,4 +344,5 @@ get_param_set(sim)
 #> 1   1     0.02 FALSE      1        2 0.70199839
 #> 2   2     0.02 FALSE      1        3 0.58673890
 #> 3   3     0.02 FALSE      1        3 0.06030901
+# }
 ```

@@ -41,6 +41,7 @@ A data frame or list of matrices containing the network statistics.
 ## Examples
 
 ``` r
+# \donttest{
 # Two-group Bernoulli random graph TERGM
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -201,4 +202,5 @@ colMeans(get_nwstats(mod))
 #>  5.500000  2.000000 50.500000  1.010000 34.400000 39.233333 19.100000  5.600000 
 #>   degree4   degree5 
 #>  1.566667  0.100000 
+# }
 ```

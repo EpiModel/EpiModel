@@ -83,6 +83,7 @@ from `object`.
 ## Examples
 
 ``` r
+# \donttest{
 nw <- network_initialize(n = 100)
 formation <- ~edges + concurrent
 target.stats <- c(50, 25)
@@ -119,4 +120,5 @@ print(object.size(est), units = "KB")
 est.small <- trim_netest(est)
 print(object.size(est.small), units = "KB")
 #> 12.1 Kb
+# }
 ```

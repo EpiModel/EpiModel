@@ -96,6 +96,7 @@ simulations) and binds the results.
 ## Examples
 
 ``` r
+# \donttest{
 # Network model
 nw <- network_initialize(n = 100)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -290,4 +291,5 @@ as.data.frame(z)
 #> 78   4   18    99     1 100       0
 #> 79   4   19    99     1 100       0
 #> 80   4   20    99     1 100       0
+# }
 ```

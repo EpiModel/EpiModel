@@ -11,7 +11,7 @@ merge."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.gi
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,8 @@ simulations specified in <code>sims</code> and the variables specified in
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Network model estimation</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Network model estimation</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formation</span> <span class="op">&lt;-</span> <span class="op">~</span><span class="va">edges</span></span></span>
 <span class="r-in"><span><span class="va">target.stats</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></span>
@@ -108,6 +109,7 @@ simulations specified in <code>sims</code> and the variables specified in
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extract the mean simulation for the variable i.num</span></span></span>
 <span class="r-in"><span><span class="va">sim.mean</span> <span class="op">&lt;-</span> <span class="fu">get_sims</span><span class="op">(</span><span class="va">mod1</span>, sims <span class="op">=</span> <span class="st">"mean"</span>, var <span class="op">=</span> <span class="st">"i.num"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -226,6 +226,7 @@ After diagnostics confirm a good fit, simulate the epidemic with
 ## Examples
 
 ``` r
+# \donttest{
 # Static diagnostics on a simple model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -253,6 +254,7 @@ dx
 #> edges     50   50.169    0.337   0.07   2.394            NA         7.039
 plot(dx)
 
+# }
 
 if (FALSE) { # \dontrun{
 # Static diagnostics with additional network statistics

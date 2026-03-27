@@ -43,6 +43,7 @@ A data frame containing the data from `x`.
 ## Examples
 
 ``` r
+# \donttest{
 # Initialize and parameterize the network model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -596,4 +597,5 @@ as.data.frame(dx)
 #> 220      71
 #> 221      72
 #> 222      73
+# }
 ```

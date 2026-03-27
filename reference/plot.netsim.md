@@ -340,6 +340,7 @@ the disease prevalence is closest to the average across all simulations,
 ## Examples
 
 ``` r
+# \donttest{
 ## SI Model without Network Feedback
 # Initialize network and set network model parameters
 nw <- network_initialize(n = 100)
@@ -412,4 +413,5 @@ plot(mod, type = "formation", plots.joined = FALSE,
 plot(mod, type = "formation", stats = "meandeg",
      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
 
+# }
 ```

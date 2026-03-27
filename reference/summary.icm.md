@@ -41,6 +41,7 @@ a time of interest.
 ## Examples
 
 ``` r
+# \donttest{
 ## Stochastic ICM SI model with 3 simulations
 param <- param.icm(inf.prob = 0.2, act.rate = 1)
 init <- init.icm(s.num = 500, i.num = 1)
@@ -91,4 +92,5 @@ summary(mod, at = 50)
 #> Total     501.0   0.000  1.000
 #> S -> I      6.0   4.743     NA
 #> ------------------------------ 
+# }
 ```

@@ -50,6 +50,7 @@ A data frame with the following standard columns:
 ## Examples
 
 ``` r
+# \donttest{
 ## Simulate SI epidemic on two-group Bernoulli random graph
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -87,4 +88,5 @@ get_transmat(mod, sim = 2)
 #>  9     4    45    78       1      5      0.3        1      0.3 
 #> 10     4    84    36       1      1      0.15       1      0.15
 #> # ℹ 14 more rows
+# }
 ```

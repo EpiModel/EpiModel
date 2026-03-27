@@ -34,6 +34,7 @@ the average edge duration approaches the length of the simulation.
 ## Examples
 
 ``` r
+# \donttest{
 # Initialize and parameterize network model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -63,4 +64,5 @@ edgelist_censor(el)
 #> Right Cens.  56 0.1800643
 #> Both Cens.    0 0.0000000
 #> No Cens.    255 0.8199357
+# }
 ```

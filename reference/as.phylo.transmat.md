@@ -58,6 +58,7 @@ class `multiPhylo`, each element of which is a `phylo` object. See
 ## Examples
 
 ``` r
+# \donttest{
 set.seed(13)
 
 # Fit a random mixing TERGM with mean degree of 1 and mean edge
@@ -114,4 +115,5 @@ plot(tmPhylo, show.node.label = TRUE,
               root.edge = TRUE,
               cex = 0.75)
 
+# }
 ```

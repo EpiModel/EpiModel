@@ -86,6 +86,7 @@ parameter directly in
 ## Examples
 
 ``` r
+# \donttest{
 # Set up network and TERGM formula
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -218,4 +219,5 @@ get_network(mod, collapse = TRUE, at = 5)
 #>     group status tergm_pid testatus vertex.names 
 #> 
 #> No edge attributes
+# }
 ```

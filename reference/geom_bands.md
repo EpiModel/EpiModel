@@ -42,6 +42,7 @@ aesthetic output.
 ## Examples
 
 ``` r
+# \donttest{
 param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SI", nsteps = 250, nsims = 5)
@@ -58,4 +59,5 @@ ggplot() +
    geom_line(data = df.mean, mapping = aes(time, i.num)) +
    theme_minimal()
 
+# }
 ```

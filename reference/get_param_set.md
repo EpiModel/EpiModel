@@ -32,6 +32,7 @@ parameter or if the parameter is of size \> 1, there will be N columns
 ## Examples
 
 ``` r
+# \donttest{
 # Setup network
 nw <- network_initialize(n = 50)
 
@@ -85,4 +86,5 @@ get_param_set(mod)
 #> 1            6.567364            8.571406
 #> 2            9.652140           11.637548
 #> 3           12.641034            9.052961
+# }
 ```

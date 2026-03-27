@@ -11,7 +11,7 @@ simulated model objects of any class in EpiModel."><link rel="icon" href="https:
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,7 @@ or <code>netsim</code>.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod1</span>, y <span class="op">=</span> <span class="st">"prev"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="mutate_epi-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Network model example</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"group"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -238,6 +239,7 @@ or <code>netsim</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.04000000 0.013333333 17.86942</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.04000000 0.013333333  0.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.04666667 0.020000000 36.49123</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

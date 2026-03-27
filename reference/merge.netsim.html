@@ -9,7 +9,7 @@ stochastic network models from netsim."><link rel="icon" href="https://epimodel.
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,8 @@ the results.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Network model</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Network model</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">25</span>,</span></span>
@@ -325,6 +326,7 @@ the results.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 78   4   18    99     1 100       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 79   4   19    99     1 100       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 80   4   20    99     1 100       0</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

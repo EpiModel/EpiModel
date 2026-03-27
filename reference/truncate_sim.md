@@ -81,6 +81,7 @@ head(as.data.frame(mod2b))
 #> 5  154  96.32221 404.6778 3.830429 501
 #> 6  155  92.49178 408.5082 3.711522 501
 
+# \donttest{
 # ICM example
 param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
@@ -112,4 +113,5 @@ head(as.data.frame(mod2b))
 #> 4   1  153   130   371 501       1
 #> 5   1  154   124   377 501       6
 #> 6   1  155   117   384 501       7
+# }
 ```

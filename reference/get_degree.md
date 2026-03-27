@@ -36,6 +36,7 @@ already transformed into an edgelist.
 ## Examples
 
 ``` r
+# \donttest{
 nw <- network_initialize(n = 500)
 
 set.seed(1)
@@ -109,4 +110,5 @@ deg.el
 
 identical(as.integer(ergm.method), deg.net, deg.el)
 #> [1] TRUE
+# }
 ```
