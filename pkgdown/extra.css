@@ -15,18 +15,30 @@ body {
 h1, h2, h3, h4, h5, h6,
 .page-header h1 {
   font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* Navbar */
+/* Navbar — steelblue background with white text (matching EpiModel Gallery) */
 .navbar {
   font-family: 'Open Sans', 'Atkinson Hyperlegible', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
+  background-color: #4682B4 !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .nav-text {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #e0e0e0 !important;
 }
 
 /* Navbar brand / package name */
 .navbar .navbar-brand {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Sidebar (reference pages) */
