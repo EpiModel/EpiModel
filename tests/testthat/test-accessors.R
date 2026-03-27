@@ -159,6 +159,7 @@ context("Accessors: Attribute Copying")
 ################################################################################
 
 test_that("Copying attributes from network to attribute list", {
+  skip_on_cran()
 
   num1 <- num2 <- 500
   nw <- network_initialize(num1 + num2)

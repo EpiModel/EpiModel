@@ -31,6 +31,7 @@ as a single data frame or as a list of matrices (one matrix
 for each simulation).
 }
 \examples{
+\donttest{
 # Two-group Bernoulli random graph TERGM
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -60,6 +61,7 @@ get_nwstats(mod, sim = c(1, 3))
 # On the fly summary stats
 summary(get_nwstats(mod))
 colMeans(get_nwstats(mod))
+}
 
 }
 \keyword{extract}

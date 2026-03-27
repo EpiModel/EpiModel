@@ -234,6 +234,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' ## Stochastic ICM SI model with 3 simulations
 #' param <- param.icm(inf.prob = 0.2, act.rate = 1)
 #' init <- init.icm(s.num = 500, i.num = 1)
@@ -242,6 +243,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 #' mod <- icm(param, init, control)
 #' summary(mod, at = 25)
 #' summary(mod, at = 50)
+#' }
 #'
 summary.icm <- function(object, at, digits = 3, ...) {
 

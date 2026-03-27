@@ -241,6 +241,7 @@ lowest, and \code{"max"} to plot the simulation in which the prevalence is
 highest.
 }
 \examples{
+\donttest{
 ## SI Model without Network Feedback
 # Initialize network and set network model parameters
 nw <- network_initialize(n = 100)
@@ -293,6 +294,7 @@ plot(mod, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(mod, type = "formation", stats = "meandeg",
      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
+}
 
 }
 \seealso{

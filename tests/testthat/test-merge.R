@@ -58,6 +58,7 @@ test_that("merge errors", {
 # merge.netsim ------------------------------------------------------------
 
 test_that("merge for netsim", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
@@ -77,6 +78,7 @@ test_that("merge for netsim", {
 })
 
 test_that("merge for netsim", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
@@ -98,6 +100,7 @@ test_that("merge for netsim", {
 })
 
 test_that("merge works for open sims saving nw stats", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   est <- netest(nw, formation = ~edges, target.stats = 20,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
@@ -121,6 +124,7 @@ test_that("merge works for open sims saving nw stats", {
 })
 
 test_that("merge.netsim works as expected for transmat", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -146,6 +150,7 @@ test_that("merge.netsim works as expected for transmat", {
 })
 
 test_that("merge and print work as expected for save.other", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50

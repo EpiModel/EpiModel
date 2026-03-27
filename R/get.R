@@ -53,6 +53,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Set up network and TERGM formula
 #' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -84,6 +85,7 @@
 #'
 #' ## Extract and collapse the network from simulation 1 at time step 5
 #' get_network(mod, collapse = TRUE, at = 5)
+#' }
 #'
 get_network <- function(x, ...) {
   UseMethod("get_network")
@@ -259,6 +261,7 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' ## Simulate SI epidemic on two-group Bernoulli random graph
 #' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -273,6 +276,7 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #'
 #' ## Extract the transmission matrix from simulation 2
 #' get_transmat(mod, sim = 2)
+#' }
 #'
 get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
@@ -327,6 +331,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Two-group Bernoulli random graph TERGM
 #' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -356,6 +361,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' # On the fly summary stats
 #' summary(get_nwstats(mod))
 #' colMeans(get_nwstats(mod))
+#' }
 #'
 get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list")) {
 
@@ -463,6 +469,7 @@ get_nwparam <- function(x, network = 1) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Network model estimation
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -484,6 +491,7 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' # Extract the mean simulation for the variable i.num
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
+#' }
 #'
 get_sims <- function(x, sims = NULL, var = NULL) {
 
@@ -607,7 +615,7 @@ get_args <- function(formal.args, dot.args) {
 #'
 #'
 #' @examples
-#'
+#' \donttest{
 #' # Setup network
 #' nw <- network_initialize(n = 50)
 #'
@@ -645,6 +653,7 @@ get_args <- function(formal.args, dot.args) {
 #' mod <- netsim(est, param, init, control)
 #'
 #' get_param_set(mod)
+#' }
 #' @export
 get_param_set <- function(sims) {
   if (!inherits(sims, "netsim")) {

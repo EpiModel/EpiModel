@@ -152,6 +152,7 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' mod1 <- mutate_epi(mod1, prev = i.num/num)
 #' plot(mod1, y = "prev")
 #'
+#' \donttest{
 #' # Network model example
 #' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
@@ -177,6 +178,7 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #'                                       (s.num + s.num.g2))
 #' as.data.frame(mod1)
 #' as.data.frame(mod1, out = "mean")
+#' }
 #'
 mutate_epi <- function(x, ...) {
 

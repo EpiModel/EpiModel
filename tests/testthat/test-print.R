@@ -27,6 +27,7 @@ test_that("print.icm", {
 })
 
 test_that("print.netest", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -41,6 +42,7 @@ test_that("print.netest", {
 })
 
 test_that("print.netsim", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
   formation <- ~edges

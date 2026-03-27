@@ -11,6 +11,7 @@ test_that("SI, 1G, CL: 1 sim", {
 })
 
 test_that("SI, 1G, CL: 2 sims", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE)
@@ -19,6 +20,7 @@ test_that("SI, 1G, CL: 2 sims", {
 })
 
 test_that("SI, 1G, OP: 1 sim", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25, a.rate = 1 / 100,
                      ds.rate = 1 / 100, di.rate = 1 / 90)
@@ -29,6 +31,7 @@ test_that("SI, 1G, OP: 1 sim", {
 })
 
 test_that("SI, 2G, OP: 2 sims", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
                      a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
@@ -53,6 +56,7 @@ test_that("SIR, 1G, CL: 1 sim", {
 })
 
 test_that("SIR, 1G, OP: 1 sim", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 2, rec.rate = 1 / 50, a.rate = 1 / 100,
                      ds.rate = 1 / 100, di.rate = 1 / 90, dr.rate = 1 / 100)
@@ -63,6 +67,7 @@ test_that("SIR, 1G, OP: 1 sim", {
 })
 
 test_that("SIR, 2G, OP: 2 sims", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1,
                      act.rate = 1, balance = "g1",
                      rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
@@ -91,6 +96,7 @@ test_that("SIS, 1G, CL: 1 sim", {
 })
 
 test_that("SIS, 2G, CL: 2 sims", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
                      rec.rate = 1 / 100, rec.rate.g2 = 1 / 100)
@@ -102,6 +108,7 @@ test_that("SIS, 2G, CL: 2 sims", {
 })
 
 test_that("SIS, 1G, OP: 1 sim", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.5, rec.rate = 1 / 50,
                      a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
@@ -116,6 +123,7 @@ test_that("SIS, 1G, OP: 1 sim", {
 # Other -------------------------------------------------------------------
 
 test_that("Act rate balance works when specified to g2", {
+  skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      inf.prob.g2 = 0.1,
                      act.rate.g2 = 0.5,
@@ -143,6 +151,7 @@ test_that("Act rate balance works when specified to g2", {
 context("New ICM Models")
 
 test_that("ICM new modules", {
+  skip_on_cran()
 
   ## New Aging Module
   aging <- function(dat, at) {

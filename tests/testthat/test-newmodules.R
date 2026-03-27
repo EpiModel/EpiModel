@@ -1,6 +1,7 @@
 context("New Network Models")
 
 test_that("New network models vignette example", {
+  skip_on_cran()
 
   ## New Aging Module
   aging <- function(dat, at) {
@@ -163,6 +164,7 @@ test_that("New network models vignette example", {
 context("Network Model with Param Updater")
 
 test_that("netsim with param updater", {
+  skip_on_cran()
   # Create the list.param.updaters
   list.param.updaters <- list(
     # this is one updater
@@ -242,6 +244,7 @@ test_that("netsim with param updater", {
 context("Network Model with Scenarios")
 
 test_that("SIS with scenarios", {
+  skip_on_cran()
   set.seed(10)
 
   nw <- network_initialize(n = 200)
@@ -297,6 +300,7 @@ test_that("SIS with scenarios", {
 context("Records: attr_history and Raw Objects")
 
 test_that("Time varying elements", {
+  skip_on_cran()
   test_logger <- function(dat, at) {
     nodes <- get_posit_ids(dat)
 
@@ -375,6 +379,7 @@ test_that("Time varying elements", {
 context("Custom Trackers")
 
 test_that("netsim, SI, custom trackers", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(
@@ -438,6 +443,7 @@ test_that("netsim, SI, custom trackers", {
 context("Load Parameters from data.frame")
 
 test_that("Load parameters from data.frame", {
+  skip_on_cran()
   params.df <- dplyr::tribble(
     ~param, ~value, ~type, ~detail,
     "p1", "10", "numeric", "foo",
@@ -493,6 +499,7 @@ test_that("Load parameters from data.frame", {
 context("Random Parameter Generators")
 
 test_that("Random parameters generators", {
+  skip_on_cran()
 
   my_randoms <- list(
     act.rate = param_random(c(0.25, 0.5, 0.75)),

@@ -7,6 +7,7 @@ nw %v% "age" <- age
 nw %v% "sex" <- sex
 
 test_that("netest works for EpiModel terms", {
+  skip_on_cran()
   est <- netest(nw, formation = ~edges + absdiffby("age", "sex", 1) + nodematch("sex"), target.stats = c(25, 25, 0),
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
@@ -19,6 +20,7 @@ test_that("netest works for EpiModel terms", {
 })
 
 test_that("EpiModel terms produce correct summary statistics", {
+  skip_on_cran()
   nw1 <- san(nw ~ edges + offset(nodematch("sex")), target.stats = c(30), offset.coef = c(-Inf))
     
   el1 <- as.edgelist(nw1)
@@ -39,6 +41,7 @@ test_that("EpiModel terms produce correct summary statistics", {
 })
 
 test_that("EpiModel terms produce correct change statistics", {
+  skip_on_cran()
   nw1 <- simulate(nw ~ edges + offset(nodematch("sex")),
                   coef = c(-3, -Inf),
                   monitor = ~absdiffby("age", "sex", 2.3))
@@ -69,6 +72,7 @@ test_that("EpiModel terms produce correct change statistics", {
 context("fuzzynodematch Term")
 
 test_that("fuzzynodematch works as intended", {
+  skip_on_cran()
   n <- 1000L
   bip <- 400L
   nv <- 10L

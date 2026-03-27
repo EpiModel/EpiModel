@@ -28,6 +28,7 @@ uncensored. The amount of censoring will increase when the average edge
 duration approaches the length of the simulation.
 }
 \examples{
+\donttest{
 # Initialize and parameterize network model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -44,6 +45,7 @@ el <- as.data.frame(dx)
 
 # Calculate censoring
 edgelist_censor(el)
+}
 
 }
 \keyword{netUtils}

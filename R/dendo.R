@@ -38,6 +38,7 @@
 #' @export as.phylo.transmat
 #'
 #' @examples
+#' \donttest{
 #' set.seed(13)
 #'
 #' # Fit a random mixing TERGM with mean degree of 1 and mean edge
@@ -66,6 +67,7 @@
 #' plot(tmPhylo, show.node.label = TRUE,
 #'               root.edge = TRUE,
 #'               cex = 0.75)
+#' }
 #'
 as.phylo.transmat <- function(x, vertex.exit.times = NULL, ...) {
 

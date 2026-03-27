@@ -141,6 +141,7 @@ merge.icm <- function(x, y, ...) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Network model
 #' nw <- network_initialize(n = 100)
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -164,6 +165,7 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(x)
 #' as.data.frame(y)
 #' as.data.frame(z)
+#' }
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          keep.nwstats = TRUE, keep.other = TRUE,

@@ -29,6 +29,7 @@ simulations, essentially functioning like a reverse of
 \code{merge}.
 }
 \examples{
+\donttest{
 # Network model estimation
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -50,6 +51,7 @@ s.g2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
 
 # Extract the mean simulation for the variable i.num
 sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
+}
 
 }
 \keyword{extract}
