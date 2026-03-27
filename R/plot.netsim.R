@@ -149,6 +149,7 @@
 #' @seealso [`network::plot.network`], [mutate_epi()]
 #'
 #' @examples
+#' \donttest{
 #' ## SI Model without Network Feedback
 #' # Initialize network and set network model parameters
 #' nw <- network_initialize(n = 100)
@@ -201,6 +202,7 @@
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
 #'      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
+#' }
 #'
 plot.netsim <- function(x, type = "epi", y = NULL, popfrac = FALSE,
                         sim.lines = FALSE, sims = NULL, sim.col = NULL,

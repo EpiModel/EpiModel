@@ -169,6 +169,7 @@ with vital dynamics.
 }
 
 \examples{
+\donttest{
 # Static diagnostics on a simple model
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -178,6 +179,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
 dx
 plot(dx)
+}
 
 \dontrun{
 # Static diagnostics with additional network statistics

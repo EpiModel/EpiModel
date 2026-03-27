@@ -39,6 +39,7 @@ test_that("netest works with offset.coef terms", {
 # Test dissolution models -------------------------------------------------
 
 test_that("netest works for heterogeneous dissolutions", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
@@ -74,6 +75,7 @@ test_that("Error if incorrect coef.diss parameter", {
 })
 
 test_that("update_dissolution tests", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
 
   diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)
@@ -103,6 +105,7 @@ test_that("update_dissolution tests", {
 })
 
 test_that("differing length update_dissolution tests", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
 
@@ -132,6 +135,7 @@ test_that("differing length update_dissolution tests", {
 })
 
 test_that("duration 1 update_dissolution tests", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
 
@@ -187,6 +191,7 @@ test_that("duration 1 update_dissolution tests", {
 })
 
 test_that("differing length non-nested update_dissolution tests", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
   nw %v% "age" <- rep(1:3, length.out = 1000)
@@ -231,6 +236,7 @@ test_that("differing length non-nested update_dissolution tests", {
 })
 
 test_that("non-nested EDA", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
   nw %v% "age" <- rep(1:3, length.out = 1000)
@@ -323,6 +329,7 @@ test_that("non-nested EDA", {
 })
 
 test_that("environment handling in non-nested EDA", {
+  skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
   nw %v% "age" <- rep(1:3, length.out = 1000)
@@ -365,6 +372,7 @@ test_that("environment handling in non-nested EDA", {
 })
 
 test_that("non-nested EDA produces expected statistic names, with or without trimming", {
+  skip_on_cran()
   for (trim in c(FALSE, TRUE)) {
     nw <- network.initialize(10, directed = FALSE)
     nw %v% "race" <- rep(1:3, length.out = 10)
@@ -401,6 +409,7 @@ test_that("non-nested EDA produces expected statistic names, with or without tri
 })
 
 test_that("trimming non-nested EDA fails when it should", {
+  skip_on_cran()
   nw <- network.initialize(10, directed = FALSE)
   nw %v% "race" <- rep(1:3, length.out = 10)
   nw %v% "age" <- rep(1:2, length.out = 10)
@@ -448,6 +457,7 @@ test_that("trimming non-nested EDA fails when it should", {
 })
 
 test_that("non-nested EDA with substitutions", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw %v% "race" <- rep(letters[1:3], length.out = 100)
   nw %v% "age" <- rep(1:2, length.out = 100)
@@ -551,6 +561,7 @@ test_that("non-nested EDA with substitutions", {
 context("trim_netest Functionality")
 
 test_that("trim_netest keep argument behaves as expected", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "sex", rbinom(50, 1, 0.5))
 
@@ -633,6 +644,7 @@ test_that("Full STERGM", {
 context("Extremal Targets")
 
 test_that("extremal targets are handled correctly", {
+  skip_on_cran()
   ff <- ~edges + offset(degrange(6)) + nodematch("sex") + nodematch("race") +
           degrange(6) + offset(nodematch("sex")) + degree(5)
 

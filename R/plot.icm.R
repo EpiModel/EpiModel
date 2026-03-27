@@ -42,6 +42,7 @@
 #' @seealso [icm()]
 #'
 #' @examples
+#' \donttest{
 #' ## Example 1: Plotting multiple compartment values from SIR model
 #' param <- param.icm(inf.prob = 0.5, act.rate = 0.5, rec.rate = 0.02)
 #' init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
@@ -64,6 +65,7 @@
 #' par(mfrow = c(1, 2))
 #' plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
+#' }
 #'
 plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
                      sims = NULL, sim.col = NULL, sim.lwd = NULL,

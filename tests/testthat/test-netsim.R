@@ -31,6 +31,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("netsim for edges only, SI, one-mode, closed, 2 sim", {
+    skip_on_cran()
     param <- param.net(inf.prob = 0.3, act.rate = 0.5)
     init <- init.net(i.num = 10)
     control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
@@ -55,6 +56,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("netsim for edges only, SIS, one-mode, closed, 2 sim", {
+    skip_on_cran()
     param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
     init <- init.net(i.num = 10)
     control <- control.net(type = "SIS", nsims = 2, nsteps = 5, verbose = FALSE)
@@ -75,6 +77,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
+    skip_on_cran()
     param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
     init <- init.net(i.num = 10, r.num = 0)
     control <- control.net(type = "SIR", nsims = 2, nsteps = 5, verbose = FALSE)
@@ -88,6 +91,7 @@ for (trim in c(FALSE, TRUE)) {
 }
 
 test_that("netsim implicit save.network option", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -108,6 +112,7 @@ test_that("netsim implicit save.network option", {
 })
 
 test_that("netsim duration 1", {
+  skip_on_cran()
   estd1 <- netest(nw, formation = ~edges + nodematch("race"),
                   target.stats = c(25, 10),
                   coef.diss = dissolution_coefs(~offset(edges), 1, 0),
@@ -155,6 +160,7 @@ test_that("netsim duration 1", {
 })
 
 test_that("non-nested EDA works in netsim", {
+  skip_on_cran()
   nw <- network.initialize(10, directed = FALSE)
   nw %v% "race" <- rep(1:2, length.out = 10)
   nw %v% "age" <- rep(1:5, length.out = 10)
@@ -177,6 +183,7 @@ test_that("non-nested EDA works in netsim", {
 })
 
 test_that("netsim diss.stats", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -210,6 +217,7 @@ test_that("netsim diss.stats", {
 })
 
 test_that("save.other sim naming", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges,
                 target.stats = c(25),
@@ -230,6 +238,7 @@ test_that("save.other sim naming", {
 })
 
 test_that("name_saveout_elts unit", {
+  skip_on_cran()
   simnames <- paste0("sim", 1:4)
   elt_name <- "this_elt"
 
@@ -251,6 +260,7 @@ test_that("name_saveout_elts unit", {
 })
 
 test_that("edges correction behaves as expected", {
+  skip_on_cran()
   nw <- network_initialize(n = 500)
 
   est <- netest(nw, formation = ~edges + degree(1),
@@ -338,6 +348,7 @@ test_that("edges correction behaves as expected", {
 })
 
 test_that("networkDynamics produced by netsim match those produced by simulate when they should", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges,
                 target.stats = c(25),
@@ -397,6 +408,7 @@ test_that("networkDynamics produced by netsim match those produced by simulate w
 })
 
 test_that("networkLites produced by netsim match those produced by simulate when they should", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges,
                 target.stats = c(25),
@@ -458,6 +470,7 @@ test_that("networkLites produced by netsim match those produced by simulate when
 context("Netsim Checkpoint")
 
 test_that("netsim with checkpoint", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(
     nw,
@@ -502,6 +515,7 @@ test_that("netsim with checkpoint", {
 context("Netsim End Horizon")
 
 test_that("netsim with checkpoint", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(
     nw,
@@ -554,6 +568,7 @@ test_that("netsim with checkpoint", {
 context("Network Models with Formation Offsets")
 
 test_that("netsim works with standard offset models", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + offset(nodematch("race")),
@@ -572,6 +587,7 @@ test_that("netsim works with standard offset models", {
 })
 
 test_that("netsim works with faux offset models", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
@@ -592,6 +608,7 @@ test_that("netsim works with faux offset models", {
 context("Time-Varying Network Parameters")
 
 test_that("time varying parameters for one-mode", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -620,6 +637,7 @@ test_that("time varying parameters for one-mode", {
 
 
 test_that("time varying parameters for two-group models", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
   formation <- ~edges

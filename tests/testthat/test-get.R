@@ -21,25 +21,30 @@ mod <- netsim(est, param, init, control)
 # get network -------------------------------------------------------------
 
 test_that("get_network extracts to nD object", {
+  skip_on_cran()
   a <- get_network(mod, sim = 2)
   expect_is(a, "networkDynamic")
 })
 
 test_that("get_network extracts and collapses to network object", {
+  skip_on_cran()
   a <- get_network(mod, collapse = TRUE, at = 3)
   expect_is(a, "network")
 })
 
 test_that("get_network yields warning when missing network", {
+  skip_on_cran()
   mod$network <- NULL
   expect_error(get_network(mod, sim = 1))
 })
 
 test_that("get_network yields warning for incorrect sim", {
+  skip_on_cran()
   expect_error(get_network(mod, sim = 5))
 })
 
 test_that("get_network error flags", {
+  skip_on_cran()
   expect_error(get_network(list(a = 1), 1), "no applicable method for 'get_network'")
   expect_error(get_network(mod, 4), "Specify a single sim between 1 and 3")
   expect_error(get_network(mod, 1, collapse = TRUE), "Specify collapse time")
@@ -52,11 +57,13 @@ test_that("get_network error flags", {
 # get transmat ------------------------------------------------------------
 
 test_that("get_transmat extracts data frame", {
+  skip_on_cran()
   a <- get_transmat(mod, sim = 1)
   expect_is(a, "data.frame")
 })
 
 test_that("get_transmat error flags", {
+  skip_on_cran()
   expect_error(get_transmat(mod, sim = 5), "Specify sim between 1 and 3")
   expect_error(get_transmat(list(a = 1)), "x must be of class netsim")
   mod$stats$transmat <- NULL
@@ -67,12 +74,14 @@ test_that("get_transmat error flags", {
 # get nwstats -------------------------------------------------------------
 
 test_that("get_nwstats extracts data frame", {
+  skip_on_cran()
   a <- get_nwstats(mod, sim = 1)
   expect_is(a, "data.frame")
   expect_equal(get_nwstats(mod, sim = 1:3), get_nwstats(mod))
 })
 
 test_that("get_nwstats error flags", {
+  skip_on_cran()
   expect_error(get_nwstats(list(a = 1)), "x must be of class netsim")
   expect_error(get_nwstats(mod, sim = 5))
   expect_error(get_nwstats(mod, sim = 1, network = 2),
@@ -85,6 +94,7 @@ test_that("get_nwstats error flags", {
 # get sims ----------------------------------------------------------------
 
 test_that("get_sims extracts simulations", {
+  skip_on_cran()
   expect_is(get_sims(mod, sims = 1), "netsim")
   expect_is(get_sims(mod, sims = 2:3), "netsim")
   expect_is(get_sims(mod, sims = "mean", var = "i.num"), "netsim")
@@ -105,6 +115,7 @@ test_that("get_sims extracts simulations", {
 
 
 test_that("get_sims error flags", {
+  skip_on_cran()
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
   expect_error(get_sims(mod), "Specify sims as a vector")
 
@@ -182,6 +193,7 @@ control3 <- control.net(type = "SI", nsteps = 4, nsims = 2,
 mod3 <- netsim(est, param, init, control3)
 
 test_that("get_nwstats with mode = list behaves as expected", {
+  skip_on_cran()
   expect_equal(unique(lapply(get_nwstats(dxs, mode = "list"), class)),
                list(c("matrix", "array")))
   expect_equal(unique(lapply(get_nwstats(dxd, mode = "list"), class)),

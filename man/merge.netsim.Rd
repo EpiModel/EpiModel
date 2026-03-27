@@ -70,6 +70,7 @@ parameterization in every respect (except number of simulations) and binds
 the results.
 }
 \examples{
+\donttest{
 # Network model
 nw <- network_initialize(n = 100)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -93,6 +94,7 @@ z <- merge(x, y)
 as.data.frame(x)
 as.data.frame(y)
 as.data.frame(z)
+}
 
 }
 \keyword{extract}

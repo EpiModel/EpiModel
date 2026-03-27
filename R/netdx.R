@@ -135,6 +135,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Static diagnostics on a simple model
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -144,6 +145,7 @@
 #' dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
 #' dx
 #' plot(dx)
+#' }
 #'
 #' \dontrun{
 #' # Static diagnostics with additional network statistics

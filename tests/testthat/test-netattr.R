@@ -1,6 +1,7 @@
 context("Network Attributes with Arrivals")
 
 test_that("Updating attributes in open populations", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, attrname = "group", rep(1:2, each = 25))
 
@@ -319,6 +320,7 @@ test_that("restart error flags", {
 })
 
 test_that("reinitialization works with open population, nwterms, and epi.by", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw %v% "race" <- rep(0:1, length.out = 50)
   est <- netest(nw, formation = ~edges + nodematch("race"),
@@ -349,6 +351,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
 })
 
 test_that("reinitialization a truncated netsim object", {
+  skip_on_cran()
   nw <- network_initialize(n = 50)
   nw %v% "race" <- rep(0:1, length.out = 50)
   est <- netest(

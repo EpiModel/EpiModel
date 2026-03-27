@@ -203,6 +203,7 @@ responsibility when using new modules.
 }
 
 \examples{
+\donttest{
 ## Example SIR model parameterization with fixed and random parameters
 # Network model estimation
 nw <- network_initialize(n = 100)
@@ -237,6 +238,7 @@ sim
 
 # Parameter sets can be extracted with:
 get_param_set(sim)
+}
 
 }
 \seealso{

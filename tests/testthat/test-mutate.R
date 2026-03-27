@@ -1,6 +1,7 @@
 context("Mutate Functions")
 
 test_that("mutate_epi.netsim", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
   formation <- ~edges

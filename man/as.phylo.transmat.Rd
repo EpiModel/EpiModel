@@ -45,6 +45,7 @@ trees with separate root nodes), this function will return a list of class
 \code{\link[ape:read.tree]{ape::read.tree()}}.
 }
 \examples{
+\donttest{
 set.seed(13)
 
 # Fit a random mixing TERGM with mean degree of 1 and mean edge
@@ -73,5 +74,6 @@ par(mar = c(1,1,1,1))
 plot(tmPhylo, show.node.label = TRUE,
               root.edge = TRUE,
               cex = 0.75)
+}
 
 }

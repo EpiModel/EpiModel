@@ -282,6 +282,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Initialize and parameterize the network model
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -300,6 +301,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #'
 #' # Extract data from all simulations
 #' as.data.frame(dx)
+#' }
 #'
 as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
                                 sim = NULL, ...) {
