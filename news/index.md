@@ -1,5 +1,18 @@
 # Changelog
 
+## EpiModel 2.6.1
+
+### BREAKING CHANGES
+
+### NEW FEATURES
+
+### BUG FIXES
+
+- Fix `plot.epi.data.frame` to correctly display truncated the time
+  axis.
+
+### OTHER
+
 ## EpiModel 2.6.0
 
 CRAN release: 2026-03-19
