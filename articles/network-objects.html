@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.1</h4>
             
-            <h4 data-toc-skip class="date">2026-03-30</h4>
+            <h4 data-toc-skip class="date">2026-04-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/network-objects.Rmd" class="external-link"><code>vignettes/network-objects.Rmd</code></a></small>
       <div class="d-none name"><code>network-objects.Rmd</code></div>
@@ -70,121 +70,279 @@ v2.6.1</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette discusses mechanisms usable inside
-<code>EpiModel</code> network models with custom modules. More
-information about these in the <a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending
-EpiModel</a> section of the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
-Epidemics</a> course materials.</p>
-<p>Inside the simulation, the networks themselves are stored under
-<code>dat$run$nw</code>. Ultimately this vignette will describe multiple
-aspects of working with network objects.</p>
+<p>This vignette covers how to work with network objects, edgelists, and
+partnership histories in EpiModel network models with custom extension
+modules. It assumes familiarity with setting up and running network
+models with <code><a href="../reference/netsim.html">netsim()</a></code> and with the extension API. See the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
+Epidemics</a> (NME) course materials and the <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a>
+for background.</p>
+<p>For working with nodal attributes and epidemic summary statistics,
+see the companion vignette <em>Working with Custom Attributes and
+Summary Statistics in EpiModel</em>.</p>
+</div>
+<div class="section level2">
+<h2 id="network-storage-modes">Network Storage Modes<a class="anchor" aria-label="anchor" href="#network-storage-modes"></a>
+</h2>
+<p>EpiModel supports two storage modes for networks, controlled by the
+<code>tergmLite</code> parameter in <code><a href="../reference/control.net.html">control.net()</a></code>:</p>
+<ul>
+<li><p><strong>Full mode</strong> (<code>tergmLite = FALSE</code>, the
+default): Networks are stored as <code>networkDynamic</code> objects,
+which preserve the complete history of edge activations and
+deactivations. This allows extraction of the full dynamic network after
+simulation. However, <code>networkDynamic</code> objects consume
+substantial memory.</p></li>
+<li><p><strong>tergmLite mode</strong> (<code>tergmLite = TRUE</code>):
+Networks are stored as lightweight <code>networkLite</code> objects
+containing only the current edgelist and nodal attributes. This provides
+a 20–50x performance improvement and much lower memory usage, making it
+essential for large-scale research models. The trade-off is that
+<code><a href="../reference/get_network.html">get_network()</a></code> returns a <code>networkLite</code> (a
+snapshot) rather than a full dynamic network history.</p></li>
+</ul>
+<p>Most extension modules work identically under both modes because they
+access networks through EpiModel’s accessor functions rather than
+manipulating network objects directly.</p>
+</div>
+<div class="section level2">
+<h2 id="accessing-network-objects">Accessing Network Objects<a class="anchor" aria-label="anchor" href="#accessing-network-objects"></a>
+</h2>
+<div class="section level3">
+<h3 id="during-simulation-inside-modules">During Simulation (Inside Modules)<a class="anchor" aria-label="anchor" href="#during-simulation-inside-modules"></a>
+</h3>
+<p>Inside a custom module, use the <code><a href="../reference/get_network.html">get_network()</a></code> and
+<code><a href="../reference/set_network.html">set_network()</a></code> accessors to work with network objects:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get the network for layer 1</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># After modifying a network, set it back</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_network.html">set_network</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span>, nw <span class="op">=</span> <span class="va">nw</span><span class="op">)</span></span></code></pre></div>
+<p>These accessors handle the tergmLite vs. full-mode distinction
+internally, so your module code works under both storage modes. In full
+mode, <code><a href="../reference/get_network.html">get_network()</a></code> returns a <code>networkDynamic</code>
+object; in tergmLite mode, it returns a <code>networkLite</code>.</p>
+<p>In practice, you rarely need to access network objects directly.
+Instead, use the edgelist accessor functions described below, which also
+work correctly under both storage modes.</p>
+</div>
+<div class="section level3">
+<h3 id="after-simulation">After Simulation<a class="anchor" aria-label="anchor" href="#after-simulation"></a>
+</h3>
+<p>After a <code>netsim</code> call, extract network objects with
+<code><a href="../reference/get_network.html">get_network()</a></code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract the network from simulation 1, network layer 1</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Collapse to a static cross-section at time step 50 (full mode only)</span></span>
+<span><span class="va">nw_at_50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span>, at <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<p>In full mode, <code><a href="../reference/get_network.html">get_network()</a></code> returns a
+<code>networkDynamic</code> object. In tergmLite mode, it returns a
+<code>networkLite</code> object representing the final state. The
+<code>collapse</code> and <code>at</code> arguments are only available
+in full mode.</p>
+<p><strong>Note:</strong> Network objects are only saved in the output
+when <code>save.network</code> is <code>TRUE</code> in
+<code><a href="../reference/control.net.html">control.net()</a></code> (the default for full mode). In tergmLite
+mode, there is no network history to save.</p>
+</div>
+<div class="section level3">
+<h3 id="transmission-matrix">Transmission Matrix<a class="anchor" aria-label="anchor" href="#transmission-matrix"></a>
+</h3>
+<p>The transmission matrix records every transmission event during the
+simulation:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">transmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p>This returns a <code>data.frame</code> with columns including
+<code>at</code> (time step), <code>sus</code> (ID of the newly infected
+node), <code>inf</code> (ID of the infecting node), <code>infDur</code>
+(duration of infector’s infection), <code>transProb</code>,
+<code>actRate</code>, and <code>finalProb</code>. Transmission matrices
+are saved by default (<code>save.transmat = TRUE</code> in
+<code><a href="../reference/control.net.html">control.net()</a></code>).</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="current-edgelists">Current Edgelists<a class="anchor" aria-label="anchor" href="#current-edgelists"></a>
+</h2>
+<p>Current edgelists are the set of active partnerships at the present
+time step. These are the most commonly used network data structures
+inside extension modules.</p>
+<div class="section level3">
+<h3 id="single-network">Single Network<a class="anchor" aria-label="anchor" href="#single-network"></a>
+</h3>
+<p><code><a href="../reference/get_edgelist.html">get_edgelist()</a></code> returns the current edgelist for a given
+network as a two-column matrix of positional IDs:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_edgelist.html">get_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p>Each row is an active partnership. Column 1 is the positional ID of
+the “head” node; column 2 is the “tail” node. This function works
+identically under both storage modes.</p>
+</div>
+<div class="section level3">
+<h3 id="multiple-networks">Multiple Networks<a class="anchor" aria-label="anchor" href="#multiple-networks"></a>
+</h3>
+<p><code><a href="../reference/get_edgelists_df.html">get_edgelists_df()</a></code> combines edgelists from multiple
+network layers into a single <code>data.frame</code> with a
+<code>network</code> column:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># All networks</span></span>
+<span><span class="va">el_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_edgelists_df.html">get_edgelists_df</a></span><span class="op">(</span><span class="va">dat</span>, networks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Specific networks</span></span>
+<span><span class="va">el_12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_edgelists_df.html">get_edgelists_df</a></span><span class="op">(</span><span class="va">dat</span>, networks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The returned <code>data.frame</code> has columns <code>head</code>,
+<code>tail</code>, and <code>network</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="discordant-edgelist">Discordant Edgelist<a class="anchor" aria-label="anchor" href="#discordant-edgelist"></a>
+</h3>
+<p>The discordant edgelist identifies partnerships where partners have
+different values of a status attribute—the key data structure for
+modeling transmission. For example, in an SI model, discordant edges are
+those where one partner is susceptible and the other is infected:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">disc_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_discordant_edgelist.html">get_discordant_edgelist</a></span><span class="op">(</span></span>
+<span>  <span class="va">dat</span>,</span>
+<span>  status.attr <span class="op">=</span> <span class="st">"status"</span>,</span>
+<span>  head.status <span class="op">=</span> <span class="st">"i"</span>,</span>
+<span>  tail.status <span class="op">=</span> <span class="st">"s"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The returned <code>data.frame</code> has columns <code>head</code>,
+<code>tail</code>, <code>head_status</code>, <code>tail_status</code>,
+and <code>network</code>. Both orderings are captured: if node A
+(infected) is partnered with node B (susceptible), the edge appears
+regardless of which is the “head” vs “tail” in the underlying
+network.</p>
+<p>See also <code><a href="../reference/discord_edgelist.html">discord_edgelist()</a></code> for the original, simpler
+version of this function used in built-in models.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="positional-indexing-and-unique-ids">Positional Indexing and Unique IDs<a class="anchor" aria-label="anchor" href="#positional-indexing-and-unique-ids"></a>
+</h2>
+<p>EpiModel uses two ways to reference nodes:</p>
+<ul>
+<li><p><strong>By position:</strong> Think of it like a row number in a
+spreadsheet. <code>dat$attr$active[3]</code> accesses the third node’s
+value directly. This is the standard way to look up node information and
+is very fast. In a model with 100 nodes, positions range from 1 to 100.
+When nodes depart, they may be dropped from the vectors, freeing their
+position for new arrivals.</p></li>
+<li><p><strong>By <code>unique_id</code>:</strong> A globally unique
+integer attribute assigned to each node at creation and never reused.
+Slower to look up, but allows referencing nodes that have already
+departed. Used by cumulative edgelists and attribute histories.</p></li>
+</ul>
+<p>Conversion between the two systems is handled internally by EpiModel.
+The <code><a href="../reference/unique_id-tools.html">get_unique_ids()</a></code> and <code><a href="../reference/unique_id-tools.html">get_posit_ids()</a></code>
+functions perform the conversion. See
+<code><a href="../reference/unique_id-tools.html">help("unique_id-tools", package = "EpiModel")</a></code> for
+details.</p>
 </div>
 <div class="section level2">
 <h2 id="cumulative-edgelist">Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#cumulative-edgelist"></a>
 </h2>
-<p>The cumulative edgelist refers to the historical list of edges in a
-network with the time step they start and stopped. Such a list allows to
-query current relationships (contacts, partnerships, etc.) as well as
-past ones.</p>
+<p>The cumulative edgelist is a historical record of all edges in a
+network, including the time steps when each edge started and stopped.
+This allows querying both current and past partnerships—essential for
+contact tracing, partnership duration analysis, and reachability
+analysis.</p>
 <div class="section level3">
-<h3 id="using-the-cumulative-edgelist">Using the Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#using-the-cumulative-edgelist"></a>
+<h3 id="enabling-cumulative-edgelists">Enabling Cumulative Edgelists<a class="anchor" aria-label="anchor" href="#enabling-cumulative-edgelists"></a>
 </h3>
-<p>The creation and update of the cumulative edgelist is done through
-the <code><a href="../reference/update_cumulative_edgelist.html">EpiModel::update_cumulative_edgelist</a></code> function.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">network</span>, truncate <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
-<p>This function takes 3 arguments:</p>
-<ol style="list-style-type: decimal">
+<p>Cumulative edgelist tracking must be explicitly enabled in
+<code><a href="../reference/control.net.html">control.net()</a></code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"SI"</span>,</span>
+<span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  nsteps <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Enable tracking during simulation</span></span>
+<span>  save.cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># Save in output after simulation</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Without <code>cumulative.edgelist = TRUE</code>, calls to
+<code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> silently do nothing and calls
+to <code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> return an empty
+<code>tibble</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="updating-the-cumulative-edgelist">Updating the Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#updating-the-cumulative-edgelist"></a>
+</h3>
+<p>The cumulative edgelist must be updated at each time step after
+network resimulation. In a custom module or at the end of
+initialization:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span>, truncate <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>truncate</code> argument controls memory usage:</p>
+<ul>
 <li>
-<code>dat</code>: the <em>Main List Object</em>.</li>
+<code>truncate = Inf</code>: Keep the full history of all edges (no
+removal).</li>
 <li>
-<code>network</code>: the number of the network for which to create
-the cumulative edgelist (for multi-layer network simulations).</li>
+<code>truncate = 0</code> (the default): Keep only currently active
+edges. Use this if you only need to track active edge start times.</li>
 <li>
-<code>truncate</code>: a number of time steps after which an
-inactive edge should be removed from the cumulative edgelist (this saves
-computer memory for large-scale simulations).</li>
-</ol>
-<p>The function returns a modified version of <code>dat</code> that
-needs to be assigned back.</p>
-<p>The following snippet will update the cumulative edgelist for all the
-networks used by a model and remove the edges that ended more than 100
-steps ago.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">n_network</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">run</span><span class="op">$</span><span class="va">nw</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<code>truncate = N</code>: Remove edges that ended more than
+<code>N</code> time steps ago. This balances historical depth with
+memory use.</li>
+</ul>
+<p>To update all networks in a multi-layer model:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">n_network</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">num.nw</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">n_network</span>, truncate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>In a complete model, this code would need to be run at the end of the
-initialization module and at each time-step after the resimulation of
-the networks.</p>
 </div>
 <div class="section level3">
 <h3 id="accessing-the-cumulative-edgelist">Accessing the Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#accessing-the-cumulative-edgelist"></a>
 </h3>
-<p>Cumulative edge-list refers to nodes with their Unique Ids. See
-<code><a href="../reference/unique_id-tools.html">help("unique_id-tools", package = "EpiModel")</a></code> for more
-information.</p>
 <div class="section level4">
 <h4 id="for-a-specific-network">For a Specific Network<a class="anchor" aria-label="anchor" href="#for-a-specific-network"></a>
 </h4>
-<p>Accessing the cumulative edge-list of a given network is done using
-the <code><a href="../reference/get_cumulative_edgelist.html">EpiModel::get_cumulative_edgelist</a></code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">network</span><span class="op">)</span></span></code></pre></div>
-<p>The returned <code>el_cuml</code> object is a <a href="https://tibble.tidyverse.org/" class="external-link"><code>tibble</code></a> with four
-columns:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p>The returned <code>tibble</code> has four columns:</p>
 <ol style="list-style-type: decimal">
 <li>
-<code>head</code>: the <code>unique_id</code> first node of the
-edge.</li>
+<code>head</code>: the <code>unique_id</code> of the first
+node.</li>
 <li>
-<code>tail</code>: the <code>unique_id</code> second node of the
-edge.</li>
+<code>tail</code>: the <code>unique_id</code> of the second
+node.</li>
 <li>
-<code>start</code>: the time-step where the edge was created.</li>
+<code>start</code>: the time step when the edge formed.</li>
 <li>
-<code>stop</code>: the last time-step the edge was active.</li>
+<code>stop</code>: the last time step the edge was active, or
+<code>NA</code> if the edge is still active.</li>
 </ol>
-<p><code><a href="../reference/get_cumulative_edgelist.html">EpiModel::get_cumulative_edgelist</a></code> will
-<strong>always</strong> return a <a href="https://tibble.tidyverse.org/" class="external-link"><code>tibble</code></a> with this 4
-columns, even if the cumulative edgelist has not been calculated for
-this particular network or if no edges are present. In these cases, the
-<a href="https://tibble.tidyverse.org/" class="external-link"><code>tibble</code></a> will
-have no rows but keep the correct column structure.</p>
-<p>The <code>stop</code> column will <strong>always</strong> contain
-<code>NA</code> if an edge is currently active.</p>
-<p>Once an edge is not present anymore, the <code>stop</code> column for
-this edge will contains the last step the edge was active. This means
-that an edge with a <code>stop</code> value existed from
-<code>start</code> to <code>stop</code> both inclusive. This makes it
-coherent with how <code>R</code> treats the indexes in a vector for
-instance (from 1 to <code>length(vector)</code> inclusive).</p>
+<p>An edge with <code>start = 5</code> and <code>stop = 12</code>
+existed from steps 5 through 12, inclusive.
+<code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> always returns a
+<code>tibble</code> with these four columns, even if no edges exist or
+the cumulative edgelist was not enabled—in those cases, the
+<code>tibble</code> has zero rows.</p>
 </div>
 <div class="section level4">
 <h4 id="for-multiple-networks">For Multiple Networks<a class="anchor" aria-label="anchor" href="#for-multiple-networks"></a>
 </h4>
-<p>We often want to get the cumulative edgelist over several networks as
-one. <code><a href="../reference/get_cumulative_edgelists_df.html">EpiModel::get_cumulative_edgelists_df</a></code> function provide
-such functionality.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cumls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></span><span class="op">(</span><span class="va">dat</span>, networks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>networks</code> argument can be a vector of network
-position or <code>NULL</code>. In this latter case, all networks will be
-selected.</p>
-<p>The output of this function is similar to
-<code><a href="../reference/get_cumulative_edgelist.html">EpiModel::get_cumulative_edgelist</a></code> with the addition of a
-<code>network</code> column, indicating for each edge the networks it
-exists on.</p>
+<p>The <code>networks</code> argument accepts a vector of network
+indices or <code>NULL</code> (all networks). The returned
+<code>data.frame</code> adds a <code>network</code> column identifying
+which network layer each edge belongs to.</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="contact-tracing">Contact Tracing<a class="anchor" aria-label="anchor" href="#contact-tracing"></a>
 </h3>
-<p>A typical use of the cumulative edgelist is the trace the contacts of
-a node over given number of steps. The
-<code><a href="../reference/get_partners.html">EpiModel::get_partners</a></code> function simplifies this
-process:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/get_partners.html">get_partners()</a></code> extracts the partners of specified nodes
+from the cumulative edgelist:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">partner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_partners.html">get_partners</a></span><span class="op">(</span></span>
 <span>    <span class="va">dat</span>,</span>
 <span>    <span class="va">index_posit_ids</span>,</span>
@@ -192,34 +350,122 @@ process:</p>
 <span>    truncate <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>    only.active.nodes <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Here we call “indexes” the nodes whose partners (contacts) we want to
-extract. The arguments are:</p>
+<p>Arguments:</p>
 <ol style="list-style-type: decimal">
 <li>
-<code>dat</code>: as in
-<code>get_cumulative_edgelists_df</code>.</li>
+<code>dat</code>: the main list object.</li>
 <li>
-<code>index_posit_ids</code>: a list of positional Ids for the
-indexes of interest.</li>
+<code>index_posit_ids</code>: a vector of positional IDs for the
+nodes of interest (the “indexes”).</li>
 <li>
-<code>networks</code>: as in
-<code>get_cumulative_edgelists_df</code>.</li>
+<code>networks</code>: which network layers to search
+(<code>NULL</code> for all).</li>
 <li>
-<code>truncate</code>: similar to the <code>truncate</code> argument
-to <code>update_cumulative_edgelist</code> this argument filter out
-partnerships over this age.</li>
+<code>truncate</code>: only include edges that ended within this
+many steps (filters by edge age).</li>
 <li>
-<code>only.active.nodes</code>: if set to <code>TRUE</code>,
-partnership with inactive nodes are removed.</li>
+<code>only.active.nodes</code>: if <code>TRUE</code>, exclude
+partnerships with inactive (departed) nodes.</li>
 </ol>
-<p>The output is similar to <code>get_cumulative_edgelists_df</code> but
-the first two columns are called <code>index</code> and
-<code>partner</code> and contains the Unique Ids of the indexes given in
-argument in the first column and there partners in the second one.</p>
-<p>Note that the we refer to the indexes of interest with their
-Positional Ids but the <code>index</code> and <code>partners</code>
-columns contains Unique Ids as they can refer to nodes no longer in the
-network.</p>
+<p>The output is similar to <code><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code>
+but with columns <code>index</code> and <code>partner</code> (both
+containing unique IDs) instead of <code>head</code> and
+<code>tail</code>. Note that indexes are specified by positional ID but
+the output uses unique IDs, since partners may include nodes that have
+already departed.</p>
+</div>
+<div class="section level3">
+<h3 id="cumulative-degree">Cumulative Degree<a class="anchor" aria-label="anchor" href="#cumulative-degree"></a>
+</h3>
+<p><code><a href="../reference/get_cumulative_degree.html">get_cumulative_degree()</a></code> counts the number of distinct
+partners each node has had over the tracked history:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cum_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_degree.html">get_cumulative_degree</a></span><span class="op">(</span></span>
+<span>    <span class="va">dat</span>,</span>
+<span>    index_posit_ids <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,</span>
+<span>    networks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    truncate <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>    only.active.nodes <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This returns a <code>data.frame</code> with columns
+<code>index_pid</code> (positional ID) and <code>degree</code>
+(cumulative partner count). It wraps <code><a href="../reference/get_partners.html">get_partners()</a></code> and
+counts unique partners per index.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="reachability-analysis">Reachability Analysis<a class="anchor" aria-label="anchor" href="#reachability-analysis"></a>
+</h2>
+<p>Reachability functions determine which nodes can be connected through
+chains of partnerships over a time window. These are useful for outbreak
+investigation (forward reachability: who could a node have infected?)
+and source tracing (backward reachability: who could have infected a
+node?).</p>
+<p>These functions operate on cumulative edgelist objects directly—not
+on <code>dat</code>—and are typically used for post-simulation
+analysis.</p>
+<div class="section level3">
+<h3 id="forward-reachable-set">Forward Reachable Set<a class="anchor" aria-label="anchor" href="#forward-reachable-set"></a>
+</h3>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span></span>
+<span>  <span class="va">el_cuml</span>,</span>
+<span>  from_step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  to_step <span class="op">=</span> <span class="fl">52</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span>, <span class="fl">42</span><span class="op">)</span>,  <span class="co"># NULL for all nodes with edges</span></span>
+<span>  dense_optim <span class="op">=</span> <span class="st">"auto"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Returns a list with two elements:</p>
+<ul>
+<li>
+<code>reached</code>: a named list where each element contains the
+set of nodes reachable from each index node through chains of
+partnerships active during <code>[from_step, to_step]</code>.</li>
+<li>
+<code>lengths</code>: a matrix with one row per node and one column
+per time step (plus an initial column), showing how the reachable set
+grows over time. This allows back-calculating the distance to each
+reachable node.</li>
+</ul>
+<p>Nodes are identified by unique ID in the output (named as
+<code>node_ID</code>). Nodes with no edges during the analysis period
+are excluded from the output; their forward reachable set is just
+themselves (size 1).</p>
+</div>
+<div class="section level3">
+<h3 id="backward-reachable-set">Backward Reachable Set<a class="anchor" aria-label="anchor" href="#backward-reachable-set"></a>
+</h3>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bkwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_backward_reachable</a></span><span class="op">(</span></span>
+<span>  <span class="va">el_cuml</span>,</span>
+<span>  from_step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  to_step <span class="op">=</span> <span class="fl">52</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span>, <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Same interface and output structure as
+<code><a href="../reference/reachable-nodes.html">get_forward_reachable()</a></code>, but follows partnerships backward
+in time. This answers the question: which nodes could have reached this
+node through a chain of partnerships during the specified period?</p>
+</div>
+<div class="section level3">
+<h3 id="performance-notes">Performance Notes<a class="anchor" aria-label="anchor" href="#performance-notes"></a>
+</h3>
+<p>Both reachability functions use the <a href="https://progressr.futureverse.org/" class="external-link">progressr</a> package for
+progress reporting. Wrap calls in
+<code><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">progressr::with_progress()</a></code> to display a progress bar:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">260</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>These functions are efficient for large networks because they operate
+on cumulative edgelists (much smaller than full
+<code>networkDynamic</code> objects). For sets of more than 5 nodes,
+they are faster than iterating over <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath()</a></code>. The
+<code>dense_optim</code> argument controls an adjacency-list
+optimization that helps with dense networks; <code>"auto"</code> enables
+it when the number of edges exceeds the number of nodes.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

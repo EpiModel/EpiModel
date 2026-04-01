@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">Samuel M.
 Jenness, Steven M. Goodreau, Martina Morris, and Adrien Le Guillou</h4>
             
-            <h4 data-toc-skip class="date">2026-03-30</h4>
+            <h4 data-toc-skip class="date">2026-04-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/Intro.Rmd" class="external-link"><code>vignettes/Intro.Rmd</code></a></small>
       <div class="d-none name"><code>Intro.Rmd</code></div>
@@ -67,71 +67,337 @@ Jenness, Steven M. Goodreau, Martina Morris, and Adrien Le Guillou</h4>
 
     
     
-<div class="section level3">
-<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h3>
+<div class="section level2">
+<h2 id="what-epimodel-does">What EpiModel Does<a class="anchor" aria-label="anchor" href="#what-epimodel-does"></a>
+</h2>
 <p>The <strong>EpiModel</strong> package provides tools for simulating
-mathematical models of infectious disease dynamics. Epidemic model
-classes include deterministic compartmental models, stochastic
-individual-contact models, and stochastic network models. Network models
-use the robust statistical methods of temporal exponential-family random
-graph models (ERGMs) from the Statnet suite of software packages in R.
-Standard templates for epidemic modeling include SI, SIR, and SIS
-disease types. EpiModel features an API for extending these templates to
-address novel scientific research aims.</p>
+mathematical models of infectious disease dynamics. It supports three
+model classes:</p>
+<ul>
+<li>
+<strong>Deterministic Compartmental Models (DCMs):</strong>
+ODE-based, population-level models for rapid exploration of epidemic
+dynamics under simplifying assumptions.</li>
+<li>
+<strong>Stochastic Individual-Contact Models (ICMs):</strong>
+Agent-based models with random mixing and stochastic variability.</li>
+<li>
+<strong>Stochastic Network Models:</strong> The primary focus of
+EpiModel. These use exponential-family random graph models (ERGMs) from
+the Statnet suite to represent dynamic contact networks where
+partnerships form, persist, and dissolve according to statistically
+estimated rules. Network models capture features that strongly influence
+transmission dynamics—degree distributions, partnership durations,
+concurrency, assortative mixing, and clustering.</li>
+</ul>
+<p>All three model classes share a unified API: configure inputs with
+<code>param.*()</code>, <code>init.*()</code>, and
+<code>control.*()</code>, then run simulations with <code><a href="../reference/dcm.html">dcm()</a></code>,
+<code><a href="../reference/icm.html">icm()</a></code>, or <code><a href="../reference/netsim.html">netsim()</a></code>.</p>
+<p>This vignette walks through the full network model pipeline, from
+network estimation through epidemic simulation and analysis.</p>
+</div>
+<div class="section level2">
+<h2 id="the-network-model-pipeline">The Network Model Pipeline<a class="anchor" aria-label="anchor" href="#the-network-model-pipeline"></a>
+</h2>
+<div class="section level3">
+<h3 id="step-1-network-estimation">Step 1: Network Estimation<a class="anchor" aria-label="anchor" href="#step-1-network-estimation"></a>
+</h3>
+<p>Network models begin with specifying and estimating the contact
+network. We define a network of 500 people, then estimate an ERGM that
+produces networks with a target mean degree of 0.7 (175 edges), limited
+concurrency (no more than 110 nodes with 2+ partners), and no one with
+4+ partners. Partnerships last an average of 50 time steps.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.epimodel.org/" class="external-link">EpiModel</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">formation</span> <span class="op">&lt;-</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span> <span class="op">+</span> <span class="fu">degrange</span><span class="op">(</span>from <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">target.stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">175</span>, <span class="fl">110</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span></span>
+<span>  dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>,</span>
+<span>  duration <span class="op">=</span> <span class="fl">50</span>   <span class="co"># mean partnership duration in time steps</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, <span class="va">formation</span>, <span class="va">target.stats</span>, <span class="va">coef.diss</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: 'glpk' selected as the solver, but package 'Rglpk' is not available;</span></span>
+<span><span class="co">## falling back to 'lpSolveAPI'. This should be fine unless the sample size and/or</span></span>
+<span><span class="co">## the number of parameters is very big.</span></span></code></pre>
 </div>
 <div class="section level3">
-<h3 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+<h3 id="step-2-network-diagnostics">Step 2: Network Diagnostics<a class="anchor" aria-label="anchor" href="#step-2-network-diagnostics"></a>
 </h3>
-<p>This vignette provides a general orientation to the
-<strong>EpiModel</strong> tutorials and documentation within the package
-and hosted elsewhere online. Most full-length tutorials may be found at
-the <strong>EpiModel</strong> website (<a href="https://www.epimodel.org" class="external-link uri">https://www.epimodel.org</a>), which also points to our
-<strong>Network Modeling for Epidemics (NME)</strong> short-course (<a href="https://epimodel.github.io/sismid/" class="external-link uri">https://epimodel.github.io/sismid/</a>).</p>
-<p>The current version of EpiModel is v2.6.1. Within the package, you
-can consult the extensive help documentation and vignettes for each
-exported function:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"EpiModel"</span><span class="op">)</span></span></code></pre></div>
-<p>To see the latest updates to <strong>EpiModel</strong>, consult the
-<code>NEWS</code> file in the package, which is also summarized on our
-Github Releases (<a href="https://github.com/EpiModel/EpiModel/releases" class="external-link uri">https://github.com/EpiModel/EpiModel/releases</a>).</p>
-<p>If you are interested in the stochastic network model class, we
-suggest learning about using <strong>EpiModel</strong> with the
-following sequence:</p>
-<ol style="list-style-type: decimal">
-<li>The best place to start is our primary main methods paper, published
-in the <em>Journal of Statistical Software</em> at the reference
-below.</li>
-<li>After that, we suggest you work through the Network Modeling for
-Epidemics course materials to understand some of the background network
-theory and see how to run parameterize and run built-in network
-models.</li>
-<li>Those interested in extending EpiModel for novel research aims
-should then consult the model extension materials of the NME course, and
-look at the variety of extension model templates in our <strong>EpiModel
-Gallery</strong> (<a href="https://epimodel.github.io/EpiModel-Gallery/" class="uri">https://epimodel.github.io/EpiModel-Gallery/</a>).</li>
-<li>Some of the latest developments in EpiModel are related to working
-with network model inputs and outputs, which are covered in these
-advanced topics vignettes within the package:</li>
-</ol>
+<p>Before using the estimated network in an epidemic model, we diagnose
+the fit. <code>netdx</code> simulates dynamic networks from the fitted
+model and compares summary statistics against targets. This is a
+critical validation step.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netdx.html">netdx</a></span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>The formation diagnostic shows how well the simulated networks
+maintain the target statistics (dashed lines) over time. The mean across
+simulations (solid line) and the interquartile range (shaded band)
+should track the targets closely:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Intro_files/figure-html/step2_plot1-1.png" class="r-plt" alt="" width="768"></p>
+<p>The duration diagnostic confirms that partnership durations match the
+specified target of 50 time steps:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span>, type <span class="op">=</span> <span class="st">"duration"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Intro_files/figure-html/step2_plot2-1.png" class="r-plt" alt="" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="step-3-epidemic-simulation">Step 3: Epidemic Simulation<a class="anchor" aria-label="anchor" href="#step-3-epidemic-simulation"></a>
+</h3>
+<p>With a validated network model, we layer on the epidemic. This SIS
+model uses a per-act transmission probability of 0.4, 2 acts per
+partnership per time step, and a recovery rate of 0.05. We seed 10
+infections and run 5 stochastic simulations for 500 time steps.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.4</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-4-analyzing-results">Step 4: Analyzing Results<a class="anchor" aria-label="anchor" href="#step-4-analyzing-results"></a>
+</h3>
+<div class="section level4">
+<h4 id="epidemic-trajectories">Epidemic Trajectories<a class="anchor" aria-label="anchor" href="#epidemic-trajectories"></a>
+</h4>
+<p>The default plot shows compartment sizes over time, with the mean
+across simulations (solid line), individual simulation traces, and a
+shaded interquartile range capturing stochastic variability:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span>, sim.lines <span class="op">=</span> <span class="cn">TRUE</span>, sim.alpha <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>     mean.lwd <span class="op">=</span> <span class="fl">3</span>, qnts <span class="op">=</span> <span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"SIS Epidemic on a Dynamic Network"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Intro_files/figure-html/step4_epi-1.png" class="r-plt" alt="" width="768"></p>
+<p>For prevalence (proportions rather than counts), use
+<code>popfrac = TRUE</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span>, y <span class="op">=</span> <span class="st">"i.num"</span>, popfrac <span class="op">=</span> <span class="cn">TRUE</span>, sim.lines <span class="op">=</span> <span class="cn">TRUE</span>, sim.alpha <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>     mean.lwd <span class="op">=</span> <span class="fl">3</span>, qnts <span class="op">=</span> <span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Infection Prevalence"</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Prevalence"</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Intro_files/figure-html/step4_prev-1.png" class="r-plt" alt="" width="700"></p>
+</div>
+<div class="section level4">
+<h4 id="summary-statistics">Summary Statistics<a class="anchor" aria-label="anchor" href="#summary-statistics"></a>
+</h4>
+<p><code>summary</code> reports means, standard deviations, and
+proportions across simulations at a specified time step:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sim</span>, at <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## EpiModel Summary</span></span>
+<span><span class="co">## =======================</span></span>
+<span><span class="co">## Model class: netsim</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Simulation Details</span></span>
+<span><span class="co">## -----------------------</span></span>
+<span><span class="co">## Model type: SIS</span></span>
+<span><span class="co">## No. simulations: 5</span></span>
+<span><span class="co">## No. time steps: 500</span></span>
+<span><span class="co">## No. NW groups: 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Model Statistics</span></span>
+<span><span class="co">## ------------------------------</span></span>
+<span><span class="co">## Time: 500 </span></span>
+<span><span class="co">## ------------------------------ </span></span>
+<span><span class="co">##            mean      sd    pct</span></span>
+<span><span class="co">## Suscept.  277.6  11.194  0.555</span></span>
+<span><span class="co">## Infect.   222.4  11.194  0.445</span></span>
+<span><span class="co">## Total     500.0   0.000  1.000</span></span>
+<span><span class="co">## S -&gt; I     11.8   3.564     NA</span></span>
+<span><span class="co">## I -&gt; S     13.8   4.970     NA</span></span>
+<span><span class="co">## ------------------------------</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="data-extraction">Data Extraction<a class="anchor" aria-label="anchor" href="#data-extraction"></a>
+</h4>
+<p>All epidemic data can be extracted as a <code>data.frame</code> for
+custom analysis—per-simulation values, means, or standard deviations
+across simulations:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   sim time s.num i.num num si.flow is.flow</span></span>
+<span><span class="co">## 1   1    1   490    10 500      NA      NA</span></span>
+<span><span class="co">## 2   1    2   484    16 500       6       0</span></span>
+<span><span class="co">## 3   1    3   481    19 500       4       1</span></span>
+<span><span class="co">## 4   1    4   480    20 500       2       1</span></span>
+<span><span class="co">## 5   1    5   479    21 500       5       4</span></span>
+<span><span class="co">## 6   1    6   472    28 500       7       0</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="transmission-trees">Transmission Trees<a class="anchor" aria-label="anchor" href="#transmission-trees"></a>
+</h4>
+<p>The transmission matrix records every infection event: who infected
+whom, when, and with what probability. This can be converted into a
+phylogenetic tree to visualize chains of transmission.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run a separate SI model seeded with a single infection for a cleaner tree</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">param2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.5</span>, act.rate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">init2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">control2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">1</span>, nsteps <span class="op">=</span> <span class="fl">60</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">sim2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param2</span>, <span class="va">init2</span>, <span class="va">control2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tm</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># Groups:   at, sus [6]</span></span></span>
+<span><span class="co">##      at   sus   inf network infDur transProb actRate finalProb</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>     2   100    55       1     22       0.5       2      0.75</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>     2   500    55       1     22       0.5       2      0.75</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>     3   141   462       1     44       0.5       2      0.75</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span>     4   175   141       1      1       0.5       2      0.75</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span>     5   223   418       1      5       0.5       2      0.75</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span>    16   414   418       1     16       0.5       2      0.75</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmPhylo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as.phylo.transmat.html">as.phylo.transmat</a></span><span class="op">(</span><span class="va">tm</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## found multiple trees, returning a list of 3phylo objects</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tmPhylo</span>, show.node.label <span class="op">=</span> <span class="cn">TRUE</span>, root.edge <span class="op">=</span> <span class="cn">TRUE</span>, cex <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Transmission Tree"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Intro_files/figure-html/step4_tree-1.png" class="r-plt" alt="" width="768"><img src="Intro_files/figure-html/step4_tree-2.png" class="r-plt" alt="" width="768"><img src="Intro_files/figure-html/step4_tree-3.png" class="r-plt" alt="" width="768"></p>
+<p>Each tip is an infected person; each internal node (labeled with the
+infector’s ID) is a transmission event. The horizontal axis shows time,
+revealing when and how the epidemic branched through the network.</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="extending-epimodel">Extending EpiModel<a class="anchor" aria-label="anchor" href="#extending-epimodel"></a>
+</h2>
+<p>The built-in SI, SIR, and SIS models are starting points. EpiModel’s
+extension API allows you to define custom models with arbitrary disease
+states, demographics, interventions, and feedback between the epidemic
+and the network. A custom module is simply a function that takes the
+simulation state (<code>dat</code>) and current time step
+(<code>at</code>), modifies state, and returns it:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example: a custom progression module for an SEIR model</span></span>
+<span><span class="va">progress_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
+<span>  <span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># E -&gt; I transition</span></span>
+<span>  <span class="va">ids.EtoI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">active</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"e"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span>  <span class="va">status</span><span class="op">[</span><span class="va">ids.EtoI</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"i"</span></span>
+<span></span>
+<span>  <span class="co"># I -&gt; R transition</span></span>
+<span>  <span class="va">ids.ItoR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">active</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.02</span><span class="op">)</span></span>
+<span>  <span class="va">status</span><span class="op">[</span><span class="va">ids.ItoR</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"r"</span></span>
+<span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span>, <span class="va">status</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"ei.flow"</span>, <span class="va">at</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ids.EtoI</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"ir.flow"</span>, <span class="va">at</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ids.ItoR</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Custom modules are passed to <code>control.net</code> and integrated
+into the simulation loop. The <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a>
+provides a library of worked extension examples, and the advanced
+vignettes in this package document the full API.</p>
+</div>
+<div class="section level2">
+<h2 id="learning-pathway">Learning Pathway<a class="anchor" aria-label="anchor" href="#learning-pathway"></a>
+</h2>
+<p>We recommend the following tiered sequence for learning EpiModel,
+consistent with the learning pathway on the <a href="https://www.epimodel.org" class="external-link">EpiModel website</a>. This is oriented
+towards those interested in stochastic network models, the primary focus
+of EpiModel.</p>
+<div class="section level3">
+<h3 id="beginner">Beginner<a class="anchor" aria-label="anchor" href="#beginner"></a>
+</h3>
 <ul>
-<li>Working With Model Parameters in EpiModel</li>
-<li>Working With Custom Attributes and Summary Statistics in
-EpiModel</li>
-<li>Working With Network Objects in EpiModel</li>
+<li>
+<strong>Intro to EpiModel vignette:</strong> This vignette and the
+full <a href="https://epimodel.github.io/EpiModel/">package
+documentation</a> provide an overview of the three model classes and the
+unified API (core functions: <code>netest</code>, <code>netdx</code>,
+<code>netsim</code>).</li>
+<li>
+<strong>JSS methods paper:</strong> Our primary reference, published
+in the <em>Journal of Statistical Software</em>, provides the
+mathematical and computational foundations for all three model classes.
+See citation below.</li>
+<li>
+<strong>NME Course, Section I (Chapters 3–35):</strong> Lecture
+slides and tutorials covering network science, ERGM specification, model
+diagnostics, and built-in epidemic models (<a href="https://epimodel.github.io/sismid/" class="external-link uri">https://epimodel.github.io/sismid/</a>).</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+<h3 id="intermediate">Intermediate<a class="anchor" aria-label="anchor" href="#intermediate"></a>
 </h3>
-<p>Any technical coding questions, non-technical conceptual modeling
-questions, or EpiModel feature requests may be posted as a Github issues
-at our main Github repository (<a href="https://github.com/EpiModel/EpiModel/issues" class="external-link uri">https://github.com/EpiModel/EpiModel/issues</a>).</p>
+<ul>
+<li>
+<strong>NME Course, Section II (Chapters 36–49):</strong> <a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending
+EpiModel</a> materials covering the extension API for building custom
+models with novel disease states, demographics, and interventions.</li>
+<li>
+<strong>EpiModel Gallery:</strong> A library of worked extension
+model templates demonstrating custom disease states, demographics,
+interventions, and multi-layer networks (<a href="https://epimodel.github.io/EpiModel-Gallery/" class="uri">https://epimodel.github.io/EpiModel-Gallery/</a>).</li>
+</ul>
 </div>
 <div class="section level3">
-<h3 id="epimodel-citation">EpiModel Citation<a class="anchor" aria-label="anchor" href="#epimodel-citation"></a>
+<h3 id="advanced">Advanced<a class="anchor" aria-label="anchor" href="#advanced"></a>
 </h3>
+<ul>
+<li>
+<strong>Package vignettes:</strong> These vignettes within the
+package cover specific topics for users building custom network models
+with the extension API:
+<ul>
+<li>
+<em>Working with Model Parameters:</em> Scenarios for time-varying
+parameters, parameter input via tables, and random parameter
+distributions for sensitivity analysis.</li>
+<li>
+<em>Working with Custom Attributes and Summary Statistics:</em>
+Nodal attributes, attribute histories, epidemic trackers, and custom
+summary statistics.</li>
+<li>
+<em>Working with Network Objects:</em> Accessing and manipulating
+network objects, edgelists, cumulative edgelists, and reachability
+analysis within custom modules.</li>
+</ul>
+</li>
+<li>
+<strong>EpiModelHPC &amp; slurmworkflow:</strong> Tools for running
+large-scale simulations on high-performance computing clusters.</li>
+<li>
+<strong>Template repositories:</strong> <a href="https://github.com/EpiModel/EpiModelHIV-p" class="external-link">EpiModelHIV</a> and <a href="https://github.com/EpiModel/EpiModelCOVID" class="external-link">EpiModelCOVID</a>
+provide full-scale research model implementations.</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="package-documentation">Package Documentation<a class="anchor" aria-label="anchor" href="#package-documentation"></a>
+</h2>
+<p>The current version of EpiModel is v2.6.1. Within the package,
+consult the help documentation for each exported function:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"EpiModel"</span><span class="op">)</span></span></code></pre></div>
+<p>To see the latest updates, consult the <code>NEWS</code> file in the
+package or our GitHub Releases (<a href="https://github.com/EpiModel/EpiModel/releases" class="external-link uri">https://github.com/EpiModel/EpiModel/releases</a>).</p>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>Technical coding questions, conceptual modeling questions, and
+feature requests may be posted as GitHub issues at our main repository
+(<a href="https://github.com/EpiModel/EpiModel/issues" class="external-link uri">https://github.com/EpiModel/EpiModel/issues</a>).</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
 <p>If using EpiModel for teaching or research, please include a citation
 to our primary methods paper:</p>
 <blockquote>

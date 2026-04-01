@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.1</h4>
             
-            <h4 data-toc-skip class="date">2026-03-30</h4>
+            <h4 data-toc-skip class="date">2026-04-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/model-parameters.Rmd" class="external-link"><code>vignettes/model-parameters.Rmd</code></a></small>
       <div class="d-none name"><code>model-parameters.Rmd</code></div>
@@ -70,41 +70,70 @@ v2.6.1</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>In a model, <em>parameters</em> are the input variables used to
-define aspects of the system behavior. In the basic built-in SIS
-(Susceptible-Infected-Susceptible) model, these parameters could be the
-<strong>act rate</strong>, the <strong>infection probability</strong>
-and the <strong>recovery rate</strong>. In simple models, each of these
-parameters are single fixed values that do not change over the course of
-a simulation. In more complex models, we may want more flexibility in
-model parameterization.</p>
-<p>Therefore, in this vignette, we demonstrate how to implement:</p>
+<p>This vignette assumes familiarity with setting up and running network
+models in EpiModel. See the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
+Epidemics</a> (NME) course materials and the <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a>
+for background.</p>
+<p>For working with nodal attributes and epidemic summary statistics,
+see the companion vignette <em>Working with Custom Attributes and
+Summary Statistics in EpiModel</em>. For network objects and edgelists,
+see <em>Working with Network Objects in EpiModel</em>.</p>
+<p>In a model, <em>parameters</em> are the input variables that define
+aspects of system behavior. In a basic SIS
+(Susceptible-Infected-Susceptible) model, these might include an
+<strong>infection probability</strong>, an <strong>act rate</strong>,
+and a <strong>recovery rate</strong>. In simple models, each parameter
+is a single fixed value that remains constant throughout a simulation.
+Real-world applications, however, often require more flexibility:
+parameters that change over time (e.g., to represent an intervention
+rollout or behavioral change during an epidemic), parameters drawn from
+distributions (for sensitivity analysis or calibration), or large
+parameter sets managed via spreadsheets.</p>
+<p>This vignette demonstrates how to implement:</p>
 <ul>
-<li>Scenarios: sets of parameters to be changed for a simulation, either
-at the start or at a specific timestep.</li>
-<li>Random parameters: distributions of possible values rather than a
-single fixed value.</li>
-<li>Time-varying parameters and control settings: The scenarios
-functionality provides the most straightforward way to implement
-time-varying parameters, but more direct functionality is demonstrated
-here for advanced users seeking to implement time-varying parameters or
-control settings.</li>
+<li>
+<strong>Scenarios:</strong> Named sets of parameter changes applied
+at the start of a simulation or at specific time steps—the primary
+mechanism for time-varying parameters, counterfactual analysis, and
+intervention modeling.</li>
+<li>
+<strong>Parameter input via tables:</strong> Passing many parameters
+at once through a <code>data.frame</code>, enabling spreadsheet-based
+parameter management.</li>
+<li>
+<strong>Random parameters:</strong> Distributions of parameter
+values rather than single fixed values, for uncertainty quantification
+and sensitivity analysis.</li>
+<li>
+<strong>Parameter and control updaters (advanced):</strong> The
+low-level mechanism underlying scenarios, exposed directly for cases
+where the scenario API is not flexible enough.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="scenarios">Scenarios<a class="anchor" aria-label="anchor" href="#scenarios"></a>
 </h2>
-<p>Scenarios can be defined as a single set of parameters to be used for
-a particular model run. For this example we will use a simple SIS model
-to demonstrate how scenarios work. First, we set up the model as we
-would normally.</p>
+<p>Scenarios allow you to define named sets of parameter values that can
+change at specific time steps during a simulation. This is the
+recommended approach for implementing time-varying parameters—for
+example, modeling an intervention that reduces transmission probability
+partway through an epidemic, or comparing multiple policy
+alternatives.</p>
+<p>Our research paper implementing time-varying parameter scenarios for
+COVID-19 sexual distancing interventions was published in the
+<em>Journal of Infectious Diseases</em>. The code <a href="https://github.com/EpiModel/SexualDistancing" class="external-link">can be found
+here</a>.</p>
+<div class="section level3">
+<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+</h3>
+<p>First, we set up a simple SIS model as the base case.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>,</span>
 <span>  formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">60</span>,</span>
-<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,  <span class="co"># duration = 10, closed population</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting simulated annealing (SAN)</span></span>
@@ -119,19 +148,25 @@ would normally.</p>
 <span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.9</span>, rec.rate <span class="op">=</span> <span class="fl">0.01</span>, act.rate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">1</span>, nsteps <span class="op">=</span> <span class="fl">250</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="scenario-definitions">Scenario Definitions<a class="anchor" aria-label="anchor" href="#scenario-definitions"></a>
 </h3>
-<p>To define the scenarios, we will make use of the
-<code><a href="../reference/create_scenario_list.html">EpiModel::create_scenario_list</a></code> function. It takes a
-specially formatted <code>data.frame</code> as input and outputs a list
-of scenarios usable by EpiModel.</p>
-<p>We will use the <code><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tibble::tribble</a></code> function to create the
-<code>data.frame</code> here. But any data frame construction methods
-will work as long as the resulting <code>data.frame</code> is properly
-formatted.</p>
+<p>Scenarios are defined using <code>create_scenario_list</code>, which
+takes a specially formatted <code>data.frame</code> as input and outputs
+a list of scenarios usable by EpiModel. We use
+<code><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tibble::tribble</a></code> here for readability, but any
+<code>data.frame</code> constructor works.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span></span>
 <span><span class="va">scenarios.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">.scenario.id</span>, <span class="op">~</span><span class="va">.at</span>, <span class="op">~</span><span class="va">inf.prob</span>, <span class="op">~</span><span class="va">rec.rate</span>,</span>
@@ -183,21 +218,26 @@ formatted.</p>
 </tr>
 </tbody>
 </table>
-<p>A <code>data.frame</code> of scenarios must be formatted as follows.
-First, there are two required columns: - <code>.scenario.id</code>: an
-identifier for the scenario - <code>.at</code>: when should the changes
-apply during the simulation</p>
-<p>Any number of parameters columns. They must start with a letter and
-contain only letters, numbers or <code>.</code>. Underscores
-<code>_</code> are not accepted. If a cell is left empty
-(<code>NA</code>), EpiModel will assume that you want to set the
-parameter to <code>NA</code>. <code>NA</code> does not mean that the
-value should remain unmodified.</p>
-<p>In the <code>data.frame</code> above, three rows share the same
-<code>.scenario.id</code>. This means that EpiModel will consider it a
-single scenario were multiple events occur during the simulation.</p>
-<p>To go from the <code>scenarios.df</code> to a list of usable
-scenarios we run:</p>
+<p>The <code>data.frame</code> requires two columns:</p>
+<ul>
+<li>
+<code>.scenario.id</code>: an identifier for the scenario.</li>
+<li>
+<code>.at</code>: the time step at which the parameter changes
+should apply. Use <code>0</code> for changes that take effect before the
+simulation begins.</li>
+</ul>
+<p>Remaining columns are parameter names. They must start with a letter
+and contain only letters, numbers, or <code>.</code> (underscores are
+reserved for vector indexing, described below). If a cell is
+<code>NA</code>, EpiModel sets that parameter to <code>NA</code>—it does
+<em>not</em> mean “leave unchanged.”</p>
+<p>In this example, the <code>"multiple_changes"</code> scenario has
+three rows sharing the same <code>.scenario.id</code>, representing a
+single scenario with parameter changes at three different time
+points.</p>
+<p>To convert from the <code>data.frame</code> to a usable list of
+scenarios:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scenario_list.html">create_scenario_list</a></span><span class="op">(</span><span class="va">scenarios.df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">scenarios.list</span>, max.level <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -211,24 +251,24 @@ scenarios we run:</p>
 <span><span class="co">#&gt;  $ multiple_changes:List of 2</span></span>
 <span><span class="co">#&gt;   ..$ id                 : chr "multiple_changes"</span></span>
 <span><span class="co">#&gt;   ..$ .param.updater.list:List of 3</span></span></code></pre></div>
-<p>We now have a named list of scenarios. We will run all the scenarios,
-combine there results and plot the number of susceptible and infected
-over time to show what happened. To do so, we loop over all 3 scenarios
-and use <code><a href="../reference/use_scenario.html">EpiModel::use_scenario</a></code> function to create a new
-<code>sc.param</code> object to be used for the simulation
-parameters.</p>
+</div>
+<div class="section level3">
+<h3 id="running-scenarios">Running Scenarios<a class="anchor" aria-label="anchor" href="#running-scenarios"></a>
+</h3>
+<p>We loop over all scenarios, using <code>use_scenario</code> to create
+a modified parameter object for each. Under the hood,
+<code>use_scenario</code> generates parameter updaters (described in the
+Advanced section below) that apply the specified changes at the
+designated time steps.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># creation of a list that will hold the result of the simulations</span></span>
+<code class="sourceCode R"><span><span class="co"># List to hold simulation results</span></span>
 <span><span class="va">d_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"list"</span>, length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scenarios.list</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scenarios.list</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">scenario</span> <span class="kw">in</span> <span class="va">scenarios.list</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># the id of the scenario is stored into `scenario$id`</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenario</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span>
-<span></span>
 <span>  <span class="va">sc.param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/use_scenario.html">use_scenario</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">scenario</span><span class="op">)</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">sc.param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span>  <span class="co"># conversion to `data.frame` and storage of the scenario name in it</span></span>
 <span>  <span class="va">d_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span>  <span class="va">d_sim</span><span class="op">[[</span><span class="st">"scenario"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">scenario</span><span class="op">$</span><span class="va">id</span></span>
 <span>  <span class="va">d_list</span><span class="op">[[</span><span class="va">scenario</span><span class="op">$</span><span class="va">id</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">d_sim</span></span>
@@ -248,14 +288,17 @@ parameters.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 200 the following parameters were modified:</span></span>
 <span><span class="co">#&gt; 'inf.prob', 'rec.rate'</span></span></code></pre></div>
-<p>We see that for the “multiple_changes” scenarios, we received two
-messages, at time step 100 and 200, telling us that some parameters were
-changed during the simulation. The other scenarios were silent as the
-changes occurred before the simulation began.</p>
-<p>Now we can merge and plot the results:</p>
+<p>For the <code>"multiple_changes"</code> scenario, messages appear at
+time steps 100 and 200 indicating that parameters were modified during
+the simulation. The other scenarios are silent because their changes
+occur before the simulation begins (<code>.at = 0</code>).</p>
+<p>Now we can plot the results. We use base R plotting here rather than
+<code><a href="../reference/plot.netsim.html">plot.netsim()</a></code> because we need to overlay results from
+separate <code>netsim</code> runs on a single axis.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">$</span><span class="va">base</span><span class="op">$</span><span class="va">time</span>, <span class="va">d_list</span><span class="op">$</span><span class="va">base</span><span class="op">$</span><span class="va">i.num</span>,</span>
-<span>     type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">250</span><span class="op">)</span><span class="op">)</span></span>
+<span>     type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">250</span><span class="op">)</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Time Step"</span>, ylab <span class="op">=</span> <span class="st">"Number Infected"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">$</span><span class="va">initial_change</span><span class="op">$</span><span class="va">time</span>, <span class="va">d_list</span><span class="op">$</span><span class="va">initial_change</span><span class="op">$</span><span class="va">i.num</span>,</span>
 <span>      type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">$</span><span class="va">multiple_changes</span><span class="op">$</span><span class="va">time</span>, <span class="va">d_list</span><span class="op">$</span><span class="va">multiple_changes</span><span class="op">$</span><span class="va">i.num</span>,</span>
@@ -264,35 +307,30 @@ changes occurred before the simulation began.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">)</span>,</span>
 <span>       col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, lwd <span class="op">=</span> <span class="fl">2</span>, cex <span class="op">=</span> <span class="fl">0.9</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="model-parameters_files/figure-html/plotting-1.png" class="r-plt" alt="" width="768"></p>
-<p>We can see that in the <code>initial_change</code> scenario, the
-epidemic speed is slower than in the base “scenario” as we have reduced
-the infection probability in the former.</p>
-<p>The “multiple_changes” scenario shows different but expected results:
-- at first the epidemic is very slow as the infection probability is low
-and the recovery rate is high. - then at step 100, we apply the same
-values as in the “base” scenario. Thus the epidemic trajectory
-increases. - then at step 200, we reduce the infection probability and
-increase the recovery rate, which results in a quick epidemic
-extinction.</p>
-<p>These scenarios are simplified to demonstrate the scenario system.
-Our research paper implementing the idea of multiple time-varying
-parameter changes was published in the <em>Journal of Infectious
-Disease</em>. The code <a href="https://github.com/EpiModel/SexualDistancing" class="external-link">can be found
-here</a>.</p>
+<p>The <code>"initial_change"</code> scenario shows a slower epidemic
+than the base case because the infection probability is reduced from 0.9
+to 0.2 from the start.</p>
+<p>The <code>"multiple_changes"</code> scenario demonstrates three
+phases:</p>
+<ul>
+<li>Steps 1–99: Slow growth (low infection probability, higher recovery
+rate).</li>
+<li>Steps 100–199: Base-case parameters applied, so the epidemic
+trajectory accelerates.</li>
+<li>Steps 200–250: Infection probability drops and recovery rate
+increases, driving rapid epidemic decline.</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="scenarios-with-parameter-vectors">Scenarios with Parameter Vectors<a class="anchor" aria-label="anchor" href="#scenarios-with-parameter-vectors"></a>
 </h3>
-<p>In full-scale modeling projects, we often have vectors of parameters.
-For example, we may have a parameter, <code>hiv.test.rate</code>, which
-is a vector of length 3 containing the weekly probabilities of HIV
-screening for Black, Hispanic or White persons, respectively.</p>
-<p>For such parameters we can still use the scenarios approach described
-above. But in this case, we must define a column for each element of the
-modified parameter and end it with a numerical value for the order in
-which it lies in the vector: for example, <code>\_1</code>,
-<code>\_2</code> and <code>\_3</code> for the B, H, and W rates. Here is
-what that looks like:</p>
+<p>In full-scale modeling projects, parameters are often vectors. For
+example, <code>hiv.test.rate</code> might be a vector of length 3
+containing weekly HIV screening probabilities for Black, Hispanic, and
+White persons.</p>
+<p>To use vectors in scenarios, create a separate column for each
+element using the naming convention <code>paramname_N</code>, where
+<code>N</code> is the position in the vector:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">.scenario.id</span>, <span class="op">~</span><span class="va">.at</span>, <span class="op">~</span><span class="va">hiv.test.rate_1</span>, <span class="op">~</span><span class="va">hiv.test.rate_2</span>, <span class="op">~</span><span class="va">hiv.test.rate_3</span>,</span>
@@ -356,42 +394,47 @@ what that looks like:</p>
 </tr>
 </tbody>
 </table>
-<p>One thing to note is that you must pass in the values for each
-sub-parameter in the <code>scenarios.df</code>. For example, even if the
-value of the HIV screening rate for Hispanic persons (the second value
-in the vector) is not changing across any scenarios, it is still
-necessary to define it as <code>hiv.test.rate_2</code>.</p>
-<p>When working with a lot of parameters, it is recommended to store the
-<code>scenarios.df</code> as CSV or Excel file so your parameters can be
-easily shared and edited.</p>
+<p>All elements of a vector parameter must be specified in the
+<code>data.frame</code>, even if some values do not change across
+scenarios (e.g., <code>hiv.test.rate_2</code> is constant here but must
+still be included).</p>
+<p>When working with many parameters, we recommend storing the
+<code>scenarios.df</code> as a CSV, RDS or Excel file for easier sharing
+and editing.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># CSV</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">scenarios.df</span>, <span class="st">"scenarios.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">scenarios.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"scenarios.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># RDS</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">scenarios.df</span>, <span class="st">"scenarios.rds"</span><span class="op">)</span></span>
+<span><span class="va">scenarios.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"scenarios.rds"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="parameters-input-via-table">Parameters Input Via Table<a class="anchor" aria-label="anchor" href="#parameters-input-via-table"></a>
+<h2 id="parameter-input-via-table">Parameter Input via Table<a class="anchor" aria-label="anchor" href="#parameter-input-via-table"></a>
 </h2>
-<p>Similar to the scenarios, the <code>param.net</code> function that
-creates the <code>param</code> object for <code>netsim</code> allows for
-inputting model parameters with a data.frame table. This allows a user
-to pass in many parameters at once, or work with a spreadsheet to track
-and update parameters before use in EpiModel.</p>
-<p>The <code>data.frame</code> of parameters must be specifically
-formatted such that the first 3 columns must be: 1. ‘param’: The name of
-the parameter. If this is a non-scalar parameter (a vector of length
-&gt; 1), end the parameter name with the position on the vector (e.g.,
-<code>"p_1"</code>, <code>"p_2"</code>, …). 2. ‘value’: the value for
-the parameter (or the value of the parameter in the Nth position if
-non-scalar). 3. ‘type’: a character string containing either
-<code>"numeric"</code>, <code>"logical"</code>, or
-<code>"character"</code> to define the parameter object class.</p>
-<p>In addition to these 3 columns, the <code>data.frame</code> can
-contain any number of other columns, such as <code>details</code> or
-<code>source</code> columns to document parameter meta-data. However,
-these extra columns will not be used by EpiModel.</p>
-<p>In this example, we are inputting the parameters into a
-<code>data.frame</code> via <code>tribble</code>. In practice,
-parameters may be stored in an Excel file or CSV file and imported into
-a <code>data.frame</code> using the usual read functions.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The <code>param.net</code> function accepts a <code>data.frame</code>
+of parameters through the <code>data.frame.params</code> argument. This
+allows passing many parameters at once or working with a spreadsheet to
+track and update parameters before use in EpiModel.</p>
+<p>The <code>data.frame</code> requires three columns:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>param</code>: The parameter name. For vector parameters
+(length &gt; 1), append the position with an underscore (e.g.,
+<code>"p_1"</code>, <code>"p_2"</code>).</li>
+<li>
+<code>value</code>: The parameter value (as a character
+string).</li>
+<li>
+<code>type</code>: The type of the parameter value. Only three
+values are accepted: <code>"numeric"</code>, <code>"logical"</code>, or
+<code>"character"</code>.</li>
+</ol>
+<p>Additional columns (e.g., <code>details</code>, <code>source</code>)
+may be included for documentation but are ignored by EpiModel.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">param</span>, <span class="op">~</span><span class="va">value</span>, <span class="op">~</span><span class="va">type</span>,</span>
 <span>  <span class="st">"hiv.test.rate_1"</span>,  <span class="st">"0.003"</span>,        <span class="st">"numeric"</span>,</span>
@@ -441,15 +484,11 @@ a <code>data.frame</code> using the usual read functions.</p>
 </tr>
 </tbody>
 </table>
-<p>To use this table of parameters with <code>param.net</code>, pass in
-the table of parameters via the <code>data.frame.params</code> argument
-in <code>param.net</code>. Note that these parameters may also be
-combined with named parameters outside of a table, for maximum
-flexibility. In this example, we also pass in two extra parameters,
-<code>other.param</code> and <code>act.rate</code>. Note that when the
-<code>param</code> object is printed, all of the parameters are
-processed as expected.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Pass the table via <code>data.frame.params</code>. These parameters
+can be combined with named parameters for maximum flexibility. In case
+of conflict, named parameters take priority over those in the
+<code>data.frame</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>data.frame.params <span class="op">=</span> <span class="va">df_params</span>,</span>
 <span>                   other.param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">param</span></span>
@@ -464,26 +503,22 @@ processed as expected.</p>
 <div class="section level2">
 <h2 id="random-parameters">Random Parameters<a class="anchor" aria-label="anchor" href="#random-parameters"></a>
 </h2>
-<p>We have demonstrated how to work with fixed and time-varying
-parameters above. One may also be interested in working with
-distributions of parameters that may follow some parametric or
-non-parametric form. For example, we may want to sample a range of
-values for the probability of infection given contact for each
-simulation of a model, instead of using a single value across all
-simulations.</p>
+<p>Fixed parameters assume that each input value is known with
+certainty. In practice, we may want to explore how uncertainty in
+parameter values propagates to uncertainty in epidemic outcomes.
+EpiModel supports drawing parameter values from distributions, so that
+each simulation uses a different realization.</p>
 <div class="section level3">
 <h3 id="the-model">The Model<a class="anchor" aria-label="anchor" href="#the-model"></a>
 </h3>
-<p>EpiModel now includes functionality to input distributions of
-parameters for network models. We will demonstrate this with a simple SI
-model.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>We demonstrate with a simple SI model.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
 <span>  <span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>,</span>
 <span>  target.stats <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,  <span class="co"># duration = 10, closed population</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting simulated annealing (SAN)</span></span>
@@ -546,33 +581,23 @@ model.</p>
 <span><span class="co">#&gt; ----------------------- </span></span>
 <span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
 <span><span class="co">#&gt; edges    0.1    0.065  -34.615  0.022  -1.608            NA         0.048</span></span></code></pre></div>
-<p>In the parameter list, we define four parameters:
-<code>inf.prob</code>, which will remain a single fixed value, but also
-<code>act.rate</code>, <code>dummy.param</code>, and
-<code>dummy.strat.param</code>, which here are fixed but will be defined
-below as random. The <code>dummy.strat.param</code> parameter has two
-elements; this vector approach may be used, for example, to stratify a
-parameter by subpopulation (e.g., as we did for the race-stratified HIV
-screening rate example above). The last line prints a summary of the
-model object. We can see the value of the parameters under the “Fixed
-Parameters” section. Note the additional <code>groups</code> parameter
-defined automatically by <code>EpiModel</code> as part of the “SI” model
-definition.</p>
+<p>Here we define four parameters: <code>inf.prob</code> (which will
+remain fixed), <code>act.rate</code>, <code>dummy.param</code>, and
+<code>dummy.strat.param</code> (which we will make random below). The
+<code>dummy.strat.param</code> parameter is a vector of length 2, which
+could represent a parameter stratified by subpopulation.</p>
 </div>
 <div class="section level3">
 <h3 id="adding-random-parameters">Adding Random Parameters<a class="anchor" aria-label="anchor" href="#adding-random-parameters"></a>
 </h3>
-<p>To allow our parameters to be drawn from a distribution of random
-values, we use the <code>random.params</code> argument to
-<code>param.net</code>. There are two ways of defining which parameters
-are random, and the distribution of values for those random parameters
-to draw randomly and how to draw them.</p>
+<p>To draw parameters from distributions, use the
+<code>random.params</code> argument to <code>param.net</code>. There are
+two approaches.</p>
 <div class="section level4">
 <h4 id="generator-functions">Generator Functions<a class="anchor" aria-label="anchor" href="#generator-functions"></a>
 </h4>
-<p>The first option is to define a generator function for each parameter
-we want to declare as random.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Define a generator function for each random parameter:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my.randoms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  act.rate <span class="op">=</span> <span class="fu"><a href="../reference/param_random.html">param_random</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  dummy.param <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -598,35 +623,26 @@ we want to declare as random.</p>
 <span><span class="co">#&gt; act.rate = &lt;function&gt;</span></span>
 <span><span class="co">#&gt; dummy.param = &lt;function&gt;</span></span>
 <span><span class="co">#&gt; dummy.strat.param = &lt;function&gt;</span></span></code></pre></div>
-<p>We kept the <code>inf.prob</code> parameter fixed at
-<code>0.3</code>, and then defined a <code>list</code> object called
-<code>my.randoms</code> containing 3 elements:</p>
+<p>The <code>my.randoms</code> list contains three elements:</p>
 <ul>
 <li>
 <code>act.rate</code> uses the <code>param_random</code> <a href="https://adv-r.hadley.nz/function-factories.html" class="external-link">function
-factory</a> defined by EpiModel (see
-<code><a href="../reference/param_random.html">?EpiModel::param_random</a></code>). In this case, each simulation
-will sample one of the three defined values in the vector with equal
-probability.</li>
+factory</a> provided by EpiModel (see <code><a href="../reference/param_random.html">?param_random</a></code>). Each
+simulation samples one of the three values with equal probability.</li>
 <li>
-<code>dummy.param</code> is a function with no argument that returns
-a random value from a beta distribution.</li>
+<code>dummy.param</code> is a zero-argument function that returns a
+single draw from a Beta(1, 2) distribution.</li>
 <li>
-<code>dummy.strat.param</code> is a function with no argument that
-returns 2 values sampled from normal distributions, each with different
-means and standard deviations.</li>
+<code>dummy.strat.param</code> is a zero-argument function that
+returns a vector of length 2, each element drawn from a normal
+distribution with different mean and standard deviation.</li>
 </ul>
-<p>Each element is named after the parameter it will fill and MUST BE a
-function taking no argument and outputting a vector of the right size
-for the parameter: size 1 for <code>act.rate</code> and
-<code>dummy.param</code>; size 2 for <code>dummy.strat.param</code>.
-Note that when we print out the parameter list before running the model,
-it includes the random parameter definitions as functions, as their
-sampled values are not yet realized.</p>
-<p>The rest of the model is then run as before, although we increase the
-simulation count to three to demonstrate the parameter
-stochasticity.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Each element must be named after the parameter it fills and must be a
+function taking no arguments, returning a vector of the correct length
+for that parameter. When we print the parameter list before running the
+model, random parameters appear as function definitions since their
+values have not yet been realized.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">5</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span></span>
@@ -674,16 +690,13 @@ stochasticity.</p>
 <span><span class="co">#&gt; ----------------------- </span></span>
 <span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
 <span><span class="co">#&gt; edges    0.1    0.114   13.774  0.015   0.938         0.029         0.057</span></span></code></pre></div>
-<p>After running 3 simulations we can see that the <code>inf.prob</code>
-is still displayed under the “Fixed Parameters” section. The other three
-parameters are displayed under the “Random Parameters” section:
-<code>act.rate</code> and <code>dummy.param</code> now have 3 values
-associated with them, one per simulation. <code>dummy.strat.param</code>
-have <code>&lt;list&gt;</code> as its value because each simulation has
-a vector of size 2.</p>
-<p>To more easily inspect the parameter values, we can use the
-<code>get_param_set</code> function:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>After running 3 simulations, <code>inf.prob</code> remains under
+“Fixed Parameters” while the random parameters each have 3 realized
+values (one per simulation). The vector parameter
+<code>dummy.strat.param</code> shows <code>&lt;list&gt;</code> because
+each realization is itself a vector of length 2.</p>
+<p>To inspect the realized values:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all.params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param_set.html">get_param_set</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="va">all.params</span></span>
 <span><span class="co">#&gt;   sim inf.prob vital groups act.rate dummy.param dummy.strat.param_1</span></span>
@@ -694,9 +707,9 @@ a vector of size 2.</p>
 <span><span class="co">#&gt; 1           0.1511654</span></span>
 <span><span class="co">#&gt; 2           0.1293028</span></span>
 <span><span class="co">#&gt; 3           0.1918158</span></span></code></pre></div>
-<p>These parameters can then be merged with the epidemic data, for easy
-analysis of the relationship between parameters and outputs:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>These can be merged with epidemic output for analysis of
+parameter-outcome relationships:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">epi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">epi</span>, <span class="va">all.params</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sim)`</span></span>
@@ -736,15 +749,13 @@ analysis of the relationship between parameters and outputs:</p>
 <div class="section level4">
 <h4 id="parameter-sets">Parameter Sets<a class="anchor" aria-label="anchor" href="#parameter-sets"></a>
 </h4>
-<p>The drawback of generator function approach above is that it cannot
-produce correlated parameter sets. For instance, we may want
-<code>dummy.param</code> and <code>dummy.strat.param</code> to be
-related to one another within a single simulation. We might also use an
-external method for generating parameter sets, such as Latin hypercube
-sampling of multiple parameters.</p>
-<p>For this, we need to pre-define a <code>data.frame</code> of
-parameter values. In this example, we have five parameter sets:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>Generator functions draw each parameter independently. When
+parameters need to be correlated—for example, when using Latin hypercube
+sampling or when one parameter is derived from another—use pre-defined
+parameter sets instead.</p>
+<p>Define a <code>data.frame</code> where each row is a complete set of
+correlated parameter values:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span></span>
 <span><span class="va">related.param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -761,28 +772,17 @@ parameter values. In this example, we have five parameter sets:</p>
 <span><span class="co">#&gt; 3  0.05306671           0.6405278          -0.7281755</span></span>
 <span><span class="co">#&gt; 4  0.90490846          -1.3179645          -0.4500947</span></span>
 <span><span class="co">#&gt; 5  0.48049243           0.7020599           2.3109663</span></span></code></pre></div>
-<p>We now have a <code>data.frame</code> with 5 rows and 3 columns. Each
-row contains a set of parameters values that will be used together in a
-single simulation of the model. This way we keep the relationship
-between each value.</p>
-<p>The first column of the <code>data.frame</code> is named
-<code>dummy.param</code>, similar to the name of the parameter. For
-<code>dummy.start.param</code> we need two columns as the parameter
-contains two values. To achieve this, we name the two columns
-<code>dummy.start.param_1</code> and <code>dummy.strat.param_2</code>.
-The value after the underscore informs <code>EpiModel</code> how it
-should combine these values into a vector (note that this uses the same
-syntax as with stratified parameters within model scenarios described
-above). This in turn means that the underscore symbol is not allowed in
-proper parameter names.</p>
-<p>Then we set up the rest of the parameters. <code>related.param</code>
-is saved in the <code>my.randoms</code> list under the special reserved
-name <code>param.random.set</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>Each row contains parameter values that will be used together in a
+single simulation. Vector parameters use the same
+<code>paramname_N</code> suffix convention as scenarios. This means
+underscores are reserved and cannot appear in parameter names
+themselves.</p>
+<p>Save the parameter set in the <code>my.randoms</code> list under the
+reserved name <code>param.random.set</code>:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my.randoms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  act.rate <span class="op">=</span> <span class="fu"><a href="../reference/param_random.html">param_random</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  param.random.set <span class="op">=</span> <span class="va">related.param</span></span>
-<span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
@@ -800,11 +800,11 @@ name <code>param.random.set</code>.</p>
 <span><span class="co">#&gt; ---------------------------</span></span>
 <span><span class="co">#&gt; act.rate = &lt;function&gt;</span></span>
 <span><span class="co">#&gt; param.random.set = &lt;data.frame&gt; ( dimensions: 5 3 )</span></span></code></pre></div>
-<p>The <code>inf.prob</code> parameter remains fixed, the
-<code>act.rate</code> parameter remains random with independent sample,
-but now a set of the two remaining parameters is passed in as correlated
-parameters with <code>param.random_set</code>.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>The <code>inf.prob</code> parameter remains fixed,
+<code>act.rate</code> remains independently random, and the two
+remaining parameters are drawn as correlated sets from the
+<code>data.frame</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">5</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span></span>
@@ -852,10 +852,8 @@ parameters with <code>param.random_set</code>.</p>
 <span><span class="co">#&gt; ----------------------- </span></span>
 <span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
 <span><span class="co">#&gt; edges    0.1    0.114    14.49  0.011    1.27         0.022         0.044</span></span></code></pre></div>
-<p>The output is similar to what we saw with the generator functions
-defined above. See that the correlated parameter sets are sampled from
-together from the data frame of parameters.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<p>Verify that correlated sets are sampled together:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">related.param</span></span>
 <span><span class="co">#&gt;   dummy.param dummy.strat.param_1 dummy.strat.param_2</span></span>
 <span><span class="co">#&gt; 1  0.40042189           1.6831189           1.0748786</span></span>
@@ -878,20 +876,19 @@ together from the data frame of parameters.</p>
 <div class="section level2">
 <h2 id="time-varying-parameters-and-control-settings-advanced">Time-Varying Parameters and Control Settings (Advanced)<a class="anchor" aria-label="anchor" href="#time-varying-parameters-and-control-settings-advanced"></a>
 </h2>
-<p>Within EpiModel, the <em>scenarios</em> described above uses an
-updater module to implement parameter changes at a given time step. This
-section describes how these mechanisms function and how to use them
-directly if the scenarios approach above is not flexible enough, or if
-you would also like to have time-varying control settings.</p>
+<p>The <em>scenarios</em> system described above uses an internal
+updater module to implement parameter changes at designated time steps.
+This section describes the underlying updater mechanism directly. Use
+this when the scenario API is not flexible enough—for example, when you
+need relative (function-based) parameter changes or time-varying
+<em>control</em> settings.</p>
 <div class="section level3">
 <h3 id="parameter-updaters">Parameter Updaters<a class="anchor" aria-label="anchor" href="#parameter-updaters"></a>
 </h3>
-<p>To define what parameters should change and when during the
-simulation, we need to define updater lists. An updater is a
-<code>list</code> with two named elements: <code>at</code>, the time
-step when the change will take place, and <code>param</code> a named
-list of parameters to update. For example:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>An updater is a <code>list</code> with two required elements:
+<code>at</code> (the time step for the change) and <code>param</code> (a
+named list of new parameter values):</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -908,15 +905,11 @@ list of parameters to update. For example:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $param$act.rate</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span></code></pre></div>
-<p>This defines an updater that will change the value of the
-<code>inf.prob</code> parameter to <code>0.3</code> and the value to the
-<code>act.rate</code> parameter to <code>0.5</code>. This change will
-happen at time step 10. If we want, multiple parameter changes, then we
-can write a list of updaters:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a `list.of.updaters`</span></span>
-<span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="co"># this is one updater</span></span>
+<p>This updater sets <code>inf.prob</code> to 0.3 and
+<code>act.rate</code> to 0.5 at time step 10. Multiple updaters are
+combined in a list:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>    param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -924,7 +917,6 @@ can write a list of updaters:</p>
 <span>      act.rate <span class="op">=</span> <span class="fl">0.3</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="co"># this is another updater</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">125</span>,</span>
 <span>    param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -932,21 +924,13 @@ can write a list of updaters:</p>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>In this example, we define two <strong>updaters</strong>, one that
-occurs at time step 100 and the other one at time step 125. As
-demonstrated below, these values for <code>inf.prob</code> and
-<code>act.rate</code> will change from the values of <code>0.1</code>
-established by <code>param.net</code>at the beginning of the time
-series.</p>
 </div>
 <div class="section level3">
 <h3 id="incorporating-updaters">Incorporating Updaters<a class="anchor" aria-label="anchor" href="#incorporating-updaters"></a>
 </h3>
-<p>Below we set up a complete example with a closed population SI model
-using the parameters and updaters defined above. Note that the parameter
-updaters get passed into <code>param.net</code> with the special
-<code>.param.updater.list</code> argument.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<p>Pass the updater list to <code>param.net</code> via the
+<code>.param.updater.list</code> argument:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
 <span> inf.prob <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span> act.rate <span class="op">=</span> <span class="fl">0.1</span>,</span>
@@ -959,14 +943,13 @@ updaters get passed into <code>param.net</code> with the special
 <span> nsteps <span class="op">=</span> <span class="fl">200</span>,</span>
 <span> verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Next, we run the model with a simple network structure:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
 <span>  <span class="va">nw</span>,</span>
 <span>  formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>,</span>
 <span>  target.stats <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,  <span class="co"># duration = 10, closed population</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting simulated annealing (SAN)</span></span>
@@ -990,21 +973,21 @@ updaters get passed into <code>param.net</code> with the special
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 125 the following parameters were modified:</span></span>
 <span><span class="co">#&gt; 'inf.prob'</span></span></code></pre></div>
-<p>The model plot here demonstrates the inflection points in the
-epidemic trajectory at the two parameter change points defined
-above.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p>The plot shows inflection points at the two parameter change points.
+At step 100, both <code>inf.prob</code> and <code>act.rate</code>
+increase from 0.1 to 0.3, accelerating transmission. At step 125,
+<code>inf.prob</code> drops to 0.01, slowing the epidemic.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, mean.smooth <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">125</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="model-parameters_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="model-parameters_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <div class="section level4">
 <h4 id="verbosity">Verbosity<a class="anchor" aria-label="anchor" href="#verbosity"></a>
 </h4>
-<p>When creating a parameter updater, one can add an optional
-<code>verbose</code> element to the <code>list</code>. If
-<code>TRUE</code>, EpiModel will output a message` describing what
-changes were performed and when they occurred.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p>Each updater can include an optional <code>verbose</code> element.
+When <code>TRUE</code> (the default), EpiModel prints a message
+describing the changes:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1030,10 +1013,10 @@ changes were performed and when they occurred.</p>
 <div class="section level4">
 <h4 id="relative-parameter-changes">Relative Parameter Changes<a class="anchor" aria-label="anchor" href="#relative-parameter-changes"></a>
 </h4>
-<p>It may be useful to configure the changes with respect to the current
-value instead of a fixed new value. This is possible as demonstrated
-below for <code>inf.prob</code>.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<p>Instead of setting a parameter to a fixed new value, you can define a
+<em>function</em> that transforms the current value. This is useful for
+multiplicative changes or logit-scale adjustments.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1051,35 +1034,30 @@ below for <code>inf.prob</code>.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $param$act.rate</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span></code></pre></div>
-<p>This updater will set the value of <code>act.rate</code> to
-<code>0.5</code> as before. But, for <code>inf.prob</code> we define a
-function (not a function call). In this case, the will apply the
-<code>function</code> to the current value of <code>act.rate</code>. If
-we consider as in the previous example that <code>act.rate</code> is set
-to <code>0.1</code> by <code>param.net</code>, then its new value will
-be obtained by adding the log odds of 2 to the original value of
-<code>inf.prob</code>: <code>plogis(qlogis(0.1) + log(2))</code>:
-<code>0.1818182</code>. Whereas the previous value of
-<code>inf.prob</code> was 0.10, the updated value will be 0.18.</p>
+<p>In this updater, <code>act.rate</code> is set to the fixed value 0.5
+as before. For <code>inf.prob</code>, instead of a value, we provide a
+function. At time step 10, EpiModel applies this function to the
+<em>current</em> value of <code>inf.prob</code>. If
+<code>inf.prob</code> was set to 0.1 by <code>param.net</code>, the
+function computes <code>plogis(qlogis(0.1) + log(2))</code> = 0.1818,
+which doubles the odds of transmission while keeping the result on the
+probability scale.</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="time-varying-control-settings">Time-Varying Control Settings<a class="anchor" aria-label="anchor" href="#time-varying-control-settings"></a>
 </h3>
-<p>Similar to time-varying parameters, we can use time-varying controls.
-These work in the same way. Each control updater is defined as a list of
-lists.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a `list.of.updaters`</span></span>
-<span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="co"># this is one updater</span></span>
+<p>Control settings can also be changed during a simulation using the
+same updater mechanism. Each control updater uses a <code>control</code>
+element (instead of <code>param</code>):</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      resimulate.network <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="co"># this is another updater</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">125</span>,</span>
 <span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1087,13 +1065,13 @@ lists.</p>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This example sets two control updaters, one that turns off network
-resimulation at timestep 100 and another toggling of the model verbosity
-at step 125.</p>
-<p>The <code>list.of.updaters</code> then gets passed into
-<code>control.net</code> through the special
-<code>.control.updater.list</code> argument.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<p>This example turns off network resimulation at step 100 and disables
+model verbosity at step 125.</p>
+<p>Pass control updaters to <code>control.net</code> via
+<code>.control.updater.list</code>, paralleling how parameter updaters
+are passed to <code>param.net</code> via
+<code>.param.updater.list</code>:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
 <span> type <span class="op">=</span> <span class="st">"SI"</span>,</span>
 <span> nsims <span class="op">=</span> <span class="fl">1</span>,</span>

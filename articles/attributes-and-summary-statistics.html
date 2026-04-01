@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.1</h4>
             
-            <h4 data-toc-skip class="date">2026-03-30</h4>
+            <h4 data-toc-skip class="date">2026-04-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/attributes-and-summary-statistics.Rmd" class="external-link"><code>vignettes/attributes-and-summary-statistics.Rmd</code></a></small>
       <div class="d-none name"><code>attributes-and-summary-statistics.Rmd</code></div>
@@ -70,177 +70,300 @@ v2.6.1</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette discusses some recent updates in <code>EpiModel</code>
-on working with attributes and summary statistics within the stochastic
-network model class. This material is oriented towards custom models
-with extension modules and functions. More information about these in
-the <a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending
-EpiModel</a> section of the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
-Epidemics</a> course materials.</p>
-<p>In network simulations with <code>netsim</code>, we store all data in
-the <em>Main List Object</em> (referred to as <code>dat</code>). In this
-vignette we will discuss with three types of data on
+<p>This vignette covers how to work with nodal attributes, attribute
+histories, and epidemic summary statistics in EpiModel network models
+with custom extension modules. It assumes familiarity with setting up
+and running network models with <code><a href="../reference/netsim.html">netsim()</a></code> and with the
+extension API. See the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
+Epidemics</a> (NME) course materials and the <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a>
+for background.</p>
+<p>For working with network objects and edgelists, see the companion
+vignette <em>Working with Network Objects in EpiModel</em>. For
+parameter management, see <em>Working with Model Parameters in
+EpiModel</em>.</p>
+<p>In network simulations with <code>netsim</code>, all simulation state
+is stored in the <em>main list object</em> (referred to as
+<code>dat</code>). This vignette covers three types of data on
 <code>dat</code>:</p>
 <ul>
-<li><em>Current Nodal Attributes</em></li>
-<li><em>Historical Nodal Attributes</em></li>
-<li><em>Epidemic Trackers</em></li>
+<li>
+<strong>Current Nodal Attributes:</strong> Per-node characteristics
+at the current time step.</li>
+<li>
+<strong>Historical Nodal Attributes:</strong> Selective recordings
+of attribute values over time.</li>
+<li>
+<strong>Epidemic Trackers:</strong> Population-level summary
+statistics computed at each time step.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="current-nodal-attributes">Current Nodal Attributes<a class="anchor" aria-label="anchor" href="#current-nodal-attributes"></a>
 </h2>
 <p><em>Attributes</em> are characteristics of the nodes (e.g., persons)
-in the model at the current time-step. By default, every node has a
-<code>unique_id</code> and an <code>active</code> <em>attribute</em>
-used to track each node, as well as three attributes used in the
-epidemic modules: <code>status</code> for disease status,
-<code>entrTime</code> for the time the node entered the population, and
-<code>exitTime</code> for the time the node left the population. Other
-attributes can be added of any name and value, like <code>age</code>,
-but must be stored as a scalar values.</p>
-<p>We work with <em>attribute vectors</em> that are all of the same size
-of the number of nodes in the model. In the <em>attribute vectors</em>,
-a node is identified by its <em>Positional ID</em> or
-<code>posit_id</code> (i.e., the position in vector). The default
-<em>attribute</em> <code>unique_id</code> created for each node gives a
-unique identification number allowing us to refer to nodes no longer in
-the model. Deaths or other forms of exit from the network disrupt the
-positional ID but do not impact the unique ID.</p>
+in the model at the current time step. They are stored as vectors in
+<code>dat$attr</code>, all of the same length as the number of
+nodes.</p>
+<div class="section level3">
+<h3 id="core-attributes">Core Attributes<a class="anchor" aria-label="anchor" href="#core-attributes"></a>
+</h3>
+<p>Every node has four core attributes, managed automatically by
+EpiModel:</p>
+<ul>
+<li>
+<code>active</code>: 1 if the node is currently in the population, 0
+if departed.</li>
+<li>
+<code>entrTime</code>: the time step when the node entered the
+population.</li>
+<li>
+<code>exitTime</code>: the time step when the node departed
+(<code>NA</code> if still active).</li>
+<li>
+<code>unique_id</code>: a globally unique integer identifier (never
+reused).</li>
+</ul>
+<p>You can retrieve the list of core attributes and their default types
+with <code><a href="../reference/net-accessor.html">get_core_attributes()</a></code>:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/net-accessor.html">get_core_attributes</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $active</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $entrTime</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $exitTime</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $unique_id</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>In addition, the built-in epidemic modules in core EpiModel use the
+<code>status</code> attribute (disease status, with values like
+<code>"s"</code>, <code>"i"</code>, <code>"r"</code>) and
+<code>infTime</code> (time of infection). More complex disease-specific
+EpiModel implementations (e.g., for HIV or COVID) may handle disease
+status differently. Custom attributes of any name and scalar value can
+be added, such as <code>age</code>, <code>race</code>, or
+<code>viral_load</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="positional-indexing-vs-unique-ids">Positional Indexing vs Unique IDs<a class="anchor" aria-label="anchor" href="#positional-indexing-vs-unique-ids"></a>
+</h3>
+<p>Each node can be referenced in two ways:</p>
+<ul>
+<li><p><strong>By position:</strong> Think of it like a row number in a
+spreadsheet. <code>dat$attr$active[3]</code> accesses the third node’s
+value directly. This is the standard way to look up node information and
+is very fast.</p></li>
+<li><p><strong>By <code>unique_id</code>:</strong> A globally unique
+integer attribute assigned at creation and never reused. Slower to look
+up, but allows referencing nodes that have already departed.</p></li>
+</ul>
+<p>Consider a simple example. A model starts with 5 nodes:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Position (<em>row number</em>)</th>
+<th align="center"><code>unique_id</code></th>
+<th align="center"><code>active</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">5</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Node 3 departs at step 10. The vectors still have 5 elements, but
+<code>active[3] = 0</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Position (<em>row number</em>)</th>
+<th align="center"><code>unique_id</code></th>
+<th align="center"><code>active</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">5</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>A new node arrives at step 15. In many simulations, departed nodes
+are dropped from the attribute vectors, so the new node takes position 3
+(the freed slot) but receives a new <code>unique_id = 6</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Position (<em>row number</em>)</th>
+<th align="center"><code>unique_id</code></th>
+<th align="center"><code>active</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center"><strong>6</strong></td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">5</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Positional indices are used by current edgelists and attribute
+accessors. Unique IDs are used by cumulative edgelists and attribute
+histories because they can refer to nodes no longer in the model. See
+<code><a href="../reference/unique_id-tools.html">help("unique_id-tools", package = "EpiModel")</a></code> for
+conversion functions.</p>
+</div>
 <div class="section level3">
 <h3 id="working-with-attributes">Working With Attributes<a class="anchor" aria-label="anchor" href="#working-with-attributes"></a>
 </h3>
 <div class="section level4">
 <h4 id="accessing-attributes">Accessing Attributes<a class="anchor" aria-label="anchor" href="#accessing-attributes"></a>
 </h4>
-<p>The <code><a href="../reference/net-accessor.html">EpiModel::get_attr</a></code> function will extract the vector
-of a given <em>attribute</em>. In its simplest form, we can pull a
-complete <em>attribute vector</em> from <code>dat</code> like so:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">active</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span></code></pre></div>
-<p>The above call will pull from <code>dat</code> the
-<code>active</code> <em>attribute</em> for all nodes.
-<code>active</code> is a vector of size <em>current number of
-nodes</em>. With values being either 1 or 0 depending on whether a node
-is active or not.</p>
-<p>Trying to extract an <em>attribute</em> that does not exist will
-cause <code><a href="../reference/net-accessor.html">EpiModel::get_attr</a></code> to throw an error.</p>
+<p>Use <code><a href="../reference/net-accessor.html">get_attr()</a></code> to extract an attribute vector:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span></code></pre></div>
+<p>This returns a vector of length equal to the current number of nodes.
+Requesting a nonexistent attribute throws an error.</p>
 </div>
 <div class="section level4">
 <h4 id="modifying-attributes">Modifying Attributes<a class="anchor" aria-label="anchor" href="#modifying-attributes"></a>
 </h4>
-<p>In custom extension modules, we usually want to modify some of the
-<em>attributes</em>. Below is a minimal module that increments the age
-of all the nodes by 1.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Below is a minimal module that increments the age of all nodes by
+1:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aging_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Extract current attribute</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Aging process</span></span>
 <span>  <span class="va">new_age</span> <span class="op">&lt;-</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span></span>
 <span>  <span class="co"># Output updated attributes</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Let’s break down this very simple yet perfectly valid module.</p>
-<ol style="list-style-type: decimal">
-<li>Pull the <code>age</code> <em>attribute vector</em> as we did in the
-previous section.</li>
-<li>Create a vector <code>new_age</code> incrementing all ages by
-one.</li>
-<li>Update the <code>dat</code> object with the
-<code><a href="../reference/net-accessor.html">EpiModel::set_attr</a></code> function.</li>
-<li>Return the Updated <code>dat</code> object.</li>
-</ol>
-<p>We can see that <code><a href="../reference/net-accessor.html">EpiModel::set_attr</a></code> takes as
-arguments:</p>
+<p>Key points about <code><a href="../reference/net-accessor.html">set_attr()</a></code>:</p>
 <ul>
-<li>The <code>dat</code> object to update.</li>
-<li>The name of the attribute vector of interest (here “age”).</li>
-<li>The new values for this vector (here <code>new_age</code>).</li>
-</ul>
-<p>When using <code><a href="../reference/net-accessor.html">EpiModel::set_attr</a></code>, there are several things
-to note:</p>
-<ul>
-<li>The function does not modify the <code>dat</code> object, it merely
-returns a modified version of it to be assigned back to
-<code>dat</code>. (Nicely, this does not cause performance issues due to
-the way R handles shallow copies since version 3.1)</li>
-<li>If <code>new_age</code> size is not equal to the number of nodes in
-the network, the function will throw an error.</li>
+<li>It returns a modified copy of <code>dat</code>, which must be
+assigned back. (This does not cause performance issues due to R’s
+shallow copy semantics since R 3.1.)</li>
+<li>The replacement vector must have the same length as the number of
+nodes, or the function throws an error.</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h4>
-<p>The above example describes the recommended way to work with
-attribute:</p>
+<p>The recommended workflow for attribute manipulation in modules:</p>
 <ol style="list-style-type: decimal">
-<li>Extract the <em>attributes</em> into local vectors.</li>
-<li>Modify the local vectors with some dynamic process (like
-aging).</li>
-<li>Update the <code>dat</code> object with the revised local
-vectors.</li>
-<li>Return the <code>dat</code> object at the end of the function.</li>
+<li>Extract attributes into local vectors with
+<code><a href="../reference/net-accessor.html">get_attr()</a></code>.</li>
+<li>Modify the local vectors with your dynamic process.</li>
+<li>Update <code>dat</code> with the revised vectors using
+<code><a href="../reference/net-accessor.html">set_attr()</a></code>.</li>
+<li>Return <code>dat</code> at the end of the function.</li>
 </ol>
-<p>These functions have other arguments that are described in the
-documentation: see
-<code><a href="../reference/net-accessor.html">help("net-accessor", package = "EpiModel")</a></code> for further
-details.</p>
+<p>These functions have additional arguments described in
+<code><a href="../reference/net-accessor.html">help("net-accessor", package = "EpiModel")</a></code>.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="historical-nodal-attributes">Historical Nodal Attributes<a class="anchor" aria-label="anchor" href="#historical-nodal-attributes"></a>
 </h2>
-<p>The <em>Attributes</em> described above refer to the state of
-<strong>each node</strong> in the network <strong>at the current
-time-step</strong>. However, it is sometimes useful to track of what
-happened to nodes over time. Because saving the full history of the
-<em>attributes</em> would consume too much memory and is rarely
-necessary for full-scale research models, EpiModel offers a way to
-record specific <em>attribute</em> for specific nodes at different
-time-steps. These may be useful for diagnostic purposes (e.g., to see
-that a dynamic process is coded correctly) or for tracking a limited set
-of individual-level outcomes for further analysis.</p>
-<p>The <em>Attribute History</em> is an efficient collection of recorded
-attributes at different time-steps. EpiModel has functions to record
-these elements and to access them in a convenient manner once the
-<code>netsim</code> simulation is complete.</p>
+<p>Current attributes reflect the state of each node at the present time
+step. Sometimes you need to track what happened to specific nodes over
+time. Because saving the full history of all attributes would consume
+too much memory, EpiModel provides a selective recording mechanism: you
+choose which attributes, for which nodes, at which time steps to
+record.</p>
+<p>This is useful for diagnostics (verifying that a dynamic process is
+coded correctly) or for tracking a limited set of individual-level
+outcomes for further analysis.</p>
 <div class="section level3">
-<h3 id="working-with-attribute-histories">Working with Attribute Histories<a class="anchor" aria-label="anchor" href="#working-with-attribute-histories"></a>
+<h3 id="recording-attribute-histories">Recording Attribute Histories<a class="anchor" aria-label="anchor" href="#recording-attribute-histories"></a>
 </h3>
-<div class="section level4">
-<h4 id="recording-attribute-histories">Recording Attribute Histories<a class="anchor" aria-label="anchor" href="#recording-attribute-histories"></a>
-</h4>
-<p>The following is a module that records the viral load of infected
-nodes every 10 time steps. We assume that this module is part of a model
-that defines and updates two <em>attributes</em> over time:</p>
-<ul>
-<li>
-<code>status</code> with possible values being “infected” or
-“susceptible”.</li>
-<li>
-<code>viral_load</code> as a continuous number for “infected” nodes
-and <code>NA</code> otherwise.</li>
-</ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>The following module records the viral load of infected nodes every
+10 time steps. It assumes the model defines a <code>status</code>
+attribute (with values <code>"s"</code> for susceptible,
+<code>"i"</code> for infected) and a <code>viral_load</code> attribute
+(continuous for infected nodes, <code>NA</code> otherwise).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">viral_load_logger_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Run every 10 time steps</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">at</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">10</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>    <span class="co"># Attributes</span></span>
-<span>    <span class="va">status</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
-<span>    <span class="va">viral_load</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"viral_load"</span><span class="op">)</span></span>
+<span>    <span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
+<span>    <span class="va">viral_load</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"viral_load"</span><span class="op">)</span></span>
 <span></span>
-<span>    <span class="va">infected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"infected"</span><span class="op">)</span></span>
+<span>    <span class="va">infected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span><span class="op">)</span></span>
 <span></span>
-<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/record_attr_history.html">record_attr_history</a></span><span class="op">(</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/record_attr_history.html">record_attr_history</a></span><span class="op">(</span></span>
 <span>      <span class="va">dat</span>, <span class="va">at</span>,</span>
 <span>      <span class="st">"viral_load"</span>,</span>
 <span>      <span class="va">infected</span>,</span>
@@ -248,132 +371,94 @@ and <code>NA</code> otherwise.</li>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
-<span>  <span class="co"># Output</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The steps in the code are as follows:</p>
+<p><code><a href="../reference/record_attr_history.html">record_attr_history()</a></code> takes five arguments:</p>
 <ol style="list-style-type: decimal">
-<li>Check that the current time step is a multiple of ten. If yes, go to
-step 2, otherwise skip to step 5.</li>
-<li>Pull the 2 <em>attribute vectors</em> of interest (“status” and
-“viral_load”).</li>
-<li>Store in <code>infected</code> the <code>posit_id</code>s of the
-infected nodes.</li>
-<li>Record the <code>viral_load</code> of <code>infected</code> nodes at
-time <code>at</code> under the label “viral_load”.</li>
-<li>Return the <code>dat</code> object.</li>
+<li>
+<code>dat</code>: the main list object.</li>
+<li>
+<code>at</code>: the time step to associate with the recording
+(usually the current step).</li>
+<li>A label for the attribute (here <code>"viral_load"</code>).</li>
+<li>A vector of <code>posit_id</code>s for the nodes of interest.
+Internally, these are converted to <code>unique_id</code>s so the
+history remains valid even after nodes depart.</li>
+<li>The values to record for those IDs. The number of values must match
+the number of IDs, unless a single value is provided (which is recycled
+for all IDs, using less memory).</li>
 </ol>
-<p><code><a href="../reference/record_attr_history.html">EpiModel::record_attr_history</a></code> takes five arguments:</p>
-<ol style="list-style-type: decimal">
-<li>The <code>dat</code> object.</li>
-<li>The time step to be associated with the recording (here
-<code>at</code>, the current time-step).</li>
-<li>The label to be used for the attribute (here “viral_load”).</li>
-<li>A vector of <code>posit_id</code>s referring to the nodes of
-interest (here <code>infected</code>).</li>
-<li>The values to be recorded for those IDs (here
-<code>viral_load[infected]</code>)</li>
-</ol>
-<p>Note that <code><a href="../reference/record_attr_history.html">EpiModel::record_attr_history</a></code> requires a set
-of <code>posit_id</code>s. Internally, the function will convert them to
-<code>unique_id</code>s so the <em>Attribute History</em> will not be
-affected by nodes entering or leaving the population over time.</p>
-<p>When recording some attribute histories, one must ensure that we
-record as many values as there are <code>posit_id</code>s. Otherwise,
-the function will throw an error. It however possible to use only one
-value for that attribute even if we record a value for multiple nodes.
-This last situation actually uses less RAM. In any case, we would want
-to record attribute histories sparingly as the storage can be large,
-especially for open population models with many nodes that run over many
-time steps.</p>
+<p>Use attribute histories sparingly—storage can grow large in
+open-population models with many nodes over many time steps.</p>
 </div>
-<div class="section level4">
-<h4 id="accessing-the-attribute-histories">Accessing the Attribute Histories<a class="anchor" aria-label="anchor" href="#accessing-the-attribute-histories"></a>
-</h4>
-<p>The <em>Attribute History</em> is meant to be accessed once the
-<code>netsim</code> simulation is complete. At that point, we can use
-the <code><a href="../reference/get_attr_history.html">EpiModel::get_attr_history</a></code> function to access the
-histories that we have recorded, like so:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span><span class="va">attr_history</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>attr_history</code> object is a list of
-<code>data.frame</code>s. One for each attribute history that was
-recorded (we use this flexible list structure because each history may
-be of different dimension). Assume that we were running two simulations,
-using the module defined above and another one (not shown) recording
-when a node switched from infected to recovered.</p>
+<div class="section level3">
+<h3 id="accessing-attribute-histories">Accessing Attribute Histories<a class="anchor" aria-label="anchor" href="#accessing-attribute-histories"></a>
+</h3>
+<p>Attribute histories are accessed after the simulation is
+complete:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span><span class="va">attr_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p>The result is a named list of <code>data.frame</code>s, one for each
+recorded attribute label. Suppose we recorded <code>"viral_load"</code>
+(as above) and also <code>"status"</code> transitions in another module.
+The output would look like:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># $viral_load</span></span>
 <span><span class="co">#    sim step attribute    uids values</span></span>
-<span><span class="co"># 1  1   10   viral_load   1001   2000</span></span>
-<span><span class="co"># 2  1   10   viral_load   1002   1878</span></span>
-<span><span class="co"># 3  1   20   viral_load   1001   1500</span></span>
-<span><span class="co"># 4  1   20   viral_load   1002    300</span></span>
-<span><span class="co"># 5  2   10   viral_load    401   2500</span></span>
-<span><span class="co"># 6  2   10   viral_load    402   1378</span></span>
-<span><span class="co"># 7  2   20   viral_load    401   1200</span></span>
-<span><span class="co"># 8  2   20   viral_load    402    100</span></span>
+<span><span class="co"># 1    1   10 viral_load   1001   2000</span></span>
+<span><span class="co"># 2    1   10 viral_load   1002   1878</span></span>
+<span><span class="co"># 3    1   20 viral_load   1001   1500</span></span>
+<span><span class="co"># 4    1   20 viral_load   1002    300</span></span>
 <span><span class="co"># ...</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># $status</span></span>
-<span><span class="co">#    sim step attribute      uids     values</span></span>
-<span><span class="co"># 1  1   22   status  1001   infected</span></span>
-<span><span class="co"># 2  1   64   status  1002   infected</span></span>
-<span><span class="co"># 3  1  110   status  1001  recovered</span></span>
-<span><span class="co"># 4  1  220   status  1002  recovered</span></span>
-<span><span class="co"># 5  2    7   status   401   infected</span></span>
-<span><span class="co"># 6  2   15   status   402   infected</span></span>
-<span><span class="co"># 7  2   20   status   401  recovered</span></span>
-<span><span class="co"># 8  2  120   status   402  recovered</span></span>
+<span><span class="co">#    sim step attribute  uids  values</span></span>
+<span><span class="co"># 1    1   22 status     1001       i</span></span>
+<span><span class="co"># 2    1   64 status     1002       i</span></span>
+<span><span class="co"># 3    1  110 status     1001       r</span></span>
+<span><span class="co"># 4    1  220 status     1002       r</span></span>
 <span><span class="co"># ...</span></span></code></pre></div>
-<p>We would get a named list of two <code>data.frame</code>’s:</p>
-<ul>
-<li>“viral_load” with the <code>value</code> column being the viral
-loads.</li>
-<li>“status” with the <code>value</code> column being whether the node
-became “infected” or “recovered” at the given time-step.</li>
-</ul>
-</div>
+<p>Each <code>data.frame</code> has columns <code>sim</code> (simulation
+number), <code>step</code> (time step), <code>attribute</code> (the
+label), <code>uids</code> (unique IDs), and <code>values</code> (the
+recorded values). The list structure allows each history to have
+different dimensions.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="epidemic-trackers">Epidemic Trackers<a class="anchor" aria-label="anchor" href="#epidemic-trackers"></a>
 </h2>
-<p>The next type of data stored in <code>dat</code> is called an
-<em>Epidemic Tracker</em>. This refers to some summary information about
-the <em>population</em> at a specific time step. This information is
-created and stored for <strong>each time step</strong>; therefore
-epidemic trackers are historical summary statistics.</p>
-<p>One example of an <em>Epidemic Trackers</em> is <code>num</code>,
-present in any model, which stores the size of the population at each
-time step.</p>
+<p><em>Epidemic trackers</em> are population-level summary statistics
+computed and stored at each time step—historical summary statistics
+about the population, not individual nodes.</p>
+<p>For example, the built-in tracker <code>num</code> records the total
+population size at each step, while <code>s.num</code>,
+<code>i.num</code>, and <code>r.num</code> record compartment sizes.</p>
 <div class="section level3">
 <h3 id="working-with-epidemic-trackers-in-modules">Working With Epidemic Trackers in Modules<a class="anchor" aria-label="anchor" href="#working-with-epidemic-trackers-in-modules"></a>
 </h3>
-<p>Inside a module, <em>Epidemic Trackers</em> are accessed and modified
-with the functions <code><a href="../reference/net-accessor.html">EpiModel::get_epi</a></code> and
-<code><a href="../reference/net-accessor.html">EpiModel::set_epi</a></code>. Below is an updated new version of our
-<code>aging_module</code> above with the addition of epidemic
-trackers.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Inside a module, access and modify epidemic trackers with
+<code><a href="../reference/net-accessor.html">get_epi()</a></code> and <code><a href="../reference/net-accessor.html">set_epi()</a></code>. Here is an extended
+aging module that also tracks mean age and its change over time:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aging_track_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Attributes</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Aging process</span></span>
 <span>  <span class="va">new_age</span> <span class="op">&lt;-</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span></span>
 <span>  <span class="co"># Calculate summary statistics</span></span>
 <span>  <span class="va">mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">new_age</span><span class="op">)</span></span>
-<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span>, <span class="st">"mean_age"</span><span class="op">)</span></span>
+<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span>, <span class="st">"mean_age"</span><span class="op">)</span></span>
 <span>  <span class="va">age_change</span> <span class="op">&lt;-</span> <span class="va">mean_age</span> <span class="op">-</span> <span class="va">prev_mean_age</span></span>
 <span></span>
 <span>  <span class="co"># Update nodal attributes</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Update epidemic trackers</span></span>
 <span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">at</span>, <span class="va">mean_age</span><span class="op">)</span></span>
@@ -381,51 +466,107 @@ trackers.</p>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>In this new module, in addition to incrementing the age of each node
-by one, we also record two values as <em>Epidemic Trackers</em>: the
-mean age of the population and the change in mean age compared to the
-previous step (we could have calculated the latter after the simulation
-was complete with <code>mutate_epi</code>, but here we do it on the fly
-to demonstrate <code>get_epi</code>).</p>
-<p>We extract the mean age at the previous time step using
-<code><a href="../reference/net-accessor.html">EpiModel::get_epi</a></code> and set the second argument as
-<code>at - 1</code>. After all the calculations are complete, we store
-<code>mean_age</code> and <code>age_change</code> in <code>dat</code>
-using <code><a href="../reference/net-accessor.html">EpiModel::set_epi</a></code>.</p>
+<p>Key points:</p>
 <ul>
-<li>Similarly to <code><a href="../reference/net-accessor.html">EpiModel::set_attr</a></code>, <code>dat</code> is
-not modified directly and need to be assigned back to itself. Also, the
-value we store must be a scalar.</li>
-<li>Trying to access an <em>Epidemic Trackers</em> that do not exist
-results in an error.</li>
+<li>
+<code><a href="../reference/net-accessor.html">set_epi()</a></code> returns a modified <code>dat</code> that must
+be assigned back. The value must be a scalar.</li>
+<li>
+<code><a href="../reference/net-accessor.html">get_epi()</a></code> retrieves the tracker value at a specific
+time step. Requesting a nonexistent tracker throws an error.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="accessing-epidemic-trackers-after-a-simulation">Accessing Epidemic Trackers After a Simulation<a class="anchor" aria-label="anchor" href="#accessing-epidemic-trackers-after-a-simulation"></a>
 </h3>
-<p><em>Epidemic Trackers</em> are usually the main quantities of
-interest after a simulation has completed. We access them simply by
-calling <code>as.data.frame</code> on a <code>netsim</code> object or by
-using the plot or summary functions within by EpiModel. Note also that
-you can perform derived summary statistic calculations after a
-<code>netsim</code> call is complete with
-<code><a href="../reference/mutate_epi.html">EpiModel::mutate_epi</a></code>.</p>
+<p>Epidemic trackers are the main quantities of interest after a
+simulation. Access them by calling <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> on a
+<code>netsim</code> object, or use <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Raw per-simulation data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Means across simulations</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span>, out <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot and summary</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sim</span>, at <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="derived-statistics-with-mutate_epi">Derived Statistics with <code>mutate_epi()</code><a class="anchor" aria-label="anchor" href="#derived-statistics-with-mutate_epi"></a>
+</h3>
+<p>After a simulation, you can compute derived epidemic statistics
+without re-running the model. <code><a href="../reference/mutate_epi.html">mutate_epi()</a></code> works like
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> but operates on the <code>epi</code>
+list:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Add incidence rate and prevalence</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, prev <span class="op">=</span> <span class="va">i.num</span> <span class="op">/</span> <span class="va">num</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, ir <span class="op">=</span> <span class="op">(</span><span class="va">si.flow</span> <span class="op">/</span> <span class="va">s.num</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># These new variables appear in the data.frame output</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="stratified-prevalence-with-epi-by">Stratified Prevalence with <code>epi.by</code><a class="anchor" aria-label="anchor" href="#stratified-prevalence-with-epi-by"></a>
+</h3>
+<p>The <code>epi.by</code> parameter in <code><a href="../reference/control.net.html">control.net()</a></code>
+automatically generates stratified compartment counts by a nodal
+attribute. For example, to track infection by a <code>"risk"</code>
+attribute:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"risk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
+<span>  <span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">nodefactor</span><span class="op">(</span><span class="st">"risk"</span><span class="op">)</span>,</span>
+<span>  target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">20</span><span class="op">)</span>,  <span class="co"># duration = 20</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">1</span>, nsteps <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  epi.by <span class="op">=</span> <span class="st">"risk"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+<p>With <code>epi.by = "risk"</code>, the output includes stratified
+columns automatically:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "sim"         "time"        "s.num"       "s.num.risk0" "s.num.risk1"</span></span>
+<span><span class="co">#&gt;  [6] "i.num"       "i.num.risk0" "i.num.risk1" "num"         "num.risk0"  </span></span>
+<span><span class="co">#&gt; [11] "num.risk1"   "si.flow"</span></span></code></pre></div>
+<p>The naming pattern is <code>{tracker}.{attribute}{value}</code>
+(e.g., <code>i.num.risk0</code>, <code>i.num.risk1</code>,
+<code>num.risk0</code>, <code>num.risk1</code>).</p>
 </div>
 <div class="section level3">
 <h3 id="custom-epidemic-trackers">Custom Epidemic Trackers<a class="anchor" aria-label="anchor" href="#custom-epidemic-trackers"></a>
 </h3>
-<p>It can be useful to create small <em>Epidemic Trackers</em> outside
-of the modules and use them only when we need them. EpiModel will
-automatically run the custom trackers passed to the
-<code>.tracker.list</code> argument of <code>control.net</code>.</p>
+<p>For summary statistics beyond built-in compartment counts, you can
+define custom tracker functions and pass them to
+<code><a href="../reference/control.net.html">control.net()</a></code>. This avoids writing a full module for simple
+calculations.</p>
 <div class="section level4">
 <h4 id="writing-tracker-functions">Writing Tracker Functions<a class="anchor" aria-label="anchor" href="#writing-tracker-functions"></a>
 </h4>
-<p>We call a <em>tracker function</em> a <code>function</code> that
-takes <code>dat</code> as arguments and outputs a scalar value. Every
-<em>tracker function</em> is run by <code><a href="../reference/netsim.html">EpiModel::netsim</a></code> at
-each time step.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>A tracker function must take <strong>exactly one argument</strong>
+(<code>dat</code>) and return a <strong>scalar</strong> value (numeric,
+logical, or character). It is called automatically at the end of each
+time step, after all modules have run.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">epi_s_num</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">needed_attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span></span>
 <span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/net-accessor.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
@@ -433,58 +574,43 @@ each time step.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The <code>epi_s_num</code> function defined above is a <em>tracker
-function</em>. It calculates at each time step the number of
-<em>susceptible</em> nodes in the network.</p>
-<p>The next example is a <em>tracker function</em> that calculates the
-proportion of the population infected at each time step. Let’s look what
-each element does:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Here is a tracker that computes the proportion of the population
+infected:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">epi_prop_infected</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># we need two attributes for our calculation: `status` and `active`</span></span>
 <span>  <span class="va">needed_attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span>, <span class="st">"active"</span><span class="op">)</span></span>
-<span>  <span class="co"># we use `with` to simplify code</span></span>
-<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
-<span>    <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">active</span> <span class="op">==</span> <span class="fl">1</span>    <span class="co"># we only look at active nodes</span></span>
-<span>    <span class="va">cond</span> <span class="op">&lt;-</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span> <span class="co"># which are infected</span></span>
-<span></span>
-<span>    <span class="co"># how many are `infected` among the `active`</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cond</span> <span class="op">&amp;</span> <span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/net-accessor.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>    <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">active</span> <span class="op">==</span> <span class="fl">1</span></span>
+<span>    <span class="va">infected</span> <span class="op">&lt;-</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">infected</span> <span class="op">&amp;</span> <span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>We recommend that you write your <em>tracker functions</em> using
-this format:</p>
+<p>We recommend this pattern for tracker functions:</p>
 <ol style="list-style-type: decimal">
-<li>Define a <code>needed_attributes</code> variable containing a vector
-of attribute names: in this example: “status” and “active”.</li>
-<li>Use <code>with</code> and
-<code>EpiModel::get_attr_list(dat, needed_attributes)</code> to work in
-an environment with only the objects you need. This helps clarify what
-the tracker does and simplify any debugging. We save the result of this
-call into <code>output</code>.</li>
-<li>The last statement in the <code>with</code> expression is what will
-be stored in <code>output</code>. This <em>must</em> be a scalar.</li>
-<li>
-<code>return(output)</code>, what was calculated inside the
-<code>with</code> construct.</li>
+<li>Define <code>needed_attributes</code> as a vector of attribute
+names.</li>
+<li>Use
+<code>with(get_attr_list(dat, needed_attributes), { ... })</code> to
+work in a clean environment.</li>
+<li>The last expression inside <code>with</code> becomes the output. It
+<strong>must</strong> be a scalar.</li>
+<li>Return the output.</li>
 </ol>
 </div>
 <div class="section level4">
-<h4 id="using-custom-tracker-functions">Using custom <em>tracker functions</em><a class="anchor" aria-label="anchor" href="#using-custom-tracker-functions"></a>
+<h4 id="using-custom-tracker-functions">Using Custom Tracker Functions<a class="anchor" aria-label="anchor" href="#using-custom-tracker-functions"></a>
 </h4>
-<p>This functionality is enabled by passing the <em>tracker
-functions</em> as a named list in <code>control.net</code>:
-<code>.tracker.list</code>. Let’s make a simple SI epidemic model with
-some added trackers:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create the `tracker.list` list</span></span>
-<span><span class="va">some.trackers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<p>Pass tracker functions as a named list via <code>.tracker.list</code>
+in <code><a href="../reference/control.net.html">control.net()</a></code>. The names become column names in the
+output <code>data.frame</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">some.trackers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  prop_infected <span class="op">=</span> <span class="va">epi_prop_infected</span>,</span>
 <span>  s_num         <span class="op">=</span> <span class="va">epi_s_num</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"SI"</span>,</span>
 <span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  nsteps <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -492,18 +618,18 @@ some added trackers:</p>
 <span>  .tracker.list <span class="op">=</span> <span class="va">some.trackers</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
 <span>  inf.prob <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  act.rate <span class="op">=</span> <span class="fl">0.1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"race"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
+<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
 <span>  <span class="va">nw</span>,</span>
 <span>  formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>,</span>
 <span>  target.stats <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,  <span class="co"># duration = 10, closed population</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting simulated annealing (SAN)</span></span>
@@ -515,8 +641,8 @@ some added trackers:</p>
 <span><span class="co">#&gt; Maximizing the pseudolikelihood.</span></span>
 <span><span class="co">#&gt; Finished MPLE.</span></span>
 <span></span>
-<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span></span>
@@ -538,23 +664,23 @@ some added trackers:</p>
 <td align="left">36</td>
 <td align="right">1</td>
 <td align="right">36</td>
-<td align="right">27</td>
-<td align="right">23</td>
+<td align="right">26</td>
+<td align="right">24</td>
 <td align="right">50</td>
 <td align="right">0</td>
-<td align="right">0.46</td>
-<td align="right">27</td>
+<td align="right">0.48</td>
+<td align="right">26</td>
 </tr>
 <tr class="even">
 <td align="left">37</td>
 <td align="right">1</td>
 <td align="right">37</td>
-<td align="right">27</td>
-<td align="right">23</td>
+<td align="right">26</td>
+<td align="right">24</td>
 <td align="right">50</td>
 <td align="right">0</td>
-<td align="right">0.46</td>
-<td align="right">27</td>
+<td align="right">0.48</td>
+<td align="right">26</td>
 </tr>
 <tr class="odd">
 <td align="left">38</td>
@@ -563,7 +689,7 @@ some added trackers:</p>
 <td align="right">26</td>
 <td align="right">24</td>
 <td align="right">50</td>
-<td align="right">1</td>
+<td align="right">0</td>
 <td align="right">0.48</td>
 <td align="right">26</td>
 </tr>
@@ -626,72 +752,39 @@ some added trackers:</p>
 <td align="left">44</td>
 <td align="right">1</td>
 <td align="right">44</td>
-<td align="right">24</td>
-<td align="right">26</td>
+<td align="right">23</td>
+<td align="right">27</td>
 <td align="right">50</td>
-<td align="right">0</td>
-<td align="right">0.52</td>
-<td align="right">24</td>
+<td align="right">1</td>
+<td align="right">0.54</td>
+<td align="right">23</td>
 </tr>
 <tr class="even">
 <td align="left">45</td>
 <td align="right">1</td>
 <td align="right">45</td>
-<td align="right">23</td>
-<td align="right">27</td>
+<td align="right">22</td>
+<td align="right">28</td>
 <td align="right">50</td>
 <td align="right">1</td>
-<td align="right">0.54</td>
-<td align="right">23</td>
+<td align="right">0.56</td>
+<td align="right">22</td>
 </tr>
 <tr class="odd">
 <td align="left">46</td>
 <td align="right">1</td>
 <td align="right">46</td>
-<td align="right">23</td>
-<td align="right">27</td>
+<td align="right">22</td>
+<td align="right">28</td>
 <td align="right">50</td>
 <td align="right">0</td>
-<td align="right">0.54</td>
-<td align="right">23</td>
+<td align="right">0.56</td>
+<td align="right">22</td>
 </tr>
 <tr class="even">
 <td align="left">47</td>
 <td align="right">1</td>
 <td align="right">47</td>
-<td align="right">23</td>
-<td align="right">27</td>
-<td align="right">50</td>
-<td align="right">0</td>
-<td align="right">0.54</td>
-<td align="right">23</td>
-</tr>
-<tr class="odd">
-<td align="left">48</td>
-<td align="right">1</td>
-<td align="right">48</td>
-<td align="right">22</td>
-<td align="right">28</td>
-<td align="right">50</td>
-<td align="right">1</td>
-<td align="right">0.56</td>
-<td align="right">22</td>
-</tr>
-<tr class="even">
-<td align="left">49</td>
-<td align="right">1</td>
-<td align="right">49</td>
-<td align="right">22</td>
-<td align="right">28</td>
-<td align="right">50</td>
-<td align="right">0</td>
-<td align="right">0.56</td>
-<td align="right">22</td>
-</tr>
-<tr class="odd">
-<td align="left">50</td>
-<td align="right">1</td>
-<td align="right">50</td>
 <td align="right">21</td>
 <td align="right">29</td>
 <td align="right">50</td>
@@ -699,56 +792,86 @@ some added trackers:</p>
 <td align="right">0.58</td>
 <td align="right">21</td>
 </tr>
+<tr class="odd">
+<td align="left">48</td>
+<td align="right">1</td>
+<td align="right">48</td>
+<td align="right">21</td>
+<td align="right">29</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">0.58</td>
+<td align="right">21</td>
+</tr>
+<tr class="even">
+<td align="left">49</td>
+<td align="right">1</td>
+<td align="right">49</td>
+<td align="right">20</td>
+<td align="right">30</td>
+<td align="right">50</td>
+<td align="right">1</td>
+<td align="right">0.60</td>
+<td align="right">20</td>
+</tr>
+<tr class="odd">
+<td align="left">50</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">20</td>
+<td align="right">30</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">0.60</td>
+<td align="right">20</td>
+</tr>
 </tbody>
 </table>
-<p>Each function must be named in the <code>.tracker.list</code> list.
-The name given there will be used to identify the <em>tracker
-function</em> in the <code>epi</code> list and will be the name of the
-corresponding column of the <code>data.frame</code> produced by
-<code>as.data.frame(sim)</code> where <code>sim</code> is a
-<code>netsim</code> object.</p>
-<p><em>Note</em>: in the <code>some.trackers</code> list, we put
-<code>epi_prop_infected</code> and <code>epi_s_num</code> without
-parentheses at the end. This is because we store the
-<code>function</code> and not the result of calling the function.</p>
-<p><strong>Important</strong>: The trackers are <strong>Always</strong>
-run at the end of a simulation step. The value outputted reflect the
-state of the simulation <em>after</em> all the modules performed their
-tasks.</p>
+<p>Note that in the <code>.tracker.list</code> we pass the function
+objects (<code>epi_prop_infected</code>, <code>epi_s_num</code>) without
+parentheses—we are storing the functions, not calling them.</p>
+<p>Trackers are <strong>always</strong> run at the end of a simulation
+step. The values they output reflect the state of the simulation
+<em>after</em> all modules have completed their work for that step.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="record-any-object-advanced-debugging">Record Any Object (Advanced Debugging)<a class="anchor" aria-label="anchor" href="#record-any-object-advanced-debugging"></a>
+<h2 id="recording-arbitrary-objects-advanced-debugging">Recording Arbitrary Objects (Advanced Debugging)<a class="anchor" aria-label="anchor" href="#recording-arbitrary-objects-advanced-debugging"></a>
 </h2>
-<p>When working with complex research-level models, we sometimes want to
-inspect the state of an object without stopping the simulation. The
-function <code><a href="../reference/record_raw_object.html">EpiModel::record_raw_object</a></code> allows the user to
-save any object during the simulation.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>When debugging complex research models, you may want to inspect the
+state of an object during simulation without stopping it.
+<code><a href="../reference/record_raw_object.html">record_raw_object()</a></code> saves any R object at a given time step
+for later inspection.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">introspect_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Attributes</span></span>
 <span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">age</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>        age <span class="op">=</span> <span class="va">age</span>,</span>
-<span>        status <span class="op">=</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
+<span>        status <span class="op">=</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">EpiModel</span><span class="fu">::</span><span class="fu"><a href="../reference/record_raw_object.html">record_raw_object</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="st">"old pop"</span>, <span class="va">obj</span><span class="op">)</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/record_raw_object.html">record_raw_object</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="st">"old pop"</span>, <span class="va">obj</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>In this module, we look at the age of the population and if the mean
-age is more than 50, we create a <code>data.frame</code> called
-<code>obj</code> containing the <code>age</code> and <code>status</code>
-<em>attribute vectors</em> and store it in a <em>Raw Record</em>.</p>
-<p>This <em>Raw Record</em> can be accessed in the final
-<code>netsim</code> object for debugging purposes.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>After simulation, access recorded objects from the
+<code>netsim</code> output:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">[[</span><span class="st">"raw.records"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># Access raw records for simulation 1</span></span>
+<span><span class="co"># Returns a nested list keyed by label, then time step</span></span>
+<span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">[[</span><span class="st">"raw.records"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Access the "old pop" data.frame recorded at step 75</span></span>
+<span><span class="va">raw</span><span class="op">[[</span><span class="st">"old pop"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">75</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><strong>Use sparingly:</strong> Raw records are not truncated and can
+consume substantial memory, especially for large attribute vectors
+recorded at many time steps. This feature is intended for debugging, not
+routine output collection.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
