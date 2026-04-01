@@ -128,13 +128,13 @@ The returned `data.frame` has columns `head`, `tail`, `head_status`, `tail_statu
 
 See also `discord_edgelist()` for the original, simpler version of this function used in built-in models.
 
-## Positional IDs and Unique IDs
+## Positional Indexing and Unique IDs
 
-EpiModel uses two identification systems for nodes:
+EpiModel uses two ways to reference nodes:
 
-- **Positional IDs** (`posit_id`): The index position of a node in attribute vectors. These are used by current edgelists and most attribute accessors. In a model with 100 nodes, positional IDs range from 1 to 100. When nodes depart (die or emigrate), their positional ID slot remains but is marked inactive (`active = 0`). When new nodes arrive, they receive new positional IDs.
+- **By position:** Think of it like a row number in a spreadsheet. `dat$attr$active[3]` accesses the third node's value directly. This is the standard way to look up node information and is very fast. In a model with 100 nodes, positions range from 1 to 100. When nodes depart, they may be dropped from the vectors, freeing their position for new arrivals.
 
-- **Unique IDs** (`unique_id`): A globally unique identifier assigned to each node at creation. Unlike positional IDs, unique IDs are never reused. They are used by cumulative edgelists and attribute histories because they can refer to nodes that have already departed.
+- **By `unique_id`:** A globally unique integer attribute assigned to each node at creation and never reused. Slower to look up, but allows referencing nodes that have already departed. Used by cumulative edgelists and attribute histories.
 
 Conversion between the two systems is handled internally by EpiModel. The `get_unique_ids()` and `get_posit_ids()` functions perform the conversion. See `help("unique_id-tools", package = "EpiModel")` for details.
 

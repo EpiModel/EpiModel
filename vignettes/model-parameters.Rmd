@@ -67,7 +67,7 @@ control <- control.net(type = "SIS", nsims = 1, nsteps = 250, verbose = FALSE)
 Scenarios are defined using `create_scenario_list`, which takes a specially formatted `data.frame` as input and outputs a list of scenarios usable by EpiModel. We use `tibble::tribble` here for readability, but any `data.frame` constructor works.
 
 ```{r scenarios_setup}
-suppressMessages(library(dplyr))
+library(dplyr)
 
 scenarios.df <- tribble(
   ~.scenario.id, ~.at, ~inf.prob, ~rec.rate,
@@ -161,7 +161,17 @@ knitr::kable(scenarios.df)
 
 All elements of a vector parameter must be specified in the `data.frame`, even if some values do not change across scenarios (e.g., `hiv.test.rate_2` is constant here but must still be included).
 
-When working with many parameters, we recommend storing the `scenarios.df` as a CSV or Excel file for easier sharing and editing.
+When working with many parameters, we recommend storing the `scenarios.df` as a CSV, RDS or Excel file for easier sharing and editing.
+
+```{r, eval = FALSE}
+# CSV
+write.csv(scenarios.df, "scenarios.csv", row.names = FALSE)
+scenarios.df <- read.csv("scenarios.csv")
+
+# RDS
+saveRDS(scenarios.df, "scenarios.rds")
+scenarios.df <- readRDS("scenarios.rds")
+```
 
 ## Parameter Input via Table
 
@@ -171,7 +181,7 @@ The `data.frame` requires three columns:
 
 1. `param`: The parameter name. For vector parameters (length > 1), append the position with an underscore (e.g., `"p_1"`, `"p_2"`).
 2. `value`: The parameter value (as a character string).
-3. `type`: The R object class---`"numeric"`, `"logical"`, or `"character"`.
+3. `type`: The type of the parameter value. Only three values are accepted: `"numeric"`, `"logical"`, or `"character"`.
 
 Additional columns (e.g., `details`, `source`) may be included for documentation but are ignored by EpiModel.
 
@@ -188,7 +198,7 @@ df_params <- tribble(
 knitr::kable(df_params)
 ```
 
-Pass the table via `data.frame.params`. These parameters can be combined with named parameters for maximum flexibility:
+Pass the table via `data.frame.params`. These parameters can be combined with named parameters for maximum flexibility. In case of conflict, named parameters take priority over those in the `data.frame`:
 
 ```{r param_table2}
 param <- param.net(data.frame.params = df_params,
@@ -199,7 +209,7 @@ param
 
 ## Random Parameters
 
-Fixed parameters assume that each input value is known with certainty. In practice, we often want to explore how uncertainty in parameter values propagates to uncertainty in epidemic outcomes. EpiModel supports drawing parameter values from distributions, so that each simulation uses a different realization.
+Fixed parameters assume that each input value is known with certainty. In practice, we may want to explore how uncertainty in parameter values propagates to uncertainty in epidemic outcomes. EpiModel supports drawing parameter values from distributions, so that each simulation uses a different realization.
 
 ### The Model
 
@@ -340,7 +350,6 @@ Verify that correlated sets are sampled together:
 related.param
 get_param_set(mod)
 ```
-
 
 ## Time-Varying Parameters and Control Settings (Advanced)
 
