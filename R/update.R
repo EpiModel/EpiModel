@@ -179,14 +179,16 @@ delete_edges <- function(el, vid) {
 depart_nodes <- function(dat, departures) {
   if (length(departures) > 0) {
     if (get_control(dat, "tergmLite") == FALSE) {
-      for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- deactivate.vertices(
-          dat$run$nw[[network]],
+      for (net_index in seq_len(dat$num.nw)) {
+        net <- get_network(dat, network = net_index)
+        net <- deactivate.vertices(
+          net,
           onset = get_current_timestep(dat),
           terminus = Inf,
           v = departures,
           deactivate.edges = TRUE
         )
+        dat <- set_network(dat, nw = net, network = net_index)
       }
     } else {
       dat <- delete_attr(dat, departures)
@@ -234,22 +236,23 @@ depart_nodes <- function(dat, departures) {
 arrive_nodes <- function(dat, nArrivals) {
   if (nArrivals > 0) {
     if (!get_control(dat, "tergmLite")) {
-      for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- add.vertices.active(
-          dat$run$nw[[network]],
+      for (net_index in seq_len(dat$num.nw)) {
+        net <- get_network(dat, network = net_index)
+        net <- add.vertices.active(
+          net,
           nv = nArrivals,
           onset = get_current_timestep(dat),
           terminus = Inf
         )
+        dat <- set_network(dat, nw = net, network = net_index)
       }
     } else {
-      for (network in seq_len(dat$num.nw)) {
-        dat$run$el[[network]] <- add_vertices(
-          dat$run$el[[network]],
-          nv = nArrivals
-        )
-        dat$run$net_attr[[network]][["n"]] <-
-          dat$run$net_attr[[network]][["n"]] + nArrivals
+      for (net_index in seq_len(dat$num.nw)) {
+        net <- get_network(dat, network = net_index)
+        net <- add_vertices(net, nv = nArrivals)
+        dat$run$net_attr[[net_index]][["n"]] <-
+          dat$run$net_attr[[net_index]][["n"]] + nArrivals
+        dat <- set_network(dat, nw = net, network = net_index)
       }
     }
   }

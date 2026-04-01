@@ -1,4 +1,3 @@
-
 #' @title Dynamic Network Updates
 #'
 #' @description This function handles all calls to the network object contained
@@ -11,7 +10,6 @@
 #' @export
 #'
 nwupdate.net <- function(dat, at) {
-
   ## Attributes
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
@@ -28,7 +26,6 @@ nwupdate.net <- function(dat, at) {
 
   nArrivals <- length(arrivals)
   if (nArrivals > 0) {
-
     ## Arrivals
     nwterms <- dat$run$nwterms
     if (!is.null(nwterms)) {
@@ -36,12 +33,13 @@ nwupdate.net <- function(dat, at) {
       dat <- auto_update_attr(dat, arrivals, curr.tab)
     }
     if (length(unique(vapply(get_attr_list(dat), length, 1))) != 1) {
-      stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(cbind(vapply(get_attr_list(dat), length, 1))))
+      stop(
+        "Attribute list of unequal length. Check arrivals.net module.\n",
+        print(cbind(vapply(get_attr_list(dat), length, 1)))
+      )
     }
     dat <- arrive_nodes(dat, nArrivals)
   }
-
 
   ## Departures
   dat <- depart_nodes(dat, departures)
@@ -52,13 +50,17 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Update temporally extended disease status
-  if (tergmLite == FALSE) {
-    for (network in seq_len(dat$num.nw)) {
-      dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
-                                                         prefix = "testatus",
-                                                         value = status,
-                                                         onset = at,
-                                                         terminus = Inf)
+  if (!tergmLite) {
+    for (net_index in seq_len(dat$num.nw)) {
+      net <- get_network(dat, network = net_index)
+      net <- activate.vertex.attribute(
+        net,
+        prefix = "testatus",
+        value = status,
+        onset = at,
+        terminus = Inf
+      )
+      dat <- set_network(dat, nw = net, network = net_index)
     }
   }
 

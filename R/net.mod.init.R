@@ -206,22 +206,26 @@ init_status.net <- function(dat) {
     status <- get_attr(dat, "status") # already copied in copy_nwattr_to_datattr
   }
 
-
   ## Set up TEA status
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
-      for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
-                                                      "status",
-                                                      status)
+      for (net_index in seq_len(dat$num.nw)) {
+        net <- get_network(dat, network = net_index)
+        net <- set_vertex_attribute(net, "status", status)
+        dat <- set_network(dat, net, network = net_index)
       }
     }
-    for (network in seq_len(dat$num.nw)) {
-      dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
-                                                         prefix = "testatus",
-                                                         value = status,
-                                                         onset = 1,
-                                                         terminus = Inf)
+
+    for (net_index in seq_len(dat$num.nw)) {
+      net <- get_network(dat, network = net_index)
+      net <- activate.vertex.attribute(
+        net,
+        prefix = "testatus",
+        value = status,
+        onset = 1,
+        terminus = Inf
+      )
+      dat <- set_network(dat, net, network = net_index)
     }
   }
 
@@ -295,10 +299,10 @@ init_nets <- function(dat, x) {
 
   ## initialize network data on dat object
   dat$num.nw <- length(x)
-  dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+  dat$nwparam <- lapply(x, \(y) y[!(names(y) %in% c("fit", "newnetwork"))])
   nws <- lapply(x, `[[`, "newnetwork")
-  nw <- nws[[1]]
-  if (get_control(dat, "tergmLite") == TRUE) {
+  base_nw <- nws[[1]]
+  if (get_control(dat, "tergmLite")) {
     dat$run$el <- lapply(nws, as.edgelist)
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
@@ -308,17 +312,17 @@ init_nets <- function(dat, x) {
   # Nodal Attributes --------------------------------------------------------
 
   # Standard attributes
-  num <- network.size(nw)
+  num <- network.size(base_nw)
   dat <- append_core_attr(dat, 1, num)
 
-  groups <- length(unique(get_vertex_attribute(nw, "group")))
+  groups <- length(unique(get_vertex_attribute(base_nw, "group")))
   dat <- set_param(dat, "groups", groups)
 
   ## Pull attr on nw to dat$attr
-  dat <- copy_nwattr_to_datattr(dat, nw)
+  dat <- copy_nwattr_to_datattr(dat, base_nw)
 
   ## record names of relevant vertex attributes
-  dat$run$nwterms <- get_network_term_attr(nw)
+  dat$run$nwterms <- get_network_term_attr(base_nw)
 
   ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {

@@ -24,7 +24,8 @@ get_edgelist <- function(dat, network) {
       stop("There is no network '", network, "' to get an edgelist from")
     }
     at <- get_current_timestep(dat)
-    el <- networkDynamic::get.dyads.active(dat$run$nw[[network]], at = at)
+    net <- get_network(dat, network = network)
+    el <- networkDynamic::get.dyads.active(net, at = at)
   }
 
   return(el)
