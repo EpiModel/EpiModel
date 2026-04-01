@@ -24,17 +24,28 @@ library(EpiModel)
 
 ## Introduction
 
-In a model, *parameters* are the input variables used to define aspects of the system behavior. In the basic built-in SIS (Susceptible-Infected-Susceptible) model, these parameters could be the **act rate**, the **infection probability** and the **recovery rate**. In simple models, each of these parameters are single fixed values that do not change over the course of a simulation. In more complex models, we may want more flexibility in model parameterization.
+This vignette assumes familiarity with setting up and running network models in EpiModel. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
 
-Therefore, in this vignette, we demonstrate how to implement:
+For working with nodal attributes and epidemic summary statistics, see the companion vignette *Working with Custom Attributes and Summary Statistics in EpiModel*. For network objects and edgelists, see *Working with Network Objects in EpiModel*.
 
-- Scenarios: sets of parameters to be changed for a simulation, either at the start or at a specific timestep.
-- Random parameters: distributions of possible values rather than a single fixed value.
-- Time-varying parameters and control settings: The scenarios functionality provides the most straightforward way to implement time-varying parameters, but more direct functionality is demonstrated here for advanced users seeking to implement time-varying parameters or control settings.
+In a model, *parameters* are the input variables that define aspects of system behavior. In a basic SIS (Susceptible-Infected-Susceptible) model, these might include an **infection probability**, an **act rate**, and a **recovery rate**. In simple models, each parameter is a single fixed value that remains constant throughout a simulation. Real-world applications, however, often require more flexibility: parameters that change over time (e.g., to represent an intervention rollout or behavioral change during an epidemic), parameters drawn from distributions (for sensitivity analysis or calibration), or large parameter sets managed via spreadsheets.
+
+This vignette demonstrates how to implement:
+
+- **Scenarios:** Named sets of parameter changes applied at the start of a simulation or at specific time steps---the primary mechanism for time-varying parameters, counterfactual analysis, and intervention modeling.
+- **Parameter input via tables:** Passing many parameters at once through a `data.frame`, enabling spreadsheet-based parameter management.
+- **Random parameters:** Distributions of parameter values rather than single fixed values, for uncertainty quantification and sensitivity analysis.
+- **Parameter and control updaters (advanced):** The low-level mechanism underlying scenarios, exposed directly for cases where the scenario API is not flexible enough.
 
 ## Scenarios
 
-Scenarios can be defined as a single set of parameters to be used for a particular model run. For this example we will use a simple SIS model to demonstrate how scenarios work. First, we set up the model as we would normally.
+Scenarios allow you to define named sets of parameter values that can change at specific time steps during a simulation. This is the recommended approach for implementing time-varying parameters---for example, modeling an intervention that reduces transmission probability partway through an epidemic, or comparing multiple policy alternatives.
+
+Our research paper implementing time-varying parameter scenarios for COVID-19 sexual distancing interventions was published in the *Journal of Infectious Diseases*. The code [can be found here](https://github.com/EpiModel/SexualDistancing).
+
+### Setup
+
+First, we set up a simple SIS model as the base case.
 
 ```{r setup, results = "hide"}
 set.seed(10)
@@ -42,7 +53,7 @@ set.seed(10)
 nw <- network_initialize(n = 200)
 est <- netest(nw,
   formation = ~edges, target.stats = 60,
-  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),  # duration = 10, closed population
   verbose = FALSE
 )
 
@@ -53,12 +64,10 @@ control <- control.net(type = "SIS", nsims = 1, nsteps = 250, verbose = FALSE)
 
 ### Scenario Definitions
 
-To define the scenarios, we will make use of the `EpiModel::create_scenario_list` function. It takes a specially formatted `data.frame` as input and outputs a list of scenarios usable by EpiModel.
-
-We will use the `tibble::tribble` function to create the `data.frame` here. But any data frame construction methods will work as long as the resulting `data.frame` is properly formatted.
+Scenarios are defined using `create_scenario_list`, which takes a specially formatted `data.frame` as input and outputs a list of scenarios usable by EpiModel. We use `tibble::tribble` here for readability, but any `data.frame` constructor works.
 
 ```{r scenarios_setup}
-suppressMessages(library(dplyr))
+library(dplyr)
 
 scenarios.df <- tribble(
   ~.scenario.id, ~.at, ~inf.prob, ~rec.rate,
@@ -72,49 +81,49 @@ scenarios.df <- tribble(
 knitr::kable(scenarios.df)
 ```
 
-A `data.frame` of scenarios must be formatted as follows. First, there are two required columns:
-  - `.scenario.id`: an identifier for the scenario
-  - `.at`:          when should the changes apply during the simulation
+The `data.frame` requires two columns:
 
-Any number of parameters columns. They must start with a letter and contain only letters, numbers or `.`. Underscores `_` are not accepted. If a cell is left empty (`NA`), EpiModel will assume that you want to set the parameter to `NA`. `NA` does not mean that the value should remain unmodified.
+- `.scenario.id`: an identifier for the scenario.
+- `.at`: the time step at which the parameter changes should apply. Use `0` for changes that take effect before the simulation begins.
 
-In the `data.frame` above, three rows share the same `.scenario.id`. This means that EpiModel will consider it a single scenario were multiple events occur during the simulation.
+Remaining columns are parameter names. They must start with a letter and contain only letters, numbers, or `.` (underscores are reserved for vector indexing, described below). If a cell is `NA`, EpiModel sets that parameter to `NA`---it does *not* mean "leave unchanged."
 
-To go from the `scenarios.df` to a list of usable scenarios we run:
+In this example, the `"multiple_changes"` scenario has three rows sharing the same `.scenario.id`, representing a single scenario with parameter changes at three different time points.
+
+To convert from the `data.frame` to a usable list of scenarios:
 
 ```{r scenarios_list}
 scenarios.list <- create_scenario_list(scenarios.df)
 str(scenarios.list, max.level = 2)
 ```
 
-We now have a named list of scenarios. We will run all the scenarios, combine there results and plot the number of susceptible and infected over time to show what happened. To do so, we loop over all 3 scenarios and use `EpiModel::use_scenario` function to create a new `sc.param` object to be used for the simulation parameters.
+### Running Scenarios
+
+We loop over all scenarios, using `use_scenario` to create a modified parameter object for each. Under the hood, `use_scenario` generates parameter updaters (described in the Advanced section below) that apply the specified changes at the designated time steps.
 
 ```{r simulations}
-# creation of a list that will hold the result of the simulations
+# List to hold simulation results
 d_list <- vector(mode = "list", length = length(scenarios.list))
 names(d_list) <- names(scenarios.list)
 
 for (scenario in scenarios.list) {
-  # the id of the scenario is stored into `scenario$id`
   print(scenario$id)
-
   sc.param <- use_scenario(param, scenario)
   sim <- netsim(est, sc.param, init, control)
-  # conversion to `data.frame` and storage of the scenario name in it
   d_sim <- as.data.frame(sim)
   d_sim[["scenario"]] <- scenario$id
   d_list[[scenario$id]] <- d_sim
 }
 ```
 
-We see that for the "multiple_changes" scenarios, we received two messages, at time step 100 and 200, telling us that some parameters were changed during the simulation. The other scenarios were silent as the changes occurred before the simulation
-began.
+For the `"multiple_changes"` scenario, messages appear at time steps 100 and 200 indicating that parameters were modified during the simulation. The other scenarios are silent because their changes occur before the simulation begins (`.at = 0`).
 
-Now we can merge and plot the results:
+Now we can plot the results. We use base R plotting here rather than `plot.netsim()` because we need to overlay results from separate `netsim` runs on a single axis.
 
 ```{r plotting, fig.width = 8}
 plot(d_list$base$time, d_list$base$i.num,
-     type = "l", col = 1, lwd = 2, ylim = c(0, 250))
+     type = "l", col = 1, lwd = 2, ylim = c(0, 250),
+     xlab = "Time Step", ylab = "Number Infected")
 lines(d_list$initial_change$time, d_list$initial_change$i.num,
       type = "l", col = 2, lwd = 2)
 lines(d_list$multiple_changes$time, d_list$multiple_changes$i.num,
@@ -124,20 +133,19 @@ legend("topleft", legend = names(d_list),
        col = 1:3, lwd = 2, cex = 0.9, bty = "n")
 ```
 
-We can see that in the `initial_change` scenario, the epidemic speed is slower than in the base "scenario" as we have reduced the infection probability in the former.
+The `"initial_change"` scenario shows a slower epidemic than the base case because the infection probability is reduced from 0.9 to 0.2 from the start.
 
-The "multiple_changes" scenario shows different but expected results:
-- at first the epidemic is very slow as the infection probability is low and the recovery rate is high.
-- then at step 100, we apply the same values as in the "base" scenario. Thus the epidemic trajectory increases.
-- then at step 200, we  reduce the infection probability and increase the recovery rate, which results in a quick epidemic extinction.
+The `"multiple_changes"` scenario demonstrates three phases:
 
-These scenarios are simplified to demonstrate the scenario system. Our research paper implementing the idea of multiple time-varying parameter changes was published in the *Journal of Infectious Disease*. The code [can be found here](https://github.com/EpiModel/SexualDistancing).
+- Steps 1--99: Slow growth (low infection probability, higher recovery rate).
+- Steps 100--199: Base-case parameters applied, so the epidemic trajectory accelerates.
+- Steps 200--250: Infection probability drops and recovery rate increases, driving rapid epidemic decline.
 
 ### Scenarios with Parameter Vectors
 
-In full-scale modeling projects, we often have vectors of parameters. For example, we may have a parameter, `hiv.test.rate`, which is a vector of length 3 containing the weekly probabilities of HIV screening for Black, Hispanic or White persons, respectively.
+In full-scale modeling projects, parameters are often vectors. For example, `hiv.test.rate` might be a vector of length 3 containing weekly HIV screening probabilities for Black, Hispanic, and White persons.
 
-For such parameters we can still use the scenarios approach described above. But in this case, we must define a column for each element of the modified parameter and end it with a numerical value for the order in which it lies in the vector: for example, `\_1`, `\_2` and `\_3` for the B, H, and W rates. Here is what that looks like:
+To use vectors in scenarios, create a separate column for each element using the naming convention `paramname_N`, where `N` is the position in the vector:
 
 ```{r multi_param}
 scenarios.df <- tribble(
@@ -151,22 +159,31 @@ scenarios.df <- tribble(
 knitr::kable(scenarios.df)
 ```
 
-One thing to note is that you must pass in the values for each sub-parameter in the `scenarios.df`. For example, even if the value of the HIV screening rate for Hispanic persons (the second value in the vector) is not changing across any scenarios, it is still necessary to define it as `hiv.test.rate_2`.
+All elements of a vector parameter must be specified in the `data.frame`, even if some values do not change across scenarios (e.g., `hiv.test.rate_2` is constant here but must still be included).
 
-When working with a lot of parameters, it is recommended to store the `scenarios.df` as CSV or Excel file so your parameters can be easily shared and edited.
+When working with many parameters, we recommend storing the `scenarios.df` as a CSV, RDS or Excel file for easier sharing and editing.
 
-## Parameters Input Via Table
+```{r, eval = FALSE}
+# CSV
+write.csv(scenarios.df, "scenarios.csv", row.names = FALSE)
+scenarios.df <- read.csv("scenarios.csv")
 
-Similar to the scenarios, the `param.net` function that creates the `param` object for `netsim` allows for inputting model parameters with a data.frame table. This allows a user to pass in many parameters at once, or work with a spreadsheet to track and update parameters before use in EpiModel.
+# RDS
+saveRDS(scenarios.df, "scenarios.rds")
+scenarios.df <- readRDS("scenarios.rds")
+```
 
-The `data.frame` of parameters must be specifically formatted such that the first 3 columns must be:
-1. 'param': The name of the parameter. If this is a non-scalar  parameter (a vector of length > 1), end the parameter name with the position on the vector (e.g., `"p_1"`, `"p_2"`, ...).
-2. 'value': the value for the parameter (or the value of the parameter in the Nth position if non-scalar).
-3. 'type': a character string containing either `"numeric"`, `"logical"`, or `"character"` to define the parameter object class.
+## Parameter Input via Table
 
-In addition to these 3 columns, the `data.frame` can contain any number of other columns, such as `details` or `source` columns to document parameter meta-data. However, these extra columns will not be used by EpiModel.
+The `param.net` function accepts a `data.frame` of parameters through the `data.frame.params` argument. This allows passing many parameters at once or working with a spreadsheet to track and update parameters before use in EpiModel.
 
-In this example, we are inputting the parameters into a `data.frame` via `tribble`. In practice, parameters may be stored in an Excel file or CSV file and imported into a `data.frame` using the usual read functions.
+The `data.frame` requires three columns:
+
+1. `param`: The parameter name. For vector parameters (length > 1), append the position with an underscore (e.g., `"p_1"`, `"p_2"`).
+2. `value`: The parameter value (as a character string).
+3. `type`: The type of the parameter value. Only three values are accepted: `"numeric"`, `"logical"`, or `"character"`.
+
+Additional columns (e.g., `details`, `source`) may be included for documentation but are ignored by EpiModel.
 
 ```{r param_table}
 df_params <- tribble(
@@ -181,7 +198,7 @@ df_params <- tribble(
 knitr::kable(df_params)
 ```
 
-To use this table of parameters with `param.net`, pass in the table of parameters via the `data.frame.params` argument in `param.net`. Note that these parameters may also be combined with named parameters outside of a table, for maximum flexibility. In this example, we also pass in two extra parameters, `other.param` and `act.rate`. Note that when the `param` object is printed, all of the parameters are processed as expected.
+Pass the table via `data.frame.params`. These parameters can be combined with named parameters for maximum flexibility. In case of conflict, named parameters take priority over those in the `data.frame`:
 
 ```{r param_table2}
 param <- param.net(data.frame.params = df_params,
@@ -192,11 +209,11 @@ param
 
 ## Random Parameters
 
-We have demonstrated how to work with fixed and time-varying parameters above. One may also be interested in working with  distributions of parameters that may follow some parametric or non-parametric form. For example, we may want to sample a range of values for the probability of infection given contact for each simulation of a model, instead of using a single value across all simulations.
+Fixed parameters assume that each input value is known with certainty. In practice, we may want to explore how uncertainty in parameter values propagates to uncertainty in epidemic outcomes. EpiModel supports drawing parameter values from distributions, so that each simulation uses a different realization.
 
 ### The Model
 
-EpiModel now includes functionality to input distributions of parameters for network models. We will demonstrate this with a simple SI model.
+We demonstrate with a simple SI model.
 
 ```{r model}
 nw <- network_initialize(n = 50)
@@ -204,7 +221,7 @@ nw <- network_initialize(n = 50)
 est <- netest(
   nw, formation = ~edges,
   target.stats = 25,
-  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),  # duration = 10, closed population
   verbose = FALSE
 )
 
@@ -221,15 +238,15 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-In the parameter list, we define four parameters: `inf.prob`, which will remain a single fixed value, but also `act.rate`, `dummy.param`, and `dummy.strat.param`, which here are fixed but will be defined below as random. The `dummy.strat.param` parameter has two elements; this vector approach may be used, for example, to stratify a parameter by subpopulation (e.g., as we did for the race-stratified HIV screening rate example above). The last line prints a summary of the model object. We can see the value of the parameters under the "Fixed Parameters" section. Note the additional `groups` parameter defined automatically by `EpiModel` as part of the "SI" model definition.
+Here we define four parameters: `inf.prob` (which will remain fixed), `act.rate`, `dummy.param`, and `dummy.strat.param` (which we will make random below). The `dummy.strat.param` parameter is a vector of length 2, which could represent a parameter stratified by subpopulation.
 
 ### Adding Random Parameters
 
-To allow our parameters to be drawn from a distribution of random values, we use the `random.params` argument to `param.net`. There are two ways of defining which parameters are random, and the distribution of values for those random parameters to draw randomly and how to draw them.
+To draw parameters from distributions, use the `random.params` argument to `param.net`. There are two approaches.
 
 #### Generator Functions
 
-The first option is to define a generator function for each parameter we want to declare as random.
+Define a generator function for each random parameter:
 
 ```{r generators}
 my.randoms <- list(
@@ -249,16 +266,13 @@ param <- param.net(
 param
 ```
 
-We kept the `inf.prob` parameter fixed at `0.3`, and then defined a `list` object called `my.randoms` containing 3 elements:
+The `my.randoms` list contains three elements:
 
-- `act.rate` uses the `param_random` [function factory](https://adv-r.hadley.nz/function-factories.html) defined by EpiModel
-  (see `?EpiModel::param_random`). In this case, each simulation will sample one of the three defined values in the vector with equal probability.
-- `dummy.param` is a function with no argument that returns a random value from a beta distribution.
-- `dummy.strat.param` is a function with no argument that returns 2 values sampled from normal distributions, each with different means and standard deviations.
+- `act.rate` uses the `param_random` [function factory](https://adv-r.hadley.nz/function-factories.html) provided by EpiModel (see `?param_random`). Each simulation samples one of the three values with equal probability.
+- `dummy.param` is a zero-argument function that returns a single draw from a Beta(1, 2) distribution.
+- `dummy.strat.param` is a zero-argument function that returns a vector of length 2, each element drawn from a normal distribution with different mean and standard deviation.
 
-Each element is named after the parameter it will fill and MUST BE a function taking no argument and outputting a vector of the right size for the parameter: size 1 for `act.rate` and `dummy.param`; size 2 for `dummy.strat.param`. Note that when we print out the parameter list before running the model, it includes the random parameter definitions as functions, as their sampled values are not yet realized.
-
-The rest of the model is then run as before, although we increase the simulation count to three to demonstrate the parameter stochasticity.
+Each element must be named after the parameter it fills and must be a function taking no arguments, returning a vector of the correct length for that parameter. When we print the parameter list before running the model, random parameters appear as function definitions since their values have not yet been realized.
 
 ```{r generators_run}
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
@@ -267,16 +281,17 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-After running 3 simulations we can see that the `inf.prob` is still  displayed under the "Fixed Parameters" section. The other three parameters are displayed under the "Random Parameters" section: `act.rate` and `dummy.param` now have 3 values associated with them, one per simulation. `dummy.strat.param` have `<list>` as its value because each simulation has a vector of size 2.
+After running 3 simulations, `inf.prob` remains under "Fixed Parameters" while the random parameters each have 3 realized values (one per simulation). The vector parameter `dummy.strat.param` shows `<list>` because each realization is itself a vector of length 2.
 
-To more easily inspect the parameter values, we can use the `get_param_set` function:
+To inspect the realized values:
 
 ``` {r generators_inspect}
 all.params <- get_param_set(mod)
 all.params
 ```
 
-These parameters can then be merged with the epidemic data, for easy analysis of the relationship between parameters and outputs:
+These can be merged with epidemic output for analysis of parameter-outcome relationships:
+
 ```{r}
 epi <- as.data.frame(mod)
 left_join(epi, all.params)
@@ -285,9 +300,9 @@ left_join(epi, all.params)
 
 #### Parameter Sets
 
-The drawback of generator function approach above is that it cannot produce correlated parameter sets. For instance, we may want `dummy.param` and `dummy.strat.param` to be related to one another within a single simulation. We might also use an external method for generating parameter sets, such as Latin hypercube sampling of multiple parameters.
+Generator functions draw each parameter independently. When parameters need to be correlated---for example, when using Latin hypercube sampling or when one parameter is derived from another---use pre-defined parameter sets instead.
 
-For this, we need to pre-define a `data.frame` of parameter values. In this example, we have five parameter sets:
+Define a `data.frame` where each row is a complete set of correlated parameter values:
 
 ```{r set_df}
 n <- 5
@@ -302,18 +317,14 @@ related.param$dummy.strat.param_2 <- related.param$dummy.param * 2 + rnorm(n)
 related.param
 ```
 
-We now have a `data.frame` with 5 rows and 3 columns. Each row contains a set of parameters values that will be used together in a single simulation of the model. This way we keep the relationship between each value.
+Each row contains parameter values that will be used together in a single simulation. Vector parameters use the same `paramname_N` suffix convention as scenarios. This means underscores are reserved and cannot appear in parameter names themselves.
 
-The first column of the `data.frame` is named `dummy.param`, similar to the name of the parameter. For `dummy.start.param` we need two columns as the parameter contains two values. To achieve this, we name the two columns `dummy.start.param_1` and
-`dummy.strat.param_2`. The value after the underscore informs `EpiModel` how it should combine these values into a vector (note that this uses the same syntax as with stratified parameters within model scenarios described above). This in turn means that the underscore symbol is not allowed in proper parameter names.
-
-Then we set up the rest of the parameters. `related.param` is saved in the `my.randoms` list under the special reserved name `param.random.set`.
+Save the parameter set in the `my.randoms` list under the reserved name `param.random.set`:
 
 ```{r set_param}
 my.randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
   param.random.set = related.param
-
 )
 
 param <- param.net(
@@ -324,8 +335,7 @@ param <- param.net(
 param
 ```
 
-The `inf.prob` parameter remains fixed, the `act.rate` parameter remains random with independent sample, but now a set of
-the two remaining parameters is passed in as correlated parameters with `param.random_set`.
+The `inf.prob` parameter remains fixed, `act.rate` remains independently random, and the two remaining parameters are drawn as correlated sets from the `data.frame`.
 
 ```{r set_run}
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
@@ -334,22 +344,20 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-The output is similar to what we saw with the generator functions defined above. See that the correlated parameter sets are sampled from together from the data frame of parameters.
+Verify that correlated sets are sampled together:
 
 ```{r}
 related.param
 get_param_set(mod)
 ```
 
-
-
 ## Time-Varying Parameters and Control Settings (Advanced)
 
-Within EpiModel, the *scenarios* described above uses an updater module to implement parameter changes at a given time step. This section describes how these mechanisms function and how to use them directly if the scenarios approach above is not flexible enough, or if you would also like to have time-varying control settings.
+The *scenarios* system described above uses an internal updater module to implement parameter changes at designated time steps. This section describes the underlying updater mechanism directly. Use this when the scenario API is not flexible enough---for example, when you need relative (function-based) parameter changes or time-varying *control* settings.
 
 ### Parameter Updaters
 
-To define what parameters should change and when during the simulation, we need to define updater lists. An updater is a `list` with two named elements: `at`, the time step when the change will take place, and `param` a named list of parameters to update. For example:
+An updater is a `list` with two required elements: `at` (the time step for the change) and `param` (a named list of new parameter values):
 
 ```{r updater-example}
 list(
@@ -361,12 +369,10 @@ list(
 )
 ```
 
-This defines an updater that will change the value of the `inf.prob` parameter to `0.3` and the value to the `act.rate` parameter to `0.5`. This change will happen at time step 10. If we want, multiple parameter changes, then we can write a list of updaters:
+This updater sets `inf.prob` to 0.3 and `act.rate` to 0.5 at time step 10. Multiple updaters are combined in a list:
 
 ```{r updater-list}
-# Create a `list.of.updaters`
 list.of.updaters <- list(
-  # this is one updater
   list(
     at = 100,
     param = list(
@@ -374,7 +380,6 @@ list.of.updaters <- list(
       act.rate = 0.3
     )
   ),
-  # this is another updater
   list(
     at = 125,
     param = list(
@@ -384,11 +389,9 @@ list.of.updaters <- list(
 )
 ```
 
-In this example, we define two **updaters**, one that occurs at time step 100 and the other one at time step 125. As demonstrated below, these values for `inf.prob` and `act.rate` will change from the values of `0.1` established by `param.net`at the beginning of the time series.
-
 ### Incorporating Updaters
 
-Below we set up a complete example with a closed population SI model using the parameters and updaters defined above. Note that the parameter updaters get passed into `param.net` with the special `.param.updater.list` argument.
+Pass the updater list to `param.net` via the `.param.updater.list` argument:
 
 ```{r updater-module}
 param <- param.net(
@@ -405,20 +408,20 @@ control <- control.net(
 )
 ```
 
-Next, we run the model with a simple network structure:
 ```{r updater-module2}
 nw <- network_initialize(n = 100)
 est <- netest(
   nw,
   formation = ~edges,
   target.stats = 50,
-  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),  # duration = 10, closed population
   verbose = FALSE
 )
 mod <- netsim(est, param, init, control)
 ```
 
-The model plot here demonstrates the inflection points in the epidemic trajectory at the two parameter change points defined above.
+The plot shows inflection points at the two parameter change points. At step 100, both `inf.prob` and `act.rate` increase from 0.1 to 0.3, accelerating transmission. At step 125, `inf.prob` drops to 0.01, slowing the epidemic.
+
 ```{r}
 plot(mod, mean.smooth = FALSE)
 abline(v = c(100, 125), lty = 2, col = "grey50")
@@ -427,7 +430,7 @@ abline(v = c(100, 125), lty = 2, col = "grey50")
 
 #### Verbosity
 
-When creating a parameter updater, one can add an optional `verbose` element to the `list`. If `TRUE`, EpiModel will output a message` describing what changes were performed and when they occurred.
+Each updater can include an optional `verbose` element. When `TRUE` (the default), EpiModel prints a message describing the changes:
 
 ```{r updater-verbose}
 list(
@@ -442,7 +445,8 @@ list(
 
 #### Relative Parameter Changes
 
-It may be useful to configure the changes with respect to the current value instead of a fixed new value. This is possible as demonstrated below for `inf.prob`.
+Instead of setting a parameter to a fixed new value, you can define a *function* that transforms the current value. This is useful for multiplicative changes or logit-scale adjustments.
+
 ```{r updater-function}
 list(
   at = 10,
@@ -453,23 +457,20 @@ list(
 )
 ```
 
-This updater will set the value of `act.rate` to `0.5` as before. But, for `inf.prob` we define a function (not a function call). In this case, the  will apply the `function` to the current value of `act.rate`. If we consider as in the previous example that `act.rate` is set to `0.1` by `param.net`, then its new value will be obtained by adding the log odds of 2 to the original value of `inf.prob`: `plogis(qlogis(0.1) + log(2))`: `0.1818182`. Whereas the previous value of `inf.prob` was 0.10, the updated value will be 0.18.
+In this updater, `act.rate` is set to the fixed value 0.5 as before. For `inf.prob`, instead of a value, we provide a function. At time step 10, EpiModel applies this function to the *current* value of `inf.prob`. If `inf.prob` was set to 0.1 by `param.net`, the function computes `plogis(qlogis(0.1) + log(2))` = `r round(plogis(qlogis(0.1) + log(2)), 4)`, which doubles the odds of transmission while keeping the result on the probability scale.
 
 ### Time-Varying Control Settings
 
-Similar to time-varying parameters, we can use time-varying controls. These work in the same way. Each control updater is defined as a list of lists.
+Control settings can also be changed during a simulation using the same updater mechanism. Each control updater uses a `control` element (instead of `param`):
 
 ```{r control-updater-example}
-# Create a `list.of.updaters`
 list.of.updaters <- list(
-  # this is one updater
   list(
     at = 100,
     control = list(
       resimulate.network = FALSE
     )
   ),
-  # this is another updater
   list(
     at = 125,
     control = list(
@@ -479,9 +480,10 @@ list.of.updaters <- list(
 )
 ```
 
-This example sets two control updaters, one that turns off network resimulation at timestep 100 and another toggling of the model verbosity at step 125.
+This example turns off network resimulation at step 100 and disables model verbosity at step 125.
 
-The `list.of.updaters` then gets passed into `control.net` through the special `.control.updater.list` argument.
+Pass control updaters to `control.net` via `.control.updater.list`, paralleling how parameter updaters are passed to `param.net` via `.param.updater.list`:
+
 ```{r}
 control <- control.net(
  type = "SI",
@@ -491,4 +493,3 @@ control <- control.net(
  .control.updater.list = list.of.updaters
 )
 ```
-

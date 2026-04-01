@@ -23,84 +23,194 @@ library(EpiModel)
 
 ## Introduction
 
-This vignette discusses mechanisms usable inside `EpiModel` network models with custom modules. More information about these in the [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) section of the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) course materials.
+This vignette covers how to work with network objects, edgelists, and partnership histories in EpiModel network models with custom extension modules. It assumes familiarity with setting up and running network models with `netsim()` and with the extension API. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
 
-Inside the simulation, the networks themselves are stored under `dat$run$nw`. Ultimately this vignette will describe multiple aspects of working with network
-objects.
+For working with nodal attributes and epidemic summary statistics, see the companion vignette *Working with Custom Attributes and Summary Statistics in EpiModel*.
+
+## Network Storage Modes
+
+EpiModel supports two storage modes for networks, controlled by the `tergmLite` parameter in `control.net()`:
+
+- **Full mode** (`tergmLite = FALSE`, the default): Networks are stored as `networkDynamic` objects, which preserve the complete history of edge activations and deactivations. This allows extraction of the full dynamic network after simulation. However, `networkDynamic` objects consume substantial memory.
+
+- **tergmLite mode** (`tergmLite = TRUE`): Networks are stored as lightweight `networkLite` objects containing only the current edgelist and nodal attributes. This provides a 20--50x performance improvement and much lower memory usage, making it essential for large-scale research models. The trade-off is that `get_network()` returns a `networkLite` (a snapshot) rather than a full dynamic network history.
+
+Most extension modules work identically under both modes because they access networks through EpiModel's accessor functions rather than manipulating network objects directly.
+
+## Accessing Network Objects
+
+### During Simulation (Inside Modules)
+
+Inside a custom module, use the `get_network()` and `set_network()` accessors to work with network objects:
+
+```{r, eval = FALSE}
+# Get the network for layer 1
+nw <- get_network(dat, network = 1)
+
+# After modifying a network, set it back
+dat <- set_network(dat, network = 1, nw = nw)
+```
+
+These accessors handle the tergmLite vs. full-mode distinction internally, so your module code works under both storage modes. In full mode, `get_network()` returns a `networkDynamic` object; in tergmLite mode, it returns a `networkLite`.
+
+In practice, you rarely need to access network objects directly. Instead, use the edgelist accessor functions described below, which also work correctly under both storage modes.
+
+### After Simulation
+
+After a `netsim` call, extract network objects with `get_network()`:
+
+```{r, eval = FALSE}
+sim <- netsim(est, param, init, control)
+
+# Extract the network from simulation 1, network layer 1
+nw <- get_network(sim, sim = 1, network = 1)
+
+# Collapse to a static cross-section at time step 50 (full mode only)
+nw_at_50 <- get_network(sim, sim = 1, collapse = TRUE, at = 50)
+```
+
+In full mode, `get_network()` returns a `networkDynamic` object. In tergmLite mode, it returns a `networkLite` object representing the final state. The `collapse` and `at` arguments are only available in full mode.
+
+**Note:** Network objects are only saved in the output when `save.network` is `TRUE` in `control.net()` (the default for full mode). In tergmLite mode, there is no network history to save.
+
+### Transmission Matrix
+
+The transmission matrix records every transmission event during the simulation:
+
+```{r, eval = FALSE}
+transmat <- get_transmat(sim, sim = 1)
+```
+
+This returns a `data.frame` with columns including `at` (time step), `sus` (ID of the newly infected node), `inf` (ID of the infecting node), `infDur` (duration of infector's infection), `transProb`, `actRate`, and `finalProb`. Transmission matrices are saved by default (`save.transmat = TRUE` in `control.net()`).
+
+## Current Edgelists
+
+Current edgelists are the set of active partnerships at the present time step. These are the most commonly used network data structures inside extension modules.
+
+### Single Network
+
+`get_edgelist()` returns the current edgelist for a given network as a two-column matrix of positional IDs:
+
+```{r, eval = FALSE}
+el <- get_edgelist(dat, network = 1)
+```
+
+Each row is an active partnership. Column 1 is the positional ID of the "head" node; column 2 is the "tail" node. This function works identically under both storage modes.
+
+### Multiple Networks
+
+`get_edgelists_df()` combines edgelists from multiple network layers into a single `data.frame` with a `network` column:
+
+```{r, eval = FALSE}
+# All networks
+el_all <- get_edgelists_df(dat, networks = NULL)
+
+# Specific networks
+el_12 <- get_edgelists_df(dat, networks = c(1, 2))
+```
+
+The returned `data.frame` has columns `head`, `tail`, and `network`.
+
+### Discordant Edgelist
+
+The discordant edgelist identifies partnerships where partners have different values of a status attribute---the key data structure for modeling transmission. For example, in an SI model, discordant edges are those where one partner is susceptible and the other is infected:
+
+```{r, eval = FALSE}
+disc_el <- get_discordant_edgelist(
+  dat,
+  status.attr = "status",
+  head.status = "i",
+  tail.status = "s"
+)
+```
+
+The returned `data.frame` has columns `head`, `tail`, `head_status`, `tail_status`, and `network`. Both orderings are captured: if node A (infected) is partnered with node B (susceptible), the edge appears regardless of which is the "head" vs "tail" in the underlying network.
+
+See also `discord_edgelist()` for the original, simpler version of this function used in built-in models.
+
+## Positional Indexing and Unique IDs
+
+EpiModel uses two ways to reference nodes:
+
+- **By position:** Think of it like a row number in a spreadsheet. `dat$attr$active[3]` accesses the third node's value directly. This is the standard way to look up node information and is very fast. In a model with 100 nodes, positions range from 1 to 100. When nodes depart, they may be dropped from the vectors, freeing their position for new arrivals.
+
+- **By `unique_id`:** A globally unique integer attribute assigned to each node at creation and never reused. Slower to look up, but allows referencing nodes that have already departed. Used by cumulative edgelists and attribute histories.
+
+Conversion between the two systems is handled internally by EpiModel. The `get_unique_ids()` and `get_posit_ids()` functions perform the conversion. See `help("unique_id-tools", package = "EpiModel")` for details.
 
 ## Cumulative Edgelist
 
-The cumulative edgelist refers to the historical list of edges in a network with the time step they start and stopped. Such a list allows to query current relationships (contacts, partnerships, etc.) as well as past ones.
+The cumulative edgelist is a historical record of all edges in a network, including the time steps when each edge started and stopped. This allows querying both current and past partnerships---essential for contact tracing, partnership duration analysis, and reachability analysis.
 
-### Using the Cumulative Edgelist
+### Enabling Cumulative Edgelists
 
-The creation and update of the cumulative edgelist is done through the `EpiModel::update_cumulative_edgelist` function.
+Cumulative edgelist tracking must be explicitly enabled in `control.net()`:
 
-```{r create-el_cuml, eval = FALSE}
-dat <- update_cumulative_edgelist(dat, network, truncate = Inf)
+```{r, eval = FALSE}
+control <- control.net(
+  type = "SI",
+  nsims = 1,
+  nsteps = 100,
+  cumulative.edgelist = TRUE,       # Enable tracking during simulation
+  save.cumulative.edgelist = TRUE,  # Save in output after simulation
+  verbose = FALSE
+)
 ```
 
-This function takes 3 arguments:
+Without `cumulative.edgelist = TRUE`, calls to `update_cumulative_edgelist()` silently do nothing and calls to `get_cumulative_edgelist()` return an empty `tibble`.
 
-1. `dat`: the *Main List Object*.
-2. `network`: the number of the network for which to create the cumulative edgelist (for multi-layer network simulations).
-3. `truncate`: a number of time steps after which an inactive edge should be removed from the cumulative edgelist (this saves computer memory for large-scale simulations).
+### Updating the Cumulative Edgelist
 
-The function returns a modified version of `dat` that needs to be assigned back.
+The cumulative edgelist must be updated at each time step after network resimulation. In a custom module or at the end of initialization:
 
-The following snippet will update the cumulative edgelist for all the networks used by a model and remove the edges that ended more than 100 steps ago.
+```{r, eval = FALSE}
+dat <- update_cumulative_edgelist(dat, network = 1, truncate = Inf)
+```
 
-```{r el_cuml-snippet, eval = FALSE}
-for (n_network in seq_along(dat$run$nw)) {
+The `truncate` argument controls memory usage:
+
+- `truncate = Inf`: Keep the full history of all edges (no removal).
+- `truncate = 0` (the default): Keep only currently active edges. Use this if you only need to track active edge start times.
+- `truncate = N`: Remove edges that ended more than `N` time steps ago. This balances historical depth with memory use.
+
+To update all networks in a multi-layer model:
+
+```{r, eval = FALSE}
+for (n_network in seq_len(dat$num.nw)) {
   dat <- update_cumulative_edgelist(dat, n_network, truncate = 100)
 }
 ```
 
-In a complete model, this code would need to be run at the end of the initialization module and at each time-step after the resimulation of the networks.
-
 ### Accessing the Cumulative Edgelist
-
-Cumulative edge-list refers to nodes with their Unique Ids. See `help("unique_id-tools", package = "EpiModel")` for more information.
 
 #### For a Specific Network
 
-Accessing the cumulative edge-list of a given network is done using the `EpiModel::get_cumulative_edgelist` function.
-
-```{r get_el_cuml, eval = FALSE}
-el_cuml <- get_cumulative_edgelist(dat, network)
+```{r, eval = FALSE}
+el_cuml <- get_cumulative_edgelist(dat, network = 1)
 ```
 
-The returned `el_cuml` object is a [`tibble`](https://tibble.tidyverse.org/) with four columns:
+The returned `tibble` has four columns:
 
-1. `head`: the `unique_id` first node of the edge.
-2. `tail`: the `unique_id` second node of the edge.
-3. `start`: the time-step where the edge was created.
-4. `stop`: the last time-step the edge was active.
+1. `head`: the `unique_id` of the first node.
+2. `tail`: the `unique_id` of the second node.
+3. `start`: the time step when the edge formed.
+4. `stop`: the last time step the edge was active, or `NA` if the edge is still active.
 
-`EpiModel::get_cumulative_edgelist` will **always** return a [`tibble`](https://tibble.tidyverse.org/) with this 4 columns, even if the cumulative edgelist has not been calculated for this particular network or if no edges are present. In these cases, the [`tibble`](https://tibble.tidyverse.org/) will have no rows but keep the correct column structure.
-
-The `stop` column will **always** contain `NA` if an edge is currently active.
-
-Once an edge is not present anymore, the `stop` column for this edge will contains the last step the edge was active. This means that an edge with a `stop` value existed from `start` to `stop` both inclusive. This makes it coherent with how `R` treats the indexes in a vector for instance (from 1 to `length(vector)` inclusive).
+An edge with `start = 5` and `stop = 12` existed from steps 5 through 12, inclusive. `get_cumulative_edgelist()` always returns a `tibble` with these four columns, even if no edges exist or the cumulative edgelist was not enabled---in those cases, the `tibble` has zero rows.
 
 #### For Multiple Networks
 
-We often want to get the cumulative edgelist over several networks as one. `EpiModel::get_cumulative_edgelists_df` function provide such functionality.
-
-```{r get_el_cuml_dfs, eval = FALSE}
+```{r, eval = FALSE}
 el_cumls <- get_cumulative_edgelists_df(dat, networks = NULL)
 ```
 
-The `networks` argument can be a vector of network position or `NULL`. In this latter case, all networks will be selected.
-
-The output of this function is similar to `EpiModel::get_cumulative_edgelist` with the addition of a `network` column, indicating for each edge the networks
-it exists on.
+The `networks` argument accepts a vector of network indices or `NULL` (all networks). The returned `data.frame` adds a `network` column identifying which network layer each edge belongs to.
 
 ### Contact Tracing
 
-A typical use of the cumulative edgelist is the trace the contacts of a node over given number of steps. The `EpiModel::get_partners` function simplifies this process:
+`get_partners()` extracts the partners of specified nodes from the cumulative edgelist:
 
-```{r get_partners, eval = FALSE}
+```{r, eval = FALSE}
 partner_list <- get_partners(
     dat,
     index_posit_ids,
@@ -110,15 +220,80 @@ partner_list <- get_partners(
 )
 ```
 
-Here we call "indexes" the nodes whose partners (contacts) we want to extract. The arguments are:
+Arguments:
 
-1. `dat`: as in `get_cumulative_edgelists_df`.
-2. `index_posit_ids`: a list of positional Ids for the indexes of interest.
-3. `networks`: as in `get_cumulative_edgelists_df`.
-4. `truncate`: similar to the `truncate` argument to `update_cumulative_edgelist` this argument filter out partnerships over this age.
-5. `only.active.nodes`: if set to `TRUE`, partnership with inactive nodes are removed.
+1. `dat`: the main list object.
+2. `index_posit_ids`: a vector of positional IDs for the nodes of interest (the "indexes").
+3. `networks`: which network layers to search (`NULL` for all).
+4. `truncate`: only include edges that ended within this many steps (filters by edge age).
+5. `only.active.nodes`: if `TRUE`, exclude partnerships with inactive (departed) nodes.
 
-The output is similar to `get_cumulative_edgelists_df` but the first two columns are called `index` and `partner` and contains the Unique Ids of the indexes given in argument in the first column and there partners in the second one.
+The output is similar to `get_cumulative_edgelists_df()` but with columns `index` and `partner` (both containing unique IDs) instead of `head` and `tail`. Note that indexes are specified by positional ID but the output uses unique IDs, since partners may include nodes that have already departed.
 
-Note that the we refer to the indexes of interest with their Positional Ids but the `index` and `partners` columns contains Unique Ids as they can refer to
-nodes no longer in the network.
+### Cumulative Degree
+
+`get_cumulative_degree()` counts the number of distinct partners each node has had over the tracked history:
+
+```{r, eval = FALSE}
+cum_degree <- get_cumulative_degree(
+    dat,
+    index_posit_ids = 1:50,
+    networks = NULL,
+    truncate = Inf,
+    only.active.nodes = FALSE
+)
+```
+
+This returns a `data.frame` with columns `index_pid` (positional ID) and `degree` (cumulative partner count). It wraps `get_partners()` and counts unique partners per index.
+
+## Reachability Analysis
+
+Reachability functions determine which nodes can be connected through chains of partnerships over a time window. These are useful for outbreak investigation (forward reachability: who could a node have infected?) and source tracing (backward reachability: who could have infected a node?).
+
+These functions operate on cumulative edgelist objects directly---not on `dat`---and are typically used for post-simulation analysis.
+
+### Forward Reachable Set
+
+```{r, eval = FALSE}
+el_cuml <- get_cumulative_edgelist(dat, network = 1)
+
+fwd <- get_forward_reachable(
+  el_cuml,
+  from_step = 1,
+  to_step = 52,
+  nodes = c(10, 25, 42),  # NULL for all nodes with edges
+  dense_optim = "auto"
+)
+```
+
+Returns a list with two elements:
+
+- `reached`: a named list where each element contains the set of nodes reachable from each index node through chains of partnerships active during `[from_step, to_step]`.
+- `lengths`: a matrix with one row per node and one column per time step (plus an initial column), showing how the reachable set grows over time. This allows back-calculating the distance to each reachable node.
+
+Nodes are identified by unique ID in the output (named as `node_ID`). Nodes with no edges during the analysis period are excluded from the output; their forward reachable set is just themselves (size 1).
+
+### Backward Reachable Set
+
+```{r, eval = FALSE}
+bkwd <- get_backward_reachable(
+  el_cuml,
+  from_step = 1,
+  to_step = 52,
+  nodes = c(10, 25, 42)
+)
+```
+
+Same interface and output structure as `get_forward_reachable()`, but follows partnerships backward in time. This answers the question: which nodes could have reached this node through a chain of partnerships during the specified period?
+
+### Performance Notes
+
+Both reachability functions use the [progressr](https://progressr.futureverse.org/) package for progress reporting. Wrap calls in `progressr::with_progress()` to display a progress bar:
+
+```{r, eval = FALSE}
+progressr::with_progress({
+  fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 260)
+})
+```
+
+These functions are efficient for large networks because they operate on cumulative edgelists (much smaller than full `networkDynamic` objects). For sets of more than 5 nodes, they are faster than iterating over `tsna::tPath()`. The `dense_optim` argument controls an adjacency-list optimization that helps with dense networks; `"auto"` enables it when the number of edges exceeds the number of nodes.
