@@ -123,8 +123,9 @@ The transmission matrix records every infection event: who infected whom, when, 
 
 ```{r step4_transmat}
 # Run a separate SI model seeded with a single infection for a cleaner tree
+set.seed(42)
 param2 <- param.net(inf.prob = 0.5, act.rate = 2)
-init2 <- init.net(i.num = 1)
+init2 <- init.net(i.num = 5)
 control2 <- control.net(type = "SI", nsims = 1, nsteps = 60, verbose = FALSE)
 sim2 <- netsim(est, param2, init2, control2)
 
