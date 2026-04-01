@@ -6,7 +6,7 @@ vignette: >
   %\VignetteIndexEntry{EpiModel Introduction}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -15,38 +15,82 @@ vers <- packageVersion("EpiModel")
 year <- format(Sys.time(), "%Y")
 ```
 
-### Introduction
+## What EpiModel Does
 
-The **EpiModel** package provides tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of temporal exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an API for extending these templates to address novel scientific research aims.
+The **EpiModel** package provides tools for simulating mathematical models of infectious disease dynamics. It supports three model classes, each suited to different research questions:
 
-### Documentation
+- **Deterministic Compartmental Models (DCMs):** ODE-based, population-level models solved with `deSolve`. Best for rapid exploration of epidemic dynamics under simplifying assumptions (e.g., homogeneous mixing).
+- **Stochastic Individual-Contact Models (ICMs):** Agent-based models with random mixing. Like DCMs but with stochasticity, allowing analysis of epidemic variability without persistent network structure.
+- **Stochastic Network Models:** The primary focus of EpiModel. These use exponential-family random graph models (ERGMs) from the Statnet suite to represent dynamic contact networks where partnerships form, persist, and dissolve according to statistically estimated rules. Network models capture features that strongly influence transmission dynamics---degree distributions, partnership durations, concurrency, assortative mixing, and clustering.
 
-This vignette provides a general orientation to the **EpiModel** tutorials and documentation within the package and hosted elsewhere online. Most full-length tutorials may be found at the **EpiModel** website (<https://www.epimodel.org>), which also points to our **Network Modeling for Epidemics (NME)** short-course (<https://epimodel.github.io/sismid/>). 
+All three model classes share a unified API: configure inputs with `param.*()`, `init.*()`, and `control.*()`, then run simulations with `dcm()`, `icm()`, or `netsim()`.
 
-The current version of EpiModel is v`r vers`. Within the package, you can consult the extensive help documentation and vignettes for each exported function:
+## Quick Example
+
+The following runs a complete SIS (Susceptible-Infected-Susceptible) network model. This illustrates the five-step workflow: initialize a network, estimate a network model, configure epidemic parameters, run the simulation, and plot results.
+
+```{r example, results = "hide", message = FALSE}
+library(EpiModel)
+set.seed(12345)
+
+# 1. Initialize a network of 200 nodes
+nw <- network_initialize(n = 200)
+
+# 2. Estimate a network model targeting 60 edges (mean degree = 0.6)
+#    with mean partnership duration of 25 time steps in a closed population
+est <- netest(nw, formation = ~edges, target.stats = 60,
+              coef.diss = dissolution_coefs(~offset(edges), duration = 25),
+              verbose = FALSE)
+
+# 3-4. Configure epidemic parameters and initial conditions
+param <- param.net(inf.prob = 0.2, act.rate = 2, rec.rate = 0.02)
+init <- init.net(i.num = 5)
+control <- control.net(type = "SIS", nsims = 3, nsteps = 300, verbose = FALSE)
+
+# 5. Simulate and plot
+sim <- netsim(est, param, init, control)
+plot(sim, main = "SIS Epidemic on a Dynamic Network")
+```
+
+## Learning Pathway
+
+We recommend the following tiered sequence for learning EpiModel, consistent with the learning pathway on the [EpiModel website](https://www.epimodel.org). This is oriented towards those interested in stochastic network models, the primary focus of EpiModel.
+
+### Beginner
+
+- **Intro to EpiModel vignette:** This vignette and the full [package documentation](https://epimodel.github.io/EpiModel/) provide an overview of the three model classes and the unified API (core functions: `netest`, `netdx`, `netsim`).
+- **JSS methods paper:** Our primary reference, published in the *Journal of Statistical Software*, provides the mathematical and computational foundations for all three model classes. See citation below.
+- **NME Course, Section I (Chapters 3--35):** Lecture slides and tutorials covering network science, ERGM specification, model diagnostics, and built-in epidemic models (<https://epimodel.github.io/sismid/>).
+
+### Intermediate
+
+- **NME Course, Section II (Chapters 36--49):** [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) materials covering the extension API for building custom models with novel disease states, demographics, and interventions.
+- **EpiModel Gallery:** A library of worked extension model templates demonstrating custom disease states, demographics, interventions, and multi-layer networks (<https://epimodel.github.io/EpiModel-Gallery/>).
+
+### Advanced
+
+- **Package vignettes:** These vignettes within the package cover specific topics for users building custom network models with the extension API:
+    - *Working with Model Parameters:* Scenarios for time-varying parameters, parameter input via tables, and random parameter distributions for sensitivity analysis.
+    - *Working with Custom Attributes and Summary Statistics:* Nodal attributes, attribute histories, epidemic trackers, and custom summary statistics.
+    - *Working with Network Objects:* Accessing and manipulating network objects, edgelists, cumulative edgelists, and reachability analysis within custom modules.
+- **EpiModelHPC & slurmworkflow:** Tools for running large-scale simulations on high-performance computing clusters.
+- **Template repositories:** [EpiModelHIV](https://github.com/EpiModel/EpiModelHIV-p) and [EpiModelCOVID](https://github.com/EpiModel/EpiModelCOVID) provide full-scale research model implementations.
+
+## Package Documentation
+
+The current version of EpiModel is v`r vers`. Within the package, consult the help documentation for each exported function:
 
 ```{r, eval=FALSE}
 help(package = "EpiModel")
 ```
 
-To see the latest updates to **EpiModel**, consult the `NEWS` file in the package, which is also summarized on our Github Releases (<https://github.com/EpiModel/EpiModel/releases>).
+To see the latest updates, consult the `NEWS` file in the package or our GitHub Releases (<https://github.com/EpiModel/EpiModel/releases>).
 
-If you are interested in the stochastic network model class, we suggest learning about using **EpiModel** with the following sequence:
+## Getting Help
 
-1. The best place to start is our primary main methods paper, published in the *Journal of Statistical Software* at the reference below. 
-2. After that, we suggest you work through the Network Modeling for Epidemics course materials to understand some of the background network theory and see how to run parameterize and run built-in network models.
-3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of the NME course, and look at the variety of extension model templates in our **EpiModel Gallery** (<https://epimodel.github.io/EpiModel-Gallery/>).
-4. Some of the latest developments in EpiModel are related to working with network model inputs and outputs, which are covered in these advanced topics vignettes within the package:
+Technical coding questions, conceptual modeling questions, and feature requests may be posted as GitHub issues at our main repository (<https://github.com/EpiModel/EpiModel/issues>).
 
-- Working With Model Parameters in EpiModel
-- Working With Custom Attributes and Summary Statistics in EpiModel
-- Working With Network Objects in EpiModel
-
-### Getting Help
-
-Any technical coding questions, non-technical conceptual modeling questions, or EpiModel feature requests may be posted as a Github issues at our main Github repository (<https://github.com/EpiModel/EpiModel/issues>).
-
-### EpiModel Citation
+## Citation
 
 If using EpiModel for teaching or research, please include a citation to our primary methods paper:
 
