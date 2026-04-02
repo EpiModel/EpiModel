@@ -248,11 +248,10 @@ arrive_nodes <- function(dat, nArrivals) {
       }
     } else {
       for (net_index in seq_len(dat$num.nw)) {
-        net <- get_network(dat, network = net_index)
-        net <- add_vertices(net, nv = nArrivals)
+        el <- add_vertices(dat$run$el[[net_index]], nv = nArrivals)
+        dat$run$el[[net_index]] <- el
         dat$run$net_attr[[net_index]][["n"]] <-
           dat$run$net_attr[[net_index]][["n"]] + nArrivals
-        dat <- set_network(dat, nw = net, network = net_index)
       }
     }
   }
