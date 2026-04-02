@@ -105,14 +105,6 @@ icm <- function(param, init, control) {
     # Timestep loop
     for (at in 2:control$nsteps) {
 
-      ## User Modules
-      um <- control$user.mods
-      if (length(um) > 0) {
-        for (i in seq_along(um)) {
-          dat <- do.call(control[[um[i]]], list(dat, at))
-        }
-      }
-
       ## Infection
       if (!is.null(control[["infection.FUN"]])) {
         dat <- do.call(control[["infection.FUN"]], list(dat, at))

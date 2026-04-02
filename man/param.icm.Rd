@@ -134,19 +134,6 @@ at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing.
 }
 
-\section{New Modules}{
-
-To build original models outside of the base models, new process modules
-may be constructed to replace the existing modules or to supplement the
-existing set. These are passed into the control settings in
-\code{\link[=control.icm]{control.icm()}}. New modules may use either the existing model
-parameters named here, an original set of parameters, or a combination of
-both. The \code{...} allows the user to pass an arbitrary set of original
-model parameters into \code{param.icm}. Whereas there are strict checks with
-default modules for parameter validity, these checks are the user's
-responsibility with new modules.
-}
-
 \seealso{
 Use \code{\link[=init.icm]{init.icm()}} to specify the initial conditions and
 \code{\link[=control.icm]{control.icm()}} to specify the control settings. Run the

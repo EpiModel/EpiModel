@@ -4,21 +4,7 @@
 \alias{control.icm}
 \title{Control Settings for Stochastic Individual Contact Models}
 \usage{
-control.icm(
-  type,
-  nsteps,
-  nsims = 1,
-  initialize.FUN = initialize.icm,
-  infection.FUN = NULL,
-  recovery.FUN = NULL,
-  departures.FUN = NULL,
-  arrivals.FUN = NULL,
-  prevalence.FUN = NULL,
-  verbose = FALSE,
-  verbose.int = 0,
-  skip.check = FALSE,
-  ...
-)
+control.icm(type, nsteps, nsims = 1, verbose = FALSE, verbose.int = 0)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
@@ -31,38 +17,12 @@ positive integer.}
 
 \item{nsims}{Number of simulations to run.}
 
-\item{initialize.FUN}{Module to initialize the model at the outset, with the
-default function of \code{\link[=initialize.icm]{initialize.icm()}}.}
-
-\item{infection.FUN}{Module to simulate disease infection, with the default
-function of \code{\link[=infection.icm]{infection.icm()}}.}
-
-\item{recovery.FUN}{Module to simulate disease recovery, with the default
-function of \code{\link[=recovery.icm]{recovery.icm()}}.}
-
-\item{departures.FUN}{Module to simulate departures or exits, with the
-default function of \code{\link[=departures.icm]{departures.icm()}}.}
-
-\item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
-function of \code{\link[=arrivals.icm]{arrivals.icm()}}.}
-
-\item{prevalence.FUN}{Module to calculate disease prevalence at each time
-step, with the default function of \code{\link[=prevalence.icm]{prevalence.icm()}}.}
-
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
 \item{verbose.int}{Time step interval for printing progress to console, where
 0 (the default) prints completion status of entire simulation and
 positive integer \code{x} prints progress after every \code{x} time
 steps.}
-
-\item{skip.check}{If \code{TRUE}, skips the default error checking for the
-structure and consistency of the parameter values, initial conditions,
-and control settings before running base epidemic models. Setting
-this to \code{FALSE} is recommended when running models with new
-modules specified.}
-
-\item{...}{Additional control settings passed to model.}
 }
 \value{
 An \code{EpiModel} object of class \code{control.icm}.
@@ -73,25 +33,11 @@ simulated with \code{\link[=icm]{icm()}}.
 }
 \details{
 \code{control.icm} sets the required control settings for any stochastic
-individual contact model solved with the \code{\link[=icm]{icm()}} function. Controls
-are required for both base model types and when passing original process
-modules. For all base models, the \code{type} argument is a necessary parameter
-and it has no default.
+individual contact model solved with the \code{\link[=icm]{icm()}} function. ICM simulations
+use the built-in SI, SIR, and SIS disease types only. The \code{type} argument
+is required and has no default. For custom or extension epidemic models, use
+the network model class via \code{\link[=control.net]{control.net()}} instead.
 }
-\section{New Modules}{
-
-Base ICM models use a set of module functions that specify
-how the individual agents in the population are subjected to infection,
-recovery, demographics, and other processes. Core modules are those listed in
-the \code{.FUN} arguments. For each module, there is a default function used
-in the simulation. The default infection module, for example, is contained in
-the \code{\link[=infection.icm]{infection.icm()}} function.
-
-For original models, one may substitute replacement module functions for any
-of the default functions. New modules may be added to the workflow at each
-time step by passing a module function via the \code{...} argument.
-}
-
 \seealso{
 Use \code{\link[=param.icm]{param.icm()}} to specify model parameters and
 \code{\link[=init.icm]{init.icm()}} to specify the initial conditions. Run the
