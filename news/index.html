@@ -43,7 +43,8 @@
 </div>
 <div class="section level3">
 <h3 id="bug-fixes-2-6-1">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-6-1"></a></h3>
-<ul><li>Fix <code>plot.epi.data.frame</code> to correctly display truncated the time axis.</li>
+<ul><li>Fix <code>saveout.net</code> to preserve <code>NULL</code> values when saving simulation outputs across multiple runs. Previously, assigning <code>NULL</code> via <code>out[[name]][[s]] &lt;- value</code> silently dropped the list entry, causing misaligned simulation indices. Now uses <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> wrapping to ensure <code>NULL</code> values are stored as explicit list elements. Closes <a href="https://github.com/EpiModel/EpiModel/issues/800" class="external-link">#800</a>.</li>
+<li>Fix <code>plot.epi.data.frame</code> to correctly display truncated the time axis.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-6-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-6-1"></a></h3>

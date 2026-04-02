@@ -8,6 +8,13 @@
 
 ### BUG FIXES
 
+- Fix `saveout.net` to preserve `NULL` values when saving simulation
+  outputs across multiple runs. Previously, assigning `NULL` via
+  `out[[name]][[s]] <- value` silently dropped the list entry, causing
+  misaligned simulation indices. Now uses
+  [`list()`](https://rdrr.io/r/base/list.html) wrapping to ensure `NULL`
+  values are stored as explicit list elements. Closes
+  [\#800](https://github.com/EpiModel/EpiModel/issues/800).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
 
