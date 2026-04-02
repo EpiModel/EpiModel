@@ -115,7 +115,6 @@ test_that("print.control", {
 
   co <- control.icm(type = "SI", nsteps = 10)
   expect_output(print(co), "ICM Control Settings")
-  expect_output(print(co), "Base Modules: initialize.FUN")
 
   co <- control.net(type = "SI", nsteps = 10)
   expect_output(print(co), "Network Model Control Settings")

@@ -31,17 +31,6 @@
 #' at time \eqn{t}. The `balance` parameter here specifies which group's
 #' act rate should control the others with respect to balancing.
 #'
-#' @section New Modules:
-#' To build original models outside of the base models, new process modules
-#' may be constructed to replace the existing modules or to supplement the
-#' existing set. These are passed into the control settings in
-#' [control.icm()]. New modules may use either the existing model
-#' parameters named here, an original set of parameters, or a combination of
-#' both. The `...` allows the user to pass an arbitrary set of original
-#' model parameters into `param.icm`. Whereas there are strict checks with
-#' default modules for parameter validity, these checks are the user's
-#' responsibility with new modules.
-#'
 #' @return An `EpiModel` object of class `param.icm`.
 #'
 #' @seealso Use [init.icm()] to specify the initial conditions and
@@ -183,48 +172,18 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param nsteps Number of time steps to solve the model over. This must be a
 #'        positive integer.
 #' @param nsims Number of simulations to run.
-#' @param initialize.FUN Module to initialize the model at the outset, with the
-#'        default function of [initialize.icm()].
-#' @param infection.FUN Module to simulate disease infection, with the default
-#'        function of [infection.icm()].
-#' @param recovery.FUN Module to simulate disease recovery, with the default
-#'        function of [recovery.icm()].
-#' @param departures.FUN Module to simulate departures or exits, with the
-#'        default function of [departures.icm()].
-#' @param arrivals.FUN Module to simulate arrivals or entries, with the default
-#'        function of [arrivals.icm()].
-#' @param prevalence.FUN Module to calculate disease prevalence at each time
-#'        step, with the default function of [prevalence.icm()].
 #' @param verbose If `TRUE`, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
 #'        positive integer `x` prints progress after every `x` time
 #'        steps.
-#' @param skip.check If `TRUE`, skips the default error checking for the
-#'        structure and consistency of the parameter values, initial conditions,
-#'        and control settings before running base epidemic models. Setting
-#'        this to `FALSE` is recommended when running models with new
-#'        modules specified.
-#' @param ... Additional control settings passed to model.
 #'
 #' @details
 #' `control.icm` sets the required control settings for any stochastic
-#' individual contact model solved with the [icm()] function. Controls
-#' are required for both base model types and when passing original process
-#' modules. For all base models, the `type` argument is a necessary parameter
-#' and it has no default.
-#'
-#' @section New Modules:
-#' Base ICM models use a set of module functions that specify
-#' how the individual agents in the population are subjected to infection,
-#' recovery, demographics, and other processes. Core modules are those listed in
-#' the `.FUN` arguments. For each module, there is a default function used
-#' in the simulation. The default infection module, for example, is contained in
-#' the [infection.icm()] function.
-#'
-#' For original models, one may substitute replacement module functions for any
-#' of the default functions. New modules may be added to the workflow at each
-#' time step by passing a module function via the `...` argument.
+#' individual contact model solved with the [icm()] function. ICM simulations
+#' use the built-in SI, SIR, and SIS disease types only. The `type` argument
+#' is required and has no default. For custom or extension epidemic models, use
+#' the network model class via [control.net()] instead.
 #'
 #' @return An `EpiModel` object of class `control.icm`.
 #'
@@ -237,47 +196,16 @@ init.icm <- function(s.num, i.num, r.num,
 #' @export
 #'
 control.icm <- function(type, nsteps, nsims = 1,
-                        initialize.FUN = initialize.icm,
-                        infection.FUN = NULL, recovery.FUN = NULL,
-                        departures.FUN = NULL, arrivals.FUN = NULL,
-                        prevalence.FUN = NULL, verbose = FALSE,
-                        verbose.int = 0, skip.check = FALSE, ...) {
+                        verbose = FALSE, verbose.int = 0) {
 
   # Get arguments
   p <- list()
   formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
   for (arg in names(formal.args)) {
     if (as.logical(mget(arg) != "")) {
       p[arg] <- list(get(arg))
     }
   }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in seq_along(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
-  if ("births.FUN" %in% names(dot.args)) {
-    p$arrivals.FUN <- dot.args$births.FUN
-    p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to
-            arrivals.FUN. See documentation for details.")
-  }
-  if ("deaths.FUN" %in% names(dot.args)) {
-    p$departures.FUN <- dot.args$deaths.FUN
-    p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to
-            departures.FUN. See documentation for details.")
-  }
-
-
-  ## Module classification
-  p$bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
-  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
-
 
   ## Defaults and checks
   if (is.null(p$type) || !(p$type %in% c("SI", "SIS", "SIR"))) {
@@ -324,80 +252,63 @@ crosscheck.icm <- function(param, init, control) {
     stop("control must be an object of class control.icm", call. = FALSE)
   }
 
-  if (control$skip.check == FALSE) {
-
-    ## Check that rec.rate is supplied for SIR models
-    if (control$type %in% c("SIR", "SIS")) {
-      if (is.null(param$rec.rate)) {
-        stop("Specify rec.rate in param.icm", call. = FALSE)
-      }
-      if (param$groups == 2 && is.null(param$rec.rate.g2)) {
-        stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
-      }
+  ## Check that rec.rate is supplied for SIR models
+  if (control$type %in% c("SIR", "SIS")) {
+    if (is.null(param$rec.rate)) {
+      stop("Specify rec.rate in param.icm", call. = FALSE)
     }
-
-
-    ## Check that parameters and init are supplied for SIR models
-    if (control$type == "SIR") {
-      if (is.null(init$r.num)) {
-        stop("Specify r.num in init.icm", call. = FALSE)
-      }
-      if (param$groups == 2 && is.null(init$r.num.g2)) {
-        stop("Specify r.num.g2 in init.icm", call. = FALSE)
-      }
+    if (param$groups == 2 && is.null(param$rec.rate.g2)) {
+      stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
     }
-
-    ## Check that groups implied by init and params are consistent
-    if (any(grepl(".g2", names(init))) == TRUE) {
-      init.groups <- 2
-    } else {
-      init.groups <- 1
-    }
-    if (param$groups == 2 && init.groups == 1) {
-      stop("Group 2 parameters specified in param.icm, but missing group 2, ",
-           "initial states in init.icm", call. = FALSE)
-    }
-    if (param$groups == 1 && init.groups == 2) {
-      stop("Group 2 initial stats specified in init.icm, but missing group 2 ",
-           "parameters in param.icm", call. = FALSE)
-    }
-
-    ## Deprecated parameters
-    bim <- grep(".FUN", names(formals(control.icm)), value = TRUE)
-    um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-    if (length(um) == 0 && !is.null(control$type)) {
-      if (!is.null(param$trans.rate)) {
-        stop("The trans.rate parameter is deprecated. Use the inf.prob ",
-             "parameter instead.", call. = FALSE)
-      }
-      if (!is.null(param$trans.rate.g2)) {
-        stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
-             "parameter instead.", call. = FALSE)
-      }
-    }
-
   }
 
+  ## Check that parameters and init are supplied for SIR models
+  if (control$type == "SIR") {
+    if (is.null(init$r.num)) {
+      stop("Specify r.num in init.icm", call. = FALSE)
+    }
+    if (param$groups == 2 && is.null(init$r.num.g2)) {
+      stop("Specify r.num.g2 in init.icm", call. = FALSE)
+    }
+  }
 
-  ## Assign modules based on group parameter
-  if (!is.null(control$type)) {
-    def <- grep(".FUN", names(control))
-    args <- names(control)[def]
+  ## Check that groups implied by init and params are consistent
+  if (any(grepl(".g2", names(init))) == TRUE) {
+    init.groups <- 2
+  } else {
+    init.groups <- 1
+  }
+  if (param$groups == 2 && init.groups == 1) {
+    stop("Group 2 parameters specified in param.icm, but missing group 2, ",
+         "initial states in init.icm", call. = FALSE)
+  }
+  if (param$groups == 1 && init.groups == 2) {
+    stop("Group 2 initial stats specified in init.icm, but missing group 2 ",
+         "parameters in param.icm", call. = FALSE)
+  }
 
-    if (param$groups == 1) {
-      for (i in seq_along(args)) {
-        if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN", ".icm", args[i]))
-          control[[args[i]]] <- temp
-        }
-      }
-    } else {
-      for (i in seq_along(args)) {
-        if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN", ".icm.bip", args[i]))
-          control[[args[i]]] <- temp
-        }
-      }
+  ## Deprecated parameters
+  if (!is.null(param$trans.rate)) {
+    stop("The trans.rate parameter is deprecated. Use the inf.prob ",
+         "parameter instead.", call. = FALSE)
+  }
+  if (!is.null(param$trans.rate.g2)) {
+    stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
+         "parameter instead.", call. = FALSE)
+  }
+
+  ## Assign built-in modules based on group parameter
+  ## initialize.icm handles both 1-group and 2-group (no .bip variant)
+  control[["initialize.FUN"]] <- initialize.icm
+  bi.mods <- c("infection.FUN", "recovery.FUN",
+               "departures.FUN", "arrivals.FUN", "prevalence.FUN")
+  if (param$groups == 1) {
+    for (mod in bi.mods) {
+      control[[mod]] <- get(gsub(".FUN", ".icm", mod))
+    }
+  } else {
+    for (mod in bi.mods) {
+      control[[mod]] <- get(gsub(".FUN", ".icm.bip", mod))
     }
   }
 
