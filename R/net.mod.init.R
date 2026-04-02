@@ -206,6 +206,7 @@ init_status.net <- function(dat) {
     status <- get_attr(dat, "status") # already copied in copy_nwattr_to_datattr
   }
 
+
   ## Set up TEA status
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
@@ -299,10 +300,10 @@ init_nets <- function(dat, x) {
 
   ## initialize network data on dat object
   dat$num.nw <- length(x)
-  dat$nwparam <- lapply(x, \(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+  dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
   nws <- lapply(x, `[[`, "newnetwork")
-  base_nw <- nws[[1]]
-  if (get_control(dat, "tergmLite")) {
+  nw <- nws[[1]]
+  if (get_control(dat, "tergmLite") == TRUE) {
     dat$run$el <- lapply(nws, as.edgelist)
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
@@ -312,17 +313,17 @@ init_nets <- function(dat, x) {
   # Nodal Attributes --------------------------------------------------------
 
   # Standard attributes
-  num <- network.size(base_nw)
+  num <- network.size(nw)
   dat <- append_core_attr(dat, 1, num)
 
-  groups <- length(unique(get_vertex_attribute(base_nw, "group")))
+  groups <- length(unique(get_vertex_attribute(nw, "group")))
   dat <- set_param(dat, "groups", groups)
 
   ## Pull attr on nw to dat$attr
-  dat <- copy_nwattr_to_datattr(dat, base_nw)
+  dat <- copy_nwattr_to_datattr(dat, nw)
 
   ## record names of relevant vertex attributes
-  dat$run$nwterms <- get_network_term_attr(base_nw)
+  dat$run$nwterms <- get_network_term_attr(nw)
 
   ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {
