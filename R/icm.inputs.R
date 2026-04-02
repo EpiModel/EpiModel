@@ -298,7 +298,9 @@ crosscheck.icm <- function(param, init, control) {
   }
 
   ## Assign built-in modules based on group parameter
-  bi.mods <- c("initialize.FUN", "infection.FUN", "recovery.FUN",
+  ## initialize.icm handles both 1-group and 2-group (no .bip variant)
+  control[["initialize.FUN"]] <- initialize.icm
+  bi.mods <- c("infection.FUN", "recovery.FUN",
                "departures.FUN", "arrivals.FUN", "prevalence.FUN")
   if (param$groups == 1) {
     for (mod in bi.mods) {
