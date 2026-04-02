@@ -166,6 +166,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 #'
 saveout.net <- function(dat, s, out = NULL) {
 
+  ## Shared elements: only set up once on first simulation
   if (s == 1) {
     out <- list()
     out$param <- dat$param
@@ -173,88 +174,13 @@ saveout.net <- function(dat, s, out = NULL) {
     out$nwparam <- dat$nwparam
     out$num.nw <- dat$num.nw
 
-    out$coef.form <- list()
-    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
-
     out$epi <- list()
     for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
-
-    if (dat$control$save.run) {
-      out$run <- list()
-      out$run[[s]] <- dat$run
-    }
-
-    if (dat$control$save.cumulative.edgelist) {
-      out$cumulative.edgelist <- list()
-      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
-    }
-
-    out$attr.history <- list()
-    out$attr.history[[s]] <- dat$attr.history
-
-    out$raw.records <- list()
-    out$raw.records[[s]] <- dat$raw.records
-
-    out$stats <- list()
-    if (dat$control$save.nwstats == TRUE) {
-      ## bind rows
-      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
-      ## compute ess
-      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
-      ## store as first element in list on output object
-      out$stats$nwstats <- list(nwstats)
-    }
-
-    if (dat$control$save.transmat == TRUE) {
-      if (!is.null(dat$stats$transmat)) {
-        transmat <- dplyr::bind_rows(dat$stats$transmat)
-        row.names(transmat) <- seq_len(nrow(transmat))
-        out$stats$transmat[[s]] <- transmat
-      } else {
-        out$stats$transmat[[s]] <- dplyr::tibble()
-      }
-      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-    }
-
-    if (dat$control$save.network == TRUE) {
-      ## call get_network to use most up-to-date el and attr in tergmLite case
-      out$network <- list(lapply(seq_len(dat$num.nw), get_network, x = dat))
-    }
-
-    if (!is.null(dat$control$save.other)) {
-      for (i in seq_along(dat$control$save.other)) {
-        el.name <- dat$control$save.other[i]
-        if (el.name %in% names(dat)) {
-          out[[el.name]][[s]] <- dat[[el.name]]
-        } else if (el.name %in% names(dat$run)) {
-          out[[el.name]][[s]] <- dat$run[[el.name]]
-        } else {
-          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
-        }
-      }
-    }
-
-    if (dat$control$save.diss.stats == TRUE &&
-          dat$control$save.network == TRUE &&
-          dat$control$tergmLite == FALSE &&
-          !is.null(dat$nwparam)) {
-
-      ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats <- list(lapply(seq_len(dat$num.nw), function(network) {
-        if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
-          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
-                                dat$nwparam[[network]]$coef.diss,
-                                dat$control$nsteps,
-                                dat$run$nw[[network]])
-        } else {
-          NULL
-        }
-      }))
-    }
   }
 
+  ## Shared elements: merge random param values for s > 1
   if (s > 1) {
     if (!is.null(dat$param$random.params.values)) {
       for (nms in names(dat$param$random.params.values)) {
@@ -279,77 +205,80 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
-    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
-
     for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
+  }
 
-    if (dat$control$save.run) {
-      out$run[[s]] <- dat$run
+  ## Per-simulation elements: use [s] <- list() to preserve NULLs
+  out$coef.form[s] <- list(lapply(dat$nwparam, `[[`, "coef.form"))
+
+  if (dat$control$save.run) {
+    out$run[s] <- list(dat$run)
+  }
+
+  if (dat$control$save.cumulative.edgelist) {
+    out$cumulative.edgelist[s] <- list(get_cumulative_edgelists_df(dat))
+  }
+
+  out$attr.history[s] <- list(dat$attr.history)
+  out$raw.records[s] <- list(dat$raw.records)
+
+  if (dat$control$save.nwstats == TRUE) {
+    ## bind rows
+    nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+    ## compute ess
+    nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
+    out$stats$nwstats[s] <- list(nwstats)
+  }
+
+  if (dat$control$save.transmat == TRUE) {
+    if (!is.null(dat$stats$transmat)) {
+      transmat <- dplyr::bind_rows(dat$stats$transmat)
+      row.names(transmat) <- seq_len(nrow(transmat))
+      out$stats$transmat[s] <- list(transmat)
+    } else {
+      out$stats$transmat[s] <- list(dplyr::tibble())
     }
-
-    if (dat$control$save.cumulative.edgelist) {
-      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
+    if (s == 1) {
+      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
     }
+  }
 
-    out$attr.history[[s]] <- dat$attr.history
-    out$raw.records[[s]] <- dat$raw.records
+  if (dat$control$save.network == TRUE) {
+    ## call get_network to use most up-to-date el and attr in tergmLite case
+    out$network[s] <- list(lapply(seq_len(dat$num.nw), get_network, x = dat))
+  }
 
-    if (dat$control$save.nwstats == TRUE) {
-      ## bind rows
-      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
-      ## compute ess
-      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
-      ## store as s'th element in list on output object
-      out$stats$nwstats[[s]] <- nwstats
-    }
-
-    if (dat$control$save.transmat == TRUE) {
-      if (!is.null(dat$stats$transmat)) {
-        transmat <- dplyr::bind_rows(dat$stats$transmat)
-        row.names(transmat) <- seq_len(nrow(transmat))
-        out$stats$transmat[[s]] <- transmat
+  if (!is.null(dat$control$save.other)) {
+    for (i in seq_along(dat$control$save.other)) {
+      el.name <- dat$control$save.other[i]
+      if (el.name %in% names(dat)) {
+        out[[el.name]][s] <- list(dat[[el.name]])
+      } else if (el.name %in% names(dat$run)) {
+        out[[el.name]][s] <- list(dat$run[[el.name]])
       } else {
-        out$stats$transmat[[s]] <- dplyr::tibble()
+        warning("`", el.name, "` is not saved in `dat` or `dat$run`")
       }
     }
+  }
 
-    if (dat$control$save.network == TRUE) {
-      ## call get_network to use most up-to-date el and attr in tergmLite case
-      out$network[[s]] <- lapply(seq_len(dat$num.nw), get_network, x = dat)
-    }
+  if (dat$control$save.diss.stats == TRUE &&
+        dat$control$save.network == TRUE &&
+        dat$control$tergmLite == FALSE &&
+        !is.null(dat$nwparam)) {
 
-    if (!is.null(dat$control$save.other)) {
-      for (i in seq_along(dat$control$save.other)) {
-        el.name <- dat$control$save.other[i]
-        if (el.name %in% names(dat)) {
-          out[[el.name]][[s]] <- dat[[el.name]]
-        } else if (el.name %in% names(dat$run)) {
-          out[[el.name]][[s]] <- dat$run[[el.name]]
-        } else {
-          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
-        }
+    ## for each simulated network, if dissolution model is edges-only, compute diss stats
+    out$diss.stats[s] <- list(lapply(seq_len(dat$num.nw), function(network) {
+      if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+        toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
+                              dat$nwparam[[network]]$coef.diss,
+                              dat$control$nsteps,
+                              dat$run$nw[[network]])
+      } else {
+        NULL
       }
-    }
-
-    if (dat$control$save.diss.stats == TRUE &&
-          dat$control$save.network == TRUE &&
-          dat$control$tergmLite == FALSE &&
-          !is.null(dat$nwparam)) {
-
-      ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats[[s]] <- lapply(seq_len(dat$num.nw), function(network) {
-        if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
-          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
-                                dat$nwparam[[network]]$coef.diss,
-                                dat$control$nsteps,
-                                dat$run$nw[[network]])
-        } else {
-          NULL
-        }
-      })
-    }
+    }))
   }
 
   ## Final processing

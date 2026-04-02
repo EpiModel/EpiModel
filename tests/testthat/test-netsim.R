@@ -237,6 +237,29 @@ test_that("save.other sim naming", {
   expect_equal(names(mod4[["nw"]]), NULL)
 })
 
+test_that("saveout.net preserves NULL list elements across sims", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges,
+                target.stats = c(25),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE,
+                         save.network = FALSE)
+  mod <- netsim(est, param, init, control)
+
+  # attr.history and raw.records are NULL per-sim in base models;
+  # verify they are preserved as NULL entries rather than dropped
+  expect_equal(length(mod$attr.history), 3)
+  expect_equal(length(mod$raw.records), 3)
+  for (s in 1:3) {
+    expect_true(is.null(mod$attr.history[[s]]))
+    expect_true(is.null(mod$raw.records[[s]]))
+  }
+})
+
 test_that("name_saveout_elts unit", {
   skip_on_cran()
   simnames <- paste0("sim", 1:4)
