@@ -11,19 +11,15 @@ series of modules that initialize the simulation and then simulate new
 infections, recoveries, and vital dynamics at each time step. A module
 also handles the basic bookkeeping calculations for disease prevalence.
 
-Writing original ICMs will require modifying the existing modules or
-adding new modules to the workflow in
-[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md). The
-existing modules may be used as a template for replacement or new
-modules.
-
-This help page presents a brief overview of the module functions in the
-order in which they are used within
-[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md), in
-order to help guide users in writing their own module functions. These
-module functions are not shown on the help index since they are not
-called directly by the end-user. To understand these functions in more
-detail, review the separate help pages listed below.
+This help page presents a brief overview of the built-in module
+functions in the order in which they are used within
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md). ICMs
+support only the built-in SI, SIR, and SIS disease types. For custom or
+extension epidemic models, use the network model class via
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+and
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+instead.
 
 ## Initialization Module
 

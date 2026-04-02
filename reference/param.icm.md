@@ -170,19 +170,6 @@ group-specific act rate at time \\t\\. The `balance` parameter here
 specifies which group's act rate should control the others with respect
 to balancing.
 
-## New Modules
-
-To build original models outside of the base models, new process modules
-may be constructed to replace the existing modules or to supplement the
-existing set. These are passed into the control settings in
-[`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md).
-New modules may use either the existing model parameters named here, an
-original set of parameters, or a combination of both. The `...` allows
-the user to pass an arbitrary set of original model parameters into
-`param.icm`. Whereas there are strict checks with default modules for
-parameter validity, these checks are the user's responsibility with new
-modules.
-
 ## See also
 
 Use

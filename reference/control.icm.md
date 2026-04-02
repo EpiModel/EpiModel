@@ -6,21 +6,7 @@ with [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md).
 ## Usage
 
 ``` r
-control.icm(
-  type,
-  nsteps,
-  nsims = 1,
-  initialize.FUN = initialize.icm,
-  infection.FUN = NULL,
-  recovery.FUN = NULL,
-  departures.FUN = NULL,
-  arrivals.FUN = NULL,
-  prevalence.FUN = NULL,
-  verbose = FALSE,
-  verbose.int = 0,
-  skip.check = FALSE,
-  ...
-)
+control.icm(type, nsteps, nsims = 1, verbose = FALSE, verbose.int = 0)
 ```
 
 ## Arguments
@@ -41,38 +27,6 @@ control.icm(
 
   Number of simulations to run.
 
-- initialize.FUN:
-
-  Module to initialize the model at the outset, with the default
-  function of
-  [`initialize.icm()`](https://epimodel.github.io/EpiModel/reference/initialize.icm.md).
-
-- infection.FUN:
-
-  Module to simulate disease infection, with the default function of
-  [`infection.icm()`](https://epimodel.github.io/EpiModel/reference/infection.icm.md).
-
-- recovery.FUN:
-
-  Module to simulate disease recovery, with the default function of
-  [`recovery.icm()`](https://epimodel.github.io/EpiModel/reference/recovery.icm.md).
-
-- departures.FUN:
-
-  Module to simulate departures or exits, with the default function of
-  [`departures.icm()`](https://epimodel.github.io/EpiModel/reference/departures.icm.md).
-
-- arrivals.FUN:
-
-  Module to simulate arrivals or entries, with the default function of
-  [`arrivals.icm()`](https://epimodel.github.io/EpiModel/reference/arrivals.icm.md).
-
-- prevalence.FUN:
-
-  Module to calculate disease prevalence at each time step, with the
-  default function of
-  [`prevalence.icm()`](https://epimodel.github.io/EpiModel/reference/prevalence.icm.md).
-
 - verbose:
 
   If `TRUE`, print model progress to the console.
@@ -83,17 +37,6 @@ control.icm(
   default) prints completion status of entire simulation and positive
   integer `x` prints progress after every `x` time steps.
 
-- skip.check:
-
-  If `TRUE`, skips the default error checking for the structure and
-  consistency of the parameter values, initial conditions, and control
-  settings before running base epidemic models. Setting this to `FALSE`
-  is recommended when running models with new modules specified.
-
-- ...:
-
-  Additional control settings passed to model.
-
 ## Value
 
 An `EpiModel` object of class `control.icm`.
@@ -103,24 +46,11 @@ An `EpiModel` object of class `control.icm`.
 `control.icm` sets the required control settings for any stochastic
 individual contact model solved with the
 [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md)
-function. Controls are required for both base model types and when
-passing original process modules. For all base models, the `type`
-argument is a necessary parameter and it has no default.
-
-## New Modules
-
-Base ICM models use a set of module functions that specify how the
-individual agents in the population are subjected to infection,
-recovery, demographics, and other processes. Core modules are those
-listed in the `.FUN` arguments. For each module, there is a default
-function used in the simulation. The default infection module, for
-example, is contained in the
-[`infection.icm()`](https://epimodel.github.io/EpiModel/reference/infection.icm.md)
-function.
-
-For original models, one may substitute replacement module functions for
-any of the default functions. New modules may be added to the workflow
-at each time step by passing a module function via the `...` argument.
+function. ICM simulations use the built-in SI, SIR, and SIS disease
+types only. The `type` argument is required and has no default. For
+custom or extension epidemic models, use the network model class via
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+instead.
 
 ## See also
 

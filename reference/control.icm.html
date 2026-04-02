@@ -43,21 +43,7 @@ simulated with <code><a href="icm.html">icm()</a></code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">control.icm</span><span class="op">(</span></span>
-<span>  <span class="va">type</span>,</span>
-<span>  <span class="va">nsteps</span>,</span>
-<span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  initialize.FUN <span class="op">=</span> <span class="va">initialize.icm</span>,</span>
-<span>  infection.FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recovery.FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  departures.FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  arrivals.FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  prevalence.FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  verbose.int <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  skip.check <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">control.icm</span><span class="op">(</span><span class="va">type</span>, <span class="va">nsteps</span>, nsims <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, verbose.int <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,36 +66,6 @@ positive integer.</p></dd>
 <dd><p>Number of simulations to run.</p></dd>
 
 
-<dt id="arg-initialize-fun">initialize.FUN<a class="anchor" aria-label="anchor" href="#arg-initialize-fun"></a></dt>
-<dd><p>Module to initialize the model at the outset, with the
-default function of <code><a href="initialize.icm.html">initialize.icm()</a></code>.</p></dd>
-
-
-<dt id="arg-infection-fun">infection.FUN<a class="anchor" aria-label="anchor" href="#arg-infection-fun"></a></dt>
-<dd><p>Module to simulate disease infection, with the default
-function of <code><a href="infection.icm.html">infection.icm()</a></code>.</p></dd>
-
-
-<dt id="arg-recovery-fun">recovery.FUN<a class="anchor" aria-label="anchor" href="#arg-recovery-fun"></a></dt>
-<dd><p>Module to simulate disease recovery, with the default
-function of <code><a href="recovery.icm.html">recovery.icm()</a></code>.</p></dd>
-
-
-<dt id="arg-departures-fun">departures.FUN<a class="anchor" aria-label="anchor" href="#arg-departures-fun"></a></dt>
-<dd><p>Module to simulate departures or exits, with the
-default function of <code><a href="departures.icm.html">departures.icm()</a></code>.</p></dd>
-
-
-<dt id="arg-arrivals-fun">arrivals.FUN<a class="anchor" aria-label="anchor" href="#arg-arrivals-fun"></a></dt>
-<dd><p>Module to simulate arrivals or entries, with the default
-function of <code><a href="arrivals.icm.html">arrivals.icm()</a></code>.</p></dd>
-
-
-<dt id="arg-prevalence-fun">prevalence.FUN<a class="anchor" aria-label="anchor" href="#arg-prevalence-fun"></a></dt>
-<dd><p>Module to calculate disease prevalence at each time
-step, with the default function of <code><a href="prevalence.icm.html">prevalence.icm()</a></code>.</p></dd>
-
-
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>If <code>TRUE</code>, print model progress to the console.</p></dd>
 
@@ -120,18 +76,6 @@ step, with the default function of <code><a href="prevalence.icm.html">prevalenc
 positive integer <code>x</code> prints progress after every <code>x</code> time
 steps.</p></dd>
 
-
-<dt id="arg-skip-check">skip.check<a class="anchor" aria-label="anchor" href="#arg-skip-check"></a></dt>
-<dd><p>If <code>TRUE</code>, skips the default error checking for the
-structure and consistency of the parameter values, initial conditions,
-and control settings before running base epidemic models. Setting
-this to <code>FALSE</code> is recommended when running models with new
-modules specified.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional control settings passed to model.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -140,24 +84,10 @@ modules specified.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>control.icm</code> sets the required control settings for any stochastic
-individual contact model solved with the <code><a href="icm.html">icm()</a></code> function. Controls
-are required for both base model types and when passing original process
-modules. For all base models, the <code>type</code> argument is a necessary parameter
-and it has no default.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="new-modules">New Modules<a class="anchor" aria-label="anchor" href="#new-modules"></a></h2>
-
-
-<p>Base ICM models use a set of module functions that specify
-how the individual agents in the population are subjected to infection,
-recovery, demographics, and other processes. Core modules are those listed in
-the <code>.FUN</code> arguments. For each module, there is a default function used
-in the simulation. The default infection module, for example, is contained in
-the <code><a href="infection.icm.html">infection.icm()</a></code> function.</p>
-<p>For original models, one may substitute replacement module functions for any
-of the default functions. New modules may be added to the workflow at each
-time step by passing a module function via the <code>...</code> argument.</p>
+individual contact model solved with the <code><a href="icm.html">icm()</a></code> function. ICM simulations
+use the built-in SI, SIR, and SIS disease types only. The <code>type</code> argument
+is required and has no default. For custom or extension epidemic models, use
+the network model class via <code><a href="control.net.html">control.net()</a></code> instead.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

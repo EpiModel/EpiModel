@@ -37,7 +37,8 @@
 <h2 class="pkg-version" data-toc-text="2.6.1" id="epimodel-261">EpiModel 2.6.1<a class="anchor" aria-label="anchor" href="#epimodel-261"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-2-6-1">BREAKING CHANGES<a class="anchor" aria-label="anchor" href="#breaking-changes-2-6-1"></a></h3>
-</div>
+<ul><li>Removed extension/custom module support from ICM models. <code><a href="../reference/control.icm.html">control.icm()</a></code> no longer accepts <code>.FUN</code> arguments (e.g., <code>infection.FUN</code>, <code>departures.FUN</code>), <code>skip.check</code>, or additional modules via <code>...</code>. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to <code><a href="../reference/control.icm.html">control.icm()</a></code> should migrate to the network model class via <code><a href="../reference/control.net.html">control.net()</a></code>, which provides full extension model support. Closes <a href="https://github.com/EpiModel/EpiModel/issues/634" class="external-link">#634</a>.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="new-features-2-6-1">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-6-1"></a></h3>
 </div>
