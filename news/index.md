@@ -32,6 +32,12 @@
 
 ### OTHER
 
+- Replace direct `dat$run$nw[[network]]` accesses with
+  [`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md)/[`set_network()`](https://epimodel.github.io/EpiModel/reference/set_network.md)
+  accessors across internal modules (`edgelists.R`, `net.fn.utils.R`,
+  `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`)
+  ([\#977](https://github.com/EpiModel/EpiModel/issues/977)).
+
 ## EpiModel 2.6.0
 
 CRAN release: 2026-03-19
