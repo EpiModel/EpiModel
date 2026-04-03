@@ -271,10 +271,13 @@ saveout.net <- function(dat, s, out = NULL) {
     ## for each simulated network, if dissolution model is edges-only, compute diss stats
     out$diss.stats[s] <- list(lapply(seq_len(dat$num.nw), function(network) {
       if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
-        toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
-                              dat$nwparam[[network]]$coef.diss,
-                              dat$control$nsteps,
-                              dat$run$nw[[network]])
+        net <- get_network(dat, network = network)
+        toggles_to_diss_stats(
+          tedgelist_to_toggles(as.data.frame(net)),
+          dat$nwparam[[network]]$coef.diss,
+          dat$control$nsteps,
+          net
+        )
       } else {
         NULL
       }

@@ -210,18 +210,23 @@ init_status.net <- function(dat) {
   ## Set up TEA status
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
-      for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
-                                                      "status",
-                                                      status)
+      for (net_index in seq_len(dat$num.nw)) {
+        net <- get_network(dat, network = net_index)
+        net <- set_vertex_attribute(net, "status", status)
+        dat <- set_network(dat, net, network = net_index)
       }
     }
-    for (network in seq_len(dat$num.nw)) {
-      dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
-                                                         prefix = "testatus",
-                                                         value = status,
-                                                         onset = 1,
-                                                         terminus = Inf)
+
+    for (net_index in seq_len(dat$num.nw)) {
+      net <- get_network(dat, network = net_index)
+      net <- activate.vertex.attribute(
+        net,
+        prefix = "testatus",
+        value = status,
+        onset = 1,
+        terminus = Inf
+      )
+      dat <- set_network(dat, net, network = net_index)
     }
   }
 
