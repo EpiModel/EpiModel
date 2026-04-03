@@ -13,16 +13,11 @@
 #' module also handles the basic bookkeeping calculations for disease
 #' prevalence.
 #'
-#' Writing original ICMs will require modifying the existing modules or
-#' adding new modules to the workflow in [icm()]. The existing modules
-#' may be used as a template for replacement or new modules.
-#'
-#' This help page presents a brief overview of the module functions in the order
-#' in which they are used within [icm()], in order to help guide users
-#' in writing their own module functions. These module functions are not shown
-#' on the help index since they are not called directly by the end-user. To
-#' understand these functions in more detail, review the separate help pages
-#' listed below.
+#' This help page presents a brief overview of the built-in module functions
+#' in the order in which they are used within [icm()]. ICMs support only the
+#' built-in SI, SIR, and SIS disease types. For custom or extension epidemic
+#' models, use the network model class via [netsim()] and [control.net()]
+#' instead.
 #'
 #' @section Initialization Module:
 #' This function sets up agent attributes, like disease status, on the network

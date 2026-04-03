@@ -602,17 +602,12 @@ print.control.dcm <- function(x, ...) {
 #' @export
 print.control.icm <- function(x, ...) {
 
-  pToPrint <- which(!grepl(".FUN", names(x)) &
-                      !(names(x) %in% c("bi.mods", "user.mods")))
+  pToPrint <- which(!grepl(".FUN", names(x)))
 
   cat("ICM Control Settings")
   cat("\n===========================\n")
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
-  }
-  cat("Base Modules:", x$bi.mods, fill = 80)
-  if (length(x$user.mods) > 0) {
-    cat("Extension Modules:", x$user.mods, fill = 80)
   }
 
   invisible()

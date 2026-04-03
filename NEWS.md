@@ -2,6 +2,8 @@
 
 ### BREAKING CHANGES
 
+-   Removed extension/custom module support from ICM models. `control.icm()` no longer accepts `.FUN` arguments (e.g., `infection.FUN`, `departures.FUN`), `skip.check`, or additional modules via `...`. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to `control.icm()` should migrate to the network model class via `control.net()`, which provides full extension model support. Closes #634.
+
 ### NEW FEATURES
 
 ### BUG FIXES
