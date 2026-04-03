@@ -10,7 +10,7 @@
 
 ### OTHER
 
--   Replace direct `dat$run$nw[[network]]` accesses with `get_network()`/`set_network()` accessors across internal modules (`edgelists.R`, ` net.fn.utils.R`, `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`) (#977).
+-   Replace direct `dat$run$nw[[network]]` accesses with `get_network()`/`set_network()` accessors across internal modules (`edgelists.R`, `net.fn.utils.R`, `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`) (#977).
 
 ## EpiModel 2.6.0
 

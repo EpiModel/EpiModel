@@ -50,7 +50,7 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Update temporally extended disease status
-  if (!tergmLite) {
+  if (tergmLite == FALSE) {
     for (net_index in seq_len(dat$num.nw)) {
       net <- get_network(dat, network = net_index)
       net <- activate.vertex.attribute(
