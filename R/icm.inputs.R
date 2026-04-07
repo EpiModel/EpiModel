@@ -64,14 +64,12 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   if ("b.rate" %in% names.dot.args) {
-    p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
-            a.rate. ", "See documentation for details.")
+    stop("The b.rate parameter has been removed. Use a.rate instead.",
+         call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
-    p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to
-            a.rate.g2. ", "See documentation for details.")
+    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.",
+         call. = FALSE)
   }
 
   ## Defaults and checks

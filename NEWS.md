@@ -3,6 +3,7 @@
 ### BREAKING CHANGES
 
 -   Removed extension/custom module support from ICM models. `control.icm()` no longer accepts `.FUN` arguments (e.g., `infection.FUN`, `departures.FUN`), `skip.check`, or additional modules via `...`. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to `control.icm()` should migrate to the network model class via `control.net()`, which provides full extension model support. Closes #634.
+-   The `b.rate` and `b.rate.g2` parameters, soft-deprecated since EpiModel 1.7.0, are now fully removed. All three `param.*()` functions (`param.dcm()`, `param.icm()`, `param.net()`) will now error if these parameters are passed. Use `a.rate` and `a.rate.g2` instead. Closes #989.
 
 ### NEW FEATURES
 
