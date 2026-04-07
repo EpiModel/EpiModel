@@ -459,14 +459,13 @@ crosscheck.dcm <- function(param, init, control) {
            call. = FALSE)
     }
 
-    # Deprecated parameters
     if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter
-           instead.", call. = FALSE)
+      stop("The trans.rate parameter has been removed. Use inf.prob instead.",
+           call. = FALSE)
     }
     if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2
-           parameter instead.", call. = FALSE)
+      stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.",
+           call. = FALSE)
     }
   }
 

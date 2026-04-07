@@ -253,13 +253,12 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.",
          call. = FALSE)
   }
-  # Check for mode to group suffix change
+  # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
-    names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0+ has updated parameter suffixes. ",
-            "All .m2 parameters changed to .g2. See documentation.")
-
+    stop("Parameters using the .m2 suffix have been removed. ",
+         "Use the .g2 suffix instead (e.g., inf.prob.g2).",
+         call. = FALSE)
   }
   if (missing(act.rate)) {
     p[["act.rate"]] <- 1
@@ -624,12 +623,12 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 
   ## Defaults and checks
 
-  # Checks that .m2 syntax is change to .g2
+  # Check for old .m2 initial condition suffix
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
-    names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0+ updated initial condition suffixes. ",
-            "All .m2 initial conditions changed to .g2. See documentation.")
+    stop("Initial conditions using the .m2 suffix have been removed. ",
+         "Use the .g2 suffix instead (e.g., i.num.g2).",
+         call. = FALSE)
   }
   if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -909,22 +908,15 @@ control.net <- function(type,
   }
 
   if ("births.FUN" %in% names(dot.args)) {
-    p[["arrivals.FUN"]] <- dot.args[["births.FUN"]]
-    p[["births.FUN"]] <- dot.args[["births.FUN"]] <- NULL
-    stop("EpiModel 1.7.0+ renamed the birth function births.FUN to
-         arrivals.FUN. ", "See documentation for details.", call. = FALSE)
+    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.",
+         call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
-    p[["departures.FUN"]] <- dot.args[["deaths.FUN"]]
-    p[["deaths.FUN"]] <- dot.args[["deaths.FUN"]] <- NULL
-    stop("EpiModel 1.7.0+ renamed the death function deaths.FUN to
-         departures.FUN. ", "See documentation for details.", call. = FALSE)
+    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.",
+         call. = FALSE)
   }
-
   if ("depend" %in% names(dot.args)) {
-    p[["resimulate.network"]] <- dot.args[["depend"]]
-    stop("EpiModel >= 2.0 has renamed the control.net setting `depend` to ",
-         "`resimulate.network`. Update your code accordingly.",
+    stop("The depend parameter has been removed. Use resimulate.network instead.",
          call. = FALSE)
   }
 
