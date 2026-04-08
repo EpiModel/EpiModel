@@ -9,6 +9,7 @@
 ### BUG FIXES
 -   Fix `saveout.net` to preserve `NULL` values when saving simulation outputs across multiple runs. Previously, assigning `NULL` via `out[[name]][[s]] <- value` silently dropped the list entry, causing misaligned simulation indices. Now uses `list()` wrapping to ensure `NULL` values are stored as explicit list elements. Closes #800.
 -   Fix `plot.epi.data.frame` to correctly display truncated the time axis.
+-   Fix `paste0(..., sep = ", ")` misuse in `as.data.frame.icm()` epi repair warnings and errors. `paste0()` has no `sep` parameter, causing malformed output with trailing commas. Changed to `paste(..., collapse = ", ")`. Closes #985.
 
 ### OTHER
 
