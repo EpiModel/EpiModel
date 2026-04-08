@@ -59,6 +59,7 @@ set_vertex_attribute <- function(x, attrname, value, v = NULL) {
   return(g)
 }
 
+
 #' @title Get Vertex Attribute on Network Object
 #'
 #' @description Gets a vertex attribute from an object of class `network`.
@@ -119,4 +120,65 @@ get_network_attributes <- function(x) {
     out <- c(out, new)
   }
   out
+}
+
+make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
+  if (!sim$control$save.cumulative.edgelist &&
+        !sim$control$cumulative.edgelist) {
+    stop("cumulative edgelist must be used and saved")
+  }
+  if (! "active" %in% sim$control$tracked.attributes) {
+    stop("The `active` attribute must be tracked")
+  }
+
+  attr_hist <- get_attr_history(sim)
+  n_nodes <- max(dplyr::filter(attr_hist$active, sim == sim_num)$uids)
+  n_steps <- sim$control$nsteps
+
+  nw <- network::network.initialize(n_nodes, directed = FALSE)
+  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]] |>
+    dplyr::mutate(stop = ifelse(is.na(stop), n_steps + 1, stop))
+
+  if (!is.null(network))
+    el <- dplyr::filter(el, network == .env$network)
+
+  networkDynamic::add.edges.active(
+    nw,
+    head = el$head,
+    tail = el$tail,
+    onset = el$start,
+    terminus = el$stop + 1L,
+    names.eval = rep(list("network"), nrow(el)),
+    vals.eval = lapply(el$network, \(x) list(network = x))
+  )
+
+  # Manage when nodes are active
+  d_active <- dplyr::filter(attr_hist$active, sim == sim_num)
+  on_pos <- which(d_active$values == 1L)
+  off_pos <- which(d_active$values == 0L)
+  uids <- d_active$uids[on_pos]
+  ats <- d_active$time[on_pos]
+  networkDynamic::activate.vertices(nw, v = uids, onset = ats, terminus = Inf)
+  uids <- d_active$uids[off_pos]
+  ats <- d_active$time[off_pos]
+  networkDynamic::deactivate.vertices(nw, v = uids, onset = ats, terminus = Inf)
+
+  for (item in names(attr_hist)) {
+    if (item == "active") next
+    d_item <- dplyr::filter(attr_hist[[item]], sim == sim_num) |>
+      dplyr::select(time, uids, values) |>
+      dplyr::arrange(time)
+    for (d_t in split(d_item, d_item$time)) {
+      networkDynamic::activate.vertex.attribute(
+        nw,
+        item,
+        v = d_t$uids,
+        value = d_t$values,
+        onset = d_t$time[[1]],
+        terminus = Inf
+      )
+    }
+  }
+
+  nw
 }
