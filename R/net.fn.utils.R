@@ -1079,7 +1079,10 @@ make_restart_point <- function(sim_obj, time_attrs,
     x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
   }
 
-  x$run$sim1 <- run_ls
+  # Reset attribute tracking
+  run_ls$tracking_attrs <- FALSE
+
+  x$run$sim1 <- validate_run(run_ls)
   x$attr.history <- list()
   x$raw.records <- list()
   return(x)

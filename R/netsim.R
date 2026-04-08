@@ -326,7 +326,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
     param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
     dat <- make_module_list(dat)
-    dat <- init_track_attrs(dat)
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1L)
     }
@@ -376,7 +375,7 @@ netsim_run_modules <- function(dat, s) {
       dat <- input_updater(dat)
       dat <- trigger_end_horizon(dat)
 
-      dat <- start_track_attrs_step(dat)
+      dat <- tracked_attrs_set_ref(dat)
 
       modules <- get_modules(dat)
 
@@ -386,7 +385,7 @@ netsim_run_modules <- function(dat, s) {
       }
 
       current_mod <- "epimodel.internal"
-      dat <- stop_track_attrs_step(dat)
+      dat <- tracked_attrs_record(dat)
       # Run the user-provided trackers, if any
       dat <- epi_trackers(dat)
 
