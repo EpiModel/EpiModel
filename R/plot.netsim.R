@@ -287,37 +287,27 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
     }
 
     grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
-    if (is.numeric(grp.flag)) {
+    if (grp.flag == 2) {
       mids <- idgroup(obj)
       if (shp.g2 == "square") {
         vertex.sides <- ifelse(mids == 1, 50, 4)
         vertex.rot <- 45
-        if (miss_vertex.cex) {
-          vertex.cex <- 1
-        }
       }
       if (shp.g2 == "triangle") {
         vertex.sides <- ifelse(mids == 1, 50, 3)
         vertex.rot <- 90
-        if (miss_vertex.cex) {
-          vertex.cex <- 1
-        }
       }
-
     } else {
       warning("shp.g2 applies to two-group networks only, so ignoring.")
       vertex.sides <- 50
       vertex.rot <- 0
-      if (miss_vertex.cex) {
-        vertex.cex <- 1
-      }
     }
   } else {
     vertex.sides <- 50
     vertex.rot <- 0
-    if (miss_vertex.cex) {
-      vertex.cex <- 1
-    }
+  }
+  if (miss_vertex.cex) {
+    vertex.cex <- 1
   }
   if (col.status) {
     if (tergmLite) {
@@ -325,12 +315,10 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
         control settings.", call. = FALSE)
     }
     pal <- adjustcolor(c(4, 2, 3), 0.75)
-    if (!tergmLite) {
-      testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
-      cols <- rep(pal[1], length(testatus))
-      cols[testatus == "i"] <- pal[2]
-      cols[testatus == "r"] <- pal[3]
-    }
+    testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
+    cols <- rep(pal[1], length(testatus))
+    cols[testatus == "i"] <- pal[2]
+    cols[testatus == "r"] <- pal[3]
     plot.network(obj, vertex.col = cols, vertex.border = "grey60",
                  edge.col = "grey40", vertex.sides = vertex.sides,
                  vertex.rot = vertex.rot, vertex.cex = vertex.cex,
