@@ -427,7 +427,7 @@ crosscheck.dcm <- function(param, init, control) {
       stop("Specify rec.rate in param.dcm", call. = FALSE)
     }
     if (control$type %in% c("SIR", "SIS") && param$groups == 2 &&
-        is.null(param$rec.rate.g2)) {
+          is.null(param$rec.rate.g2)) {
       stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
     }
 
