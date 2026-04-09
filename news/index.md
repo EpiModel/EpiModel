@@ -29,6 +29,12 @@
   [\#800](https://github.com/EpiModel/EpiModel/issues/800).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
+- Fix unreachable two-group validation in
+  [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
+  where checks for `rec.rate.g2` and `r.num.g2` were nested after
+  [`stop()`](https://rdrr.io/r/base/stop.html) calls, preventing them
+  from ever executing. Closes
+  [\#982](https://github.com/EpiModel/EpiModel/issues/982).
 
 ### OTHER
 
