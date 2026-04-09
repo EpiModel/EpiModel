@@ -140,14 +140,10 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   if ("b.rate" %in% names.dot.args) {
-    p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
-            a.rate. ", "See documentation for details.")
+    stop("The b.rate parameter has been removed. Use a.rate instead.") 
   }
   if ("b.rate.g2" %in% names.dot.args) {
-    p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
-            a.rate. ", "See documentation for details.")
+    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
   }
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
@@ -346,7 +342,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "lsoda",
   # Check type for base models
   if (is.null(p$new.mod)) {
     if (is.null(p$type) || !(p$type %in% c("SI", "SIS", "SIR"))) {
-      stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ", call. = FALSE)
+      stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
     }
   }
 
@@ -377,13 +373,13 @@ crosscheck.dcm <- function(param, init, control) {
 
   # Main class check --------------------------------------------------------
   if (!inherits(param, "param.dcm")) {
-    stop("param must be an object of class param.dcm", call. = FALSE)
+    stop("param must be an object of class param.dcm")
   }
   if (!inherits(init, "init.dcm")) {
-    stop("init must be an object of class init.dcm", call. = FALSE)
+    stop("init must be an object of class init.dcm")
   }
   if (!inherits(control, "control.dcm")) {
-    stop("control must be an object of class control.dcm", call. = FALSE)
+    stop("control must be an object of class control.dcm")
   }
 
   # Parameter checks for base models ----------------------------------
@@ -412,31 +408,30 @@ crosscheck.dcm <- function(param, init, control) {
 
     if (param$groups == 2 && (is.null(param$balance) ||
                                 !(param$balance %in% c("g1", "g2")))) {
-      stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models",
-           call. = FALSE)
+      stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models") 
     }
 
     ## Error checks
     # Specify inf.prob
     if (is.null(param$inf.prob)) {
-      stop("Specify inf.prob in param.dcm", call. = FALSE)
+      stop("Specify inf.prob in param.dcm")
     }
 
     # Check that rec.rate is supplied for SIR/SIS models
     if (control$type %in% c("SIR", "SIS") && is.null(param$rec.rate)) {
-      stop("Specify rec.rate in param.dcm", call. = FALSE)
+      stop("Specify rec.rate in param.dcm")
     }
     if (control$type %in% c("SIR", "SIS") && param$groups == 2 &&
           is.null(param$rec.rate.g2)) {
-      stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
+      stop("Specify rec.rate.g2 in param.dcm")
     }
 
     # Check that r.num is supplied for SIR models
     if (control$type == "SIR" && is.null(init$r.num)) {
-      stop("Specify r.num in init.dcm", call. = FALSE)
+      stop("Specify r.num in init.dcm")
     }
     if (control$type == "SIR" && param$groups == 2 && is.null(init$r.num.g2)) {
-      stop("Specify r.num.g2 in init.dcm", call. = FALSE)
+      stop("Specify r.num.g2 in init.dcm")
     }
 
     # Check that groups implied by init and params are consistent
@@ -447,29 +442,23 @@ crosscheck.dcm <- function(param, init, control) {
     }
     if (param$groups == 2 && init.groups == 1) {
       stop("Group 2 parameters specified in param.dcm,
-           \rbut missing group 2 initial states in init.dcm",
-           call. = FALSE)
+           \rbut missing group 2 initial states in init.dcm") 
     }
     if (param$groups == 1 && init.groups == 2) {
       stop("Group 2 initial stats specified in init.dcm,
-           but missing group 2 parameters in param.dcm",
-           call. = FALSE)
+           but missing group 2 parameters in param.dcm") 
     }
 
     # Over-specified initial conditions
     if (control$type != "SIR" && any(c("r.num", "r.num.g2") %in% names(init))) {
-      stop("Specified initial number recovered for non-SIR model",
-           call. = FALSE)
+      stop("Specified initial number recovered for non-SIR model") 
     }
 
-    # Deprecated parameters
     if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter
-           instead.", call. = FALSE)
+      stop("The trans.rate parameter has been removed. Use inf.prob instead.") 
     }
     if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2
-           parameter instead.", call. = FALSE)
+      stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.") 
     }
   }
 

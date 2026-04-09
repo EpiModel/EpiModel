@@ -77,7 +77,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 
 get_qnts <- function(data, qnts, qnts.smooth) {
   if (qnts < 0 || qnts > 1) {
-    stop("qnts must be between 0 and 1", call. = FALSE)
+    stop("qnts must be between 0 and 1")
   }
   quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
   qnt.prev <- apply(data, 1, function(x) {

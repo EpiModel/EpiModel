@@ -37,7 +37,7 @@
 brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 
   if (n < 1) {
-    stop("n must be a positive integer", call. = FALSE)
+    stop("n must be a positive integer")
   }
 
   bpi <- brewer.pal.info

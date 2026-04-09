@@ -193,7 +193,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
                   skip.dissolution = FALSE, future.use.plan = FALSE) {
 
   if (!inherits(x, "netest")) {
-    stop("x must be an object of class netest", call. = FALSE)
+    stop("x must be an object of class netest")
   }
 
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
@@ -208,13 +208,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
   nw <- x$newnetwork
 
   if (dynamic && is.null(nsteps)) {
-    stop("Specify number of time steps with nsteps", call. = FALSE)
+    stop("Specify number of time steps with nsteps")
   }
 
   if (x$coef.diss$duration[1] == 1 && dynamic == TRUE) {
     stop("Running dynamic diagnostics on a cross-sectional ERGM (duration = 1) is not possible.
-         \nSet netdx parameter 'dynamic' to 'FALSE'",
-      call. = FALSE
+         \nSet netdx parameter 'dynamic' to 'FALSE'"
     )
   }
 
