@@ -200,10 +200,10 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   broken_epi <- names(x$epi)[epi_lengths != n_steps]
   if (length(broken_epi) > 0) {
     if (repair == "drop") {
-      warning("Dropping: ", paste0(broken_epi, sep = ", "), " - wrong length")
+      warning("Dropping: ", paste(broken_epi, collapse = ", "), " - wrong length")
       x$epi <- x$epi[epi_lengths == n_steps]
     } else if (repair == "pad") {
-      warning("Padding with NA: ", paste0(broken_epi, sep = ", "),
+      warning("Padding with NA: ", paste(broken_epi, collapse = ", "),
               " - wrong length")
       x$epi[broken_epi] <- lapply(x$epi[broken_epi], \(d) {
         n_miss <- n_steps - nrow(d)
@@ -213,7 +213,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
       })
     } else {
       stop(
-        "Some EPIs had the wrong size: ", paste0(broken_epi, sep = ", "),
+        "Some EPIs had the wrong size: ", paste(broken_epi, collapse = ", "),
         "No repair method set, stopping"
       )
     }

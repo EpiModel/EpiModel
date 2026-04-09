@@ -450,17 +450,11 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   ## Mean lines - ylim max ##
   if (mean.line) {
-    if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
+    if (length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
-    if (is.null(mean.lwd)) {
-      mean.lwd <- rep(1.5, lcomp)
-    }
-    if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
+    if (length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
-    }
-    if (is.null(mean.lty)) {
-      mean.lty <- rep(1, lcomp)
     }
     mean.max <- draw_means(
       x, y,
@@ -537,19 +531,11 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   ## Mean lines ##
   if (mean.line) {
-    if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
+    if (length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
-    if (is.null(mean.lwd)) {
-      mean.lwd <- rep(2.5, lcomp)
-    }
-    if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
+    if (length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
-    }
-    if (is.null(mean.lty)) {
-      if (!nocomp) {
-        mean.lty <- rep(1, lcomp)
-      }
     }
     y.n <- length(y)
     mean.pal <- mean.pal[seq_len(y.n)]
