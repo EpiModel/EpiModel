@@ -14,6 +14,7 @@ control.net(
   tergmLite = FALSE,
   cumulative.edgelist = FALSE,
   truncate.el.cuml = 0,
+  tracked.attributes = NULL,
   attr.rules,
   epi.by,
   initialize.FUN = initialize.net,
@@ -80,6 +81,16 @@ object is not used.}
 
 \item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to retain. See help for
 \code{\link{update_cumulative_edgelist}} for options.}
+
+\item{tracked.attributes}{A character vector of nodal attribute names whose
+changes should be automatically recorded at each time step. The
+\code{active} attribute is always tracked when this is non-empty. At each
+step, only the nodes whose values changed (including \code{NA} transitions),
+plus newly arrived and departed nodes, are recorded via
+\code{\link[=record_attr_history]{record_attr_history()}}. The resulting history can be retrieved with
+\code{\link[=get_attr_history]{get_attr_history()}} and used to reconstruct attribute state at any
+time step with \code{\link[=get_attr_at]{get_attr_at()}} or to build a \code{networkDynamic} object
+with \code{\link[=make_networkDynamic]{make_networkDynamic()}}.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of incoming nodes, with
 one list element per attribute to be set (see details below).}

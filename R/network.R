@@ -122,17 +122,43 @@ get_network_attributes <- function(x) {
   out
 }
 
+#' @title Build a networkDynamic Object from Simulation Output
+#'
+#' @description
+#' Reconstructs a `networkDynamic` object from a completed `netsim`
+#' simulation, using the cumulative edgelist for edge spells and the
+#' tracked attribute history for vertex activity and time-varying
+#' attributes. The resulting object can be used with `ndtv` for
+#' visualization or with `tsna` for temporal network analysis.
+#'
+#' @param sim An `EpiModel` object of class `netsim`.
+#' @param sim_num The simulation number to use (default 1).
+#' @param network Optional network number to filter edges. If `NULL`
+#'   (default), edges from all networks are included.
+#'
+#' @return A `networkDynamic` object with active vertex spells and
+#'   time-varying vertex attributes.
+#'
+#' @seealso [get_attr_at()], [get_attr_history()]
+#' @export
 make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
+  if (!inherits(sim, "netsim"))
+    stop("`sim` must be of class netsim")
+  if (sim_num > sim$control$nsims || sim_num < 1)
+    stop("Specify a single sim_num between 1 and ", sim$control$nsims)
   if (!sim$control$save.cumulative.edgelist &&
         !sim$control$cumulative.edgelist) {
-    stop("cumulative edgelist must be used and saved")
+    stop("Cumulative edgelist not saved in netsim object. ",
+         "Check control.net settings.")
   }
-  if (! "active" %in% sim$control$tracked.attributes) {
-    stop("The `active` attribute must be tracked")
+  if (!"active" %in% sim$control$tracked.attributes) {
+    stop("The `active` attribute must be tracked. ",
+         "Check control.net `tracked.attributes` settings.")
   }
 
   attr_hist <- get_attr_history(sim)
-  n_nodes <- max(dplyr::filter(attr_hist$active, sim == sim_num)$uids)
+  d_active <- attr_hist$active[attr_hist$active$sim == sim_num, ]
+  n_nodes <- max(d_active$uids)
   n_steps <- sim$control$nsteps
 
   nw <- network::network.initialize(n_nodes, directed = FALSE)
@@ -152,21 +178,13 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     vals.eval = lapply(el$network, \(x) list(network = x))
   )
 
-  # Manage when nodes are active
-  d_active <- dplyr::filter(attr_hist$active, sim == sim_num) |>
-    dplyr::select(time, uids, values) |>
-    dplyr::mutate(values = ifelse(values == 1, "onset", "terminus")) |>
-    dplyr::group_by(uids, values) |>
-    dplyr::filter(time == min(time)) |>
-    dplyr::ungroup() |>
-    tidyr::pivot_wider(names_from = values, values_from = time) |>
-    dplyr::mutate(terminus = ifelse(is.na(terminus), Inf, terminus))
+  spells <- get_nodes_spell(d_active)
 
   networkDynamic::activate.vertices(
     nw,
-    v = d_active$uids,
-    onset = d_active$onset,
-    terminus = d_active$terminus + 1
+    v = spells$uid,
+    onset = spells$onset,
+    terminus = spells$terminus + 1
   )
 
   for (item in names(attr_hist)) {

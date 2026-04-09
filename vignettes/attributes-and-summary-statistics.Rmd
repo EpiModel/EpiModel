@@ -146,13 +146,91 @@ These functions have additional arguments described in `help("net-accessor", pac
 
 ## Historical Nodal Attributes
 
-Current attributes reflect the state of each node at the present time step. Sometimes you need to track what happened to specific nodes over time. Because saving the full history of all attributes would consume too much memory, EpiModel provides a selective recording mechanism: you choose which attributes, for which nodes, at which time steps to record.
+Current attributes reflect the state of each node at the present time step.
+Sometimes you need to track what happened to specific nodes over time. Because
+saving the full history of all attributes would consume too much memory,
+EpiModel provides two complementary mechanisms: **automatic tracking** via
+`control.net` and **manual recording** inside custom modules. Both write to
+the same `attr.history` storage, accessible after the simulation with
+`get_attr_history()`.
 
-This is useful for diagnostics (verifying that a dynamic process is coded correctly) or for tracking a limited set of individual-level outcomes for further analysis.
+### Automatic Attribute Tracking
 
-### Recording Attribute Histories
+The simplest way to record attribute histories is to declare the attributes
+you want tracked in `control.net`. EpiModel will then automatically record
+changes at each time step using delta compression---only nodes whose values
+actually changed (including `NA` transitions), plus newly arrived and departed
+nodes, are stored. The `active` attribute is always tracked when any tracked
+attributes are specified.
 
-The following module records the viral load of infected nodes every 10 time steps. It assumes the model defines a `status` attribute (with values `"s"` for susceptible, `"i"` for infected) and a `viral_load` attribute (continuous for infected nodes, `NA` otherwise).
+```{r tracked_attrs_setup, eval = FALSE}
+control <- control.net(
+  type = "SIS",
+  nsteps = 500,
+  nsims = 1,
+  tracked.attributes = c("status"),
+  verbose = FALSE
+)
+```
+
+After the simulation completes, you can reconstruct the tracked attribute
+state at any time step with `get_attr_at()`:
+
+```{r get_attr_at_ex, eval = FALSE}
+sim <- netsim(est, param, init, control)
+
+# Reconstruct attributes at time step 200
+attrs_200 <- get_attr_at(sim, at = 200)
+attrs_200
+# # A tibble: 487 x 3
+#    unique_id active status
+#        <int>  <int> <chr>
+#  1         1      1 s
+#  2         2      1 i
+#  3         3      1 s
+#  ...
+```
+
+The raw delta-compressed history is also available via `get_attr_history()`:
+
+```{r get_attr_history_auto, eval = FALSE}
+attr_history <- get_attr_history(sim)
+
+# $active
+#    sim time attribute  uids values
+# 1    1    1 active        1      1
+# 2    1    1 active        2      1
+# ...
+# 50   1   42 active      501      1
+# 51   1   65 active        7      0
+# ...
+#
+# $status
+#    sim time attribute  uids values
+# 1    1    1 status        1      s
+# 2    1    1 status        2      s
+# ...
+# 50   1   22 status        5      i
+# 51   1   64 status       12      i
+# ...
+```
+
+Each `data.frame` has columns `sim` (simulation number), `time` (time step),
+`attribute` (the label), `uids` (unique IDs), and `values` (the recorded
+values). The initial time step contains the full snapshot; subsequent steps
+contain only the changes.
+
+### Manual Attribute Recording
+
+For finer-grained control---recording specific subsets of nodes, at specific
+intervals, or attributes not listed in `tracked.attributes`---you can call
+`record_attr_history()` directly inside a custom module. This writes to the
+same `attr.history` storage as automatic tracking.
+
+The following module records the viral load of infected nodes every 10 time
+steps. It assumes the model defines a `status` attribute (with values `"s"`
+for susceptible, `"i"` for infected) and a `viral_load` attribute (continuous
+for infected nodes, `NA` otherwise).
 
 ```{r recording_attr_hist, eval = FALSE}
 viral_load_logger_module <- function(dat, at) {
@@ -167,10 +245,9 @@ viral_load_logger_module <- function(dat, at) {
     infected <- which(status == "i")
 
     dat <- record_attr_history(
-      dat, at,
-      "viral_load",
-      infected,
-      viral_load[infected]
+      dat, "viral_load",
+      viral_load[infected],
+      posit_ids = infected
     )
   }
 
@@ -178,48 +255,24 @@ viral_load_logger_module <- function(dat, at) {
 }
 ```
 
-`record_attr_history()` takes five arguments:
+`record_attr_history()` takes the following arguments:
 
 1. `dat`: the main list object.
-2. `at`: the time step to associate with the recording (usually the current step).
-3. A label for the attribute (here `"viral_load"`).
-4. A vector of `posit_id`s for the nodes of interest. Internally, these are converted to `unique_id`s so the history remains valid even after nodes depart.
-5. The values to record for those IDs. The number of values must match the number of IDs, unless a single value is provided (which is recycled for all IDs, using less memory).
+2. `item`: a label for the attribute (here `"viral_load"`).
+3. `value`: the values to record. Must match the number of nodes in length,
+   unless a single value is provided (which is recycled for all nodes).
+4. `at`: the time step to associate with the recording. Defaults to the
+   current time step if omitted.
+5. `posit_ids` or `unique_ids`: a vector of node IDs to which the values
+   apply. When `posit_ids` are provided, they are converted internally to
+   `unique_id`s so the history remains valid even after nodes depart.
 
-Use attribute histories sparingly---storage can grow large in open-population models with many nodes over many time steps.
-
-### Accessing Attribute Histories
-
-Attribute histories are accessed after the simulation is complete:
-
-```{r access_attr_hist, eval = FALSE}
-sim <- netsim(est, param, init, control)
-attr_history <- get_attr_history(sim)
-```
-
-The result is a named list of `data.frame`s, one for each recorded attribute label. Suppose we recorded `"viral_load"` (as above) and also `"status"` transitions in another module. The output would look like:
-
-```{r get_attr_ex, eval = FALSE}
-get_attr_history(sim)
-
-# $viral_load
-#    sim step attribute    uids values
-# 1    1   10 viral_load   1001   2000
-# 2    1   10 viral_load   1002   1878
-# 3    1   20 viral_load   1001   1500
-# 4    1   20 viral_load   1002    300
-# ...
-#
-# $status
-#    sim step attribute  uids  values
-# 1    1   22 status     1001       i
-# 2    1   64 status     1002       i
-# 3    1  110 status     1001       r
-# 4    1  220 status     1002       r
-# ...
-```
-
-Each `data.frame` has columns `sim` (simulation number), `step` (time step), `attribute` (the label), `uids` (unique IDs), and `values` (the recorded values). The list structure allows each history to have different dimensions.
+Use attribute tracking and histories sparingly---storage can grow large in
+open-population models with many nodes over many time steps. Note that
+automatic tracking with `tracked.attributes` also records all nodes in the
+initial snapshot, but subsequent steps only store the changes, making it more
+memory-efficient for attributes that change infrequently relative to the
+population size.
 
 
 ## Epidemic Trackers

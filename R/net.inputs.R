@@ -721,6 +721,15 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
 #'   simulation to restart from this output.
 #' @param save.cumulative.edgelist If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+#' @param tracked.attributes A character vector of nodal attribute names whose
+#'        changes should be automatically recorded at each time step. The
+#'        `active` attribute is always tracked when this is non-empty. At each
+#'        step, only the nodes whose values changed (including `NA` transitions),
+#'        plus newly arrived and departed nodes, are recorded via
+#'        [record_attr_history()]. The resulting history can be retrieved with
+#'        [get_attr_history()] and used to reconstruct attribute state at any
+#'        time step with [get_attr_at()] or to build a `networkDynamic` object
+#'        with [make_networkDynamic()].
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.
@@ -863,6 +872,7 @@ control.net <- function(type,
                         tergmLite = FALSE,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
+                        tracked.attributes = NULL,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,

@@ -50,7 +50,6 @@ Imports:
     methods,
     rlang,
     dplyr,
-    tidyr,
     coda,
     networkLite (>= 1.0.5)
 Suggests:

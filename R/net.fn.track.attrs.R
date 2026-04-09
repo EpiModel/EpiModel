@@ -11,7 +11,6 @@
 #'
 #' @seealso [tracked_attrs_record()], [record_attr_history()]
 #' @keywords internal
-#' @noRd
 tracked_attrs_set_ref <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
   if (length(tracked_items) == 0)
@@ -42,7 +41,6 @@ tracked_attrs_set_ref <- function(dat) {
 #'
 #' @seealso [tracked_attrs_set_ref()], [record_attr_history()]
 #' @keywords internal
-#' @noRd
 tracked_attrs_record <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
   if (length(tracked_items) == 0) {
@@ -88,4 +86,102 @@ tracked_attrs_record <- function(dat) {
   }
   dat$run$tracked_attrs_ref <- NULL
   return(dat)
+}
+
+#' @title Get Tracked Attributes at a Given Time Step
+#'
+#' @description
+#' Reconstructs the state of all tracked attributes at a specific time step
+#' from the delta-compressed attribute history. Returns a `tibble` with one
+#' row per active node and one column per tracked attribute.
+#'
+#' @param sim An `EpiModel` object of class `netsim`.
+#' @param at The time step at which to reconstruct attributes.
+#' @param sim_num The simulation number to use (default 1).
+#'
+#' @return A `tibble` with columns `unique_id`, `active`, and one column per
+#'   tracked attribute, containing the most recent value at or before `at`
+#'   for each active node.
+#'
+#' @seealso [record_attr_history()], [get_attr_history()]
+#' @export
+get_attr_at <- function(sim, at, sim_num = 1) {
+  if (!inherits(sim, "netsim"))
+    stop("`sim` must be of class netsim")
+  if (length(sim$control$tracked.attributes) < 1)
+    stop("At least the `active` attribute must be tracked. ",
+         "Check control.net `tracked.attributes` settings.")
+  if (sim_num > sim$control$nsims || sim_num < 1)
+    stop("Specify a single sim_num between 1 and ", sim$control$nsims)
+  if (at < 1 || at > sim$control$nsteps)
+    stop("Specify at between 1 and ", sim$control$nsteps)
+
+  attr_hist <- get_attr_history(sim)
+
+  # Get active UIDs at that time
+  spells <- get_nodes_spell(attr_hist$active[attr_hist$active$sim == sim_num, ])
+  present_uids <- spells$uid[at >= spells$onset & at < spells$terminus]
+
+  d_attrs_at <- dplyr::tibble(unique_id = present_uids)
+
+  for (item in names(attr_hist)) {
+    d <- attr_hist[[item]] |>
+      dplyr::filter(
+        sim == sim_num,
+        time <= at,
+        uids %in% present_uids
+      ) |>
+      dplyr::group_by(uids) |>
+      dplyr::filter(time == max(time)) |>
+      dplyr::ungroup() |>
+      dplyr::select(uids, values)
+    names(d) <- c("unique_id", item)
+    d_attrs_at <- dplyr::left_join(d_attrs_at, d, by = "unique_id")
+  }
+
+  d_attrs_at
+}
+
+#' @title Compute Node Activity Spells from Active Attribute History
+#'
+#' @description
+#' Derives onset and terminus times for each node from the `active` attribute
+#' history records. Uses the earliest `active == 1` record as onset and the
+#' earliest `active == 0` record as terminus. Nodes that never departed get
+#' `terminus = Inf`.
+#'
+#' @param d_active A `data.frame` of active attribute history records for a
+#'   single simulation, with columns `time`, `uids`, and `values`.
+#'
+#' @return A `data.frame`:
+#'   \describe{
+#'     \item{uid}{Integer unique IDs.}
+#'     \item{onset}{Numeric onset times.}
+#'     \item{terminus}{Numeric terminus times (`Inf` if never departed).}
+#'   }
+#'
+#' @keywords internal
+#' @noRd
+get_nodes_spell <- function(d_active) {
+  d_on <- d_active[d_active$values == 1, ]
+  onset <- tapply(d_on$time, d_on$uids, min)
+
+  # Terminus: earliest time each uid appears with active == 0
+  d_off <- d_active[d_active$values == 0, ]
+  if (nrow(d_off) > 0) {
+    terminus <- tapply(d_off$time, d_off$uids, min)
+  } else {
+    terminus <- numeric(0)
+  }
+
+  # Match terminus to onset uids; nodes that never departed get Inf
+  all_uids <- as.integer(names(onset))
+  term_vals <- terminus[as.character(all_uids)]
+  term_vals[is.na(term_vals)] <- Inf
+
+  data.frame(
+    uid = all_uids,
+    onset = as.numeric(onset),
+    terminus = as.numeric(term_vals)
+  )
 }
