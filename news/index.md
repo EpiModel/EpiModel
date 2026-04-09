@@ -29,6 +29,11 @@
   [\#800](https://github.com/EpiModel/EpiModel/issues/800).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
+- Fix
+  [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+  to replicate scalar constants across all simulations/runs and use
+  existing column names instead of hardcoding `"run1"`. Closes
+  [\#984](https://github.com/EpiModel/EpiModel/issues/984).
 - Fix mismatched `mean.lwd` defaults in
   [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
   where dead-code `is.null` branches used inconsistent values (1.5 vs
