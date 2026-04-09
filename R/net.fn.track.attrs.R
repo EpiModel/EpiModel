@@ -16,7 +16,8 @@ tracked_attrs_set_ref <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
   if (length(tracked_items) == 0)
     return(dat)
-  dat$run$tracked_attrs_ref <- get_attr_list(dat, c("unique_id", tracked_items))
+  ref_items <- unique(c("unique_id", "active", tracked_items))
+  dat$run$tracked_attrs_ref <- get_attr_list(dat, ref_items)
   return(dat)
 }
 
@@ -48,7 +49,7 @@ tracked_attrs_record <- function(dat) {
     return(dat)
   } else if (!dat$run$tracking_attrs) { # Initialize Tracking
     unique_ids <- get_unique_ids(dat)
-    for (item in tracked_items) {
+    for (item in unique(c("active", tracked_items))) {
       value <- get_attr(dat, item)
       dat <- record_attr_history(dat, item, value, unique_ids = unique_ids)
     }
@@ -57,13 +58,12 @@ tracked_attrs_record <- function(dat) {
   }
 
   ref_attrs <- dat$run$tracked_attrs_ref
+  tracked_items <- unique(c("active", tracked_items))
   cur_attrs <- get_attr_list(dat, c("unique_id", tracked_items))
 
   # old nodes - store end time
-  if ("active" %in% tracked_items) {
-    departed_uid <- setdiff(ref_attrs$unique_id, cur_attrs$unique_id)
-    dat <- record_attr_history(dat, "active", 0L, unique_ids = departed_uid)
-  }
+  departed_uid <- setdiff(ref_attrs$unique_id, cur_attrs$unique_id)
+  dat <- record_attr_history(dat, "active", 0L, unique_ids = departed_uid)
 
   # new nodes - store all tracked
   new_uid <- setdiff(cur_attrs$unique_id, ref_attrs$unique_id)

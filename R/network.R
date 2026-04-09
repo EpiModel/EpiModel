@@ -156,6 +156,9 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   d_active <- dplyr::filter(attr_hist$active, sim == sim_num) |>
     dplyr::select(time, uids, values) |>
     dplyr::mutate(values = ifelse(values == 1, "onset", "terminus")) |>
+    dplyr::group_by(uids, values) |>
+    dplyr::filter(time == min(time)) |>
+    dplyr::ungroup() |>
     tidyr::pivot_wider(names_from = values, values_from = time) |>
     dplyr::mutate(terminus = ifelse(is.na(terminus), Inf, terminus))
 
