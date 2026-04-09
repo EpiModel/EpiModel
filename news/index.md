@@ -29,6 +29,12 @@
   [\#800](https://github.com/EpiModel/EpiModel/issues/800).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
+- Fix mismatched `mean.lwd` defaults in
+  [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+  where dead-code `is.null` branches used inconsistent values (1.5 vs
+  2.5). Removed the dead branches since the function signature already
+  provides a default of 2. Closes
+  [\#983](https://github.com/EpiModel/EpiModel/issues/983).
 - Fix unreachable two-group validation in
   [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
   where checks for `rec.rate.g2` and `r.num.g2` were nested after
