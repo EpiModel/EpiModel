@@ -100,17 +100,17 @@ get_network.netdx <- function(x, sim = 1, collapse = FALSE, at = NULL, ...) {
   ## Warnings and checks ##
   nsims <- x$nsims
   if (length(sim) > 1 || sim > nsims) {
-    stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
+    stop("Specify a single sim between 1 and ", nsims)
   }
 
   if (is.null(x$network)) {
     stop("Network object not saved in netdx object.
-          Check keep.tnetwork parameter", call. = FALSE)
+          Check keep.tnetwork parameter")
   }
 
   nsteps <- x$nsteps
   if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
-    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
+    stop("Specify collapse time step between 0 and ", nsteps)
   }
 
   ## Extraction ##
@@ -133,31 +133,28 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE,
   ## Warnings and checks ##
   nsims <- x$control$nsims
   if (length(sim) > 1 || sim > nsims) {
-    stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
+    stop("Specify a single sim between 1 and ", nsims)
   }
 
   if (x$control$tergmLite == TRUE && collapse == TRUE) {
-    stop("Argument `collapse` should be FALSE when x$control$tergmLite == TRUE",
-         call. = FALSE)
+    stop("Argument `collapse` should be FALSE when x$control$tergmLite == TRUE") 
   }
 
   if (x$control$tergmLite == TRUE && !is.null(at)) {
-    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE",
-         call. = FALSE)
+    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE") 
   }
 
   if (is.null(x$network)) {
-    stop("Network object not saved in netsim object. Check control.net settings.",
-         call. = FALSE)
+    stop("Network object not saved in netsim object. Check control.net settings.") 
   }
 
   if (network < 1 || network > x$num.nw) {
-    stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
+    stop("Specify network between 1 and ", x$num.nw)
   }
 
   nsteps <- x$control$nsteps
   if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
-    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
+    stop("Specify collapse time step between 0 and ", nsteps)
   }
 
   ## Extraction ##
@@ -282,16 +279,15 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
   ## Warnings and checks
   if (!inherits(x, "netsim")) {
-    stop("x must be of class netsim", call. = FALSE)
+    stop("x must be of class netsim")
   }
 
   if (sim > x$control$nsims) {
-    stop("Specify sim between 1 and ", x$control$nsims, call. = FALSE)
+    stop("Specify sim between 1 and ", x$control$nsims)
   }
 
   if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
-    stop("transmat not saved in netsim object, check control.net settings",
-         call. = FALSE)
+    stop("transmat not saved in netsim object, check control.net settings") 
   }
 
   ## Extraction
@@ -369,7 +365,7 @@ get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list
 
   ## Warnings and checks ##
   if (!(class(x) %in% c("netsim", "netdx"))) {
-    stop("x must be of class netsim or netdx", call. = FALSE)
+    stop("x must be of class netsim or netdx")
   }
 
   if (inherits(x, "netsim")) {
@@ -389,16 +385,16 @@ get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list
     sim <- seq_len(nsims)
   }
   if (max(sim) > nsims) {
-    stop("Specify sims less than or equal to ", nsims, call. = FALSE)
+    stop("Specify sims less than or equal to ", nsims)
   }
 
   if (inherits(x, "netsim")) {
     if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
       stop("Network statistics not saved in netsim object, check control.net
-           settings", call. = FALSE)
+           settings")
     }
     if (network > x$num.nw) {
-      stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
+      stop("Specify network between 1 and ", x$num.nw)
     }
   }
 
@@ -496,18 +492,17 @@ get_nwparam <- function(x, network = 1) {
 get_sims <- function(x, sims = NULL, var = NULL) {
 
   if (!inherits(x, "netsim")) {
-    stop("x must be of class netsim", call. = FALSE)
+    stop("x must be of class netsim")
   }
 
   nsims <- x$control$nsims
 
   if (is.null(sims)) {
-    stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
+    stop("Specify sims as a vector of simulations or \"mean\" ")
   }
   if (length(sims) == 1 && sims ==
         "mean" && (is.null(var) || length(var) > 1)) {
-    stop("If sims == 'mean' then var must be a single variable name",
-         call. = FALSE)
+    stop("If sims == 'mean' then var must be a single variable name") 
   }
 
   if (length(sims) == 1 && sims == "mean") {
@@ -517,7 +512,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   }
 
   if (max(sims) > nsims) {
-    stop("Maximum sims value for this object is ", nsims, call. = FALSE)
+    stop("Maximum sims value for this object is ", nsims)
   }
 
   out <- x

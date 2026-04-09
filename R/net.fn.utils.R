@@ -371,7 +371,7 @@ copy_datattr_to_nwattr <- function(dat) {
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   # Error check for duration < 1
   if (any(duration < 1)) {
-    stop("All values in duration must be >= 1", call. = FALSE)
+    stop("All values in duration must be >= 1")
   }
   # Check form of dissolution formula
   diss.model.type <- NA
@@ -397,16 +397,16 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   }
 
   if (length(d.rate) > 1) {
-    stop("Length of d.rate must be 1", call. = FALSE)
+    stop("Length of d.rate must be 1")
   }
   # Log transformation of duration to coefficent
   if (t1.edges == FALSE) {
-    stop("Dissolution models must start with offset(edges)", call. = FALSE)
+    stop("Dissolution models must start with offset(edges)")
   }
   if (form.length == 1) {
     if (length(duration) > 1) {
       stop("Dissolution model length is 1, but number of duration was ",
-           length(duration), call. = FALSE)
+           length(duration))
     }
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
@@ -415,7 +415,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       str <- paste("The competing risk of departure is too high for the given",
                    " duration of ", duration[1],
                    "; specify a d.rate lower than ", d.rate_, ".", sep = "")
-      stop(str, call. = FALSE)
+      stop(str)
     }
 
     coef.crude <- log(pg / (1 - pg))
@@ -447,7 +447,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       }
     } else {
       stop("Supported heterogeneous dissolution model terms are nodematch ",
-           "or nodemix", call. = FALSE)
+           "or nodemix")
     }
   }
   out <- list()
@@ -874,8 +874,7 @@ truncate_sim <- function(x, at, reset.time) {
 truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
   row_start <- which(x$control$timesteps == at)
   if (length(row_start) == 0) {
-    stop("Specified value of at is not in the control$timesteps vector",
-         call. = FALSE)
+    stop("Specified value of at is not in the control$timesteps vector") 
   }
   rows <- row_start:nrow(x$epi[[1]])
   # epi

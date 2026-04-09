@@ -204,7 +204,7 @@ dcm <- function(param, init, control) {
     long.lengths <- all.lengths[all.lengths > 1]
     if (length(unique(long.lengths)) > 1) {
       stop("All varying parameters and initial conditions must have the ",
-           "same length", call. = FALSE)
+           "same length")
     }
 
     longv <- which(sapply(param, length) == control$nruns)

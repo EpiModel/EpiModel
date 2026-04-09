@@ -55,7 +55,7 @@ initialize.net <- function(x, param, init, control, s) {
     if (length(missing_names) > 0) {
       stop(
         "x is missing the following elements required for re-initialization: ",
-        paste.and(missing_names), call. = FALSE
+        paste.and(missing_names)
       )
     }
 
