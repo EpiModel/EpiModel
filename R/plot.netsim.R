@@ -568,7 +568,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
                               ylim, ylab, ...) {
   sims <- if (is.null(sims)) seq_len(x$control$nsims) else sims
   if (max(sims) > x$control$nsims)
-    stop("Maximum sim number is", x$control$nsims)
+    stop("Maximum sim number is ", x$control$nsims)
   nsims <- length(sims)
 
   # Formation plot ----------------------------------------------------------
@@ -622,7 +622,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
   ## Pull and check stat argument
   stats <- if (is.null(stats)) nmstats else stats
   if (!all(stats %in% nmstats)) {
-    stop("One or more requested stats not contained in netdx object") 
+    stop("One or more requested stats not contained in netsim object")
   }
   outsts <- which(nmstats %in% stats)
   nmstats <- nmstats[outsts]
