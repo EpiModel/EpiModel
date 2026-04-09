@@ -153,15 +153,18 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   )
 
   # Manage when nodes are active
-  d_active <- dplyr::filter(attr_hist$active, sim == sim_num)
-  on_pos <- which(d_active$values == 1L)
-  off_pos <- which(d_active$values == 0L)
-  uids <- d_active$uids[on_pos]
-  ats <- d_active$time[on_pos]
-  networkDynamic::activate.vertices(nw, v = uids, onset = ats, terminus = Inf)
-  uids <- d_active$uids[off_pos]
-  ats <- d_active$time[off_pos]
-  networkDynamic::deactivate.vertices(nw, v = uids, onset = ats, terminus = Inf)
+  d_active <- dplyr::filter(attr_hist$active, sim == sim_num) |>
+    dplyr::select(time, uids, values) |>
+    dplyr::mutate(values = ifelse(values == 1, "onset", "terminus")) |>
+    tidyr::pivot_wider(names_from = values, values_from = time) |>
+    dplyr::mutate(terminus = ifelse(is.na(terminus), Inf, terminus))
+
+  networkDynamic::activate.vertices(
+    nw,
+    v = d_active$uids,
+    onset = d_active$onset,
+    terminus = d_active$terminus + 1
+  )
 
   for (item in names(attr_hist)) {
     if (item == "active") next
