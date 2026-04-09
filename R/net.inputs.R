@@ -246,19 +246,16 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.",
-         call. = FALSE)
+    stop("The b.rate parameter has been removed. Use a.rate instead.") 
   }
   if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.",
-         call. = FALSE)
+    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
   }
   # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     stop("Parameters using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., inf.prob.g2).",
-         call. = FALSE)
+         "Use the .g2 suffix instead (e.g., inf.prob.g2).") 
   }
   if (missing(act.rate)) {
     p[["act.rate"]] <- 1
@@ -267,8 +264,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                            !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
-            "If using built-in models, only act.rate parameter will apply.",
-            call. = FALSE)
+            "If using built-in models, only act.rate parameter will apply.") 
   }
 
   if (!is.null(p[["inter.eff"]]) && is.null(p[["inter.start"]])) {
@@ -627,8 +623,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
     stop("Initial conditions using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., i.num.g2).",
-         call. = FALSE)
+         "Use the .g2 suffix instead (e.g., i.num.g2).") 
   }
   if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -908,16 +903,13 @@ control.net <- function(type,
   }
 
   if ("births.FUN" %in% names(dot.args)) {
-    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.",
-         call. = FALSE)
+    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.") 
   }
   if ("deaths.FUN" %in% names(dot.args)) {
-    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.",
-         call. = FALSE)
+    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.") 
   }
   if ("depend" %in% names(dot.args)) {
-    stop("The depend parameter has been removed. Use resimulate.network instead.",
-         call. = FALSE)
+    stop("The depend parameter has been removed. Use resimulate.network instead.") 
   }
 
   ## Module classification
@@ -957,17 +949,17 @@ control.net <- function(type,
 
     if (!is.null(p[["type"]]) && sum(flag1, na.rm = TRUE) != length(flag1)) {
       stop("Control parameter 'type' must be null if any user defined base
-           modules are present", call. = FALSE)
+           modules are present")
     }
   }
 
   if (!is.null(p[["type"]]) && length(p[["user.mods"]]) > 0) {
     stop("Control parameter 'type' must be null if any user specified modules
-         are present", call. = FALSE)
+         are present")
   }
 
   if (is.null(p[["nsteps"]])) {
-    stop("Specify nsteps", call. = FALSE)
+    stop("Specify nsteps")
   }
 
   if (missing(attr.rules)) {
@@ -1029,16 +1021,16 @@ crosscheck.net <- function(x, param, init, control) {
       if (!inherits(x, "list") || length(x) == 0 ||
             !all(vapply(x, inherits, logical(1), "netest"))) {
         stop("x must be either an object of class netest or a list of objects",
-             " of class netest when start == 1", call. = FALSE)
+             " of class netest when start == 1")
       }
       if (!inherits(param, "param.net")) {
-        stop("param must be an object of class param.net", call. = FALSE)
+        stop("param must be an object of class param.net")
       }
       if (!inherits(init, "init.net")) {
-        stop("init must be an object of class init.net", call. = FALSE)
+        stop("init must be an object of class init.net")
       }
       if (!inherits(control, "control.net")) {
-        stop("control must be an object of class control.net", call. = FALSE)
+        stop("control must be an object of class control.net")
       }
 
       # Pull network object from netest object
@@ -1070,7 +1062,7 @@ crosscheck.net <- function(x, param, init, control) {
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
           warning("Overriding init infected settings with network
-                  status attribute", call. = FALSE, immediate. = TRUE)
+                  status attribute", immediate. = TRUE)
         }
       }
 
@@ -1083,13 +1075,11 @@ crosscheck.net <- function(x, param, init, control) {
         if (control[["type"]] == "SIR") {
           if (any(svals %in% c("s", "i", "r") == FALSE)) {
             stop("status.vector contains values other than \"s\", \"i\",
-                 and \"r\" ",
-                 call. = FALSE)
+                 and \"r\" ") 
           }
         } else {
           if (any(svals %in% c("s", "i") == FALSE)) {
-            stop("status.vector contains values other than \"s\" and \"i\" ",
-                 call. = FALSE)
+            stop("status.vector contains values other than \"s\" and \"i\" ") 
           }
         }
       }
@@ -1097,42 +1087,42 @@ crosscheck.net <- function(x, param, init, control) {
       # Two-group model checks for inital conditions
       if (nGroups == 2 && is.null(init[["i.num.g2"]]) &&
             is.null(init[["status.vector"]]) && statOnNw == FALSE) {
-        stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
+        stop("Specify i.num.g2 for two-group model simulations")
       }
 
       # Recovery rate and initial recovered checks
       if (control[["type"]] %in% c("SIR", "SIS")) {
         if (is.null(param[["rec.rate"]])) {
-          stop("Specify rec.rate in param.net", call. = FALSE)
+          stop("Specify rec.rate in param.net")
         }
         if (nGroups == 2 && is.null(param[["rec.rate.g2"]])) {
-          stop("Specify rec.rate.g2 in param.net", call. = FALSE)
+          stop("Specify rec.rate.g2 in param.net")
         }
       }
       if (control[["type"]] == "SIR") {
         if (is.null(init[["r.num"]]) && is.null(init[["status.vector"]]) && statOnNw == FALSE) {
-          stop("Specify r.num in init.net", call. = FALSE)
+          stop("Specify r.num in init.net")
         }
         if (nGroups == 2 && is.null(init[["r.num.g2"]]) &&
               is.null(init[["status.vector"]]) && statOnNw == FALSE) {
-          stop("Specify r.num.g2 in init.net", call. = FALSE)
+          stop("Specify r.num.g2 in init.net")
         }
       }
 
       # Check demographic parameters for two-group models
       if (nGroups == 2 && param[["vital"]] == TRUE) {
         if (is.null(param[["a.rate.g2"]])) {
-          stop("Specify a.rate.g2 in param.net", call. = FALSE)
+          stop("Specify a.rate.g2 in param.net")
         }
         if (is.null(param[["ds.rate.g2"]])) {
-          stop("Specify ds.rate.g2 in param.net", call. = FALSE)
+          stop("Specify ds.rate.g2 in param.net")
         }
         if (is.null(param[["di.rate.g2"]])) {
-          stop("Specify di.rate.g2 in param.net", call. = FALSE)
+          stop("Specify di.rate.g2 in param.net")
         }
         if (control[["type"]] == "SIR") {
           if (is.null(param[["dr.rate.g2"]])) {
-            stop("Specify dr.rate.g2 in param.net", call. = FALSE)
+            stop("Specify dr.rate.g2 in param.net")
           }
         }
       }
@@ -1144,20 +1134,19 @@ crosscheck.net <- function(x, param, init, control) {
 
       if (control[["skip.check"]] == FALSE) {
         if (!inherits(x, "netsim")) {
-          stop("x must be a netsim object if control setting start > 1",
-               call. = FALSE)
+          stop("x must be a netsim object if control setting start > 1") 
         }
         if (is.null(x[["run"]])) {
           stop("x must contain `run` to restart simulation, see `save.run` ",
-               "control setting", call. = FALSE)
+               "control setting")
         }
         if (control[["nsteps"]] < control[["start"]]) {
           stop("control setting nsteps must be > control setting start in ",
-               "restarted simulations", call. = FALSE)
+               "restarted simulations")
         }
         if (control[["start"]] > x[["control"]][["nsteps"]] + 1) {
           stop("control setting start must be 1 greater than the nsteps in
-               the ", "prior simulation", call. = FALSE)
+               the ", "prior simulation")
         }
       }
     }
@@ -1191,7 +1180,7 @@ crosscheck.net <- function(x, param, init, control) {
 
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules
-         specified.", call. = FALSE)
+         specified.")
   }
 
   if (inherits(x, "netest")) {

@@ -246,7 +246,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     other.y <- y$control$save.other
     if (keep.other == TRUE) {
       if (!identical(other.x, other.y)) {
-        stop("Elements in save.other differ between x and y", call. = FALSE)
+        stop("Elements in save.other differ between x and y")
       }
       new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
       for (j in seq_along(other.x)) {

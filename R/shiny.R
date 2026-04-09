@@ -88,40 +88,40 @@ epiweb <- function(class, ...) {
   if (class == "dcm") {
     if (!requireNamespace("shiny", quietly = TRUE)) {
       stop("Package \"shiny\" is required. Install with: ",
-           "install.packages(\"shiny\")", call. = FALSE)
+           "install.packages(\"shiny\")")
     }
     if (!requireNamespace("bslib", quietly = TRUE)) {
       stop("Package \"bslib\" is required. Install with: ",
-           "install.packages(\"bslib\")", call. = FALSE)
+           "install.packages(\"bslib\")")
     }
     if (!requireNamespace("DT", quietly = TRUE)) {
       stop("Package \"DT\" is required. Install with: ",
-           "install.packages(\"DT\")", call. = FALSE)
+           "install.packages(\"DT\")")
     }
     if (!requireNamespace("plotly", quietly = TRUE)) {
       stop("Package \"plotly\" is required. Install with: ",
-           "install.packages(\"plotly\")", call. = FALSE)
+           "install.packages(\"plotly\")")
     }
     shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"), ...)
   } else if (class == "icm") {
     if (!requireNamespace("shiny", quietly = TRUE)) {
       stop("Package \"shiny\" is required. Install with: ",
-           "install.packages(\"shiny\")", call. = FALSE)
+           "install.packages(\"shiny\")")
     }
     if (!requireNamespace("bslib", quietly = TRUE)) {
       stop("Package \"bslib\" is required. Install with: ",
-           "install.packages(\"bslib\")", call. = FALSE)
+           "install.packages(\"bslib\")")
     }
     if (!requireNamespace("DT", quietly = TRUE)) {
       stop("Package \"DT\" is required. Install with: ",
-           "install.packages(\"DT\")", call. = FALSE)
+           "install.packages(\"DT\")")
     }
     if (!requireNamespace("plotly", quietly = TRUE)) {
       stop("Package \"plotly\" is required. Install with: ",
-           "install.packages(\"plotly\")", call. = FALSE)
+           "install.packages(\"plotly\")")
     }
     shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"), ...)
   } else {
-    stop("Specify class as either \"dcm\", \"icm\" ", call. = FALSE)
+    stop("Specify class as either \"dcm\", \"icm\" ")
   }
 }

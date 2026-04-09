@@ -129,7 +129,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
 
   type <- match.arg(type, c("formation", "duration", "dissolution"))
   sims <- if (is.null(sims)) seq_len(x$nsims) else sims
-  if (max(sims) > x$nsims) stop("Maximum sim number is", x$nsims, call. = FALSE)
+  if (max(sims) > x$nsims) stop("Maximum sim number is", x$nsims)
 
   # Formation Plot -------------------------------------------------------------
   if (type == "formation") {
@@ -141,8 +141,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     if (!x$dynamic || is.null(x$stats.table.dissolution)) {
       stop(
         "Plots of type duration and dissolution only available if netdx ",
-        "run with `dynamic = TRUE` and `skip.dissolution = FALSE`",
-        call. = FALSE
+        "run with `dynamic = TRUE` and `skip.dissolution = FALSE`"
       )
     }
 
@@ -170,8 +169,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
   ## Pull and check stat argument
   stats <- if (is.null(stats)) nmstats else stats
   if (!all(stats %in% nmstats)) {
-    stop("One or more requested stats not contained in netdx object",
-         call. = FALSE)
+    stop("One or more requested stats not contained in netdx object") 
   }
   outsts <- which(nmstats %in% stats)
   nmstats <- nmstats[outsts]
