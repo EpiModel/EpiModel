@@ -146,13 +146,12 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     stop("`sim` must be of class netsim")
   if (sim_num > sim$control$nsims || sim_num < 1)
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
-  if (!sim$control$save.cumulative.edgelist &&
-        !sim$control$cumulative.edgelist) {
+  if (is.null(sim$cumulative.edgelist)) {
     stop("Cumulative edgelist not saved in netsim object. ",
          "Check control.net settings.")
   }
-  if (!"active" %in% sim$control$tracked.attributes) {
-    stop("The `active` attribute must be tracked. ",
+  if (length(sim$control$tracked.attributes) == 0) {
+    stop("At least the `active` attribute must be tracked. ",
          "Check control.net `tracked.attributes` settings.")
   }
 

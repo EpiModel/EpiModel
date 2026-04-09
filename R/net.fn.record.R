@@ -75,7 +75,7 @@ record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
       length(unique_ids),
       " or 1 \n",
       "Given: ",
-      length(unique_ids)
+      length(value)
     )
   }
 

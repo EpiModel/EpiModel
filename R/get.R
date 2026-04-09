@@ -137,15 +137,15 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE,
   }
 
   if (x$control$tergmLite == TRUE && collapse == TRUE) {
-    stop("Argument `collapse` should be FALSE when x$control$tergmLite == TRUE") 
+    stop("Argument `collapse` should be FALSE when x$control$tergmLite == TRUE")
   }
 
   if (x$control$tergmLite == TRUE && !is.null(at)) {
-    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE") 
+    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE")
   }
 
   if (is.null(x$network)) {
-    stop("Network object not saved in netsim object. Check control.net settings.") 
+    stop("Network object not saved in netsim object. Check control.net settings.")
   }
 
   if (network < 1 || network > x$num.nw) {
@@ -287,7 +287,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
   }
 
   if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
-    stop("transmat not saved in netsim object, check control.net settings") 
+    stop("transmat not saved in netsim object, check control.net settings")
   }
 
   ## Extraction
@@ -502,7 +502,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   }
   if (length(sims) == 1 && sims ==
         "mean" && (is.null(var) || length(var) > 1)) {
-    stop("If sims == 'mean' then var must be a single variable name") 
+    stop("If sims == 'mean' then var must be a single variable name")
   }
 
   if (length(sims) == 1 && sims == "mean") {
@@ -727,20 +727,24 @@ get_attr_history <- function(sims) {
     records <- sims[["attr.history"]][[name]]
     if (is.null(records)) next
     records <- records$as_list()
-    attributes <- vapply(records, function(x) x[["attribute"]], "")
-    attributes.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
-    for (a in attributes.names) {
-      parts <- Filter(function(x) x[["attribute"]] == a, records)
+    attributes <- vapply(records, function(x) x[["attribute"]], "")
+    attributes_pos <- split(seq_along(attributes), attributes)
+    for (a in names(attributes_pos)) {
+      parts <- records[attributes_pos[[a]]]
       parts <- lapply(parts, dplyr::as_tibble)
       d <- dplyr::bind_rows(parts)
       d[["sim"]] <- simnum
       d <- dplyr::select(d, "sim", "time", "attribute", "uids", "values")
-      dfs[[a]] <- dplyr::bind_rows(dfs[[a]], d)
+      dfs[[a]] <- c(dfs[[a]], list(d))
     }
   }
+
+  nms <- names(dfs)
+  dfs <- lapply(dfs, \(x) dplyr::bind_rows(x))
+  names(dfs) <- nms
 
   return(dfs)
 }
