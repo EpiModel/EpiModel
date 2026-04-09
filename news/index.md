@@ -15,6 +15,30 @@
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md),
   which provides full extension model support. Closes
   [\#634](https://github.com/EpiModel/EpiModel/issues/634).
+- Completed removal of all long-deprecated parameter names. All of the
+  following now produce hard errors directing users to the current
+  names. Closes
+  [\#989](https://github.com/EpiModel/EpiModel/issues/989).
+  - `b.rate` / `b.rate.g2` in
+    [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
+    [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
+    [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+    – use `a.rate` / `a.rate.g2` (deprecated since 1.7.0).
+  - `trans.rate` / `trans.rate.g2` in
+    [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
+    [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
+    – use `inf.prob` / `inf.prob.g2`.
+  - `.m2` parameter suffix in
+    [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+    and
+    [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
+    – use `.g2` suffix (deprecated since 2.0).
+  - `births.FUN` / `deaths.FUN` in
+    [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+    – use `arrivals.FUN` / `departures.FUN` (deprecated since 1.7.0).
+  - `depend` in
+    [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+    – use `resimulate.network` (deprecated since 2.0).
 
 ### NEW FEATURES
 
