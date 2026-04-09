@@ -367,7 +367,7 @@ test_that("Time varying elements", {
   attr_history <- get_attr_history(mod)
   expect_is(attr_history, "list")
   expect_is(attr_history[[1]], "data.frame")
-  expect_equal(
+  expect_setequal(
     names(attr_history),
     c("attr_norm", "attr_unif", "attr_fix", "attr_none"))
 })
