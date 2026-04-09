@@ -29,6 +29,13 @@
   [\#800](https://github.com/EpiModel/EpiModel/issues/800).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
+- Fix `paste0(..., sep = ", ")` misuse in
+  [`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  epi repair warnings and errors.
+  [`paste0()`](https://rdrr.io/r/base/paste.html) has no `sep`
+  parameter, causing malformed output with trailing commas. Changed to
+  `paste(..., collapse = ", ")`. Closes
+  [\#985](https://github.com/EpiModel/EpiModel/issues/985).
 - Fix
   [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
   to replicate scalar constants across all simulations/runs and use
