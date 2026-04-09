@@ -212,8 +212,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
   }
 
   if (!inherits(coef.diss, "disscoef")) {
-    stop("dissolution must be input through the dissolution_coefs function",
-         call. = FALSE)
+    stop("dissolution must be input through the dissolution_coefs function") 
   }
   dissolution <- coef.diss$dissolution
   if (coef.diss$duration[1] == 1) {
@@ -376,20 +375,20 @@ diss_check <- function(formation, dissolution) {
   matchpos <- match(diss.terms[1, ], form.terms[1, ])
 
   if (any(is.na(matchpos))) {
-    stop("Dissolution model is not a subset of formation model.", call. = FALSE)
+    stop("Dissolution model is not a subset of formation model.")
   }
   if (!all(diss.terms[1, ] %in% c("edges", "nodemix",
                                   "nodematch"))) {
     stop("The only allowed dissolution terms are edges, nodemix,
-         and nodematch", call. = FALSE)
+         and nodematch")
   }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",
-         "formation model.", call. = FALSE)
+         "formation model.")
   }
   if (any(diss.terms[2, ] != form.terms[2, seq_len(ncol(diss.terms))])) {
     stop("Term options for one or more terms in dissolution model do not ",
-         "match the options in the formation model.", call. = FALSE)
+         "match the options in the formation model.")
   }
 
 }
@@ -453,14 +452,13 @@ update_dissolution <- function(old.netest, new.coef.diss,
                                nested.edapprox = TRUE) {
 
   if (!inherits(old.netest, "netest")) {
-    stop("old.netest must be an object of class netest", call. = FALSE)
+    stop("old.netest must be an object of class netest")
   }
   if (!inherits(new.coef.diss, "disscoef")) {
-    stop("new.coef.diss must be an object of class disscoef", call. = FALSE)
+    stop("new.coef.diss must be an object of class disscoef")
   }
   if (old.netest$edapprox != TRUE) {
-    stop("Edges dissolution approximation must be used for this adjustment",
-         call. = FALSE)
+    stop("Edges dissolution approximation must be used for this adjustment") 
   }
 
   out <- old.netest

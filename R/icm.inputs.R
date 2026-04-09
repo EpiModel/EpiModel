@@ -64,14 +64,10 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   if ("b.rate" %in% names.dot.args) {
-    p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
-            a.rate. ", "See documentation for details.")
+    stop("The b.rate parameter has been removed. Use a.rate instead.") 
   }
   if ("b.rate.g2" %in% names.dot.args) {
-    p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to
-            a.rate.g2. ", "See documentation for details.")
+    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
   }
 
   ## Defaults and checks
@@ -209,10 +205,10 @@ control.icm <- function(type, nsteps, nsims = 1,
 
   ## Defaults and checks
   if (is.null(p$type) || !(p$type %in% c("SI", "SIS", "SIR"))) {
-    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ", call. = FALSE)
+    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
   }
   if (is.null(p$nsteps)) {
-    stop("Specify nsteps", call. = FALSE)
+    stop("Specify nsteps")
   }
 
 
@@ -243,32 +239,32 @@ crosscheck.icm <- function(param, init, control) {
 
   ## Main class check
   if (!inherits(param, "param.icm")) {
-    stop("param must be an object of class param.icm", call. = FALSE)
+    stop("param must be an object of class param.icm")
   }
   if (!inherits(init, "init.icm")) {
-    stop("init must be an object of class init.icm", call. = FALSE)
+    stop("init must be an object of class init.icm")
   }
   if (!inherits(control, "control.icm")) {
-    stop("control must be an object of class control.icm", call. = FALSE)
+    stop("control must be an object of class control.icm")
   }
 
   ## Check that rec.rate is supplied for SIR models
   if (control$type %in% c("SIR", "SIS")) {
     if (is.null(param$rec.rate)) {
-      stop("Specify rec.rate in param.icm", call. = FALSE)
+      stop("Specify rec.rate in param.icm")
     }
     if (param$groups == 2 && is.null(param$rec.rate.g2)) {
-      stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
+      stop("Specify rec.rate.g2 in param.icm")
     }
   }
 
   ## Check that parameters and init are supplied for SIR models
   if (control$type == "SIR") {
     if (is.null(init$r.num)) {
-      stop("Specify r.num in init.icm", call. = FALSE)
+      stop("Specify r.num in init.icm")
     }
     if (param$groups == 2 && is.null(init$r.num.g2)) {
-      stop("Specify r.num.g2 in init.icm", call. = FALSE)
+      stop("Specify r.num.g2 in init.icm")
     }
   }
 
@@ -280,21 +276,18 @@ crosscheck.icm <- function(param, init, control) {
   }
   if (param$groups == 2 && init.groups == 1) {
     stop("Group 2 parameters specified in param.icm, but missing group 2, ",
-         "initial states in init.icm", call. = FALSE)
+         "initial states in init.icm")
   }
   if (param$groups == 1 && init.groups == 2) {
     stop("Group 2 initial stats specified in init.icm, but missing group 2 ",
-         "parameters in param.icm", call. = FALSE)
+         "parameters in param.icm")
   }
 
-  ## Deprecated parameters
   if (!is.null(param$trans.rate)) {
-    stop("The trans.rate parameter is deprecated. Use the inf.prob ",
-         "parameter instead.", call. = FALSE)
+    stop("The trans.rate parameter has been removed. Use inf.prob instead.") 
   }
   if (!is.null(param$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
-         "parameter instead.", call. = FALSE)
+    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.") 
   }
 
   ## Assign built-in modules based on group parameter

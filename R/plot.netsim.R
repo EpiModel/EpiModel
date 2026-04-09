@@ -247,19 +247,19 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
   # Network plot ------------------------------------------------------------
   if (x$control$tergmLite) {
     stop("networkDyanmic object is not saved in tergmLite netsim simulation.
-      Check control setting tergmLite", call. = FALSE)
+      Check control setting tergmLite")
   }
 
   nsteps <- x$control$nsteps
   if (at > nsteps) {
-    stop("Specify a time step between 1 and ", nsteps, call. = FALSE)
+    stop("Specify a time step between 1 and ", nsteps)
   }
 
   sims <- if (is.null(sims)) 1 else sims
   if (length(sims) > 1 ||
         (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
     stop("sims argument must be single simulation number",
-         "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
+         "or \"mean\", \"max\", or \"min\" ")
   }
 
   sims.arg <- sims
@@ -282,8 +282,7 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
 
   if (!is.null(shp.g2)) {
     if (all(!shp.g2 %in% c("square", "triangle"))) {
-      stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
-           call. = FALSE)
+      stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ") 
     }
 
     grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
@@ -322,7 +321,7 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
   if (col.status) {
     if (tergmLite) {
       stop("Plotting status colors requires tergmLite=FALSE in netsim
-        control settings.", call. = FALSE)
+        control settings.")
     }
     pal <- adjustcolor(c(4, 2, 3), 0.75)
     if (!tergmLite) {
@@ -359,7 +358,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   offset <- start - 1
   nsims <- x$control$nsims
   sims <- if (is.null(sims)) seq_len(nsims) else sims
-  if (max(sims) > nsims) stop("Set sim to between 1 and ", nsims, call. = FALSE)
+  if (max(sims) > nsims) stop("Set sim to between 1 and ", nsims)
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
     x$param$groups <- 1
   }
@@ -378,7 +377,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
       )
     }
   } else if (!all(y %in% names(x$epi))) {
-    stop("Specified y is not available in object", call. = FALSE)
+    stop("Specified y is not available in object")
   }
 
   lcomp <- length(y)
@@ -441,7 +440,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   if (disp.qnts) {
     if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1", call. = FALSE)
+      stop("qnts must be between 0 and 1")
     }
     qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
     qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
@@ -510,7 +509,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   if (disp.qnts == TRUE) {
     if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1", call. = FALSE)
+      stop("qnts must be between 0 and 1")
     }
     y.l <- length(y)
     qnts.pal <- qnts.pal[1:y.l]
@@ -569,7 +568,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
                               ylim, ylab, ...) {
   sims <- if (is.null(sims)) seq_len(x$control$nsims) else sims
   if (max(sims) > x$control$nsims)
-    stop("Maximum sim number is ", x$control$nsims, call. = FALSE)
+    stop("Maximum sim number is ", x$control$nsims)
   nsims <- length(sims)
 
   # Formation plot ----------------------------------------------------------
@@ -623,8 +622,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
   ## Pull and check stat argument
   stats <- if (is.null(stats)) nmstats else stats
   if (!all(stats %in% nmstats)) {
-    stop("One or more requested stats not contained in netsim object",
-         call. = FALSE)
+    stop("One or more requested stats not contained in netsim object")
   }
   outsts <- which(nmstats %in% stats)
   nmstats <- nmstats[outsts]
