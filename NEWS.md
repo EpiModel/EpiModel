@@ -9,6 +9,7 @@
 ### BUG FIXES
 -   Fix `saveout.net` to preserve `NULL` values when saving simulation outputs across multiple runs. Previously, assigning `NULL` via `out[[name]][[s]] <- value` silently dropped the list entry, causing misaligned simulation indices. Now uses `list()` wrapping to ensure `NULL` values are stored as explicit list elements. Closes #800.
 -   Fix `plot.epi.data.frame` to correctly display truncated the time axis.
+-   Fix mismatched `mean.lwd` defaults in `plot.netsim()` where dead-code `is.null` branches used inconsistent values (1.5 vs 2.5). Removed the dead branches since the function signature already provides a default of 2. Closes #983.
 -   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls, preventing them from ever executing. Closes #982.
 
 ### OTHER
