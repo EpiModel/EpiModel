@@ -37,7 +37,7 @@
 brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 
   if (n < 1) {
-    stop("n must be a positive integer", call. = FALSE)
+    stop("n must be a positive integer")
   }
 
   bpi <- brewer.pal.info
@@ -187,10 +187,12 @@ mutate_epi <- function(x, ...) {
 
   not.df <- which(sapply(ndat, class) != "data.frame")
   if (length(not.df) > 0) {
+    existing_names <- names(x$epi[[1]])
+    ncols <- length(existing_names)
     for (jj in not.df) {
-      ndat[jj][[1]] <- data.frame(rep(ndat[jj][[1]],
-                                      length.out = x$control$nsteps))
-      names(ndat[[jj]]) <- "run1"
+      val <- rep(ndat[jj][[1]], length.out = x$control$nsteps)
+      ndat[jj][[1]] <- data.frame(replicate(ncols, val))
+      names(ndat[[jj]]) <- existing_names
     }
   }
 

@@ -86,7 +86,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     sims <- seq_len(nsims)
   }
   if (max(sims) > nsims) {
-    stop("Set sim to between 1 and ", nsims, call. = FALSE)
+    stop("Set sim to between 1 and ", nsims)
   }
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
     groups <- 1
@@ -111,7 +111,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   }
   if (nocomp == FALSE) {
     if (any(y %in% names(x$epi) == FALSE)) {
-      stop("Specified y is not available in object", call. = FALSE)
+      stop("Specified y is not available in object")
     }
   }
   lcomp <- length(y)
@@ -190,7 +190,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   ## Quantiles - ylim min max ##
   if (nsims > 1) {
     if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1", call. = FALSE)
+      stop("qnts must be between 0 and 1")
     }
     qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
     qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
@@ -241,7 +241,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   ## Quantiles - Plotting ##
   if (nsims > 1) {
     if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1", call. = FALSE)
+      stop("qnts must be between 0 and 1")
     }
     draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, offset = offset)
   }

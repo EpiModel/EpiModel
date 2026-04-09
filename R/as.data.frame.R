@@ -75,7 +75,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
   # Output for models with multiple runs
   if (nruns > 1) {
     if (max(run) > nruns) {
-      stop("Maximum run is ", nruns, call. = FALSE)
+      stop("Maximum run is ", nruns)
     }
     for (j in run) {
       if (j == min(run)) {
@@ -190,7 +190,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   nsims <- x$control$nsims
   sim <- if (is.null(sim)) seq_len(nsims) else sim
   if (max(sim) > nsims) {
-    stop("Maximum sim is ", nsims, call. = FALSE)
+    stop("Maximum sim is ", nsims)
   }
 
   # Find and repair EPIs with the wrong length
@@ -200,10 +200,10 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   broken_epi <- names(x$epi)[epi_lengths != n_steps]
   if (length(broken_epi) > 0) {
     if (repair == "drop") {
-      warning("Dropping: ", paste0(broken_epi, sep = ", "), " - wrong length")
+      warning("Dropping: ", paste(broken_epi, collapse = ", "), " - wrong length")
       x$epi <- x$epi[epi_lengths == n_steps]
     } else if (repair == "pad") {
-      warning("Padding with NA: ", paste0(broken_epi, sep = ", "),
+      warning("Padding with NA: ", paste(broken_epi, collapse = ", "),
               " - wrong length")
       x$epi[broken_epi] <- lapply(x$epi[broken_epi], \(d) {
         n_miss <- n_steps - nrow(d)
@@ -213,7 +213,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
       })
     } else {
       stop(
-        "Some EPIs had the wrong size: ", paste0(broken_epi, sep = ", "),
+        "Some EPIs had the wrong size: ", paste(broken_epi, collapse = ", "),
         "No repair method set, stopping"
       )
     }
@@ -228,7 +228,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
     function(epi) apply(epi[, sim, drop = FALSE], 1, sd, na.rm = TRUE)
   } else if (out == "qnt") {
     if (is.null(qval) || length(qval) > 1 || (qval > 1 || qval < 0)) {
-      stop("Must specify qval as single value between 0 and 1", call. = FALSE)
+      stop("Must specify qval as single value between 0 and 1")
     }
     function(epi) {
       apply(epi[, sim, drop = FALSE], 1, quantile,
@@ -307,15 +307,14 @@ as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
                                 sim = NULL, ...) {
 
   if (is.null(x$tedgelist)) {
-    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter",
-         call. = FALSE)
+    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter") 
   }
 
   if (is.null(sim)) {
     sim <- seq_len(x$nsims)
   }
   if (max(sim) > x$nsims) {
-    stop(paste("Maximum sim is", x$nsims), call. = FALSE)
+    stop(paste("Maximum sim is", x$nsims))
   }
 
   if (length(sim) == 1) {

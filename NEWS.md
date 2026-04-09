@@ -3,12 +3,22 @@
 ### BREAKING CHANGES
 
 -   Removed extension/custom module support from ICM models. `control.icm()` no longer accepts `.FUN` arguments (e.g., `infection.FUN`, `departures.FUN`), `skip.check`, or additional modules via `...`. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to `control.icm()` should migrate to the network model class via `control.net()`, which provides full extension model support. Closes #634.
+-   Completed removal of all long-deprecated parameter names. All of the following now produce hard errors directing users to the current names. Closes #989.
+    -   `b.rate` / `b.rate.g2` in `param.dcm()`, `param.icm()`, `param.net()` -- use `a.rate` / `a.rate.g2` (deprecated since 1.7.0).
+    -   `trans.rate` / `trans.rate.g2` in `param.dcm()`, `param.icm()` -- use `inf.prob` / `inf.prob.g2`.
+    -   `.m2` parameter suffix in `param.net()` and `init.net()` -- use `.g2` suffix (deprecated since 2.0).
+    -   `births.FUN` / `deaths.FUN` in `control.net()` -- use `arrivals.FUN` / `departures.FUN` (deprecated since 1.7.0).
+    -   `depend` in `control.net()` -- use `resimulate.network` (deprecated since 2.0).
 
 ### NEW FEATURES
 
 ### BUG FIXES
 -   Fix `saveout.net` to preserve `NULL` values when saving simulation outputs across multiple runs. Previously, assigning `NULL` via `out[[name]][[s]] <- value` silently dropped the list entry, causing misaligned simulation indices. Now uses `list()` wrapping to ensure `NULL` values are stored as explicit list elements. Closes #800.
 -   Fix `plot.epi.data.frame` to correctly display truncated the time axis.
+-   Fix `paste0(..., sep = ", ")` misuse in `as.data.frame.icm()` epi repair warnings and errors. `paste0()` has no `sep` parameter, causing malformed output with trailing commas. Changed to `paste(..., collapse = ", ")`. Closes #985.
+-   Fix `mutate_epi()` to replicate scalar constants across all simulations/runs and use existing column names instead of hardcoding `"run1"`. Closes #984.
+-   Fix mismatched `mean.lwd` defaults in `plot.netsim()` where dead-code `is.null` branches used inconsistent values (1.5 vs 2.5). Removed the dead branches since the function signature already provides a default of 2. Closes #983.
+-   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls, preventing them from ever executing. Closes #982.
 
 ### OTHER
 
