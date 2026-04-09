@@ -422,20 +422,21 @@ crosscheck.dcm <- function(param, init, control) {
       stop("Specify inf.prob in param.dcm", call. = FALSE)
     }
 
-    # Check that rec.rate is supplied for SIR models
+    # Check that rec.rate is supplied for SIR/SIS models
     if (control$type %in% c("SIR", "SIS") && is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.dcm", call. = FALSE)
-      if (param$groups == 2 && is.null(param$rec.rate.g2)) {
-        stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
-      }
+    }
+    if (control$type %in% c("SIR", "SIS") && param$groups == 2 &&
+          is.null(param$rec.rate.g2)) {
+      stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
     }
 
     # Check that r.num is supplied for SIR models
     if (control$type == "SIR" && is.null(init$r.num)) {
       stop("Specify r.num in init.dcm", call. = FALSE)
-      if (param$groups == 2 && is.null(init$r.num.g2)) {
-        stop("Specify r.num.g2 in init.dcm", call. = FALSE)
-      }
+    }
+    if (control$type == "SIR" && param$groups == 2 && is.null(init$r.num.g2)) {
+      stop("Specify r.num.g2 in init.dcm", call. = FALSE)
     }
 
     # Check that groups implied by init and params are consistent
