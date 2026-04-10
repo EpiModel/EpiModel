@@ -160,9 +160,19 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   n_nodes <- max(d_active$uids)
   n_steps <- sim$control$nsteps
 
+  # Setup Nodes
   nw <- network::network.initialize(n_nodes, directed = FALSE)
+  spells <- get_nodes_spell(d_active)
+  networkDynamic::activate.vertices(
+    nw,
+    v = spells$uid,
+    onset = spells$onset,
+    terminus = spells$terminus
+  )
+
+  # Setup Edges
   el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]] |>
-    dplyr::mutate(stop = ifelse(is.na(stop), n_steps + 1, stop))
+    dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop))
 
   if (!is.null(network))
     el <- dplyr::filter(el, network == .env$network)
@@ -176,15 +186,8 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     names.eval = rep(list("network"), nrow(el)),
     vals.eval = lapply(el$network, \(x) list(network = x))
   )
+  networkDynamic::reconcile.edge.activity(nw, "reduce.to.vertices")
 
-  spells <- get_nodes_spell(d_active)
-
-  networkDynamic::activate.vertices(
-    nw,
-    v = spells$uid,
-    onset = spells$onset,
-    terminus = spells$terminus + 1
-  )
 
   for (item in names(attr_hist)) {
     if (item == "active") next

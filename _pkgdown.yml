@@ -82,6 +82,7 @@ reference:
       used by network and ICM modules.
     contents:
       - net-accessor
+      - get_attr_at
       - get_attr_history
       - get_attr_prop
       - get_core_attributes

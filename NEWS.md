@@ -4,9 +4,7 @@
 
 -   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage.
 -   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node.
--   Added `get_attr_history()` to extract the full attribute history from a completed `netsim` object as a list of data frames, one per tracked attribute.
 -   Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`.
--   Added `record_raw_object()` for recording arbitrary R objects during a simulation. Records are stored in `dat[["raw.records"]]` and accessible from the final `netsim` output, useful for debugging and analysis in custom modules.
 
 ### BUG FIXES
 

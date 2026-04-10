@@ -5,6 +5,8 @@
 #' `control$tracked.attributes` along with their `unique_id`s. This snapshot
 #' is stored in `dat$run$tracked_attrs_ref` and used by
 #' `tracked_attrs_record` at the end of the step to compute deltas.
+#' On its first call (when `dat$run$tracking_attrs` is `FALSE`), records a full
+#' initial snapshot instead for the step `at - 1L`.
 #'
 #' @inheritParams recovery.net
 #' @inherit recovery.net return
@@ -13,8 +15,20 @@
 #' @keywords internal
 tracked_attrs_set_ref <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
-  if (length(tracked_items) == 0)
+  if (length(tracked_items) == 0) {
     return(dat)
+  } else if (!dat$run$tracking_attrs) { # Initialize Tracking
+    unique_ids <- get_unique_ids(dat)
+    for (item in unique(c("active", tracked_items))) {
+      value <- get_attr(dat, item)
+      dat <- record_attr_history(
+        dat, item, value,
+        at = get_current_timestep(dat) - 1L, unique_ids = unique_ids
+      )
+    }
+    dat$run$tracking_attrs <- TRUE
+  }
+
   ref_items <- unique(c("unique_id", "active", tracked_items))
   dat$run$tracked_attrs_ref <- get_attr_list(dat, ref_items)
   return(dat)
@@ -25,8 +39,7 @@ tracked_attrs_set_ref <- function(dat) {
 #' @description
 #' Compares the current attribute values against the reference snapshot taken
 #' by `tracked_attrs_set_ref` and records only the changes via
-#' `record_attr_history`. On its first call (when `dat$run$tracking_attrs`
-#' is `FALSE`), records a full initial snapshot instead of a delta.
+#' `record_attr_history`.
 #'
 #' Three types of changes are detected:
 #' - **Departures**: nodes present in the reference but absent now (recorded
@@ -45,16 +58,7 @@ tracked_attrs_record <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
   if (length(tracked_items) == 0) {
     return(dat)
-  } else if (!dat$run$tracking_attrs) { # Initialize Tracking
-    unique_ids <- get_unique_ids(dat)
-    for (item in unique(c("active", tracked_items))) {
-      value <- get_attr(dat, item)
-      dat <- record_attr_history(dat, item, value, unique_ids = unique_ids)
-    }
-    dat$run$tracking_attrs <- TRUE
-    return(dat)
   }
-
   ref_attrs <- dat$run$tracked_attrs_ref
   tracked_items <- unique(c("active", tracked_items))
   cur_attrs <- get_attr_list(dat, c("unique_id", tracked_items))
@@ -132,7 +136,7 @@ get_attr_at <- function(sim, at, sim_num = 1) {
         uids %in% present_uids
       ) |>
       dplyr::group_by(uids) |>
-      dplyr::filter(time == max(time)) |>
+      dplyr::slice_max(time, n = 1, with_ties = FALSE) |>
       dplyr::ungroup() |>
       dplyr::select(uids, values)
     names(d) <- c("unique_id", item)
@@ -179,7 +183,7 @@ get_nodes_spell <- function(d_active) {
   term_vals <- terminus[as.character(all_uids)]
   term_vals[is.na(term_vals)] <- Inf
 
-  data.frame(
+  dplyr::tibble(
     uid = all_uids,
     onset = as.numeric(onset),
     terminus = as.numeric(term_vals)
