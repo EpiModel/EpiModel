@@ -277,17 +277,21 @@ netsim_validate_control <- function(control) {
       "save.run"
     )
   )
-
-  if (is.null(control$save.other))
-    control$save.other <- character(0)
-
-  if (is.null(control$tracked.attributes))
-    control$tracked.attributes <- character(0)
-
   for (val in names(control_default_bool)) {
     for (flag in control_default_bool[[val]])
       if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
   }
+
+  # Controls to be set to `character(0)` if missing
+  control_default_char <- c(
+    "save.other",
+    "tracked.attributes",
+    "tracked.attributes.once"
+  )
+  for (val in names(control_default_char)) {
+    if (is.null(control[[val]])) control[[val]] <- character(0)
+  }
+
 
   # truncate the cumulative edgelists to keep only active partnerships
   if (is.null(control$truncate.el.cuml))
@@ -325,6 +329,10 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   } else {
     param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
+    truncate.el.cuml <- get_control(dat, "truncate.el.cuml")
+    for (network in seq_len(dat$num.nw)) {
+      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
+    }
     dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1L)

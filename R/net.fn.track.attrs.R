@@ -15,20 +15,21 @@
 #' @keywords internal
 tracked_attrs_set_ref <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
-  if (length(tracked_items) == 0) {
+  any_tracked <- c(tracked_items, get_control(dat, "tracked.attributes.once"))
+  if (length(any_tracked) == 0) {
     return(dat)
   } else if (!dat$run$tracking_attrs) { # Initialize Tracking
     unique_ids <- get_unique_ids(dat)
-    for (item in unique(c("active", tracked_items))) {
+    for (item in unique(c("active", any_tracked))) {
       value <- get_attr(dat, item)
       dat <- record_attr_history(
         dat, item, value,
-        at = get_current_timestep(dat) - 1L, unique_ids = unique_ids
+        at = get_current_timestep(dat) - 1L,
+        unique_ids = unique_ids
       )
     }
     dat$run$tracking_attrs <- TRUE
   }
-
   ref_items <- unique(c("unique_id", "active", tracked_items))
   dat$run$tracked_attrs_ref <- get_attr_list(dat, ref_items)
   return(dat)
@@ -56,7 +57,8 @@ tracked_attrs_set_ref <- function(dat) {
 #' @keywords internal
 tracked_attrs_record <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
-  if (length(tracked_items) == 0) {
+  any_tracked <- c(tracked_items, get_control(dat, "tracked.attributes.once"))
+  if (length(any_tracked) == 0) {
     return(dat)
   }
   ref_attrs <- dat$run$tracked_attrs_ref
@@ -70,7 +72,7 @@ tracked_attrs_record <- function(dat) {
   # new nodes - store all tracked
   new_uid <- setdiff(cur_attrs$unique_id, ref_attrs$unique_id)
   new_pos <- base::match(new_uid, cur_attrs$unique_id)
-  for (item in tracked_items) {
+  for (item in any_tracked) {
     value <- cur_attrs[[item]][new_pos]
     dat <- record_attr_history(dat, item, value, unique_ids = new_uid)
   }
@@ -102,6 +104,8 @@ tracked_attrs_record <- function(dat) {
 #' @param sim An `EpiModel` object of class `netsim`.
 #' @param at The time step at which to reconstruct attributes.
 #' @param sim_num The simulation number to use (default 1).
+#' @param compute_age If `age` is recored even once, compute the age of nodes at
+#'        this time. Assumes `time.unit` is correctly set in `params`.
 #'
 #' @return A `tibble` with columns `unique_id`, `active`, and one column per
 #'   tracked attribute, containing the most recent value at or before `at`
@@ -109,7 +113,7 @@ tracked_attrs_record <- function(dat) {
 #'
 #' @seealso [record_attr_history()], [get_attr_history()]
 #' @export
-get_attr_at <- function(sim, at, sim_num = 1) {
+get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
   if (!inherits(sim, "netsim"))
     stop("`sim` must be of class netsim")
   if (length(sim$control$tracked.attributes) < 1)
@@ -129,6 +133,7 @@ get_attr_at <- function(sim, at, sim_num = 1) {
   d_attrs_at <- dplyr::tibble(unique_id = present_uids)
 
   for (item in names(attr_hist)) {
+    if (item == "age" && compute_age) next
     d <- attr_hist[[item]] |>
       dplyr::filter(
         sim == sim_num,
@@ -140,6 +145,22 @@ get_attr_at <- function(sim, at, sim_num = 1) {
       dplyr::ungroup() |>
       dplyr::select(uids, values)
     names(d) <- c("unique_id", item)
+    d_attrs_at <- dplyr::left_join(d_attrs_at, d, by = "unique_id")
+  }
+
+  if (compute_age && "age" %in% names(attr_hist)) {
+    year_steps <- (364 / sim$param$time.unit)
+    d <- attr_hist[["age"]] |>
+      dplyr::filter(
+        sim == sim_num,
+        time <= at,
+        uids %in% present_uids
+      ) |>
+      dplyr::group_by(uids) |>
+      dplyr::slice_max(time, n = 1, with_ties = FALSE) |>
+      dplyr::ungroup() |>
+      dplyr::mutate(age = values + (at - time) / year_steps) |>
+      dplyr::select(unique_id = uids, age)
     d_attrs_at <- dplyr::left_join(d_attrs_at, d, by = "unique_id")
   }
 

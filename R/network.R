@@ -122,6 +122,9 @@ get_network_attributes <- function(x) {
   out
 }
 
+# TODO: add a path from get_network
+#       also add an auto control for tergmLite
+
 #' @title Build a networkDynamic Object from Simulation Output
 #'
 #' @description
