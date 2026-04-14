@@ -97,6 +97,9 @@ tracked_attrs_record <- function(dat) {
     cur_v <- cur_attrs[[item]][pers_cur_pos]
     # Must take into account NA -> non_NA and vice-versa
     chng_pos <- which(ref_v != cur_v | is.na(ref_v) != is.na(cur_v))
+    if (length(chng_pos) == 0L) {
+      next
+    }
     chng_uid <- cur_attrs[["unique_id"]][pers_cur_pos][chng_pos]
     chng_value <- cur_v[chng_pos]
     dat <- record_attr_history(dat, item, chng_value, unique_ids = chng_uid)
@@ -134,8 +137,8 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
   }
   if (sim_num > sim$control$nsims || sim_num < 1)
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
-  if (at < 1 || at > sim$control$nsteps)
-    stop("Specify at between 1 and ", sim$control$nsteps)
+  if (at < sim$control$start || at > sim$control$nsteps)
+    stop("Specify at between ", sim$control$start, " and ", sim$control$nsteps)
 
   attr_hist <- get_attr_history(sim)
 

@@ -177,6 +177,15 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   if (!is.null(network))
     el <- el[el$network == network, , drop = FALSE]
 
+  # Clip edges if they disapear due one of the node exiting
+  # In these cases, the cumulative edgelist and networkDynamic store the end
+  # differently. This block reconciles that
+  node_terminus <- setNames(spells$terminus, spells$uid)
+  head_term <- node_terminus[as.character(el$head)]
+  tail_term <- node_terminus[as.character(el$tail)]
+  el$stop <- pmin(el$stop, head_term - 1L, tail_term - 1L)
+  el$start <- el$start  # onset is already correct
+
   networkDynamic::add.edges.active(
     nw,
     head = el$head,
@@ -186,7 +195,6 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     names.eval = rep(list("network"), nrow(el)),
     vals.eval = lapply(el$network, \(x) list(network = x))
   )
-  networkDynamic::reconcile.edge.activity(nw, "reduce.to.vertices")
 
   for (item in names(attr_hist)) {
     if (item == "active") next
