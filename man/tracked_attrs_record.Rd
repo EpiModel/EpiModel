@@ -17,8 +17,7 @@ The updated \code{netsim_dat} main list object.
 \description{
 Compares the current attribute values against the reference snapshot taken
 by \code{tracked_attrs_set_ref} and records only the changes via
-\code{record_attr_history}. On its first call (when \code{dat$run$tracking_attrs}
-is \code{FALSE}), records a full initial snapshot instead of a delta.
+\code{record_attr_history}.
 
 Three types of changes are detected:
 \itemize{

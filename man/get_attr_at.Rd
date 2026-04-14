@@ -4,7 +4,7 @@
 \alias{get_attr_at}
 \title{Get Tracked Attributes at a Given Time Step}
 \usage{
-get_attr_at(sim, at, sim_num = 1)
+get_attr_at(sim, at, sim_num = 1, compute_age = TRUE)
 }
 \arguments{
 \item{sim}{An \code{EpiModel} object of class \code{netsim}.}
@@ -12,6 +12,9 @@ get_attr_at(sim, at, sim_num = 1)
 \item{at}{The time step at which to reconstruct attributes.}
 
 \item{sim_num}{The simulation number to use (default 1).}
+
+\item{compute_age}{If \code{age} is recored even once, compute the age of nodes at
+this time. Assumes \code{time.unit} is correctly set in \code{params}.}
 }
 \value{
 A \code{tibble} with columns \code{unique_id}, \code{active}, and one column per

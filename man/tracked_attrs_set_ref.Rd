@@ -19,6 +19,8 @@ Captures the current values of all attributes listed in
 \code{control$tracked.attributes} along with their \code{unique_id}s. This snapshot
 is stored in \code{dat$run$tracked_attrs_ref} and used by
 \code{tracked_attrs_record} at the end of the step to compute deltas.
+On its first call (when \code{dat$run$tracking_attrs} is \code{FALSE}), records a full
+initial snapshot instead for the step \code{at - 1L}.
 }
 \seealso{
 \code{\link[=tracked_attrs_record]{tracked_attrs_record()}}, \code{\link[=record_attr_history]{record_attr_history()}}

@@ -208,6 +208,9 @@ useful if nodal attributes appearing in one network model depend on
 nodal degrees in a different network.}
 
 \item{...}{Additional control settings passed to model.}
+
+\item{tracked.attributes.once}{A character vector of nodal attribute names
+to track only once per node. No diff tracking.}
 }
 \value{
 An EpiModel object of class \code{control.net}.

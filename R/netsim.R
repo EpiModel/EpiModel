@@ -288,10 +288,9 @@ netsim_validate_control <- function(control) {
     "tracked.attributes",
     "tracked.attributes.once"
   )
-  for (val in names(control_default_char)) {
+  for (val in control_default_char) {
     if (is.null(control[[val]])) control[[val]] <- character(0)
   }
-
 
   # truncate the cumulative edgelists to keep only active partnerships
   if (is.null(control$truncate.el.cuml))
