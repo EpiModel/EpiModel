@@ -15,12 +15,17 @@
 #' @keywords internal
 tracked_attrs_set_ref <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
-  any_tracked <- c(tracked_items, get_control(dat, "tracked.attributes.once"))
-  if (length(any_tracked) == 0) {
+  tracked_items_once <- get_control(dat, "tracked.attributes.once")
+  if (length(tracked_items) == 0 && length(tracked_items_once) == 0) {
     return(dat)
-  } else if (!dat$run$tracking_attrs) { # Initialize Tracking
+  }
+
+  tracked_items <- unique(c("active", tracked_items))
+
+  if (!dat$run$tracking_attrs) { # Initialize Tracking
+    recorded_items <- unique(c(tracked_items, tracked_items_once))
     unique_ids <- get_unique_ids(dat)
-    for (item in unique(c("active", any_tracked))) {
+    for (item in recorded_items) {
       value <- get_attr(dat, item)
       dat <- record_attr_history(
         dat, item, value,
@@ -30,7 +35,8 @@ tracked_attrs_set_ref <- function(dat) {
     }
     dat$run$tracking_attrs <- TRUE
   }
-  ref_items <- unique(c("unique_id", "active", tracked_items))
+
+  ref_items <- unique(c("unique_id", tracked_items))
   dat$run$tracked_attrs_ref <- get_attr_list(dat, ref_items)
   return(dat)
 }
@@ -57,13 +63,14 @@ tracked_attrs_set_ref <- function(dat) {
 #' @keywords internal
 tracked_attrs_record <- function(dat) {
   tracked_items <- get_control(dat, "tracked.attributes")
-  any_tracked <- c(tracked_items, get_control(dat, "tracked.attributes.once"))
-  if (length(any_tracked) == 0) {
+  tracked_items_once <- get_control(dat, "tracked.attributes.once")
+  if (length(tracked_items) == 0 && length(tracked_items_once) == 0) {
     return(dat)
   }
   ref_attrs <- dat$run$tracked_attrs_ref
   tracked_items <- unique(c("active", tracked_items))
-  cur_attrs <- get_attr_list(dat, c("unique_id", tracked_items))
+  recorded_items <- unique(c(tracked_items, tracked_items_once))
+  cur_attrs <- get_attr_list(dat, unique(c("unique_id", recorded_items)))
 
   # old nodes - store end time
   departed_uid <- setdiff(ref_attrs$unique_id, cur_attrs$unique_id)
@@ -75,7 +82,7 @@ tracked_attrs_record <- function(dat) {
   new_uid <- setdiff(cur_attrs$unique_id, ref_attrs$unique_id)
   if (length(new_uid) > 0L) {
     new_pos <- base::match(new_uid, cur_attrs$unique_id)
-    for (item in any_tracked) {
+    for (item in recorded_items) {
       value <- cur_attrs[[item]][new_pos]
       dat <- record_attr_history(dat, item, value, unique_ids = new_uid)
     }
@@ -120,9 +127,11 @@ tracked_attrs_record <- function(dat) {
 get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
   if (!inherits(sim, "netsim"))
     stop("`sim` must be of class netsim")
-  if (length(sim$control$tracked.attributes) < 1)
+  if (length(sim$control$tracked.attributes) == 0 &&
+        length(sim$control$tracked.attributes.once) == 0) {
     stop("At least the `active` attribute must be tracked. ",
          "Check control.net `tracked.attributes` settings.")
+  }
   if (sim_num > sim$control$nsims || sim_num < 1)
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
   if (at < 1 || at > sim$control$nsteps)
@@ -140,14 +149,14 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
     if (item == "age" && compute_age) next
     d <- attr_hist[[item]] |>
       dplyr::filter(
-        sim == sim_num,
-        time <= at,
-        uids %in% present_uids
+        .data$sim == sim_num,
+        .data$time <= at,
+        .data$uids %in% present_uids
       ) |>
-      dplyr::group_by(uids) |>
-      dplyr::slice_max(time, n = 1, with_ties = FALSE) |>
+      dplyr::group_by(.data$uids) |>
+      dplyr::slice_max(.data$time, n = 1, with_ties = FALSE) |>
       dplyr::ungroup() |>
-      dplyr::select(uids, values)
+      dplyr::select("uids", "values")
     names(d) <- c("unique_id", item)
     d_attrs_at <- dplyr::left_join(d_attrs_at, d, by = "unique_id")
   }
@@ -156,15 +165,15 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
     year_steps <- (364 / sim$param$time.unit)
     d <- attr_hist[["age"]] |>
       dplyr::filter(
-        sim == sim_num,
-        time <= at,
-        uids %in% present_uids
+        .data$sim == sim_num,
+        .data$time <= at,
+        .data$uids %in% present_uids
       ) |>
-      dplyr::group_by(uids) |>
-      dplyr::slice_max(time, n = 1, with_ties = FALSE) |>
+      dplyr::group_by(.data$uids) |>
+      dplyr::slice_max(.data$time, n = 1, with_ties = FALSE) |>
       dplyr::ungroup() |>
-      dplyr::mutate(age = values + (at - time) / year_steps) |>
-      dplyr::select(unique_id = uids, age)
+      dplyr::mutate(age = .data$values + (at - .data$time) / year_steps) |>
+      dplyr::select(unique_id = "uids", "age")
     d_attrs_at <- dplyr::left_join(d_attrs_at, d, by = "unique_id")
   }
 

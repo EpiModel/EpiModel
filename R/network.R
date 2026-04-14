@@ -122,9 +122,6 @@ get_network_attributes <- function(x) {
   out
 }
 
-# TODO: add a path from get_network
-#       also add an auto control for tergmLite
-
 #' @title Build a networkDynamic Object from Simulation Output
 #'
 #' @description
@@ -153,7 +150,8 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     stop("Cumulative edgelist not saved in netsim object. ",
          "Check control.net settings.")
   }
-  if (length(sim$control$tracked.attributes) == 0) {
+  if (length(sim$control$tracked.attributes) == 0 &&
+        length(sim$control$tracked.attributes.once) == 0) {
     stop("At least the `active` attribute must be tracked. ",
          "Check control.net `tracked.attributes` settings.")
   }
@@ -161,7 +159,6 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   attr_hist <- get_attr_history(sim)
   d_active <- attr_hist$active[attr_hist$active$sim == sim_num, ]
   n_nodes <- max(d_active$uids)
-  n_steps <- sim$control$nsteps
 
   # Setup Nodes
   nw <- network::network.initialize(n_nodes, directed = FALSE)
@@ -174,11 +171,11 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   )
 
   # Setup Edges
-  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]] |>
-    dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop))
+  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]]
+  el$stop <-  ifelse(is.na(el$stop), Inf, el$stop)
 
   if (!is.null(network))
-    el <- dplyr::filter(el, network == .env$network)
+    el <- el[el$network == network, , drop = FALSE]
 
   networkDynamic::add.edges.active(
     nw,
@@ -191,12 +188,11 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   )
   networkDynamic::reconcile.edge.activity(nw, "reduce.to.vertices")
 
-
   for (item in names(attr_hist)) {
     if (item == "active") next
-    d_item <- dplyr::filter(attr_hist[[item]], sim == sim_num) |>
-      dplyr::select(time, uids, values) |>
-      dplyr::arrange(time)
+    d_item <- attr_hist[[item]]
+    d_item <- d_item[d_item$sim == sim_num, c("time", "uids", "values")]
+    d_item <- d_item[order(d_item$time), ]
     for (d_t in split(d_item, d_item$time)) {
       networkDynamic::activate.vertex.attribute(
         nw,
