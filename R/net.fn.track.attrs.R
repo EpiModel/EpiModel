@@ -67,14 +67,18 @@ tracked_attrs_record <- function(dat) {
 
   # old nodes - store end time
   departed_uid <- setdiff(ref_attrs$unique_id, cur_attrs$unique_id)
-  dat <- record_attr_history(dat, "active", 0L, unique_ids = departed_uid)
+  if (length(departed_uid) > 0L) {
+    dat <- record_attr_history(dat, "active", 0L, unique_ids = departed_uid)
+  }
 
   # new nodes - store all tracked
   new_uid <- setdiff(cur_attrs$unique_id, ref_attrs$unique_id)
-  new_pos <- base::match(new_uid, cur_attrs$unique_id)
-  for (item in any_tracked) {
-    value <- cur_attrs[[item]][new_pos]
-    dat <- record_attr_history(dat, item, value, unique_ids = new_uid)
+  if (length(new_uid) > 0L) {
+    new_pos <- base::match(new_uid, cur_attrs$unique_id)
+    for (item in any_tracked) {
+      value <- cur_attrs[[item]][new_pos]
+      dat <- record_attr_history(dat, item, value, unique_ids = new_uid)
+    }
   }
   # persisting nodes - store diff
   pers_uid <- intersect(cur_attrs$unique_id, ref_attrs$unique_id)
@@ -104,8 +108,8 @@ tracked_attrs_record <- function(dat) {
 #' @param sim An `EpiModel` object of class `netsim`.
 #' @param at The time step at which to reconstruct attributes.
 #' @param sim_num The simulation number to use (default 1).
-#' @param compute_age If `age` is recored even once, compute the age of nodes at
-#'        this time. Assumes `time.unit` is correctly set in `params`.
+#' @param compute_age If `age` is recorded even once, compute the age of nodes
+#'        at this time. Assumes `time.unit` is correctly set in `params`.
 #'
 #' @return A `tibble` with columns `unique_id`, `active`, and one column per
 #'   tracked attribute, containing the most recent value at or before `at`
