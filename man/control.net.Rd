@@ -15,6 +15,7 @@ control.net(
   cumulative.edgelist = FALSE,
   truncate.el.cuml = 0,
   tracked.attributes = NULL,
+  tracked.attributes.once = NULL,
   attr.rules,
   epi.by,
   initialize.FUN = initialize.net,
@@ -91,6 +92,13 @@ plus newly arrived and departed nodes, are recorded via
 \code{\link[=get_attr_history]{get_attr_history()}} and used to reconstruct attribute state at any
 time step with \code{\link[=get_attr_at]{get_attr_at()}} or to build a \code{networkDynamic} object
 with \code{\link[=make_networkDynamic]{make_networkDynamic()}}.}
+
+\item{tracked.attributes.once}{A character vector of nodal attribute names
+to record only in the initial snapshot and for newly arriving nodes.
+Unlike \code{tracked.attributes}, these are not diff-tracked at every step,
+so subsequent changes are \strong{not} captured. Use this for attributes
+that are fixed at entry and never change during the simulation (e.g.,
+\code{"race"}, \code{"birth.year"}).}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of incoming nodes, with
 one list element per attribute to be set (see details below).}
@@ -208,9 +216,6 @@ useful if nodal attributes appearing in one network model depend on
 nodal degrees in a different network.}
 
 \item{...}{Additional control settings passed to model.}
-
-\item{tracked.attributes.once}{A character vector of nodal attribute names
-to track only once per node. No diff tracking.}
 }
 \value{
 An EpiModel object of class \code{control.net}.

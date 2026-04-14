@@ -169,9 +169,17 @@ control <- control.net(
   nsteps = 500,
   nsims = 1,
   tracked.attributes = c("status"),
+  tracked.attributes.once = c("race"),
   verbose = FALSE
 )
 ```
+
+Attributes listed in `tracked.attributes` are diff-tracked: at each step,
+only nodes whose values changed are recorded. Attributes listed in
+`tracked.attributes.once` are recorded only in the initial snapshot and for
+newly arriving nodes---they are not compared at each step. Use
+`tracked.attributes.once` for attributes that are fixed at entry and never
+change during the simulation (e.g., `"race"`, `"birth.year"`).
 
 After the simulation completes, you can reconstruct the tracked attribute
 state at any time step with `get_attr_at()`:

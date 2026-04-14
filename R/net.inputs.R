@@ -725,7 +725,11 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        time step with [get_attr_at()] or to build a `networkDynamic` object
 #'        with [make_networkDynamic()].
 #' @param tracked.attributes.once A character vector of nodal attribute names
-#'        to track only once per node. No diff tracking.
+#'        to record only in the initial snapshot and for newly arriving nodes.
+#'        Unlike `tracked.attributes`, these are not diff-tracked at every step,
+#'        so subsequent changes are **not** captured. Use this for attributes
+#'        that are fixed at entry and never change during the simulation (e.g.,
+#'        `"race"`, `"birth.year"`).
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.

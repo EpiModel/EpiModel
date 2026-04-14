@@ -13,8 +13,8 @@ get_attr_at(sim, at, sim_num = 1, compute_age = TRUE)
 
 \item{sim_num}{The simulation number to use (default 1).}
 
-\item{compute_age}{If \code{age} is recored even once, compute the age of nodes at
-this time. Assumes \code{time.unit} is correctly set in \code{params}.}
+\item{compute_age}{If \code{age} is recorded even once, compute the age of nodes
+at this time. Assumes \code{time.unit} is correctly set in \code{params}.}
 }
 \value{
 A \code{tibble} with columns \code{unique_id}, \code{active}, and one column per

@@ -123,6 +123,7 @@ reference:
       - delete_edges
       - copy_datattr_to_nwattr
       - copy_nwattr_to_datattr
+      - make_networkDynamic
 
   - title: "Output Extraction and Analysis"
     desc: >

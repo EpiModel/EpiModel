@@ -2,9 +2,13 @@
 
 ### NEW FEATURES
 
--   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage.
+-   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage. A companion parameter `tracked.attributes.once` records attributes only in the initial snapshot and for new arrivals, suitable for fixed-at-entry attributes like `"race"` or `"birth.year"`.
 -   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node.
 -   Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`.
+
+### BREAKING CHANGES
+
+-   `record_attr_history()` has a new signature: `record_attr_history(dat, item, value, at, posit_ids, unique_ids)`. The previous positional arguments `(dat, at, attribute, posit_ids, values)` have been renamed and reordered. Calls using positional arguments will break. Update by switching to named arguments: replace `record_attr_history(dat, at, "attr", ids, vals)` with `record_attr_history(dat, "attr", vals, posit_ids = ids)` (`at` now defaults to the current time step).
 
 ### BUG FIXES
 
