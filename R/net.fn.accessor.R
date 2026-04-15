@@ -280,8 +280,10 @@ add_epi <- function(dat, item) {
 
 #' @rdname net-accessor
 #' @export
-set_epi <- function(dat, item, at,  value) {
-  if (length(at) != 1L || !is.numeric(at)) {
+set_epi <- function(dat, item, value, at = NULL) {
+  if (is.null(at)) {
+    at <- get_current_timestep(dat)
+  } else if (length(at) != 1L || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
   }
 
@@ -290,8 +292,8 @@ set_epi <- function(dat, item, at,  value) {
   }
 
   # ensure that the vector is of size `nsteps`, right padded with NA
-  nsteps <- get_control(dat, "nsteps")
   if (at > length(dat$epi[[item]])) {
+    nsteps <- get_control(dat, "nsteps")
     dat$epi[[item]] <- padded_vector(dat$epi[[item]], nsteps)
   }
 
