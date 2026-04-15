@@ -328,10 +328,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   } else {
     param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
-    truncate.el.cuml <- get_control(dat, "truncate.el.cuml")
-    for (network in seq_len(dat$num.nw)) {
-      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
-    }
     dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1L)

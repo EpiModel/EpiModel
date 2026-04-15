@@ -205,12 +205,12 @@ test_that("nestim can remake the `networkDynamic`", {
           simplify = FALSE)
         # Edges finished before step 2 cannot be recorded by the
         #   cumulative.edgelist
-        act_orig <- act_orig[act_orig[, 2] > 1, , drop = FALSE]
+        act_orig <- act_orig[act_orig[, 2] > 2, , drop = FALSE]
         act_made <- Reduce(rbind, get.edge.activity(made_nw, e = eid_made),
           simplify = FALSE)
         act_made <- act_made[order(act_made[, 1]),, drop = FALSE]
-        # Edges from the cumulative edgelist never start at time 0
-        if (any(pmax(act_orig[, 1], 1) != act_made[, 1]) ||
+        # Edges from the cumulative edgelist never start at time < 2
+        if (any(pmax(act_orig[, 1], 2) != act_made[, 1]) ||
           any(act_orig[, 2] != act_made[, 2])) {
           stop()
         }
