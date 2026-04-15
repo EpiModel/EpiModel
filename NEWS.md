@@ -15,6 +15,10 @@
 -   Fix `saveout.net` naming of `raw.records` list elements across simulations. Previously used `".records"` instead of `"raw.records"`, causing simulation names not to be assigned.
 -   Fix error message in `record_attr_history()` that reported the expected length instead of the actual length of the `value` vector.
 
+### OTHER
+
+-
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES
