@@ -1,3 +1,21 @@
+## EpiModel 2.7.0
+
+### BREAKING CHANGES
+
+-
+
+### NEW FEATURES
+
+-
+
+### BUG FIXES
+
+-
+
+### OTHER
+
+-
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES
