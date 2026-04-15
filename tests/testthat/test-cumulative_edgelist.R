@@ -147,3 +147,75 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))
 
 })
+
+test_that("nestim can remake the `networkDynamic`", {
+  testthat::skip("Slow test - for local runs")
+
+  num <- 50
+  nw <- network_initialize(num)
+
+  formation <- ~edges
+  target.stats <- 40
+  coef.diss <- dissolution_coefs(
+    dissolution = ~offset(edges),
+    duration = 20,
+    d.rate = 0.005      # departure rate feeds into dissolution adjustment
+  )
+  est <- netest(nw, formation, target.stats, coef.diss)
+
+  param <- param.net(
+    inf.prob = 0.3,
+    rec.rate = 0.02,
+    a.rate = 0.005,      # arrival rate (was b.rate pre-1.7)
+    ds.rate = 0.005,     # departure rate, susceptible
+    di.rate = 0.005,     # departure rate, infected
+    dr.rate = 0.005      # departure rate, recovered
+  )
+  init <- init.net(i.num = 10, r.num = 0)
+  control <- control.net(
+    type = "SIR",
+    nsteps = 200,
+    nsims = 1,
+    resimulate.network = TRUE,   # required for open population
+    tergmLite = FALSE,
+    tracked.attributes = c('active'),
+    cumulative.edgelist = TRUE,
+    truncate.el.cuml = Inf,
+    save.cumulative.edgelist = TRUE,
+    save.run = FALSE,
+    verbose = FALSE
+  )
+
+  sim <- netsim(est, param, init, control)
+  orig_nw <- get_network(sim)
+
+  orig_nw <- get_network(sim) |>
+    network.extract(onset = 2, terminus = Inf, retain.all.vertices = TRUE)
+
+  made_nw <- make_networkDynamic(sim)
+
+  expect_silent({
+    for (v in seq_along(orig_nw$val)) {
+      for (e in get.edges(orig_nw, v)) {
+        # get the edge ID in both network
+        eid_orig <- get.edgeIDs(orig_nw, v = e$inl,  alter = e$outl)
+        eid_made <- get.edgeIDs(made_nw, v = e$inl,  alter = e$outl)
+        # Reformat the 2 edge spells list so they can be compared
+        act_orig <- Reduce(rbind, get.edge.activity(orig_nw, e = eid_orig),
+          simplify = FALSE)
+        # Edges finished before step 2 cannot be recorded by the
+        #   cumulative.edgelist
+        act_orig <- act_orig[act_orig[, 2] > 2, , drop = FALSE]
+        act_made <- Reduce(rbind, get.edge.activity(made_nw, e = eid_made),
+          simplify = FALSE)
+        act_made <- act_made[order(act_made[, 1]),, drop = FALSE]
+        # Edges from the cumulative edgelist never start at time < 2
+        if (any(pmax(act_orig[, 1], 2) != act_made[, 1]) ||
+          any(act_orig[, 2] != act_made[, 2])) {
+          stop()
+        }
+      }
+    }
+  })
+
+})

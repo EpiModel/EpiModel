@@ -59,6 +59,7 @@ set_vertex_attribute <- function(x, attrname, value, v = NULL) {
   return(g)
 }
 
+
 #' @title Get Vertex Attribute on Network Object
 #'
 #' @description Gets a vertex attribute from an object of class `network`.
@@ -119,4 +120,98 @@ get_network_attributes <- function(x) {
     out <- c(out, new)
   }
   out
+}
+
+#' @title Build a networkDynamic Object from Simulation Output
+#'
+#' @description
+#' Reconstructs a `networkDynamic` object from a completed `netsim`
+#' simulation, using the cumulative edgelist for edge spells and the
+#' tracked attribute history for vertex activity and time-varying
+#' attributes. The resulting object can be used with `ndtv` for
+#' visualization or with `tsna` for temporal network analysis.
+#'
+#' @param sim An `EpiModel` object of class `netsim`.
+#' @param sim_num The simulation number to use (default 1).
+#' @param network Optional network number to filter edges. If `NULL`
+#'   (default), edges from all networks are included.
+#'
+#' @return A `networkDynamic` object with active vertex spells and
+#'   time-varying vertex attributes.
+#'
+#' @seealso [get_attr_at()], [get_attr_history()]
+#' @export
+make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
+  if (!inherits(sim, "netsim"))
+    stop("`sim` must be of class netsim")
+  if (sim_num > sim$control$nsims || sim_num < 1)
+    stop("Specify a single sim_num between 1 and ", sim$control$nsims)
+  if (is.null(sim$cumulative.edgelist)) {
+    stop("Cumulative edgelist not saved in netsim object. ",
+         "Check control.net settings.")
+  }
+  if (length(sim$control$tracked.attributes) == 0 &&
+        length(sim$control$tracked.attributes.once) == 0) {
+    stop("At least the `active` attribute must be tracked. ",
+         "Check control.net `tracked.attributes` settings.")
+  }
+
+  attr_hist <- get_attr_history(sim)
+  d_active <- attr_hist$active[attr_hist$active$sim == sim_num, ]
+  n_nodes <- max(d_active$uids)
+
+  # Setup Nodes
+  nw <- network::network.initialize(n_nodes, directed = FALSE)
+  spells <- get_nodes_spell(d_active)
+  networkDynamic::activate.vertices(
+    nw,
+    v = spells$uid,
+    onset = spells$onset,
+    terminus = spells$terminus
+  )
+
+  # Setup Edges
+  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]]
+  el$stop <-  ifelse(is.na(el$stop), Inf, el$stop)
+
+  if (!is.null(network))
+    el <- el[el$network == network, , drop = FALSE]
+
+  # Clip edges if they disapear due one of the node exiting
+  # In these cases, the cumulative edgelist and networkDynamic store the end
+  # differently. This block reconciles that
+  node_terminus <- setNames(spells$terminus, spells$uid)
+  head_term <- node_terminus[as.character(el$head)]
+  tail_term <- node_terminus[as.character(el$tail)]
+  el$stop <- pmin(el$stop, head_term - 1L, tail_term - 1L)
+  el$start <- el$start  # onset is already correct
+
+  networkDynamic::add.edges.active(
+    nw,
+    head = el$head,
+    tail = el$tail,
+    onset = el$start,
+    terminus = el$stop + 1L,
+    names.eval = rep(list("network"), nrow(el)),
+    vals.eval = lapply(el$network, \(x) list(network = x))
+  )
+
+  for (item in names(attr_hist)) {
+    if (item == "active") next
+    d_item <- attr_hist[[item]]
+    d_item <- d_item[d_item$sim == sim_num, c("time", "uids", "values")]
+    d_item <- d_item[order(d_item$time), ]
+    for (d_t in split(d_item, d_item$time)) {
+      networkDynamic::activate.vertex.attribute(
+        nw,
+        item,
+        v = d_t$uids,
+        value = d_t$values,
+        onset = d_t$time[[1]],
+        terminus = Inf
+      )
+    }
+  }
+
+  nw
 }

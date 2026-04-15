@@ -306,35 +306,31 @@ test_that("Time varying elements", {
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_norm",
-      some_nodes,
-      rnorm(length(some_nodes))
+      dat, "attr_norm",
+      rnorm(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_unif",
-      some_nodes,
-      runif(length(some_nodes))
+      dat, "attr_unif",
+      runif(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_fix",
-      some_nodes,
-      at
+      dat, "attr_fix",
+      at,
+      posit_ids = some_nodes
     )
 
     # test when 0 nodes selected
     some_nodes <- integer(0)
     dat <- record_attr_history(
-      dat, at,
-      "attr_none",
-      some_nodes,
-      at
+      dat, "attr_none",
+      at,
+      posit_ids = some_nodes
     )
 
     return(dat)
@@ -371,7 +367,7 @@ test_that("Time varying elements", {
   attr_history <- get_attr_history(mod)
   expect_is(attr_history, "list")
   expect_is(attr_history[[1]], "data.frame")
-  expect_equal(
+  expect_setequal(
     names(attr_history),
     c("attr_norm", "attr_unif", "attr_fix", "attr_none"))
 })

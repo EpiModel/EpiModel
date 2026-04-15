@@ -1,57 +1,85 @@
 #' @title Record Attribute History
 #'
 #' @description
-#' This function records values specific to a time-step and a group of nodes.
-#' In the records, the `posit_ids` are converted to `unique_ids` which
-#' allows the recording of data for nodes that are no longer in the network by
-#' the end of the run. The records are stored in `dat[["attr.history"]]`
-#' where `dat` is the main `netsim_dat` class object, and can be
-#' accessed from the `netsim` object with `get_attr_history`.
+#' Record values for a set of nodes at a specific time step. Records are stored
+#' in `dat[["attr.history"]]` as a `collections::queue` and can be accessed
+#' from the `netsim` object with `get_attr_history`.
+#'
+#' This function is called automatically by the tracked attributes system when
+#' `tracked.attributes` is set in `control.net`, but can also be called
+#' manually inside custom modules for ad-hoc recording.
 #'
 #' @inheritParams recovery.net
-#' @param at The time where the recording happens.
-#' @param attribute The name of the value to record.
-#' @param posit_ids A numeric vector of posit_ids to which the measure applies.
-#'   (see `get_posit_ids`).
-#' @param values The values to be recorded.
+#' @param item The name of the attribute to record.
+#' @param value The values to be recorded. Must be of length 1 (recycled for
+#'   all nodes) or the same length as the number of nodes identified by
+#'   `posit_ids` or `unique_ids`.
+#' @param at The time step at which the recording happens. Defaults to the
+#'   current time step if `NULL`.
+#' @param posit_ids A numeric vector of positional IDs to which the values
+#'   apply. Converted internally to unique IDs. Either `posit_ids` or
+#'   `unique_ids` must be provided.
+#' @param unique_ids A numeric vector of unique IDs to which the values apply.
+#'   When provided, skips the positional-to-unique ID conversion.
 #'
 #' @inherit recovery.net return
 #'
 #' @details
+#' Exactly one of `posit_ids` or `unique_ids` must be non-`NULL`. When both
+#' are `NULL`, the function errors. When `unique_ids` is provided directly,
+#' the conversion from positional IDs is skipped, which is more efficient
+#' when unique IDs are already known (e.g., from the automatic tracking
+#' system).
+#'
 #' See the "Time-Varying Parameters" section of the "Working With Model
 #' Parameters" vignette.
 #'
 #' @examples
 #' \dontrun{
-#' # This function must be used inside a custom module
-#' dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
-#' some_nodes <- get_posit_ids(dat)
-#' some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]
-#' dat <- record_attr_history(
-#'   dat, at,
-#'   "attr_2",
-#'   some_nodes,
-#'   rnorm(length(some_nodes))
-#' )
+#' # Manual recording inside a custom module
+#' dat <- record_attr_history(dat, "status", get_attr(dat, "status"),
+#'                            posit_ids = get_posit_ids(dat))
+#'
+#' # Record for a subset of nodes using unique IDs directly
+#' some_uids <- c(10, 25, 42)
+#' dat <- record_attr_history(dat, "risk", c(1, 0, 1),
+#'                            unique_ids = some_uids)
 #' }
 #'
 #' @export
-record_attr_history <- function(dat, at, attribute, posit_ids, values) {
-  if (is.null(dat[["attr.history"]])) {
+record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
+                                unique_ids = NULL) {
+  if (is.null(dat[["attr.history"]]))
     dat[["attr.history"]] <- collections::queue()
+
+  if (is.null(unique_ids)) {
+    if (is.null(posit_ids)) {
+      stop("Either `unique_ids` or `posit_ids` must be non NULL")
+    } else {
+      unique_ids <- get_unique_ids(dat, posit_ids)
+    }
   }
 
-  if (length(values) != 1 && length(values) != length(posit_ids)) {
+  if (is.null(at))
+    at <- get_current_timestep(dat)
+
+  if (length(value) != 1 && length(value) != length(unique_ids)) {
     stop(
-      "When trying to record a value for `", attribute, "` at time ", at,
-      "The size of the `values` vector is not equal to the number of nodes ",
-      "selected by the `posit_ids` vector nor of length 1. \n",
-      "Expected: ", length(posit_ids), " or 1 \n",
-      "Given: ", length(posit_ids)
+      "When trying to record a value for `",
+      item,
+      "` at time ",
+      at,
+      "\nThe size of the `values` vector is not equal to the number of nodes ",
+      "selected by the `posit_ids` or `unique_ids` vector nor of length 1. \n",
+      "Expected: ",
+      length(unique_ids),
+      " or 1 \n",
+      "Given: ",
+      length(value)
     )
   }
 
-  element <- list(at, attribute, get_unique_ids(dat, posit_ids), values)
+  element <- list(at, item, unique_ids, value)
   names(element) <- c("time", "attribute", "uids", "values")
 
   dat[["attr.history"]]$push(element)
