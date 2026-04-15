@@ -63,8 +63,8 @@
 #' get_attr(dat, "status", c(1, 4))
 #'
 #' dat <- add_epi(dat, "i.num")
-#' dat <- set_epi(dat, "i.num", 150, 10)
-#' dat <- set_epi(dat, "s.num", 150, 90)
+#' dat <- set_epi(dat, "i.num", 10, at = 150)
+#' dat <- set_epi(dat, "s.num", 90, at = 150)
 #' get_epi_list(dat)
 #' get_epi_list(dat, c("i.num", "s.num"))
 #' get_epi(dat, "i.num")

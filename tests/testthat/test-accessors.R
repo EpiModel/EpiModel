@@ -59,12 +59,12 @@ test_that("`dat` getters and setter", {
   dat <- add_epi(dat, "i")
   expect_equal(dat$epi$i, rep(NA_integer_, get_control(dat, "nsteps")))
 
-  expect_error(set_epi(dat, "i", c(1, 4), 4))
+  expect_error(set_epi(dat, "i", 4, at = c(1, 4)))
 
-  dat <- set_epi(dat, "i", 150, 10)
+  dat <- set_epi(dat, "i", 10, at = 150)
   expect_equal(get_epi(dat, "i")[150], 10)
 
-  dat <- set_epi(dat, "s", 110, 10)
+  dat <- set_epi(dat, "s", 10, at = 110)
   expect_equal(get_epi(dat, "s")[110], 10)
 
   expect_equal(get_epi(dat, "i", c(1, 100)), dat$epi$i[c(1, 100)])
@@ -75,7 +75,7 @@ test_that("`dat` getters and setter", {
   expect_error(get_epi(dat, "i", c(TRUE, FALSE)))
 
   dat$control$nsteps <- 200
-  dat <- set_epi(dat, "i", 160, 8)
+  dat <- set_epi(dat, "i", 8, at = 160)
   expect_length(dat$epi$i, 200)
 
   expect_equal(get_epi_list(dat, c("i", "s")), get_epi_list(dat)[c("i", "s")])

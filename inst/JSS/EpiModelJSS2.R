@@ -210,7 +210,7 @@ dfunc <- function(dat, at) {
     }
   }
   # Output ----------------------------------
-  dat <- set_epi(dat, "d.flow", at, nDepartures)
+  dat <- set_epi(dat, "d.flow", nDepartures)
   return(dat)
 }
 
@@ -240,7 +240,7 @@ afunc <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat <- set_epi(dat, "a.flow", at, nArrivals)
+  dat <- set_epi(dat, "a.flow", nArrivals)
 
   return(dat)
 }
@@ -309,7 +309,7 @@ infect <- function(dat, at) {
   }
 
   # Output ---------------------------------
-  dat <- set_epi(dat, "se.flow", at, nInf)
+  dat <- set_epi(dat, "se.flow", nInf)
 
   return(dat)
 }
@@ -354,10 +354,10 @@ progress <- function(dat, at) {
 
   dat <- set_attr(dat, "status", status)
 
-  dat <- set_epi(dat, "ei.flow", at, nInf)
-  dat <- set_epi(dat, "ir.flow", at, nRec)
-  dat <- set_epi(dat, "e.num", at, sum(active == 1 & status == "e"))
-  dat <- set_epi(dat, "r.num", at, sum(active == 1 & status == "r"))
+  dat <- set_epi(dat, "ei.flow", nInf)
+  dat <- set_epi(dat, "ir.flow", nRec)
+  dat <- set_epi(dat, "e.num", sum(active == 1 & status == "e"))
+  dat <- set_epi(dat, "r.num", sum(active == 1 & status == "r"))
 
   return(dat)
 }

@@ -91,12 +91,10 @@ epi_trackers <- function(dat) {
     return(dat)
   }
 
-  at <- get_current_timestep(dat)
-
   tryCatch(
     expr = {
       for (nm in names(tracker.list)) {
-        dat <- set_epi(dat, nm, at, tracker.list[[nm]](dat))
+        dat <- set_epi(dat, nm, tracker.list[[nm]](dat))
       }
     },
     message = function(e) message("\nIn tracker '", nm, "':\n", e),

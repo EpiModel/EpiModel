@@ -72,7 +72,7 @@ test_that("tracked.attributes handles arrivals and departures", {
         dat <- set_attr(dat, "exitTime", exitTime)
       }
     }
-    dat <- set_epi(dat, "d.flow", at, nDepartures)
+    dat <- set_epi(dat, "d.flow", nDepartures)
     return(dat)
   }
 
@@ -85,7 +85,7 @@ test_that("tracked.attributes handles arrivals and departures", {
     dat <- append_attr(dat, "status", "s", nArrivals)
     dat <- append_attr(dat, "infTime", NA, nArrivals)
     dat <- append_attr(dat, "age", 0, nArrivals)
-    dat <- set_epi(dat, "a.flow", at, nArrivals)
+    dat <- set_epi(dat, "a.flow", nArrivals)
     return(dat)
   }
 
