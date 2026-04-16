@@ -384,7 +384,15 @@ netsim_run_modules <- function(dat, s) {
 
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
-        dat <- modules[[i]](dat, at)
+        new_dat <- modules[[i]](dat, at)
+        # Test the output of `modules[i]`. Must be stored in `new_dat` before
+        # the test as `dat` is used by the logger function.
+        if (!inherits(new_dat, "netsim_dat")) {
+          stop("Module '", current_mod, "' must return the `dat` object. ",
+               "Got ", class(new_dat)[1], " instead.")
+        } else {
+          dat <- new_dat
+        }
       }
 
       current_mod <- "epimodel.internal"

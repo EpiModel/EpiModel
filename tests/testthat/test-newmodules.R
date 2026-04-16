@@ -576,3 +576,27 @@ test_that("Random parameters generators", {
   param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_error(generate_random_params(param))
 })
+
+test_that("netsim errors when a module does not return the `dat` object", {
+  skip_on_cran()
+
+  nw <- network.initialize(30, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 8,
+                coef.diss = dissolution_coefs(~offset(edges), 20),
+                verbose = FALSE)
+
+  bad_module <- function(dat, at) {
+    # Forgot to return(dat)
+    NULL
+  }
+
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 2,
+                         aging.FUN = bad_module,
+                         verbose = FALSE)
+  expect_error(
+    suppressMessages(netsim(est, param, init, control)),
+    "Module 'aging.FUN' must return the `dat` object"
+  )
+})
