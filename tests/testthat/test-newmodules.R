@@ -45,7 +45,7 @@ test_that("New network models vignette example", {
     }
 
     # Output
-    dat <- set_epi(dat, "d.flow", at, nDepartures)
+    dat <- set_epi(dat, "d.flow", nDepartures)
     return(dat)
   }
 
@@ -71,7 +71,7 @@ test_that("New network models vignette example", {
     dat <- append_attr(dat, "age", 0, nArrivals)
 
     # Output
-    dat <- set_epi(dat, "a.flow", at, nArrivals)
+    dat <- set_epi(dat, "a.flow", nArrivals)
 
     return(dat)
   }

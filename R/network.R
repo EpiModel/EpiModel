@@ -184,7 +184,7 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   head_term <- node_terminus[as.character(el$head)]
   tail_term <- node_terminus[as.character(el$tail)]
   el$stop <- pmin(el$stop, head_term - 1L, tail_term - 1L)
-  el$start <- el$start  # onset is already correct
+  # onset is already correct, no need to update `el$start`
 
   networkDynamic::add.edges.active(
     nw,

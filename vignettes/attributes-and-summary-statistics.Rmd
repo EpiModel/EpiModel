@@ -311,8 +311,8 @@ aging_track_module <- function(dat, at) {
   dat <- set_attr(dat, "age", new_age)
 
   # Update epidemic trackers
-  dat <- set_epi(dat, "mean_age", at, mean_age)
-  dat <- set_epi(dat, "age_change", at, age_change)
+  dat <- set_epi(dat, "mean_age", mean_age)
+  dat <- set_epi(dat, "age_change", age_change)
 
   return(dat)
 }

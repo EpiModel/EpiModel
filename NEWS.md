@@ -9,6 +9,7 @@
 ### BREAKING CHANGES
 
 -   `record_attr_history()` has a new signature: `record_attr_history(dat, item, value, at, posit_ids, unique_ids)`. The previous positional arguments `(dat, at, attribute, posit_ids, values)` have been renamed and reordered. Calls using positional arguments will break. Update by switching to named arguments: replace `record_attr_history(dat, at, "attr", ids, vals)` with `record_attr_history(dat, "attr", vals, posit_ids = ids)` (`at` now defaults to the current time step).
+-   `set_epi()` has a new signature: `set_epi(dat, item, value, at = NULL)`. The `at` argument has moved after `value` and is now optional (defaults to the current time step). Positional calls of the form `set_epi(dat, "i.num", at, value)` will silently invert the meaning of the last two arguments. Update by dropping `at` when recording at the current step, or by passing it named (`at = <value>`) otherwise.
 
 ### BUG FIXES
 
