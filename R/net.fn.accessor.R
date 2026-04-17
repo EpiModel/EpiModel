@@ -536,7 +536,7 @@ check_attr_lengths <- function(dat) {
   expected_length <- attr_lengths$active
   wrong_lengths <- which(attr_lengths != expected_length)
 
-  if (length(wrong_lengths > 0L)) {
+  if (length(wrong_lengths) > 0L) {
     msg <- c(
       "Some attributes are not of the correct length \n",
       "Expected length: ", expected_length, "\n",

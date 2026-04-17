@@ -148,7 +148,7 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
 
 })
 
-test_that("nestim can remake the `networkDynamic`", {
+test_that("netsim can remake the `networkDynamic`", {
   testthat::skip("Slow test - for local runs")
 
   num <- 50
