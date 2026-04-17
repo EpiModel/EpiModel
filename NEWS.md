@@ -17,7 +17,7 @@
 
 ### OTHER
 
--
+-   `netsim()` now validates that each module returns a `netsim_dat` object after every call, erroring out with the offending module name instead of failing downstream with a misleading message. Closes #987.
 
 ## EpiModel 2.6.1
 
