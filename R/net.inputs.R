@@ -246,16 +246,16 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.") 
+    stop("The b.rate parameter has been removed. Use a.rate instead.")
   }
   if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
+    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.")
   }
   # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     stop("Parameters using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., inf.prob.g2).") 
+         "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
   if (missing(act.rate)) {
     p[["act.rate"]] <- 1
@@ -264,11 +264,15 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                            !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
-            "If using built-in models, only act.rate parameter will apply.") 
+            "If using built-in models, only act.rate parameter will apply.")
   }
 
   if (!is.null(p[["inter.eff"]]) && is.null(p[["inter.start"]])) {
     p[["inter.start"]] <- 1
+  }
+
+  if (is.null(p[["time.unit"]])) {
+    p[["time.unit"]] <- 1
   }
 
   ## Output
@@ -623,7 +627,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
     stop("Initial conditions using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., i.num.g2).") 
+         "Use the .g2 suffix instead (e.g., i.num.g2).")
   }
   if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -711,6 +715,21 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
 #'   simulation to restart from this output.
 #' @param save.cumulative.edgelist If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+#' @param tracked.attributes A character vector of nodal attribute names whose
+#'        changes should be automatically recorded at each time step. The
+#'        `active` attribute is always tracked when this is non-empty. At each
+#'        step, only the nodes whose values changed (including `NA` transitions),
+#'        plus newly arrived and departed nodes, are recorded via
+#'        [record_attr_history()]. The resulting history can be retrieved with
+#'        [get_attr_history()] and used to reconstruct attribute state at any
+#'        time step with [get_attr_at()] or to build a `networkDynamic` object
+#'        with [make_networkDynamic()].
+#' @param tracked.attributes.once A character vector of nodal attribute names
+#'        to record only in the initial snapshot and for newly arriving nodes.
+#'        Unlike `tracked.attributes`, these are not diff-tracked at every step,
+#'        so subsequent changes are **not** captured. Use this for attributes
+#'        that are fixed at entry and never change during the simulation (e.g.,
+#'        `"race"`, `"birth.year"`).
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.
@@ -853,6 +872,8 @@ control.net <- function(type,
                         tergmLite = FALSE,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
+                        tracked.attributes = NULL,
+                        tracked.attributes.once = NULL,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,
@@ -903,13 +924,13 @@ control.net <- function(type,
   }
 
   if ("births.FUN" %in% names(dot.args)) {
-    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.") 
+    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.")
   }
   if ("deaths.FUN" %in% names(dot.args)) {
-    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.") 
+    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.")
   }
   if ("depend" %in% names(dot.args)) {
-    stop("The depend parameter has been removed. Use resimulate.network instead.") 
+    stop("The depend parameter has been removed. Use resimulate.network instead.")
   }
 
   ## Module classification
@@ -1075,11 +1096,11 @@ crosscheck.net <- function(x, param, init, control) {
         if (control[["type"]] == "SIR") {
           if (any(svals %in% c("s", "i", "r") == FALSE)) {
             stop("status.vector contains values other than \"s\", \"i\",
-                 and \"r\" ") 
+                 and \"r\" ")
           }
         } else {
           if (any(svals %in% c("s", "i") == FALSE)) {
-            stop("status.vector contains values other than \"s\" and \"i\" ") 
+            stop("status.vector contains values other than \"s\" and \"i\" ")
           }
         }
       }
@@ -1134,7 +1155,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       if (control[["skip.check"]] == FALSE) {
         if (!inherits(x, "netsim")) {
-          stop("x must be a netsim object if control setting start > 1") 
+          stop("x must be a netsim object if control setting start > 1")
         }
         if (is.null(x[["run"]])) {
           stop("x must contain `run` to restart simulation, see `save.run` ",

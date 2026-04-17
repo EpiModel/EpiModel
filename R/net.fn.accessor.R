@@ -63,8 +63,8 @@
 #' get_attr(dat, "status", c(1, 4))
 #'
 #' dat <- add_epi(dat, "i.num")
-#' dat <- set_epi(dat, "i.num", 150, 10)
-#' dat <- set_epi(dat, "s.num", 150, 90)
+#' dat <- set_epi(dat, "i.num", 10, at = 150)
+#' dat <- set_epi(dat, "s.num", 90, at = 150)
 #' get_epi_list(dat)
 #' get_epi_list(dat, c("i.num", "s.num"))
 #' get_epi(dat, "i.num")
@@ -280,8 +280,10 @@ add_epi <- function(dat, item) {
 
 #' @rdname net-accessor
 #' @export
-set_epi <- function(dat, item, at,  value) {
-  if (length(at) != 1L || !is.numeric(at)) {
+set_epi <- function(dat, item, value, at = NULL) {
+  if (is.null(at)) {
+    at <- get_current_timestep(dat)
+  } else if (length(at) != 1L || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
   }
 
@@ -290,8 +292,8 @@ set_epi <- function(dat, item, at,  value) {
   }
 
   # ensure that the vector is of size `nsteps`, right padded with NA
-  nsteps <- get_control(dat, "nsteps")
   if (at > length(dat$epi[[item]])) {
+    nsteps <- get_control(dat, "nsteps")
     dat$epi[[item]] <- padded_vector(dat$epi[[item]], nsteps)
   }
 
@@ -534,7 +536,7 @@ check_attr_lengths <- function(dat) {
   expected_length <- attr_lengths$active
   wrong_lengths <- which(attr_lengths != expected_length)
 
-  if (length(wrong_lengths > 0L)) {
+  if (length(wrong_lengths) > 0L) {
     msg <- c(
       "Some attributes are not of the correct length \n",
       "Expected length: ", expected_length, "\n",
