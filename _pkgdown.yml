@@ -45,22 +45,14 @@ articles:
       - attributes-and-summary-statistics
 
 reference:
-  - title: "Core Simulation Functions"
-    desc: >
-      Primary functions for estimating network models, running epidemic
-      simulations, and diagnosing model fit.
+  - title: "Package Overview"
     contents:
-      - dcm
-      - icm
-      - netsim
-      - netest
-      - netdx
       - EpiModel-package
 
   - title: "Model Inputs"
     desc: >
-      Functions to specify parameters, initial conditions, and control
-      settings for each model class, plus network setup utilities.
+      Specify epidemic parameters, initial conditions, and control
+      settings for each model class.
     contents:
       - param.dcm
       - param.icm
@@ -71,84 +63,78 @@ reference:
       - control.dcm
       - control.icm
       - control.net
-      - dissolution_coefs
+
+  - title: "Epidemic Simulation"
+    desc: >
+      Run deterministic compartmental models, stochastic individual
+      contact models, or stochastic network models.
+    contents:
+      - dcm
+      - icm
+      - netsim
+
+  - title: "Network Model Setup & Estimation"
+    desc: >
+      Create and configure network objects, estimate ERGM/TERGM-based
+      network models from target statistics, diagnose model fit, and
+      compute dissolution coefficients. These functions support the
+      additional estimation step required by network models before
+      simulation with netsim().
+    contents:
       - network_initialize
       - multilayer
-
-  - title: "dat Object Accessors"
-    desc: >
-      Get and set node-level attributes, parameters, epidemic trackers,
-      control settings, and initial conditions on the internal dat object
-      used by network and ICM modules.
-    contents:
-      - net-accessor
-      - get_attr_history
-      - get_attr_prop
-      - get_core_attributes
-      - auto_update_attr
-      - overwrite_attrs
-      - get_param_set
-      - epi_trackers
-      - delete_attr
-
-  - title: "Network and Edgelist Functions"
-    desc: >
-      Tools for working with network edgelists, partnership queries,
-      discordant pairs, cumulative edgelists, and network attributes.
-    contents:
-      - discord_edgelist
-      - get_edgelist
-      - get_edgelists_df
-      - get_degree
-      - get_partners
-      - get_discordant_edgelist
-      - get_cumulative_edgelist
-      - get_cumulative_edgelists_df
-      - get_cumulative_degree
-      - as_cumulative_edgelist
-      - update_cumulative_edgelist
-      - dedup_cumulative_edgelist
-      - as_tibble_edgelist
-      - edgelist_censor
-      - get_network
-      - set_network
-      - get_nwparam
-      - get_network_attributes
-      - get_network_control
       - get_vertex_attribute
       - set_vertex_attribute
-      - add_vertices
-      - delete_vertices
-      - delete_edges
-      - copy_datattr_to_nwattr
-      - copy_nwattr_to_datattr
+      - netest
+      - netdx
+      - dissolution_coefs
+      - update_dissolution
+      - trim_netest
+      - check_degdist_bal
 
-  - title: "Output Extraction and Analysis"
+  - title: "Simulation Output"
     desc: >
-      Convert simulation output to data frames, extract networks and
-      transmission matrices, derive new statistics, and merge or
-      truncate results.
+      Extract, transform, merge, and truncate simulation results.
+      Convert to data frames, derive new epi statistics, subset
+      simulations, and create restart checkpoints.
     contents:
       - as.data.frame.dcm
       - as.data.frame.icm
       - as.data.frame.netdx
       - as.epi.data.frame
       - get_sims
+      - mutate_epi
+      - truncate_sim
+      - merge.icm
+      - merge.netsim
+      - get_network
+      - get_nwstats
+      - get_nwparam
+      - get_param_set
+      - get_attr_history
+      - make_restart_point
+
+  - title: "Transmission & Reachability Analysis"
+    desc: >
+      Extract transmission matrices, construct phylogenies from
+      transmission trees, and trace forward and backward reachable
+      nodes through cumulative contact histories.
+    contents:
       - get_transmat
       - set_transmat
       - is.transmat
       - as.network.transmat
       - as.phylo.transmat
-      - get_nwstats
-      - mutate_epi
-      - truncate_sim
-      - merge.icm
-      - merge.netsim
+      - reachable-nodes
+      - get_adj_list
+      - get_subnet_adj_list
+      - get_connected_nodes
 
   - title: "Visualization"
     desc: >
-      Plot methods for epidemic trajectories, network diagnostics,
-      transmission trees, and interactive exploration.
+      Plot epidemic trajectories, network diagnostics, transmission
+      trees, and epi data frames. Includes ggplot2 extensions and an
+      interactive Shiny-based explorer.
     contents:
       - plot.dcm
       - plot.icm
@@ -162,7 +148,7 @@ reference:
       - brewer_ramp
       - color_tea
 
-  - title: "Print and Summary Methods"
+  - title: "Print & Summary Methods"
     contents:
       - print.dcm
       - print.icm
@@ -175,9 +161,111 @@ reference:
       - print_nwstats_table
       - make_stats_table
 
+  - title: "Scenarios & Sensitivity Analysis"
+    desc: >
+      Build parameter scenarios for batch sensitivity analyses, convert
+      between list and tabular parameter formats, and generate random
+      parameter draws.
+    contents:
+      - create_scenario_list
+      - use_scenario
+      - update_params
+      - param.net_from_table
+      - param.net_to_table
+      - param_random
+      - generate_random_params
+      - format_param
+
+  - title: "Extension API: Module Framework"
+    desc: >
+      Core framework for building custom network model modules with
+      arbitrary disease states, demographics, and interventions. Manage
+      module registration, timestep control, demographic flows, and
+      simulation execution.
+    contents:
+      - create_dat_object
+      - simulate_dat
+      - get_modules
+      - set_modules
+      - remove_modules
+      - make_module_list
+      - get_current_timestep
+      - set_current_timestep
+      - increment_timestep
+      - get_args
+      - arrive_nodes
+      - depart_nodes
+      - record_raw_object
+
+  - title: "Extension API: State Accessors"
+    desc: >
+      Get, set, and manage node-level attributes, epidemic trackers,
+      parameters, control settings, and initial conditions on the
+      internal dat simulation state object.
+    contents:
+      - net-accessor
+      - get_attr_prop
+      - auto_update_attr
+      - overwrite_attrs
+      - delete_attr
+      - epi_trackers
+      - record_attr_history
+      - unique_id-tools
+      - is_active_posit_ids
+      - is_active_unique_ids
+
+  - title: "Extension API: Edgelist & Partnership Queries"
+    desc: >
+      Query the current network state within modules: extract edgelists,
+      look up partnerships and degree, identify discordant pairs, and
+      manage cumulative edgelist tracking.
+    contents:
+      - get_edgelist
+      - get_edgelists_df
+      - discord_edgelist
+      - get_discordant_edgelist
+      - get_degree
+      - get_partners
+      - get_cumulative_edgelist
+      - get_cumulative_edgelists_df
+      - get_cumulative_degree
+      - as_cumulative_edgelist
+      - update_cumulative_edgelist
+      - dedup_cumulative_edgelist
+      - as_tibble_edgelist
+      - edgelist_censor
+
+  - title: "Extension API: Network Operations"
+    desc: >
+      Initialize, resimulate, and summarize networks within modules.
+      Manage network objects, vertices, edges, and attribute
+      synchronization between dat and network representations.
+    contents:
+      - init_nets
+      - resim_nets
+      - sim_nets_t1
+      - summary_nets
+      - set_network
+      - get_network_attributes
+      - add_vertices
+      - delete_vertices
+      - delete_edges
+      - copy_datattr_to_nwattr
+      - copy_nwattr_to_datattr
+
+  - title: "Built-in DCM ODE Systems"
+    desc: >
+      Built-in ODE model functions for deterministic compartmental models
+      (SI, SIR, SIS; one-group and two-group; open and closed populations).
+    contents:
+      - dcm.mods
+      - saveout.dcm
+      - verbose.dcm
+
   - title: "Built-in ICM Modules"
     desc: >
-      Default module functions for stochastic individual contact models.
+      Default module functions for stochastic individual contact models
+      (one-group and two-group/bipartite).
     contents:
       - initialize.icm
       - infection.icm
@@ -198,7 +286,8 @@ reference:
 
   - title: "Built-in Network Modules"
     desc: >
-      Default module functions for stochastic network models.
+      Default module functions for stochastic network models
+      (one-group and two-group).
     contents:
       - initialize.net
       - infection.net
@@ -219,72 +308,6 @@ reference:
       - modules.net
       - test_net
 
-  - title: "DCM ODE Systems"
-    desc: >
-      Built-in ODE model functions for deterministic compartmental models
-      (SI, SIR, SIS; one-group and two-group; open and closed populations).
-    contents:
-      - dcm.mods
-      - saveout.dcm
-      - verbose.dcm
-      - crosscheck.dcm
-      - crosscheck.icm
-      - crosscheck.net
-
-  - title: "Extension API"
-    desc: >
-      Functions for building custom modules with arbitrary disease states,
-      demographics, and interventions. These are the building blocks for
-      the EpiModel extension framework.
-    contents:
-      - create_dat_object
-      - arrive_nodes
-      - depart_nodes
-      - get_current_timestep
-      - set_current_timestep
-      - increment_timestep
-      - record_attr_history
-      - record_raw_object
-      - simulate_dat
-      - make_restart_point
-      - get_args
-      - get_modules
-      - set_modules
-      - remove_modules
-      - make_module_list
-      - unique_id-tools
-      - is_active_posit_ids
-      - is_active_unique_ids
-      - init_nets
-      - resim_nets
-      - sim_nets_t1
-      - summary_nets
-      - trim_netest
-      - check_degdist_bal
-
-  - title: "Reachability Analysis"
-    desc: >
-      Identify transmission chains and reachable nodes in a network.
-    contents:
-      - reachable-nodes
-      - get_adj_list
-      - get_subnet_adj_list
-      - get_connected_nodes
-
-  - title: "Scenarios and Parameter Tools"
-    desc: >
-      Create and apply parameter scenarios for sensitivity analyses,
-      including table-based parameter input and random parameter generation.
-    contents:
-      - create_scenario_list
-      - use_scenario
-      - update_params
-      - param.net_from_table
-      - param.net_to_table
-      - param_random
-      - generate_random_params
-      - format_param
-
   - title: "Custom ERGM Terms"
     desc: >
       Custom exponential-family random graph model terms provided by
@@ -297,13 +320,17 @@ reference:
       - get_network_term_attr
 
   - title: "Utilities"
+    desc: >
+      Internal helpers, input validation, and low-level support functions.
     contents:
+      - crosscheck.dcm
+      - crosscheck.icm
+      - crosscheck.net
       - ssample
       - padded_vector
       - apportion_lr
       - mcat
       - idgroup
-      - update_dissolution
       - update_list
       - common_updater
       - check_attr_lengths
