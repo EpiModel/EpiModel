@@ -419,23 +419,16 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   mean.min <- 1E10
   mean.max <- -1E10
 
-  ## Quantiles - ylim max ##
+  ## Quantile and mean line setup (used in both ylim calc and drawing) ##
   if (qnts == FALSE || nsims == 1) {
     disp.qnts <- FALSE
   } else {
     disp.qnts <- TRUE
   }
-
-  if (disp.qnts) {
-    if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1")
-    }
-    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
-    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
+  if (disp.qnts && (qnts > 1 || qnts < 0)) {
+    stop("qnts must be between 0 and 1")
   }
 
-
-  ## Mean lines - ylim max ##
   if (mean.line) {
     if (length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
@@ -443,6 +436,16 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
     if (length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
     }
+  }
+
+  ## Quantiles - ylim max ##
+  if (disp.qnts) {
+    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
+    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
+  }
+
+  ## Mean lines - ylim max ##
+  if (mean.line) {
     mean.max <- draw_means(
       x, y,
       mean.smooth, mean.lwd, mean.pal, mean.lty,
@@ -461,7 +464,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   if (is.null(ylim) && (popfrac || sim.lines)) {
     ylim <- c(min.prev, max.prev)
   } else if (is.null(ylim) && !popfrac && !sim.lines &&
-               (mean.line || qnts == TRUE)) {
+               (mean.line || disp.qnts)) {
     ylim <- c(
       min(qnt.min * 0.9, mean.min * 0.9),
       max(qnt.max * 1.1, mean.max * 1.1)
@@ -485,23 +488,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   }
 
   ## Quantiles ##
-  ## NOTE: Why is this repeated from above?
-  if (qnts == FALSE) {
-    disp.qnts <- FALSE
-  } else {
-    disp.qnts <- TRUE
-  }
-  if (nsims == 1) {
-    disp.qnts <- FALSE
-  }
-
-  if (disp.qnts == TRUE) {
-    if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1")
-    }
-    y.l <- length(y)
-    qnts.pal <- qnts.pal[1:y.l]
-    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, offset = offset)
+  if (disp.qnts) {
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 1, "max", offset)
   }
 
 
@@ -518,16 +506,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   ## Mean lines ##
   if (mean.line) {
-    if (length(mean.lwd) < lcomp) {
-      mean.lwd <- rep(mean.lwd, lcomp)
-    }
-    if (length(mean.lty) < lcomp) {
-      mean.lty <- rep(mean.lty, lcomp)
-    }
-    y.n <- length(y)
-    mean.pal <- mean.pal[seq_len(y.n)]
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty,
-               offset = offset)
+               "epi", 1, "max", offset)
   }
 
   ## Grid

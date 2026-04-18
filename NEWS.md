@@ -19,10 +19,14 @@
 -   Fix `mutate_epi()` to replicate scalar constants across all simulations/runs and use existing column names instead of hardcoding `"run1"`. Closes #984.
 -   Fix mismatched `mean.lwd` defaults in `plot.netsim()` where dead-code `is.null` branches used inconsistent values (1.5 vs 2.5). Removed the dead branches since the function signature already provides a default of 2. Closes #983.
 -   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls, preventing them from ever executing. Closes #982.
+-   Fix `ylim` in `plot.netsim(type = "epi")` so the auto-range expands to fit quantile polygons when `mean.line = FALSE`. The previous `qnts == TRUE` guard only matched `qnts = 1` / `qnts = TRUE`, leaving polygons potentially clipped at the default `qnts = 0.5`. Closes #1009.
+-   Fix `plot.icm()` to skip drawing quantile polygons when `qnts = FALSE`, matching the documented behavior. Previously this case produced a degenerate zero-width band rather than suppressing the polygon.
 
 ### OTHER
 
 -   Replace direct `dat$run$nw[[network]]` accesses with `get_network()`/`set_network()` accessors across internal modules (`edgelists.R`, `net.fn.utils.R`, `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`) (#977).
+-   Consolidate duplicated quantile and mean-line logic in `plot.netsim(type = "epi")` so the `disp.qnts` setup, `mean.lwd` / `mean.lty` expansion, and `draw_qnts()` / `draw_means()` call signatures are not repeated across the ylim-calc and drawing phases. Closes #997.
+-   Apply the same consolidation to `plot.icm()` to keep the two sibling plotting paths structurally symmetric. Closes #1010.
 
 ## EpiModel 2.6.0
 
