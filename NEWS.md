@@ -27,6 +27,7 @@
 -   Replace direct `dat$run$nw[[network]]` accesses with `get_network()`/`set_network()` accessors across internal modules (`edgelists.R`, `net.fn.utils.R`, `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`) (#977).
 -   Consolidate duplicated quantile and mean-line logic in `plot.netsim(type = "epi")` so the `disp.qnts` setup, `mean.lwd` / `mean.lty` expansion, and `draw_qnts()` / `draw_means()` call signatures are not repeated across the ylim-calc and drawing phases. Closes #997.
 -   Apply the same consolidation to `plot.icm()` to keep the two sibling plotting paths structurally symmetric. Closes #1010.
+-   Extract duplicated stats validation logic from `plot_netsim_stats()` and `plot.netdx()` into a shared `validate_stats_selection()` helper; add `xlim`, `xlab`, `ylim`, `ylab` parameters to `plot.netdx()` for parity with `plot.netsim(type = "formation")`. Closes #998.
 
 ## EpiModel 2.6.0
 
