@@ -464,7 +464,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   if (is.null(ylim) && (popfrac || sim.lines)) {
     ylim <- c(min.prev, max.prev)
   } else if (is.null(ylim) && !popfrac && !sim.lines &&
-               (mean.line || qnts == TRUE)) {
+               (mean.line || disp.qnts)) {
     ylim <- c(
       min(qnt.min * 0.9, mean.min * 0.9),
       max(qnt.max * 1.1, mean.max * 1.1)
