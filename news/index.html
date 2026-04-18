@@ -38,10 +38,8 @@
 <div class="section level3">
 <h3 id="breaking-changes-2-6-1">BREAKING CHANGES<a class="anchor" aria-label="anchor" href="#breaking-changes-2-6-1"></a></h3>
 <ul><li>Removed extension/custom module support from ICM models. <code><a href="../reference/control.icm.html">control.icm()</a></code> no longer accepts <code>.FUN</code> arguments (e.g., <code>infection.FUN</code>, <code>departures.FUN</code>), <code>skip.check</code>, or additional modules via <code>...</code>. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to <code><a href="../reference/control.icm.html">control.icm()</a></code> should migrate to the network model class via <code><a href="../reference/control.net.html">control.net()</a></code>, which provides full extension model support. Closes <a href="https://github.com/EpiModel/EpiModel/issues/634" class="external-link">#634</a>.</li>
-<li>Completed removal of all long-deprecated parameter names. All of the following now produce hard errors directing users to the current names. Closes <a href="https://github.com/EpiModel/EpiModel/issues/989" class="external-link">#989</a>.
+<li>Completed removal of all long-deprecated parameter names. The following now produce hard errors directing users to the current names:
 <ul><li>
-<code>b.rate</code> / <code>b.rate.g2</code> in <code><a href="../reference/param.dcm.html">param.dcm()</a></code>, <code><a href="../reference/param.icm.html">param.icm()</a></code>, <code><a href="../reference/param.net.html">param.net()</a></code> – use <code>a.rate</code> / <code>a.rate.g2</code> (deprecated since 1.7.0).</li>
-<li>
 <code>trans.rate</code> / <code>trans.rate.g2</code> in <code><a href="../reference/param.dcm.html">param.dcm()</a></code>, <code><a href="../reference/param.icm.html">param.icm()</a></code> – use <code>inf.prob</code> / <code>inf.prob.g2</code>.</li>
 <li>
 <code>.m2</code> parameter suffix in <code><a href="../reference/param.net.html">param.net()</a></code> and <code><a href="../reference/init.net.html">init.net()</a></code> – use <code>.g2</code> suffix (deprecated since 2.0).</li>
@@ -50,6 +48,7 @@
 <li>
 <code>depend</code> in <code><a href="../reference/control.net.html">control.net()</a></code> – use <code>resimulate.network</code> (deprecated since 2.0).</li>
 </ul></li>
+<li>Removed <code>b.rate</code> / <code>b.rate.g2</code> deprecation guards from <code><a href="../reference/param.dcm.html">param.dcm()</a></code>, <code><a href="../reference/param.icm.html">param.icm()</a></code>, and <code><a href="../reference/param.net.html">param.net()</a></code>. These parameters were renamed to <code>a.rate</code> / <code>a.rate.g2</code> in v1.7.0; passing them now produces a standard R unused-argument error. Closes <a href="https://github.com/EpiModel/EpiModel/issues/989" class="external-link">#989</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-2-6-1">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-6-1"></a></h3>

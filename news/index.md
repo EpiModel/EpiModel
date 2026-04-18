@@ -15,15 +15,9 @@
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md),
   which provides full extension model support. Closes
   [\#634](https://github.com/EpiModel/EpiModel/issues/634).
-- Completed removal of all long-deprecated parameter names. All of the
+- Completed removal of all long-deprecated parameter names. The
   following now produce hard errors directing users to the current
-  names. Closes
-  [\#989](https://github.com/EpiModel/EpiModel/issues/989).
-  - `b.rate` / `b.rate.g2` in
-    [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
-    [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
-    [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
-    – use `a.rate` / `a.rate.g2` (deprecated since 1.7.0).
+  names:
   - `trans.rate` / `trans.rate.g2` in
     [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
     [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
@@ -39,6 +33,14 @@
   - `depend` in
     [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
     – use `resimulate.network` (deprecated since 2.0).
+- Removed `b.rate` / `b.rate.g2` deprecation guards from
+  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
+  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
+  and
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md).
+  These parameters were renamed to `a.rate` / `a.rate.g2` in v1.7.0;
+  passing them now produces a standard R unused-argument error. Closes
+  [\#989](https://github.com/EpiModel/EpiModel/issues/989).
 
 ### NEW FEATURES
 
