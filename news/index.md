@@ -77,6 +77,16 @@
   [`stop()`](https://rdrr.io/r/base/stop.html) calls, preventing them
   from ever executing. Closes
   [\#982](https://github.com/EpiModel/EpiModel/issues/982).
+- Fix `ylim` in `plot.netsim(type = "epi")` so the auto-range expands to
+  fit quantile polygons when `mean.line = FALSE`. The previous
+  `qnts == TRUE` guard only matched `qnts = 1` / `qnts = TRUE`, leaving
+  polygons potentially clipped at the default `qnts = 0.5`. Closes
+  [\#1009](https://github.com/EpiModel/EpiModel/issues/1009).
+- Fix
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  to skip drawing quantile polygons when `qnts = FALSE`, matching the
+  documented behavior. Previously this case produced a degenerate
+  zero-width band rather than suppressing the polygon.
 
 ### OTHER
 
@@ -85,6 +95,15 @@
   accessors across internal modules (`edgelists.R`, `net.fn.utils.R`,
   `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`)
   ([\#977](https://github.com/EpiModel/EpiModel/issues/977)).
+- Consolidate duplicated quantile and mean-line logic in
+  `plot.netsim(type = "epi")` so the `disp.qnts` setup, `mean.lwd` /
+  `mean.lty` expansion, and `draw_qnts()` / `draw_means()` call
+  signatures are not repeated across the ylim-calc and drawing phases.
+  Closes [\#997](https://github.com/EpiModel/EpiModel/issues/997).
+- Apply the same consolidation to
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  to keep the two sibling plotting paths structurally symmetric. Closes
+  [\#1010](https://github.com/EpiModel/EpiModel/issues/1010).
 
 ## EpiModel 2.6.0
 
