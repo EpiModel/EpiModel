@@ -1,3 +1,21 @@
+validate_stats_selection <- function(stats_table, data, stats,
+                                     obj_type = "object") {
+  sts <- which(!is.na(stats_table[, "Sim Mean"]))
+  nmstats <- rownames(stats_table)[sts]
+
+  stats <- if (is.null(stats)) nmstats else stats
+  if (!all(stats %in% nmstats)) {
+    stop("One or more requested stats not contained in ", obj_type)
+  }
+  outsts <- which(nmstats %in% stats)
+  nmstats <- nmstats[outsts]
+
+  data <- data[, outsts, , drop = FALSE]
+  targets <- stats_table$Target[sts][outsts]
+
+  list(data = data, nmstats = nmstats, targets = targets)
+}
+
 plot_stats_table <- function(data, nmstats, method,
                              sim.lines,
                              sim.col = NULL, sim.lwd = NULL, mean.line,
