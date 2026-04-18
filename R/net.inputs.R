@@ -245,12 +245,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## Defaults and Checks
-  if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.") 
-  }
-  if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
-  }
   # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
