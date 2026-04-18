@@ -187,25 +187,33 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   mean.min <- 1E10
   mean.max <- -1E10
 
-  ## Quantiles - ylim min max ##
-  if (nsims > 1) {
-    if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1")
+  ## Quantile and mean line setup (used in both ylim calc and drawing) ##
+  if (qnts == FALSE || nsims == 1) {
+    disp.qnts <- FALSE
+  } else {
+    disp.qnts <- TRUE
+  }
+  if (disp.qnts && (qnts > 1 || qnts < 0)) {
+    stop("qnts must be between 0 and 1")
+  }
+
+  if (mean.line == TRUE) {
+    if (length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
     }
+    if (length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
+    }
+  }
+
+  ## Quantiles - ylim min max ##
+  if (disp.qnts) {
     qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
     qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
   }
 
   ## Mean lines - ylim max ##
   if (mean.line == TRUE) {
-
-    if (length(mean.lwd) < lcomp) {
-      mean.lwd <- rep(mean.lwd, lcomp)
-    }
-
-    if (length(mean.lty) < lcomp) {
-      mean.lty <- rep(mean.lty, lcomp)
-    }
     mean.min <- draw_means(x, y, mean.smooth, mean.lwd,
                            mean.pal, mean.lty, "epi", 0, "min", offset)
     mean.max <- draw_means(x, y, mean.smooth, mean.lwd,
@@ -239,11 +247,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
 
   ## Quantiles - Plotting ##
-  if (nsims > 1) {
-    if (qnts > 1 || qnts < 0) {
-      stop("qnts must be between 0 and 1")
-    }
-    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, offset = offset)
+  if (disp.qnts) {
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 1, "max", offset)
   }
 
   ## Simulation lines ##
@@ -259,16 +264,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
   ## Mean lines - plotting ##
   if (mean.line == TRUE) {
-
-    if (length(mean.lwd) < lcomp) {
-      mean.lwd <- rep(mean.lwd, lcomp)
-    }
-
-    if (length(mean.lty) < lcomp) {
-      mean.lty <- rep(mean.lty, lcomp)
-    }
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty,
-               offset = offset)
+               "epi", 1, "max", offset)
   }
 
   ## Grid
