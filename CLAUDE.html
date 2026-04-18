@@ -74,6 +74,7 @@
 <li>
 <strong>Do NOT use <code>testthat::test_dir("tests/testthat")</code></strong> – it does not load the package namespace, so internal/unexported functions (e.g., <code>tedgelist_to_toggles</code>, <code>name_saveout_elts</code>) and re-exported imports (e.g., <code>networkLite</code>) will not be found, causing spurious test failures.</li>
 <li>Use <code>_R_CHECK_FORCE_SUGGESTS_=false</code> to skip optional Suggests packages that may not be installed (e.g., <code>ergm.ego</code>, <code>ndtv</code>, <code>egor</code>).</li>
+<li>Long-running tests (<code>test-net-long.R</code>, <code>test-icm-long.R</code>, <code>test-dcm-long.R</code>) are guarded by <code>skip_on_cran()</code>. <code>R CMD check --as-cran</code> skips them; drop <code>--as-cran</code> locally when touching core simulation code and you want that coverage.</li>
 </ul></div>
 </div>
 <div class="section level2">
@@ -103,17 +104,21 @@
 </ul></div>
 <div class="section level3">
 <h3 id="the-dat-object">The <code>dat</code> Object<a class="anchor" aria-label="anchor" href="#the-dat-object"></a></h3>
-<p>Network simulations pass a central <code>dat</code> list object through all modules. Key sub-elements: - <code>dat$attr</code> - Node-level attributes (disease status, demographics, etc.) - <code>dat$epi</code> - Epidemic tracking variables (counts per time step) - <code>dat$nwparam</code> - Network model parameters - <code>dat$param</code> / <code>dat$init</code> / <code>dat$control</code> - Simulation configuration - <code>dat$run</code> - Runtime state (current time step, simulation metadata) - <code>dat$el</code> - Edgelists for each network layer (when using tergmLite mode) - <code>dat$net</code> - Network objects (when not using tergmLite mode)</p>
+<p>Network simulations pass a central <code>dat</code> list object through all modules. Since the v2.5 restart refactor, all runtime state lives under <code>dat$run</code> — <code>dat$run</code> alone is sufficient to checkpoint and resume a simulation.</p>
+<p>Runtime state (under <code>dat$run</code>): - <code>dat$run$attr</code> - Node-level attributes (disease status, demographics, etc.) - <code>dat$run$el</code> - Edgelists per network layer (tergmLite mode) - <code>dat$run$nw</code> - Network objects per network layer (non-tergmLite mode) - <code>dat$run$net_attr</code> - Per-network metadata (size, <code>lasttoggle</code>) - <code>dat$run$nwterms</code> - Nodal attributes referenced by the ERGM formula - <code>dat$run$last_unique_id</code> - Counter for newly appended nodes</p>
+<p>Top-level (static or aggregated): - <code>dat$epi</code> - Epidemic tracking variables (counts per time step) - <code>dat$stats</code> - Network-statistic tracking (<code>dat$stats$nwstats</code>, <code>dat$stats$transmat</code>) - <code>dat$nwparam</code> - Network model parameters - <code>dat$num.nw</code> - Number of network layers - <code>dat$param</code> / <code>dat$init</code> / <code>dat$control</code> - User-provided simulation configuration</p>
+<p>Prefer the accessor API (<code>get_attr</code>/<code>set_attr</code>, <code>get_network</code>/<code>set_network</code>, <code>get_param</code>, <code>get_epi</code>/<code>set_epi</code>, <code>get_control</code>, <code>append_core_attr</code>/<code>append_attr</code>) over direct <code>dat$run$*</code> manipulation. #977 migrated internal code in this direction, and the accessors handle validation, <code>lasttoggle</code> / <code>unique_id</code> bookkeeping, and tergmLite vs. non-tergmLite dispatch.</p>
 </div>
 <div class="section level3">
 <h3 id="shared-plotting-infrastructure">Shared Plotting Infrastructure<a class="anchor" aria-label="anchor" href="#shared-plotting-infrastructure"></a></h3>
-<p><code>plot.icm</code> (<code>R/plot.icm.R</code>) and <code>plot_netsim_epi</code> (<code>R/plot.netsim.R</code>) share helper functions <code>draw_means()</code> and <code>draw_qnts()</code> defined in <code>R/plot.R</code>. Changes to plotting behavior must be coordinated across all three files. <code>plot.dcm</code> (<code>R/plot.dcm.R</code>) is independent and uses <code>control$timesteps</code> directly for x-coordinates.</p>
+<p><code>plot.icm</code> (<code>R/plot.icm.R</code>) and <code>plot_netsim_epi</code> (<code>R/plot.netsim.R</code>) are sibling plotting paths for the same stochastic-epidemic output — different data-generating mechanisms, same summary statistics. They share <code>draw_means()</code> / <code>draw_qnts()</code> from <code>R/plot.R</code> and should stay as structurally symmetric as possible. Treat behavioral divergences between them as bugs in the lagging side, not as design. Remaining known asymmetries are tracked in #1012.</p>
+<p><code>plot.dcm</code> (<code>R/plot.dcm.R</code>) is intentionally independent — different time model, uses <code>control$timesteps</code> for x-coordinates directly.</p>
 <p><code>as.data.frame.netsim</code> delegates entirely to <code>as.data.frame.icm</code>, so changes to the ICM method automatically apply to netsim.</p>
 </div>
 <div class="section level3">
 <h3 id="time-handling-differences-across-model-classes">Time Handling Differences Across Model Classes<a class="anchor" aria-label="anchor" href="#time-handling-differences-across-model-classes"></a></h3>
 <ul><li>
-<strong>DCM</strong>: <code>control$timesteps</code> stores the explicit time vector (may be non-integer when <code>dt &lt; 1</code>). <code>control$nsteps</code> is the max time value. <code>control$nruns</code> is the number of parameter sensitivity runs.</li>
+<strong>DCM</strong>: <code>control$timesteps</code> stores the explicit time vector (may be non-integer when <code>dt &lt; 1</code>). <code>control$nsteps</code> is the max time value. <code>control$nruns</code> is the number of sensitivity runs, derived from the longest vector-valued argument in <code><a href="reference/param.dcm.html">param.dcm()</a></code> or <code><a href="reference/init.dcm.html">init.dcm()</a></code> (initial-condition sensitivity was added in #408). Default ODE solver is <code>"lsoda"</code> (changed from <code>"rk4"</code> in v2.6.0 for numerical stability).</li>
 <li>
 <strong>ICM/netsim</strong>: Time is implicit via row indices. <code>control$nsteps</code> is both the number of rows and the max time step. <code>control$nsims</code> is the number of stochastic simulations. <code>control$start</code> provides a time offset (default 1).</li>
 </ul><p>When modifying functions that touch time or epi structure, verify behavior across all three classes.</p>
@@ -135,6 +140,7 @@
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a></h2>
 <p>The package heavily depends on the Statnet ecosystem: <code>ergm</code>, <code>tergm</code>, <code>network</code>, <code>networkDynamic</code>, <code>networkLite</code>, <code>statnet.common</code>. Understanding ERGM model specification is important for working with network model code.</p>
+<p>Parallelization uses the <code>future</code> / <code>future.apply</code> framework (switched from <code>foreach</code>/<code>doParallel</code> in v2.6.0). <code><a href="reference/netsim.html">netsim()</a></code> and <code><a href="reference/netdx.html">netdx()</a></code> default to <code>multisession</code>; users can override the plan via the <code>future.use.plan</code> control argument.</p>
 </div>
 <div class="section level2">
 <h2 id="environment-setup-for-testing">Environment Setup for Testing<a class="anchor" aria-label="anchor" href="#environment-setup-for-testing"></a></h2>
@@ -159,10 +165,10 @@
 <p><strong>Install R package dependencies</strong>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"deSolve"</span>, <span class="st">"networkDynamic"</span>, <span class="st">"tergm"</span>, <span class="st">"statnet.common"</span>,</span>
-<span>  <span class="st">"ergm"</span>, <span class="st">"network"</span>, <span class="st">"networkLite"</span>, <span class="st">"collections"</span>, <span class="st">"doParallel"</span>, <span class="st">"foreach"</span>,</span>
+<span>  <span class="st">"ergm"</span>, <span class="st">"network"</span>, <span class="st">"networkLite"</span>, <span class="st">"collections"</span>, <span class="st">"future"</span>, <span class="st">"future.apply"</span>,</span>
 <span>  <span class="st">"RColorBrewer"</span>, <span class="st">"ape"</span>, <span class="st">"lazyeval"</span>, <span class="st">"ggplot2"</span>, <span class="st">"tibble"</span>, <span class="st">"rlang"</span>, <span class="st">"dplyr"</span>,</span>
 <span>  <span class="st">"coda"</span>, <span class="st">"Rcpp"</span>, <span class="st">"testthat"</span>, <span class="st">"knitr"</span>, <span class="st">"rmarkdown"</span>, <span class="st">"progressr"</span>, <span class="st">"tidyr"</span>,</span>
-<span>  <span class="st">"roxygen2"</span>, <span class="st">"lintr"</span>, <span class="st">"xml2"</span>, <span class="st">"DT"</span>, <span class="st">"shiny"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"roxygen2"</span>, <span class="st">"lintr"</span>, <span class="st">"DT"</span>, <span class="st">"shiny"</span><span class="op">)</span>,</span>
 <span>  repos <span class="op">=</span> <span class="st">"https://cloud.r-project.org"</span>, Ncpus <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li>
@@ -224,7 +230,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="the-extension-api">The Extension API<a class="anchor" aria-label="anchor" href="#the-extension-api"></a></h3>
-<p>The extension API allows custom models with arbitrary disease states, demographics, interventions, and feedback. This is the most used feature for applied research.</p>
+<p>The extension API allows custom models with arbitrary disease states, demographics, interventions, and feedback. This is the most used feature for applied research. Extension support is <strong>network-class only</strong> — <code><a href="reference/control.icm.html">control.icm()</a></code> no longer accepts custom module functions, <code>skip.check</code>, or additional <code>...</code> arguments (removed in #980 for v2.6.1), so ICMs are restricted to the built-in SI/SIR/SIS types. Users needing custom ICM-style dynamics should migrate to <code><a href="reference/netsim.html">netsim()</a></code>.</p>
 <p><strong>Module function signature:</strong> <code>function(dat, at) { ...; return(dat) }</code> where <code>dat</code> is the master state object and <code>at</code> is the current time step.</p>
 <p><strong>Accessor functions:</strong> <code>get_attr</code>/<code>set_attr</code> (nodal attributes), <code>get_param</code> (parameters), <code>get_epi</code>/<code>set_epi</code> (epidemic stats), <code>append_core_attr</code>/<code>append_attr</code> (new nodes), <code>discord_edgelist</code> (S-I pairs), <code>set_transmat</code> (transmission events).</p>
 <p><strong>Required nodal attributes:</strong> <code>active</code>, <code>status</code>, <code>infTime</code>, <code>entrTime</code>, <code>exitTime</code>.</p>
@@ -234,6 +240,21 @@
 <p><strong>Extension model setup:</strong> Set <code>type = NULL</code> in <code><a href="reference/control.net.html">control.net()</a></code> and pass custom module functions (e.g., <code>infection.FUN = my_infect</code>).</p>
 <p><strong>Key control.net parameters:</strong> <code>resimulate.network = TRUE</code> (for feedback/demography), <code>tergmLite = TRUE</code> (20-50x faster), <code>epi.by = "attr"</code> (stratified stats), <code>nwstats.formula</code> (track network stats).</p>
 </div>
+<div class="section level3">
+<h3 id="removed-and-renamed-arguments">Removed and Renamed Arguments<a class="anchor" aria-label="anchor" href="#removed-and-renamed-arguments"></a></h3>
+<p>v2.6.1 (#992) completed removal of long-deprecated argument names — they now hard-error with a pointer to the current name. Use the current names when writing examples, docs, or tests:</p>
+<ul><li>
+<code>b.rate</code> / <code>b.rate.g2</code> → <code>a.rate</code> / <code>a.rate.g2</code> (<code>param.dcm</code> / <code>param.icm</code> / <code>param.net</code>)</li>
+<li>
+<code>trans.rate</code> / <code>trans.rate.g2</code> → <code>inf.prob</code> / <code>inf.prob.g2</code>
+</li>
+<li>
+<code>.m2</code> parameter suffix → <code>.g2</code> (e.g., <code>i.num.m2</code> → <code>i.num.g2</code>)</li>
+<li>
+<code>births.FUN</code> / <code>deaths.FUN</code> → <code>arrivals.FUN</code> / <code>departures.FUN</code> (<code>control.net</code>)</li>
+<li>
+<code>depend</code> → <code>resimulate.network</code> (<code>control.net</code>)</li>
+</ul></div>
 <div class="section level3">
 <h3 id="feedback-mechanisms">Feedback Mechanisms<a class="anchor" aria-label="anchor" href="#feedback-mechanisms"></a></h3>
 <p>Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using <code>status</code> as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (<code>inter.eff</code>, <code>inter.start</code>).</p>
@@ -248,7 +269,19 @@
 <span><span class="fu"><a href="reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>                    <span class="co"># transmission matrix</span></span>
 <span><span class="fu"><a href="reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, ir <span class="op">=</span> <span class="op">(</span><span class="va">si.flow</span> <span class="op">/</span> <span class="va">s.num</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># derived statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>                                      <span class="co"># compartment sizes over time</span></span></code></pre></div>
-</div>
+<p><code>as.data.frame.icm</code> / <code>as.data.frame.netsim</code> return objects that carry the <code>epi.data.frame</code> class alongside <code>data.frame</code>; <code>plot.epi.data.frame</code> plots them like <code>plot.netsim(type = "epi")</code>. Build them manually with <code>as.epi.data.frame(df)</code> or <code>df2epi(x)</code>.</p>
+<p>Other exported accessors and helpers worth knowing:</p>
+<ul><li>
+<strong>Simulation slicing</strong>: <code><a href="reference/get_sims.html">get_sims()</a></code> (subset by index), <code><a href="reference/get_param_set.html">get_param_set()</a></code> and <code><a href="reference/get_attr_history.html">get_attr_history()</a></code> (recorded parameter and attribute trajectories).</li>
+<li>
+<strong>Transmission / reachability</strong>: <code><a href="reference/get_discordant_edgelist.html">get_discordant_edgelist()</a></code> (S–I pairs — generic form, supply the discordance attribute explicitly), <code><a href="reference/reachable-nodes.html">get_forward_reachable()</a></code> / <code><a href="reference/reachable-nodes.html">get_backward_reachable()</a></code> over cumulative edgelists (set <code>control.net(save.cumulative.edgelist = TRUE)</code> to capture them).</li>
+<li>
+<strong>Restart &amp; truncation</strong>: <code><a href="reference/truncate_sim.html">truncate_sim()</a></code> is an S3 generic over <code>dcm</code> / <code>icm</code> / <code>netsim</code> with a <code>reset.time</code> argument; <code><a href="reference/make_restart_point.html">make_restart_point()</a></code> trims a <code>netsim</code> to the minimum state needed to resume.</li>
+<li>
+<strong>Attribute utilities</strong>: <code><a href="reference/overwrite_attrs.html">overwrite_attrs()</a></code> applies an <code>init_attr</code> data frame at initialization; <code><a href="reference/net-accessor.html">get_core_attributes()</a></code> lists the core attributes and their types (#969).</li>
+<li>
+<strong>Parameter tables</strong>: <code><a href="reference/param.net_from_table.html">param.net_from_table()</a></code> / <code><a href="reference/param.net_to_table.html">param.net_to_table()</a></code> convert between list and data.frame parameter representations.</li>
+</ul></div>
 </div>
 </div>
 
