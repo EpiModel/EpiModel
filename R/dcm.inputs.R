@@ -139,12 +139,6 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.") 
-  }
-  if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
-  }
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
