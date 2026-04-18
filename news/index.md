@@ -106,6 +106,14 @@
   [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
   to keep the two sibling plotting paths structurally symmetric. Closes
   [\#1010](https://github.com/EpiModel/EpiModel/issues/1010).
+- Extract duplicated stats validation logic from `plot_netsim_stats()`
+  and
+  [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+  into a shared `validate_stats_selection()` helper; add `xlim`, `xlab`,
+  `ylim`, `ylab` parameters to
+  [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+  for parity with `plot.netsim(type = "formation")`. Closes
+  [\#998](https://github.com/EpiModel/EpiModel/issues/998).
 
 ## EpiModel 2.6.0
 

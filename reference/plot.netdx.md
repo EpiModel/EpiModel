@@ -33,6 +33,10 @@ plot(
   plots.joined = NULL,
   legend = NULL,
   grid = FALSE,
+  xlim = NULL,
+  xlab = NULL,
+  ylim = NULL,
+  ylab = NULL,
   ...
 )
 ```
@@ -159,6 +163,27 @@ plot(
   If `TRUE`, a grid is added to the background of plot (see
   [`grid()`](https://rdrr.io/r/graphics/grid.html) for details), with
   default of nx by ny.
+
+- xlim:
+
+  the x limits (x1, x2) of the plot. Note that `x1 > x2` is allowed and
+  leads to a ‘reversed axis’.
+
+  The default value, `NULL`, indicates that the range of the
+  [finite](https://rdrr.io/r/base/is.finite.html) values to be plotted
+  should be used.
+
+- xlab:
+
+  a label for the x axis, defaults to a description of `x`.
+
+- ylim:
+
+  the y limits of the plot.
+
+- ylab:
+
+  a label for the y axis, defaults to a description of `y`.
 
 - ...:
 
