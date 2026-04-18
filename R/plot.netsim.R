@@ -583,24 +583,10 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
   stats_table <- make_stats_table(data, ts)
   data <- array(unlist(data), dim = c(dim(data[[1]]), nsims))
 
-  ## Find available stats
-  sts <- which(!is.na(stats_table[, "Sim Mean"]))
-  nmstats <- rownames(stats_table)[sts]
-
-  ## Pull and check stat argument
-  stats <- if (is.null(stats)) nmstats else stats
-  if (!all(stats %in% nmstats)) {
-    stop("One or more requested stats not contained in netsim object")
-  }
-  outsts <- which(nmstats %in% stats)
-  nmstats <- nmstats[outsts]
-
-  ## Subset data
-  data <- data[, outsts, , drop = FALSE]
-  ## we've already subset the data to `sims`
-
-  ## Pull target stats
-  targets <- stats_table$Target[sts][outsts]
+  sel <- validate_stats_selection(stats_table, data, stats, "netsim object")
+  data <- sel$data
+  nmstats <- sel$nmstats
+  targets <- sel$targets
 
   plot_stats_table(
     data = data,
