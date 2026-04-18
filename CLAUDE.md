@@ -43,6 +43,7 @@ After modifying C/C++ code in `src/`, the package must be reinstalled (`R CMD IN
 - **Use `R CMD check` as the canonical test method.** It runs all unit tests via `testthat::test_check()` (which properly loads the package namespace) AND runs all documentation examples. There is no need to separately run `test_check` or `test_package` -- `R CMD check` already covers both.
 - **Do NOT use `testthat::test_dir("tests/testthat")`** -- it does not load the package namespace, so internal/unexported functions (e.g., `tedgelist_to_toggles`, `name_saveout_elts`) and re-exported imports (e.g., `networkLite`) will not be found, causing spurious test failures.
 - Use `_R_CHECK_FORCE_SUGGESTS_=false` to skip optional Suggests packages that may not be installed (e.g., `ergm.ego`, `ndtv`, `egor`).
+- Long-running tests (`test-net-long.R`, `test-icm-long.R`, `test-dcm-long.R`) are guarded by `skip_on_cran()`. `R CMD check --as-cran` skips them; drop `--as-cran` locally when touching core simulation code and you want that coverage.
 
 ## Code Style
 
@@ -64,24 +65,36 @@ After modifying C/C++ code in `src/`, the package must be reinstalled (`R CMD IN
 
 ### The `dat` Object
 
-Network simulations pass a central `dat` list object through all modules. Key sub-elements:
-- `dat$attr` - Node-level attributes (disease status, demographics, etc.)
+Network simulations pass a central `dat` list object through all modules. Since the v2.5 restart refactor, all runtime state lives under `dat$run` — `dat$run` alone is sufficient to checkpoint and resume a simulation.
+
+Runtime state (under `dat$run`):
+- `dat$run$attr` - Node-level attributes (disease status, demographics, etc.)
+- `dat$run$el` - Edgelists per network layer (tergmLite mode)
+- `dat$run$nw` - Network objects per network layer (non-tergmLite mode)
+- `dat$run$net_attr` - Per-network metadata (size, `lasttoggle`)
+- `dat$run$nwterms` - Nodal attributes referenced by the ERGM formula
+- `dat$run$last_unique_id` - Counter for newly appended nodes
+
+Top-level (static or aggregated):
 - `dat$epi` - Epidemic tracking variables (counts per time step)
+- `dat$stats` - Network-statistic tracking (`dat$stats$nwstats`, `dat$stats$transmat`)
 - `dat$nwparam` - Network model parameters
-- `dat$param` / `dat$init` / `dat$control` - Simulation configuration
-- `dat$run` - Runtime state (current time step, simulation metadata)
-- `dat$el` - Edgelists for each network layer (when using tergmLite mode)
-- `dat$net` - Network objects (when not using tergmLite mode)
+- `dat$num.nw` - Number of network layers
+- `dat$param` / `dat$init` / `dat$control` - User-provided simulation configuration
+
+Prefer the accessor API (`get_attr`/`set_attr`, `get_network`/`set_network`, `get_param`, `get_epi`/`set_epi`, `get_control`, `append_core_attr`/`append_attr`) over direct `dat$run$*` manipulation. #977 migrated internal code in this direction, and the accessors handle validation, `lasttoggle` / `unique_id` bookkeeping, and tergmLite vs. non-tergmLite dispatch.
 
 ### Shared Plotting Infrastructure
 
-`plot.icm` (`R/plot.icm.R`) and `plot_netsim_epi` (`R/plot.netsim.R`) share helper functions `draw_means()` and `draw_qnts()` defined in `R/plot.R`. Changes to plotting behavior must be coordinated across all three files. `plot.dcm` (`R/plot.dcm.R`) is independent and uses `control$timesteps` directly for x-coordinates.
+`plot.icm` (`R/plot.icm.R`) and `plot_netsim_epi` (`R/plot.netsim.R`) are sibling plotting paths for the same stochastic-epidemic output — different data-generating mechanisms, same summary statistics. They share `draw_means()` / `draw_qnts()` from `R/plot.R` and should stay as structurally symmetric as possible. Treat behavioral divergences between them as bugs in the lagging side, not as design. Remaining known asymmetries are tracked in #1012.
+
+`plot.dcm` (`R/plot.dcm.R`) is intentionally independent — different time model, uses `control$timesteps` for x-coordinates directly.
 
 `as.data.frame.netsim` delegates entirely to `as.data.frame.icm`, so changes to the ICM method automatically apply to netsim.
 
 ### Time Handling Differences Across Model Classes
 
-- **DCM**: `control$timesteps` stores the explicit time vector (may be non-integer when `dt < 1`). `control$nsteps` is the max time value. `control$nruns` is the number of parameter sensitivity runs.
+- **DCM**: `control$timesteps` stores the explicit time vector (may be non-integer when `dt < 1`). `control$nsteps` is the max time value. `control$nruns` is the number of sensitivity runs, derived from the longest vector-valued argument in `param.dcm()` or `init.dcm()` (initial-condition sensitivity was added in #408). Default ODE solver is `"lsoda"` (changed from `"rk4"` in v2.6.0 for numerical stability).
 - **ICM/netsim**: Time is implicit via row indices. `control$nsteps` is both the number of rows and the max time step. `control$nsims` is the number of stochastic simulations. `control$start` provides a time offset (default 1).
 
 When modifying functions that touch time or epi structure, verify behavior across all three classes.
@@ -99,6 +112,8 @@ Models can use multiple network layers (e.g., sexual + needle-sharing networks).
 ## Dependencies
 
 The package heavily depends on the Statnet ecosystem: `ergm`, `tergm`, `network`, `networkDynamic`, `networkLite`, `statnet.common`. Understanding ERGM model specification is important for working with network model code.
+
+Parallelization uses the `future` / `future.apply` framework (switched from `foreach`/`doParallel` in v2.6.0). `netsim()` and `netdx()` default to `multisession`; users can override the plan via the `future.use.plan` control argument.
 
 ## Environment Setup for Testing
 
@@ -125,10 +140,10 @@ R is not pre-installed in the Claude Code environment but can be installed. When
 3. **Install R package dependencies**:
    ```r
    install.packages(c("deSolve", "networkDynamic", "tergm", "statnet.common",
-     "ergm", "network", "networkLite", "collections", "doParallel", "foreach",
+     "ergm", "network", "networkLite", "collections", "future", "future.apply",
      "RColorBrewer", "ape", "lazyeval", "ggplot2", "tibble", "rlang", "dplyr",
      "coda", "Rcpp", "testthat", "knitr", "rmarkdown", "progressr", "tidyr",
-     "roxygen2", "lintr", "xml2", "DT", "shiny"),
+     "roxygen2", "lintr", "DT", "shiny"),
      repos = "https://cloud.r-project.org", Ncpus = 4)
    ```
 
@@ -195,7 +210,7 @@ sim <- netsim(est, param, init, control)
 
 ### The Extension API
 
-The extension API allows custom models with arbitrary disease states, demographics, interventions, and feedback. This is the most used feature for applied research.
+The extension API allows custom models with arbitrary disease states, demographics, interventions, and feedback. This is the most used feature for applied research. Extension support is **network-class only** — `control.icm()` no longer accepts custom module functions, `skip.check`, or additional `...` arguments (removed in #980 for v2.6.1), so ICMs are restricted to the built-in SI/SIR/SIS types. Users needing custom ICM-style dynamics should migrate to `netsim()`.
 
 **Module function signature:** `function(dat, at) { ...; return(dat) }` where `dat` is the master state object and `at` is the current time step.
 
@@ -213,6 +228,16 @@ The extension API allows custom models with arbitrary disease states, demographi
 
 **Key control.net parameters:** `resimulate.network = TRUE` (for feedback/demography), `tergmLite = TRUE` (20-50x faster), `epi.by = "attr"` (stratified stats), `nwstats.formula` (track network stats).
 
+### Removed and Renamed Arguments
+
+v2.6.1 (#992) completed removal of long-deprecated argument names — they now hard-error with a pointer to the current name. Use the current names when writing examples, docs, or tests:
+
+- `b.rate` / `b.rate.g2` → `a.rate` / `a.rate.g2` (`param.dcm` / `param.icm` / `param.net`)
+- `trans.rate` / `trans.rate.g2` → `inf.prob` / `inf.prob.g2`
+- `.m2` parameter suffix → `.g2` (e.g., `i.num.m2` → `i.num.g2`)
+- `births.FUN` / `deaths.FUN` → `arrivals.FUN` / `departures.FUN` (`control.net`)
+- `depend` → `resimulate.network` (`control.net`)
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using `status` as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (`inter.eff`, `inter.start`).
@@ -229,3 +254,13 @@ get_transmat(sim, sim = 1)                    # transmission matrix
 mutate_epi(sim, ir = (si.flow / s.num) * 100) # derived statistics
 plot(sim)                                      # compartment sizes over time
 ```
+
+`as.data.frame.icm` / `as.data.frame.netsim` return objects that carry the `epi.data.frame` class alongside `data.frame`; `plot.epi.data.frame` plots them like `plot.netsim(type = "epi")`. Build them manually with `as.epi.data.frame(df)` or `df2epi(x)`.
+
+Other exported accessors and helpers worth knowing:
+
+- **Simulation slicing**: `get_sims()` (subset by index), `get_param_set()` and `get_attr_history()` (recorded parameter and attribute trajectories).
+- **Transmission / reachability**: `get_discordant_edgelist()` (S–I pairs — generic form, supply the discordance attribute explicitly), `get_forward_reachable()` / `get_backward_reachable()` over cumulative edgelists (set `control.net(save.cumulative.edgelist = TRUE)` to capture them).
+- **Restart & truncation**: `truncate_sim()` is an S3 generic over `dcm` / `icm` / `netsim` with a `reset.time` argument; `make_restart_point()` trims a `netsim` to the minimum state needed to resume.
+- **Attribute utilities**: `overwrite_attrs()` applies an `init_attr` data frame at initialization; `get_core_attributes()` lists the core attributes and their types (#969).
+- **Parameter tables**: `param.net_from_table()` / `param.net_to_table()` convert between list and data.frame parameter representations.
