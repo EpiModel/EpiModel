@@ -3,12 +3,12 @@
 ### BREAKING CHANGES
 
 -   Removed extension/custom module support from ICM models. `control.icm()` no longer accepts `.FUN` arguments (e.g., `infection.FUN`, `departures.FUN`), `skip.check`, or additional modules via `...`. ICMs now exclusively support the built-in SI, SIR, and SIS disease types. Users who were passing custom module functions to `control.icm()` should migrate to the network model class via `control.net()`, which provides full extension model support. Closes #634.
--   Completed removal of all long-deprecated parameter names. All of the following now produce hard errors directing users to the current names. Closes #989.
-    -   `b.rate` / `b.rate.g2` in `param.dcm()`, `param.icm()`, `param.net()` -- use `a.rate` / `a.rate.g2` (deprecated since 1.7.0).
+-   Completed removal of all long-deprecated parameter names. The following now produce hard errors directing users to the current names:
     -   `trans.rate` / `trans.rate.g2` in `param.dcm()`, `param.icm()` -- use `inf.prob` / `inf.prob.g2`.
     -   `.m2` parameter suffix in `param.net()` and `init.net()` -- use `.g2` suffix (deprecated since 2.0).
     -   `births.FUN` / `deaths.FUN` in `control.net()` -- use `arrivals.FUN` / `departures.FUN` (deprecated since 1.7.0).
     -   `depend` in `control.net()` -- use `resimulate.network` (deprecated since 2.0).
+-   Removed `b.rate` / `b.rate.g2` deprecation guards from `param.dcm()`, `param.icm()`, and `param.net()`. These parameters were renamed to `a.rate` / `a.rate.g2` in v1.7.0; passing them now produces a standard R unused-argument error. Closes #989.
 
 ### NEW FEATURES
 
