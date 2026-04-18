@@ -33,9 +33,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="core-simulation-functions">Core Simulation Functions<a class="anchor" aria-label="anchor" href="#core-simulation-functions"></a></h2>
+      <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a></h2>
 
-      <div class="section-desc"><p>Primary functions for estimating network models, running epidemic simulations, and diagnosing model fit.</p></div>
+
 
       <dl></dl></div><div class="section level2">
 
@@ -44,41 +44,6 @@
 
       <dl><dt>
 
-          <code><a href="dcm.html">dcm()</a></code>
-
-        </dt>
-        <dd>Deterministic Compartmental Models</dd>
-
-        <dt>
-
-          <code><a href="icm.html">icm()</a></code>
-
-        </dt>
-        <dd>Stochastic Individual Contact Models</dd>
-
-        <dt>
-
-          <code><a href="netsim.html">netsim()</a></code>
-
-        </dt>
-        <dd>Stochastic Network Models</dd>
-
-        <dt>
-
-          <code><a href="netest.html">netest()</a></code>
-
-        </dt>
-        <dd>Dynamic Network Model Estimation</dd>
-
-        <dt>
-
-          <code><a href="netdx.html">netdx()</a></code>
-
-        </dt>
-        <dd>Dynamic Network Model Diagnostics</dd>
-
-        <dt>
-
           <code><a href="EpiModel-package.html">EpiModel-package</a></code> <code><a href="EpiModel-package.html">EpiModel</a></code>
 
         </dt>
@@ -86,7 +51,7 @@
       </dl></div><div class="section level2">
       <h2 id="model-inputs">Model Inputs<a class="anchor" aria-label="anchor" href="#model-inputs"></a></h2>
 
-      <div class="section-desc"><p>Functions to specify parameters, initial conditions, and control settings for each model class, plus network setup utilities.</p></div>
+      <div class="section-desc"><p>Specify epidemic parameters, initial conditions, and control settings for each model class.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -155,15 +120,47 @@
 
         </dt>
         <dd>Control Settings for Stochastic Network Models</dd>
+      </dl></div><div class="section level2">
+      <h2 id="epidemic-simulation">Epidemic Simulation<a class="anchor" aria-label="anchor" href="#epidemic-simulation"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Run deterministic compartmental models, stochastic individual contact models, or stochastic network models.</p></div>
 
-          <code><a href="dissolution_coefs.html">dissolution_coefs()</a></code>
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="dcm.html">dcm()</a></code>
 
         </dt>
-        <dd>Dissolution Coefficients for Stochastic Network Models</dd>
+        <dd>Deterministic Compartmental Models</dd>
 
         <dt>
+
+          <code><a href="icm.html">icm()</a></code>
+
+        </dt>
+        <dd>Stochastic Individual Contact Models</dd>
+
+        <dt>
+
+          <code><a href="netsim.html">netsim()</a></code>
+
+        </dt>
+        <dd>Stochastic Network Models</dd>
+      </dl></div><div class="section level2">
+      <h2 id="network-model-setup-estimation">Network Model Setup &amp; Estimation<a class="anchor" aria-label="anchor" href="#network-model-setup-estimation"></a></h2>
+
+      <div class="section-desc"><p>Create and configure network objects, estimate ERGM/TERGM-based network models from target statistics, diagnose model fit, and compute dissolution coefficients. These functions support the additional estimation step required by network models before simulation with netsim().</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="network_initialize.html">network_initialize()</a></code>
 
@@ -176,213 +173,6 @@
 
         </dt>
         <dd>Specify Controls by Network</dd>
-      </dl></div><div class="section level2">
-      <h2 id="dat-object-accessors">dat Object Accessors<a class="anchor" aria-label="anchor" href="#dat-object-accessors"></a></h2>
-
-      <div class="section-desc"><p>Get and set node-level attributes, parameters, epidemic trackers, control settings, and initial conditions on the internal dat object used by network and ICM modules.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="net-accessor.html">get_attr_list()</a></code> <code><a href="net-accessor.html">get_attr()</a></code> <code><a href="net-accessor.html">add_attr()</a></code> <code><a href="net-accessor.html">set_attr()</a></code> <code><a href="net-accessor.html">append_attr()</a></code> <code><a href="net-accessor.html">remove_node_attr()</a></code> <code><a href="net-accessor.html">get_epi_list()</a></code> <code><a href="net-accessor.html">get_epi()</a></code> <code><a href="net-accessor.html">add_epi()</a></code> <code><a href="net-accessor.html">set_epi()</a></code> <code><a href="net-accessor.html">get_param_list()</a></code> <code><a href="net-accessor.html">get_param()</a></code> <code><a href="net-accessor.html">add_param()</a></code> <code><a href="net-accessor.html">set_param()</a></code> <code><a href="net-accessor.html">get_control_list()</a></code> <code><a href="net-accessor.html">get_control()</a></code> <code><a href="net-accessor.html">get_network_control()</a></code> <code><a href="net-accessor.html">add_control()</a></code> <code><a href="net-accessor.html">set_control()</a></code> <code><a href="net-accessor.html">get_init_list()</a></code> <code><a href="net-accessor.html">get_init()</a></code> <code><a href="net-accessor.html">add_init()</a></code> <code><a href="net-accessor.html">set_init()</a></code> <code><a href="net-accessor.html">get_core_attributes()</a></code> <code><a href="net-accessor.html">append_core_attr()</a></code>
-
-        </dt>
-        <dd>Functions to Access and Edit the Main netsim_dat Object in Network Models</dd>
-
-        <dt>
-
-          <code><a href="get_attr_history.html">get_attr_history()</a></code>
-
-        </dt>
-        <dd>Extract the Attributes History from Network Simulations</dd>
-
-        <dt>
-
-          <code><a href="get_attr_prop.html">get_attr_prop()</a></code>
-
-        </dt>
-        <dd>Proportional Table of Vertex Attributes</dd>
-
-        <dt>
-
-          <code><a href="auto_update_attr.html">auto_update_attr()</a></code>
-
-        </dt>
-        <dd>Update Vertex Attributes for Incoming Vertices</dd>
-
-        <dt>
-
-          <code><a href="overwrite_attrs.html">overwrite_attrs()</a></code>
-
-        </dt>
-        <dd>Helper to use a <code>data.frame</code> to initialize some attributes</dd>
-
-        <dt>
-
-          <code><a href="get_param_set.html">get_param_set()</a></code>
-
-        </dt>
-        <dd>Extract the Parameter Set from Network Simulations</dd>
-
-        <dt>
-
-          <code><a href="epi_trackers.html">epi_trackers()</a></code>
-
-        </dt>
-        <dd>Function to run the user-provided epi trackers</dd>
-
-        <dt>
-
-          <code><a href="delete_attr.html">delete_attr()</a></code>
-
-        </dt>
-        <dd>Delete Elements from Attribute List</dd>
-      </dl></div><div class="section level2">
-      <h2 id="network-and-edgelist-functions">Network and Edgelist Functions<a class="anchor" aria-label="anchor" href="#network-and-edgelist-functions"></a></h2>
-
-      <div class="section-desc"><p>Tools for working with network edgelists, partnership queries, discordant pairs, cumulative edgelists, and network attributes.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="discord_edgelist.html">discord_edgelist()</a></code>
-
-        </dt>
-        <dd>Discordant Edgelist</dd>
-
-        <dt>
-
-          <code><a href="get_edgelist.html">get_edgelist()</a></code>
-
-        </dt>
-        <dd>Get an Edgelist From the Specified Network</dd>
-
-        <dt>
-
-          <code><a href="get_edgelists_df.html">get_edgelists_df()</a></code>
-
-        </dt>
-        <dd>Get the Edgelist(s) from the Specified Network(s)</dd>
-
-        <dt>
-
-          <code><a href="get_degree.html">get_degree()</a></code>
-
-        </dt>
-        <dd>Get Individual Degree from Network or Edgelist</dd>
-
-        <dt>
-
-          <code><a href="get_partners.html">get_partners()</a></code>
-
-        </dt>
-        <dd>Return the Historical Contacts (Partners) of a Set of Index Nodes</dd>
-
-        <dt>
-
-          <code><a href="get_discordant_edgelist.html">get_discordant_edgelist()</a></code>
-
-        </dt>
-        <dd>Get Discordant Edgelist Based on Specified Status Variable</dd>
-
-        <dt>
-
-          <code><a href="get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code>
-
-        </dt>
-        <dd>Get a Cumulative Edgelist From a Specified Network</dd>
-
-        <dt>
-
-          <code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code>
-
-        </dt>
-        <dd>Get the Cumulative Edgelists of a Model</dd>
-
-        <dt>
-
-          <code><a href="get_cumulative_degree.html">get_cumulative_degree()</a></code>
-
-        </dt>
-        <dd>Return the Cumulative Degree of a Set of Index Nodes</dd>
-
-        <dt>
-
-          <code><a href="as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code>
-
-        </dt>
-        <dd>Convert an object to a <code>cumulative_edgelist</code></dd>
-
-        <dt>
-
-          <code><a href="update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code>
-
-        </dt>
-        <dd>Update a Cumulative Edgelist of the Specified Network</dd>
-
-        <dt>
-
-          <code><a href="dedup_cumulative_edgelist.html">dedup_cumulative_edgelist()</a></code>
-
-        </dt>
-        <dd>Deduplicate a cumulative edgelist by combining overlapping edges</dd>
-
-        <dt>
-
-          <code><a href="as_tibble_edgelist.html">as_tibble_edgelist()</a></code>
-
-        </dt>
-        <dd>Convert an Edgelist into a Tibble</dd>
-
-        <dt>
-
-          <code><a href="edgelist_censor.html">edgelist_censor()</a></code>
-
-        </dt>
-        <dd>Table of Edge Censoring</dd>
-
-        <dt>
-
-          <code><a href="get_network.html">get_network()</a></code>
-
-        </dt>
-        <dd>Extract Network Objects from Network Simulations</dd>
-
-        <dt>
-
-          <code><a href="set_network.html">set_network()</a></code>
-
-        </dt>
-        <dd>Set Network State During netsim Simulation</dd>
-
-        <dt>
-
-          <code><a href="get_nwparam.html">get_nwparam()</a></code>
-
-        </dt>
-        <dd>Extract Network Model Parameters</dd>
-
-        <dt>
-
-          <code><a href="get_network_attributes.html">get_network_attributes()</a></code>
-
-        </dt>
-        <dd>Get Network Attributes from a Network Object</dd>
-
-        <dt>
-
-          <code><a href="net-accessor.html">get_attr_list()</a></code> <code><a href="net-accessor.html">get_attr()</a></code> <code><a href="net-accessor.html">add_attr()</a></code> <code><a href="net-accessor.html">set_attr()</a></code> <code><a href="net-accessor.html">append_attr()</a></code> <code><a href="net-accessor.html">remove_node_attr()</a></code> <code><a href="net-accessor.html">get_epi_list()</a></code> <code><a href="net-accessor.html">get_epi()</a></code> <code><a href="net-accessor.html">add_epi()</a></code> <code><a href="net-accessor.html">set_epi()</a></code> <code><a href="net-accessor.html">get_param_list()</a></code> <code><a href="net-accessor.html">get_param()</a></code> <code><a href="net-accessor.html">add_param()</a></code> <code><a href="net-accessor.html">set_param()</a></code> <code><a href="net-accessor.html">get_control_list()</a></code> <code><a href="net-accessor.html">get_control()</a></code> <code><a href="net-accessor.html">get_network_control()</a></code> <code><a href="net-accessor.html">add_control()</a></code> <code><a href="net-accessor.html">set_control()</a></code> <code><a href="net-accessor.html">get_init_list()</a></code> <code><a href="net-accessor.html">get_init()</a></code> <code><a href="net-accessor.html">add_init()</a></code> <code><a href="net-accessor.html">set_init()</a></code> <code><a href="net-accessor.html">get_core_attributes()</a></code> <code><a href="net-accessor.html">append_core_attr()</a></code>
-
-        </dt>
-        <dd>Functions to Access and Edit the Main netsim_dat Object in Network Models</dd>
 
         <dt>
 
@@ -400,42 +190,49 @@
 
         <dt>
 
-          <code><a href="add_vertices.html">add_vertices()</a></code>
+          <code><a href="netest.html">netest()</a></code>
 
         </dt>
-        <dd>Fast Version of network::add.vertices for Edgelist-formatted Network</dd>
+        <dd>Dynamic Network Model Estimation</dd>
 
         <dt>
 
-          <code><a href="delete_vertices.html">delete_vertices()</a></code>
+          <code><a href="netdx.html">netdx()</a></code>
 
         </dt>
-        <dd>Fast Version of network::delete.vertices for Edgelist-formatted Network</dd>
+        <dd>Dynamic Network Model Diagnostics</dd>
 
         <dt>
 
-          <code><a href="delete_edges.html">delete_edges()</a></code>
+          <code><a href="dissolution_coefs.html">dissolution_coefs()</a></code>
 
         </dt>
-        <dd>Remove Edges That Include Specified Vertices</dd>
+        <dd>Dissolution Coefficients for Stochastic Network Models</dd>
 
         <dt>
 
-          <code><a href="copy_datattr_to_nwattr.html">copy_datattr_to_nwattr()</a></code>
+          <code><a href="update_dissolution.html">update_dissolution()</a></code>
 
         </dt>
-        <dd>Copy Vertex Attributes from the <code>netsim_dat</code> List to the Network Objects</dd>
+        <dd>Adjust Dissolution Component of Network Model Fit</dd>
 
         <dt>
 
-          <code><a href="copy_nwattr_to_datattr.html">copy_nwattr_to_datattr()</a></code>
+          <code><a href="trim_netest.html">trim_netest()</a></code>
 
         </dt>
-        <dd>Copy Vertex Attributes From Network to <code>netsim_dat</code> List</dd>
+        <dd>Function to Reduce the Size of a <code>netest</code> Object</dd>
+
+        <dt>
+
+          <code><a href="check_degdist_bal.html">check_degdist_bal()</a></code>
+
+        </dt>
+        <dd>Check Degree Distribution for Balance in Target Statistics</dd>
       </dl></div><div class="section level2">
-      <h2 id="output-extraction-and-analysis">Output Extraction and Analysis<a class="anchor" aria-label="anchor" href="#output-extraction-and-analysis"></a></h2>
+      <h2 id="simulation-output">Simulation Output<a class="anchor" aria-label="anchor" href="#simulation-output"></a></h2>
 
-      <div class="section-desc"><p>Convert simulation output to data frames, extract networks and transmission matrices, derive new statistics, and merge or truncate results.</p></div>
+      <div class="section-desc"><p>Extract, transform, merge, and truncate simulation results. Convert to data frames, derive new epi statistics, subset simulations, and create restart checkpoints.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -479,6 +276,85 @@
 
         <dt>
 
+          <code><a href="mutate_epi.html">mutate_epi()</a></code>
+
+        </dt>
+        <dd>Add New Epidemiology Variables</dd>
+
+        <dt>
+
+          <code><a href="truncate_sim.html">truncate_sim()</a></code>
+
+        </dt>
+        <dd>Truncate Simulation Time Series</dd>
+
+        <dt>
+
+          <code><a href="merge.icm.html">merge(<i>&lt;icm&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Merge Data across Stochastic Individual Contact Model Simulations</dd>
+
+        <dt>
+
+          <code><a href="merge.netsim.html">merge(<i>&lt;netsim&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Merge Model Simulations across netsim Objects</dd>
+
+        <dt>
+
+          <code><a href="get_network.html">get_network()</a></code>
+
+        </dt>
+        <dd>Extract Network Objects from Network Simulations</dd>
+
+        <dt>
+
+          <code><a href="get_nwstats.html">get_nwstats()</a></code>
+
+        </dt>
+        <dd>Extract Network Statistics from netsim or netdx Object</dd>
+
+        <dt>
+
+          <code><a href="get_nwparam.html">get_nwparam()</a></code>
+
+        </dt>
+        <dd>Extract Network Model Parameters</dd>
+
+        <dt>
+
+          <code><a href="get_param_set.html">get_param_set()</a></code>
+
+        </dt>
+        <dd>Extract the Parameter Set from Network Simulations</dd>
+
+        <dt>
+
+          <code><a href="get_attr_history.html">get_attr_history()</a></code>
+
+        </dt>
+        <dd>Extract the Attributes History from Network Simulations</dd>
+
+        <dt>
+
+          <code><a href="make_restart_point.html">make_restart_point()</a></code>
+
+        </dt>
+        <dd>Make a Lightweight Restart Point From a <code>netsim</code> Object with tergmLite</dd>
+      </dl></div><div class="section level2">
+      <h2 id="transmission-reachability-analysis">Transmission &amp; Reachability Analysis<a class="anchor" aria-label="anchor" href="#transmission-reachability-analysis"></a></h2>
+
+      <div class="section-desc"><p>Extract transmission matrices, construct phylogenies from transmission trees, and trace forward and backward reachable nodes through cumulative contact histories.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="get_transmat.html">is.transmat()</a></code> <code><a href="get_transmat.html">get_transmat()</a></code>
 
         </dt>
@@ -507,42 +383,35 @@
 
         <dt>
 
-          <code><a href="get_nwstats.html">get_nwstats()</a></code>
+          <code><a href="reachable-nodes.html">get_forward_reachable()</a></code> <code><a href="reachable-nodes.html">get_backward_reachable()</a></code>
 
         </dt>
-        <dd>Extract Network Statistics from netsim or netdx Object</dd>
+        <dd>Get the Forward or Backward Reachable Nodes for a Set of Nodes</dd>
 
         <dt>
 
-          <code><a href="mutate_epi.html">mutate_epi()</a></code>
+          <code><a href="get_adj_list.html">get_adj_list()</a></code>
 
         </dt>
-        <dd>Add New Epidemiology Variables</dd>
+        <dd>Returns an adjacency list from an edge list</dd>
 
         <dt>
 
-          <code><a href="truncate_sim.html">truncate_sim()</a></code>
+          <code><a href="get_subnet_adj_list.html">get_subnet_adj_list()</a></code>
 
         </dt>
-        <dd>Truncate Simulation Time Series</dd>
+        <dd>Return an adjacency list of subnets</dd>
 
         <dt>
 
-          <code><a href="merge.icm.html">merge(<i>&lt;icm&gt;</i>)</a></code>
+          <code><a href="get_connected_nodes.html">get_connected_nodes()</a></code>
 
         </dt>
-        <dd>Merge Data across Stochastic Individual Contact Model Simulations</dd>
-
-        <dt>
-
-          <code><a href="merge.netsim.html">merge(<i>&lt;netsim&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Merge Model Simulations across netsim Objects</dd>
+        <dd>Returns all the node connected directly or indirectly to a set of nodes</dd>
       </dl></div><div class="section level2">
       <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h2>
 
-      <div class="section-desc"><p>Plot methods for epidemic trajectories, network diagnostics, transmission trees, and interactive exploration.</p></div>
+      <div class="section-desc"><p>Plot epidemic trajectories, network diagnostics, transmission trees, and epi data frames. Includes ggplot2 extensions and an interactive Shiny-based explorer.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -626,7 +495,7 @@
         </dt>
         <dd>Create a TEA Variable for Infection Status for <code>ndtv</code> Animations</dd>
       </dl></div><div class="section level2">
-      <h2 id="print-and-summary-methods">Print and Summary Methods<a class="anchor" aria-label="anchor" href="#print-and-summary-methods"></a></h2>
+      <h2 id="print-summary-methods">Print &amp; Summary Methods<a class="anchor" aria-label="anchor" href="#print-summary-methods"></a></h2>
 
 
 
@@ -705,9 +574,476 @@
         </dt>
         <dd>Create a Summary Table of Simulation Statistics</dd>
       </dl></div><div class="section level2">
+      <h2 id="scenarios-sensitivity-analysis">Scenarios &amp; Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#scenarios-sensitivity-analysis"></a></h2>
+
+      <div class="section-desc"><p>Build parameter scenarios for batch sensitivity analyses, convert between list and tabular parameter formats, and generate random parameter draws.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="create_scenario_list.html">create_scenario_list()</a></code>
+
+        </dt>
+        <dd>Make a list of EpiModel scenarios from a data.frame of scenarios</dd>
+
+        <dt>
+
+          <code><a href="use_scenario.html">use_scenario()</a></code>
+
+        </dt>
+        <dd>Apply a scenario object to a param.net object</dd>
+
+        <dt>
+
+          <code><a href="update_params.html">update_params()</a></code>
+
+        </dt>
+        <dd>Update Model Parameters for Stochastic Network Models</dd>
+
+        <dt>
+
+          <code><a href="param.net_from_table.html">param.net_from_table()</a></code>
+
+        </dt>
+        <dd>Parameters List for Stochastic Network Models from a Formatted Data Frame</dd>
+
+        <dt>
+
+          <code><a href="param.net_to_table.html">param.net_to_table()</a></code>
+
+        </dt>
+        <dd>Coerce a list of parameters to a <code>long.param.df</code></dd>
+
+        <dt>
+
+          <code><a href="param_random.html">param_random()</a></code>
+
+        </dt>
+        <dd>Create a Value Sampler for Random Parameters</dd>
+
+        <dt>
+
+          <code><a href="generate_random_params.html">generate_random_params()</a></code>
+
+        </dt>
+        <dd>Generate Values for Random Parameters</dd>
+
+        <dt>
+
+          <code><a href="format_param.html">format_param()</a></code>
+
+        </dt>
+        <dd>Format One Parameter for Printing with the <code>print.param.xxx</code> Functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extension-api-module-framework">Extension API: Module Framework<a class="anchor" aria-label="anchor" href="#extension-api-module-framework"></a></h2>
+
+      <div class="section-desc"><p>Core framework for building custom network model modules with arbitrary disease states, demographics, and interventions. Manage module registration, timestep control, demographic flows, and simulation execution.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="create_dat_object.html">create_dat_object()</a></code>
+
+        </dt>
+        <dd>Create a Minimal netsim_dat Main List Object for a Network Model</dd>
+
+        <dt>
+
+          <code><a href="simulate_dat.html">simulate_dat()</a></code>
+
+        </dt>
+        <dd>Simulate a Network for a Specified Number of Time Steps</dd>
+
+        <dt>
+
+          <code><a href="get_modules.html">get_modules()</a></code>
+
+        </dt>
+        <dd>Get the List of Modules</dd>
+
+        <dt>
+
+          <code><a href="set_modules.html">set_modules()</a></code>
+
+        </dt>
+        <dd>Set the List of Modules</dd>
+
+        <dt>
+
+          <code><a href="remove_modules.html">remove_modules()</a></code>
+
+        </dt>
+        <dd>Remove a Set of Modules From the Module List</dd>
+
+        <dt>
+
+          <code><a href="make_module_list.html">make_module_list()</a></code>
+
+        </dt>
+        <dd>Populate the Module List After the Initialization Module is run</dd>
+
+        <dt>
+
+          <code><a href="get_current_timestep.html">get_current_timestep()</a></code>
+
+        </dt>
+        <dd>Return the Current Timestep</dd>
+
+        <dt>
+
+          <code><a href="set_current_timestep.html">set_current_timestep()</a></code>
+
+        </dt>
+        <dd>Set the Current Timestep</dd>
+
+        <dt>
+
+          <code><a href="increment_timestep.html">increment_timestep()</a></code>
+
+        </dt>
+        <dd>Increment the Current Timestep</dd>
+
+        <dt>
+
+          <code><a href="get_args.html">get_args()</a></code>
+
+        </dt>
+        <dd>Get Arguments from EpiModel Parameterization Functions</dd>
+
+        <dt>
+
+          <code><a href="arrive_nodes.html">arrive_nodes()</a></code>
+
+        </dt>
+        <dd>Arrive New Nodes to the netsim_dat Object</dd>
+
+        <dt>
+
+          <code><a href="depart_nodes.html">depart_nodes()</a></code>
+
+        </dt>
+        <dd>Depart Nodes from the netsim_dat Object</dd>
+
+        <dt>
+
+          <code><a href="record_raw_object.html">record_raw_object()</a></code>
+
+        </dt>
+        <dd>Record an Arbitrary Object During a Simulation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extension-api-state-accessors">Extension API: State Accessors<a class="anchor" aria-label="anchor" href="#extension-api-state-accessors"></a></h2>
+
+      <div class="section-desc"><p>Get, set, and manage node-level attributes, epidemic trackers, parameters, control settings, and initial conditions on the internal dat simulation state object.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="net-accessor.html">get_attr_list()</a></code> <code><a href="net-accessor.html">get_attr()</a></code> <code><a href="net-accessor.html">add_attr()</a></code> <code><a href="net-accessor.html">set_attr()</a></code> <code><a href="net-accessor.html">append_attr()</a></code> <code><a href="net-accessor.html">remove_node_attr()</a></code> <code><a href="net-accessor.html">get_epi_list()</a></code> <code><a href="net-accessor.html">get_epi()</a></code> <code><a href="net-accessor.html">add_epi()</a></code> <code><a href="net-accessor.html">set_epi()</a></code> <code><a href="net-accessor.html">get_param_list()</a></code> <code><a href="net-accessor.html">get_param()</a></code> <code><a href="net-accessor.html">add_param()</a></code> <code><a href="net-accessor.html">set_param()</a></code> <code><a href="net-accessor.html">get_control_list()</a></code> <code><a href="net-accessor.html">get_control()</a></code> <code><a href="net-accessor.html">get_network_control()</a></code> <code><a href="net-accessor.html">add_control()</a></code> <code><a href="net-accessor.html">set_control()</a></code> <code><a href="net-accessor.html">get_init_list()</a></code> <code><a href="net-accessor.html">get_init()</a></code> <code><a href="net-accessor.html">add_init()</a></code> <code><a href="net-accessor.html">set_init()</a></code> <code><a href="net-accessor.html">get_core_attributes()</a></code> <code><a href="net-accessor.html">append_core_attr()</a></code>
+
+        </dt>
+        <dd>Functions to Access and Edit the Main netsim_dat Object in Network Models</dd>
+
+        <dt>
+
+          <code><a href="get_attr_prop.html">get_attr_prop()</a></code>
+
+        </dt>
+        <dd>Proportional Table of Vertex Attributes</dd>
+
+        <dt>
+
+          <code><a href="auto_update_attr.html">auto_update_attr()</a></code>
+
+        </dt>
+        <dd>Update Vertex Attributes for Incoming Vertices</dd>
+
+        <dt>
+
+          <code><a href="overwrite_attrs.html">overwrite_attrs()</a></code>
+
+        </dt>
+        <dd>Helper to use a <code>data.frame</code> to initialize some attributes</dd>
+
+        <dt>
+
+          <code><a href="delete_attr.html">delete_attr()</a></code>
+
+        </dt>
+        <dd>Delete Elements from Attribute List</dd>
+
+        <dt>
+
+          <code><a href="epi_trackers.html">epi_trackers()</a></code>
+
+        </dt>
+        <dd>Function to run the user-provided epi trackers</dd>
+
+        <dt>
+
+          <code><a href="record_attr_history.html">record_attr_history()</a></code>
+
+        </dt>
+        <dd>Record Attribute History</dd>
+
+        <dt>
+
+          <code><a href="unique_id-tools.html">get_unique_ids()</a></code> <code><a href="unique_id-tools.html">get_posit_ids()</a></code>
+
+        </dt>
+        <dd>Convert Unique Identifiers to/from Positional Identifiers</dd>
+
+        <dt>
+
+          <code><a href="is_active_posit_ids.html">is_active_posit_ids()</a></code>
+
+        </dt>
+        <dd>Are These Nodes Active (Positional IDs)</dd>
+
+        <dt>
+
+          <code><a href="is_active_unique_ids.html">is_active_unique_ids()</a></code>
+
+        </dt>
+        <dd>Are These Nodes Active (Unique IDs)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extension-api-edgelist-partnership-queries">Extension API: Edgelist &amp; Partnership Queries<a class="anchor" aria-label="anchor" href="#extension-api-edgelist-partnership-queries"></a></h2>
+
+      <div class="section-desc"><p>Query the current network state within modules: extract edgelists, look up partnerships and degree, identify discordant pairs, and manage cumulative edgelist tracking.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="get_edgelist.html">get_edgelist()</a></code>
+
+        </dt>
+        <dd>Get an Edgelist From the Specified Network</dd>
+
+        <dt>
+
+          <code><a href="get_edgelists_df.html">get_edgelists_df()</a></code>
+
+        </dt>
+        <dd>Get the Edgelist(s) from the Specified Network(s)</dd>
+
+        <dt>
+
+          <code><a href="discord_edgelist.html">discord_edgelist()</a></code>
+
+        </dt>
+        <dd>Discordant Edgelist</dd>
+
+        <dt>
+
+          <code><a href="get_discordant_edgelist.html">get_discordant_edgelist()</a></code>
+
+        </dt>
+        <dd>Get Discordant Edgelist Based on Specified Status Variable</dd>
+
+        <dt>
+
+          <code><a href="get_degree.html">get_degree()</a></code>
+
+        </dt>
+        <dd>Get Individual Degree from Network or Edgelist</dd>
+
+        <dt>
+
+          <code><a href="get_partners.html">get_partners()</a></code>
+
+        </dt>
+        <dd>Return the Historical Contacts (Partners) of a Set of Index Nodes</dd>
+
+        <dt>
+
+          <code><a href="get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code>
+
+        </dt>
+        <dd>Get a Cumulative Edgelist From a Specified Network</dd>
+
+        <dt>
+
+          <code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code>
+
+        </dt>
+        <dd>Get the Cumulative Edgelists of a Model</dd>
+
+        <dt>
+
+          <code><a href="get_cumulative_degree.html">get_cumulative_degree()</a></code>
+
+        </dt>
+        <dd>Return the Cumulative Degree of a Set of Index Nodes</dd>
+
+        <dt>
+
+          <code><a href="as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code>
+
+        </dt>
+        <dd>Convert an object to a <code>cumulative_edgelist</code></dd>
+
+        <dt>
+
+          <code><a href="update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code>
+
+        </dt>
+        <dd>Update a Cumulative Edgelist of the Specified Network</dd>
+
+        <dt>
+
+          <code><a href="dedup_cumulative_edgelist.html">dedup_cumulative_edgelist()</a></code>
+
+        </dt>
+        <dd>Deduplicate a cumulative edgelist by combining overlapping edges</dd>
+
+        <dt>
+
+          <code><a href="as_tibble_edgelist.html">as_tibble_edgelist()</a></code>
+
+        </dt>
+        <dd>Convert an Edgelist into a Tibble</dd>
+
+        <dt>
+
+          <code><a href="edgelist_censor.html">edgelist_censor()</a></code>
+
+        </dt>
+        <dd>Table of Edge Censoring</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extension-api-network-operations">Extension API: Network Operations<a class="anchor" aria-label="anchor" href="#extension-api-network-operations"></a></h2>
+
+      <div class="section-desc"><p>Initialize, resimulate, and summarize networks within modules. Manage network objects, vertices, edges, and attribute synchronization between dat and network representations.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="init_nets.html">init_nets()</a></code>
+
+        </dt>
+        <dd>Network Data and Stats Initialization</dd>
+
+        <dt>
+
+          <code><a href="resim_nets.html">resim_nets()</a></code>
+
+        </dt>
+        <dd>Resimulate Dynamic Network at Time 2+</dd>
+
+        <dt>
+
+          <code><a href="sim_nets_t1.html">sim_nets_t1()</a></code>
+
+        </dt>
+        <dd>Initialize Networks Used in netsim</dd>
+
+        <dt>
+
+          <code><a href="summary_nets.html">summary_nets()</a></code>
+
+        </dt>
+        <dd>Extract Summary Statistics of Networks Used in netsim</dd>
+
+        <dt>
+
+          <code><a href="set_network.html">set_network()</a></code>
+
+        </dt>
+        <dd>Set Network State During netsim Simulation</dd>
+
+        <dt>
+
+          <code><a href="get_network_attributes.html">get_network_attributes()</a></code>
+
+        </dt>
+        <dd>Get Network Attributes from a Network Object</dd>
+
+        <dt>
+
+          <code><a href="add_vertices.html">add_vertices()</a></code>
+
+        </dt>
+        <dd>Fast Version of network::add.vertices for Edgelist-formatted Network</dd>
+
+        <dt>
+
+          <code><a href="delete_vertices.html">delete_vertices()</a></code>
+
+        </dt>
+        <dd>Fast Version of network::delete.vertices for Edgelist-formatted Network</dd>
+
+        <dt>
+
+          <code><a href="delete_edges.html">delete_edges()</a></code>
+
+        </dt>
+        <dd>Remove Edges That Include Specified Vertices</dd>
+
+        <dt>
+
+          <code><a href="copy_datattr_to_nwattr.html">copy_datattr_to_nwattr()</a></code>
+
+        </dt>
+        <dd>Copy Vertex Attributes from the <code>netsim_dat</code> List to the Network Objects</dd>
+
+        <dt>
+
+          <code><a href="copy_nwattr_to_datattr.html">copy_nwattr_to_datattr()</a></code>
+
+        </dt>
+        <dd>Copy Vertex Attributes From Network to <code>netsim_dat</code> List</dd>
+      </dl></div><div class="section level2">
+      <h2 id="built-in-dcm-ode-systems">Built-in DCM ODE Systems<a class="anchor" aria-label="anchor" href="#built-in-dcm-ode-systems"></a></h2>
+
+      <div class="section-desc"><p>Built-in ODE model functions for deterministic compartmental models (SI, SIR, SIS; one-group and two-group; open and closed populations).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="dcm.mods.html">mod_SI_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SI_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SI_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SI_2g_op()</a></code> <code><a href="dcm.mods.html">mod_SIR_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIR_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SIR_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIR_2g_op()</a></code> <code><a href="dcm.mods.html">mod_SIS_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIS_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SIS_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIS_2g_op()</a></code>
+
+        </dt>
+        <dd>Deterministic Compartmental Model Functions</dd>
+
+        <dt>
+
+          <code><a href="saveout.dcm.html">saveout.dcm()</a></code>
+
+        </dt>
+        <dd>Save dcm Data to Output List Format</dd>
+
+        <dt>
+
+          <code><a href="verbose.dcm.html">verbose.dcm()</a></code>
+
+        </dt>
+        <dd>Progress Print Module for Deterministic Compartmental Models</dd>
+      </dl></div><div class="section level2">
       <h2 id="built-in-icm-modules">Built-in ICM Modules<a class="anchor" aria-label="anchor" href="#built-in-icm-modules"></a></h2>
 
-      <div class="section-desc"><p>Default module functions for stochastic individual contact models.</p></div>
+      <div class="section-desc"><p>Default module functions for stochastic individual contact models (one-group and two-group/bipartite).</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -828,7 +1164,7 @@
       </dl></div><div class="section level2">
       <h2 id="built-in-network-modules">Built-in Network Modules<a class="anchor" aria-label="anchor" href="#built-in-network-modules"></a></h2>
 
-      <div class="section-desc"><p>Default module functions for stochastic network models.</p></div>
+      <div class="section-desc"><p>Default module functions for stochastic network models (one-group and two-group).</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -961,336 +1297,6 @@
         </dt>
         <dd>Test the Model Output from a Network Model</dd>
       </dl></div><div class="section level2">
-      <h2 id="dcm-ode-systems">DCM ODE Systems<a class="anchor" aria-label="anchor" href="#dcm-ode-systems"></a></h2>
-
-      <div class="section-desc"><p>Built-in ODE model functions for deterministic compartmental models (SI, SIR, SIS; one-group and two-group; open and closed populations).</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="dcm.mods.html">mod_SI_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SI_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SI_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SI_2g_op()</a></code> <code><a href="dcm.mods.html">mod_SIR_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIR_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SIR_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIR_2g_op()</a></code> <code><a href="dcm.mods.html">mod_SIS_1g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIS_1g_op()</a></code> <code><a href="dcm.mods.html">mod_SIS_2g_cl()</a></code> <code><a href="dcm.mods.html">mod_SIS_2g_op()</a></code>
-
-        </dt>
-        <dd>Deterministic Compartmental Model Functions</dd>
-
-        <dt>
-
-          <code><a href="saveout.dcm.html">saveout.dcm()</a></code>
-
-        </dt>
-        <dd>Save dcm Data to Output List Format</dd>
-
-        <dt>
-
-          <code><a href="verbose.dcm.html">verbose.dcm()</a></code>
-
-        </dt>
-        <dd>Progress Print Module for Deterministic Compartmental Models</dd>
-
-        <dt>
-
-          <code><a href="crosscheck.dcm.html">crosscheck.dcm()</a></code>
-
-        </dt>
-        <dd>Cross Checking of Inputs for Deterministic Compartmental Models</dd>
-
-        <dt>
-
-          <code><a href="crosscheck.icm.html">crosscheck.icm()</a></code>
-
-        </dt>
-        <dd>Cross Checking of Inputs for Stochastic Individual Contact Models</dd>
-
-        <dt>
-
-          <code><a href="crosscheck.net.html">crosscheck.net()</a></code>
-
-        </dt>
-        <dd>Cross Checking of Inputs for Stochastic Network Models</dd>
-      </dl></div><div class="section level2">
-      <h2 id="extension-api">Extension API<a class="anchor" aria-label="anchor" href="#extension-api"></a></h2>
-
-      <div class="section-desc"><p>Functions for building custom modules with arbitrary disease states, demographics, and interventions. These are the building blocks for the EpiModel extension framework.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="create_dat_object.html">create_dat_object()</a></code>
-
-        </dt>
-        <dd>Create a Minimal netsim_dat Main List Object for a Network Model</dd>
-
-        <dt>
-
-          <code><a href="arrive_nodes.html">arrive_nodes()</a></code>
-
-        </dt>
-        <dd>Arrive New Nodes to the netsim_dat Object</dd>
-
-        <dt>
-
-          <code><a href="depart_nodes.html">depart_nodes()</a></code>
-
-        </dt>
-        <dd>Depart Nodes from the netsim_dat Object</dd>
-
-        <dt>
-
-          <code><a href="get_current_timestep.html">get_current_timestep()</a></code>
-
-        </dt>
-        <dd>Return the Current Timestep</dd>
-
-        <dt>
-
-          <code><a href="set_current_timestep.html">set_current_timestep()</a></code>
-
-        </dt>
-        <dd>Set the Current Timestep</dd>
-
-        <dt>
-
-          <code><a href="increment_timestep.html">increment_timestep()</a></code>
-
-        </dt>
-        <dd>Increment the Current Timestep</dd>
-
-        <dt>
-
-          <code><a href="record_attr_history.html">record_attr_history()</a></code>
-
-        </dt>
-        <dd>Record Attribute History</dd>
-
-        <dt>
-
-          <code><a href="record_raw_object.html">record_raw_object()</a></code>
-
-        </dt>
-        <dd>Record an Arbitrary Object During a Simulation</dd>
-
-        <dt>
-
-          <code><a href="simulate_dat.html">simulate_dat()</a></code>
-
-        </dt>
-        <dd>Simulate a Network for a Specified Number of Time Steps</dd>
-
-        <dt>
-
-          <code><a href="make_restart_point.html">make_restart_point()</a></code>
-
-        </dt>
-        <dd>Make a Lightweight Restart Point From a <code>netsim</code> Object with tergmLite</dd>
-
-        <dt>
-
-          <code><a href="get_args.html">get_args()</a></code>
-
-        </dt>
-        <dd>Get Arguments from EpiModel Parameterization Functions</dd>
-
-        <dt>
-
-          <code><a href="get_modules.html">get_modules()</a></code>
-
-        </dt>
-        <dd>Get the List of Modules</dd>
-
-        <dt>
-
-          <code><a href="set_modules.html">set_modules()</a></code>
-
-        </dt>
-        <dd>Set the List of Modules</dd>
-
-        <dt>
-
-          <code><a href="remove_modules.html">remove_modules()</a></code>
-
-        </dt>
-        <dd>Remove a Set of Modules From the Module List</dd>
-
-        <dt>
-
-          <code><a href="make_module_list.html">make_module_list()</a></code>
-
-        </dt>
-        <dd>Populate the Module List After the Initialization Module is run</dd>
-
-        <dt>
-
-          <code><a href="unique_id-tools.html">get_unique_ids()</a></code> <code><a href="unique_id-tools.html">get_posit_ids()</a></code>
-
-        </dt>
-        <dd>Convert Unique Identifiers to/from Positional Identifiers</dd>
-
-        <dt>
-
-          <code><a href="is_active_posit_ids.html">is_active_posit_ids()</a></code>
-
-        </dt>
-        <dd>Are These Nodes Active (Positional IDs)</dd>
-
-        <dt>
-
-          <code><a href="is_active_unique_ids.html">is_active_unique_ids()</a></code>
-
-        </dt>
-        <dd>Are These Nodes Active (Unique IDs)</dd>
-
-        <dt>
-
-          <code><a href="init_nets.html">init_nets()</a></code>
-
-        </dt>
-        <dd>Network Data and Stats Initialization</dd>
-
-        <dt>
-
-          <code><a href="resim_nets.html">resim_nets()</a></code>
-
-        </dt>
-        <dd>Resimulate Dynamic Network at Time 2+</dd>
-
-        <dt>
-
-          <code><a href="sim_nets_t1.html">sim_nets_t1()</a></code>
-
-        </dt>
-        <dd>Initialize Networks Used in netsim</dd>
-
-        <dt>
-
-          <code><a href="summary_nets.html">summary_nets()</a></code>
-
-        </dt>
-        <dd>Extract Summary Statistics of Networks Used in netsim</dd>
-
-        <dt>
-
-          <code><a href="trim_netest.html">trim_netest()</a></code>
-
-        </dt>
-        <dd>Function to Reduce the Size of a <code>netest</code> Object</dd>
-
-        <dt>
-
-          <code><a href="check_degdist_bal.html">check_degdist_bal()</a></code>
-
-        </dt>
-        <dd>Check Degree Distribution for Balance in Target Statistics</dd>
-      </dl></div><div class="section level2">
-      <h2 id="reachability-analysis">Reachability Analysis<a class="anchor" aria-label="anchor" href="#reachability-analysis"></a></h2>
-
-      <div class="section-desc"><p>Identify transmission chains and reachable nodes in a network.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="reachable-nodes.html">get_forward_reachable()</a></code> <code><a href="reachable-nodes.html">get_backward_reachable()</a></code>
-
-        </dt>
-        <dd>Get the Forward or Backward Reachable Nodes for a Set of Nodes</dd>
-
-        <dt>
-
-          <code><a href="get_adj_list.html">get_adj_list()</a></code>
-
-        </dt>
-        <dd>Returns an adjacency list from an edge list</dd>
-
-        <dt>
-
-          <code><a href="get_subnet_adj_list.html">get_subnet_adj_list()</a></code>
-
-        </dt>
-        <dd>Return an adjacency list of subnets</dd>
-
-        <dt>
-
-          <code><a href="get_connected_nodes.html">get_connected_nodes()</a></code>
-
-        </dt>
-        <dd>Returns all the node connected directly or indirectly to a set of nodes</dd>
-      </dl></div><div class="section level2">
-      <h2 id="scenarios-and-parameter-tools">Scenarios and Parameter Tools<a class="anchor" aria-label="anchor" href="#scenarios-and-parameter-tools"></a></h2>
-
-      <div class="section-desc"><p>Create and apply parameter scenarios for sensitivity analyses, including table-based parameter input and random parameter generation.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="create_scenario_list.html">create_scenario_list()</a></code>
-
-        </dt>
-        <dd>Make a list of EpiModel scenarios from a data.frame of scenarios</dd>
-
-        <dt>
-
-          <code><a href="use_scenario.html">use_scenario()</a></code>
-
-        </dt>
-        <dd>Apply a scenario object to a param.net object</dd>
-
-        <dt>
-
-          <code><a href="update_params.html">update_params()</a></code>
-
-        </dt>
-        <dd>Update Model Parameters for Stochastic Network Models</dd>
-
-        <dt>
-
-          <code><a href="param.net_from_table.html">param.net_from_table()</a></code>
-
-        </dt>
-        <dd>Parameters List for Stochastic Network Models from a Formatted Data Frame</dd>
-
-        <dt>
-
-          <code><a href="param.net_to_table.html">param.net_to_table()</a></code>
-
-        </dt>
-        <dd>Coerce a list of parameters to a <code>long.param.df</code></dd>
-
-        <dt>
-
-          <code><a href="param_random.html">param_random()</a></code>
-
-        </dt>
-        <dd>Create a Value Sampler for Random Parameters</dd>
-
-        <dt>
-
-          <code><a href="generate_random_params.html">generate_random_params()</a></code>
-
-        </dt>
-        <dd>Generate Values for Random Parameters</dd>
-
-        <dt>
-
-          <code><a href="format_param.html">format_param()</a></code>
-
-        </dt>
-        <dd>Format One Parameter for Printing with the <code>print.param.xxx</code> Functions</dd>
-      </dl></div><div class="section level2">
       <h2 id="custom-ergm-terms">Custom ERGM Terms<a class="anchor" aria-label="anchor" href="#custom-ergm-terms"></a></h2>
 
       <div class="section-desc"><p>Custom exponential-family random graph model terms provided by EpiModel for use in network model formulas.</p></div>
@@ -1337,7 +1343,7 @@
       </dl></div><div class="section level2">
       <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
 
-
+      <div class="section-desc"><p>Internal helpers, input validation, and low-level support functions.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -1345,6 +1351,27 @@
 
 
       <dl><dt>
+
+          <code><a href="crosscheck.dcm.html">crosscheck.dcm()</a></code>
+
+        </dt>
+        <dd>Cross Checking of Inputs for Deterministic Compartmental Models</dd>
+
+        <dt>
+
+          <code><a href="crosscheck.icm.html">crosscheck.icm()</a></code>
+
+        </dt>
+        <dd>Cross Checking of Inputs for Stochastic Individual Contact Models</dd>
+
+        <dt>
+
+          <code><a href="crosscheck.net.html">crosscheck.net()</a></code>
+
+        </dt>
+        <dd>Cross Checking of Inputs for Stochastic Network Models</dd>
+
+        <dt>
 
           <code><a href="ssample.html">ssample()</a></code>
 
@@ -1378,13 +1405,6 @@
 
         </dt>
         <dd>Group Numbers for Two-Group Network</dd>
-
-        <dt>
-
-          <code><a href="update_dissolution.html">update_dissolution()</a></code>
-
-        </dt>
-        <dd>Adjust Dissolution Component of Network Model Fit</dd>
 
         <dt>
 
