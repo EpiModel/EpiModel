@@ -657,9 +657,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        simulation and must be less than the value in `nsteps`.
 #' @param resimulate.network If `TRUE`, resimulate the network at each time step. This is required
 #'        when the epidemic or demographic processes impact the network structure (e.g., vital
-#'        dynamics).
+#'        dynamics). This parameter controls whether `resim_nets.FUN` performs actual network
+#'        resimulation; it does not affect the order in which modules are executed (see
+#'        `module.order`). Setting `tergmLite = TRUE` forces `resimulate.network = TRUE` with a
+#'        warning.
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
-#'        (`tergmLite = TRUE`). Default of `FALSE`.
+#'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
+#'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
 #' @param cumulative.edgelist If `TRUE`, calculates a cumulative edgelist within the network
 #'        simulation module. This is used when tergmLite is used and the entire networkDynamic
 #'        object is not used.
@@ -695,6 +699,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        as follows: first any new modules supplied through `...` in the order in which they are
 #'        listed, then the built-in modules in the order in which they are listed as arguments
 #'        above. `initialize.FUN` will always be run first and `verbose.FUN` will always be run last.
+#'        Module ordering is independent of `resimulate.network`: the specified order is always
+#'        respected regardless of whether network resimulation is enabled. In the default ordering,
+#'        `resim_nets.FUN` runs before `infection.FUN`, so the network is resimulated before
+#'        transmission is evaluated at each time step.
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
@@ -973,7 +981,8 @@ control.net <- function(type,
   }
 
   if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
-    message("Because tergmLite = TRUE, resetting resimulate.network = TRUE")
+    warning("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
+            call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
 
