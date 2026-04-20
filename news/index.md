@@ -114,6 +114,16 @@
   [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
   for parity with `plot.netsim(type = "formation")`. Closes
   [\#998](https://github.com/EpiModel/EpiModel/issues/998).
+- Clarify in
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  docs that `module.order` is independent of `resimulate.network`, and
+  that `tergmLite = TRUE` forces `resimulate.network = TRUE`. Change the
+  `tergmLite` override from
+  [`message()`](https://rdrr.io/r/base/message.html) to
+  [`warning()`](https://rdrr.io/r/base/warning.html) so it is visible in
+  batch/HPC logs. Add tests for module ordering with both
+  `resimulate.network` settings. Closes
+  [\#466](https://github.com/EpiModel/EpiModel/issues/466).
 
 ## EpiModel 2.6.0
 

@@ -88,12 +88,18 @@ control.net(
 
   If `TRUE`, resimulate the network at each time step. This is required
   when the epidemic or demographic processes impact the network
-  structure (e.g., vital dynamics).
+  structure (e.g., vital dynamics). This parameter controls whether
+  `resim_nets.FUN` performs actual network resimulation; it does not
+  affect the order in which modules are executed (see `module.order`).
+  Setting `tergmLite = TRUE` forces `resimulate.network = TRUE` with a
+  warning.
 
 - tergmLite:
 
   Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or
-  `tergmLite` (`tergmLite = TRUE`). Default of `FALSE`.
+  `tergmLite` (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`,
+  `resimulate.network` is automatically set to `TRUE` (with a warning if
+  the user explicitly set it to `FALSE`).
 
 - cumulative.edgelist:
 
@@ -185,7 +191,11 @@ control.net(
   through `...` in the order in which they are listed, then the built-in
   modules in the order in which they are listed as arguments above.
   `initialize.FUN` will always be run first and `verbose.FUN` will
-  always be run last.
+  always be run last. Module ordering is independent of
+  `resimulate.network`: the specified order is always respected
+  regardless of whether network resimulation is enabled. In the default
+  ordering, `resim_nets.FUN` runs before `infection.FUN`, so the network
+  is resimulated before transmission is evaluated at each time step.
 
 - save.nwstats:
 

@@ -123,12 +123,16 @@ other <code>future</code> backends.</p></dd>
 <dt id="arg-resimulate-network">resimulate.network<a class="anchor" aria-label="anchor" href="#arg-resimulate-network"></a></dt>
 <dd><p>If <code>TRUE</code>, resimulate the network at each time step. This is required
 when the epidemic or demographic processes impact the network structure (e.g., vital
-dynamics).</p></dd>
+dynamics). This parameter controls whether <code>resim_nets.FUN</code> performs actual network
+resimulation; it does not affect the order in which modules are executed (see
+<code>module.order</code>). Setting <code>tergmLite = TRUE</code> forces <code>resimulate.network = TRUE</code> with a
+warning.</p></dd>
 
 
 <dt id="arg-tergmlite">tergmLite<a class="anchor" aria-label="anchor" href="#arg-tergmlite"></a></dt>
 <dd><p>Logical indicating usage of either <code>tergm</code> (<code>tergmLite = FALSE</code>), or <code>tergmLite</code>
-(<code>tergmLite = TRUE</code>). Default of <code>FALSE</code>.</p></dd>
+(<code>tergmLite = TRUE</code>). Default of <code>FALSE</code>. When <code>TRUE</code>, <code>resimulate.network</code> is
+automatically set to <code>TRUE</code> (with a warning if the user explicitly set it to <code>FALSE</code>).</p></dd>
 
 
 <dt id="arg-cumulative-edgelist">cumulative.edgelist<a class="anchor" aria-label="anchor" href="#arg-cumulative-edgelist"></a></dt>
@@ -208,7 +212,11 @@ function of <code><a href="prevalence.net.html">prevalence.net</a></code>.</p></
 they should be evaluated within each time step. If <code>NULL</code>, the modules will be evaluated
 as follows: first any new modules supplied through <code>...</code> in the order in which they are
 listed, then the built-in modules in the order in which they are listed as arguments
-above. <code>initialize.FUN</code> will always be run first and <code>verbose.FUN</code> will always be run last.</p></dd>
+above. <code>initialize.FUN</code> will always be run first and <code>verbose.FUN</code> will always be run last.
+Module ordering is independent of <code>resimulate.network</code>: the specified order is always
+respected regardless of whether network resimulation is enabled. In the default ordering,
+<code>resim_nets.FUN</code> runs before <code>infection.FUN</code>, so the network is resimulated before
+transmission is evaluated at each time step.</p></dd>
 
 
 <dt id="arg-save-nwstats">save.nwstats<a class="anchor" aria-label="anchor" href="#arg-save-nwstats"></a></dt>
