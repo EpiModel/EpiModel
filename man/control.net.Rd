@@ -69,10 +69,14 @@ other \code{future} backends.}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This is required
 when the epidemic or demographic processes impact the network structure (e.g., vital
-dynamics).}
+dynamics). This parameter controls whether \code{resim_nets.FUN} performs actual network
+resimulation; it does not affect the order in which modules are executed (see
+\code{module.order}). Setting \code{tergmLite = TRUE} forces \code{resimulate.network = TRUE} with a
+warning.}
 
 \item{tergmLite}{Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}), or \code{tergmLite}
-(\code{tergmLite = TRUE}). Default of \code{FALSE}.}
+(\code{tergmLite = TRUE}). Default of \code{FALSE}. When \code{TRUE}, \code{resimulate.network} is
+automatically set to \code{TRUE} (with a warning if the user explicitly set it to \code{FALSE}).}
 
 \item{cumulative.edgelist}{If \code{TRUE}, calculates a cumulative edgelist within the network
 simulation module. This is used when tergmLite is used and the entire networkDynamic
@@ -122,7 +126,11 @@ function of \code{\link{prevalence.net}}.}
 they should be evaluated within each time step. If \code{NULL}, the modules will be evaluated
 as follows: first any new modules supplied through \code{...} in the order in which they are
 listed, then the built-in modules in the order in which they are listed as arguments
-above. \code{initialize.FUN} will always be run first and \code{verbose.FUN} will always be run last.}
+above. \code{initialize.FUN} will always be run first and \code{verbose.FUN} will always be run last.
+Module ordering is independent of \code{resimulate.network}: the specified order is always
+respected regardless of whether network resimulation is enabled. In the default ordering,
+\code{resim_nets.FUN} runs before \code{infection.FUN}, so the network is resimulated before
+transmission is evaluated at each time step.}
 
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame. The statistics to be
 saved are specified in the \code{nwstats.formula} argument.}

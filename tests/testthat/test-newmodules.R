@@ -161,6 +161,57 @@ test_that("New network models vignette example", {
 
 })
 
+test_that("module.order is independent of resimulate.network", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 15,
+                coef.diss = dissolution_coefs(~offset(edges), 60),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+
+  custom_order <- c("resim_nets.FUN", "infection.FUN",
+                     "nwupdate.FUN", "prevalence.FUN")
+
+  # module.order preserved with resimulate.network = TRUE
+  ctrl1 <- control.net(type = "SI", nsims = 1, nsteps = 5,
+                        module.order = custom_order,
+                        resimulate.network = TRUE, verbose = FALSE)
+  expect_equal(ctrl1$module.order, custom_order)
+  mod1 <- netsim(est, param, init, ctrl1)
+  expect_s3_class(mod1, "netsim")
+
+  # module.order preserved with resimulate.network = FALSE
+  ctrl2 <- control.net(type = "SI", nsims = 1, nsteps = 5,
+                        module.order = custom_order,
+                        resimulate.network = FALSE, verbose = FALSE)
+  expect_equal(ctrl2$module.order, custom_order)
+  mod2 <- netsim(est, param, init, ctrl2)
+  expect_s3_class(mod2, "netsim")
+})
+
+test_that("tergmLite = TRUE warns when overriding resimulate.network", {
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                tergmLite = TRUE, resimulate.network = FALSE),
+    "resimulate.network"
+  )
+
+  # confirm the override took effect
+  ctrl <- suppressWarnings(
+    control.net(type = "SI", nsteps = 10,
+                tergmLite = TRUE, resimulate.network = FALSE)
+  )
+  expect_true(ctrl$resimulate.network)
+
+  # no warning when resimulate.network = TRUE (no conflict)
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10,
+                tergmLite = TRUE, resimulate.network = TRUE)
+  )
+})
+
 context("Network Model with Param Updater")
 
 test_that("netsim with param updater", {

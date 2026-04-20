@@ -28,6 +28,7 @@
 -   Consolidate duplicated quantile and mean-line logic in `plot.netsim(type = "epi")` so the `disp.qnts` setup, `mean.lwd` / `mean.lty` expansion, and `draw_qnts()` / `draw_means()` call signatures are not repeated across the ylim-calc and drawing phases. Closes #997.
 -   Apply the same consolidation to `plot.icm()` to keep the two sibling plotting paths structurally symmetric. Closes #1010.
 -   Extract duplicated stats validation logic from `plot_netsim_stats()` and `plot.netdx()` into a shared `validate_stats_selection()` helper; add `xlim`, `xlab`, `ylim`, `ylab` parameters to `plot.netdx()` for parity with `plot.netsim(type = "formation")`. Closes #998.
+-   Clarify in `control.net()` docs that `module.order` is independent of `resimulate.network`, and that `tergmLite = TRUE` forces `resimulate.network = TRUE`. Change the `tergmLite` override from `message()` to `warning()` so it is visible in batch/HPC logs. Add tests for module ordering with both `resimulate.network` settings. Closes #466.
 
 ## EpiModel 2.6.0
 
