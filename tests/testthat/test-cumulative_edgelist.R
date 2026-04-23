@@ -102,6 +102,103 @@ test_that("netsim, SI, Cumulative Edgelist - missing args", {
 
 })
 
+test_that("netsim non-tergmLite cumulative edgelist captures initial-step edges (#1016)", {
+  skip_on_cran()
+  set.seed(1)
+  nw <- network_initialize(n = 500)
+  est <- netest(
+    nw,
+    formation = ~edges + concurrent,
+    target.stats = c(0.75 * 500 / 2, 0.08 * 500),
+    coef.diss = dissolution_coefs(~offset(edges), duration = 80),
+    verbose = FALSE
+  )
+
+  control <- control.net(
+    type = "SIS", nsims = 1, nsteps = 50,
+    cumulative.edgelist = TRUE,
+    truncate.el.cuml = 99999,
+    save.cumulative.edgelist = TRUE,
+    save.network = TRUE,
+    verbose = FALSE
+  )
+
+  set.seed(1)
+  mod <- netsim(est, param.net(inf.prob = 0.5, act.rate = 2, rec.rate = 0.05),
+                init.net(i.num = 25), control)
+
+  cel_nd <- as.data.frame(get_network(mod, sim = 1))
+  cel_epi <- mod$cumulative.edgelist$sim1
+
+  # MRE assertion: row counts must match after the fix.
+  expect_equal(nrow(cel_epi), nrow(cel_nd))
+
+  # Initial duration-1 edges (onset=0, terminus=1) should appear with
+  # start=1, stop=1 in the cumulative edgelist.
+  n_dur1_initial <- sum(cel_nd$onset == 0 & cel_nd$terminus == 1)
+  got <- sum(cel_epi$start == 1 & cel_epi$stop == 1, na.rm = TRUE)
+  expect_gte(got, n_dur1_initial)
+
+  # Persistent edges should have start=1 (off-by-one from pre-#1016 behavior).
+  expect_equal(min(cel_epi$start), 1)
+})
+
+test_that("truncate.el.cuml = 0 skips hist seed (#1016)", {
+  skip_on_cran()
+  set.seed(2)
+  nw <- network_initialize(n = 100)
+  est <- netest(
+    nw,
+    formation = ~edges,
+    target.stats = 30,
+    coef.diss = dissolution_coefs(~offset(edges), duration = 2),
+    verbose = FALSE
+  )
+
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 3,
+    cumulative.edgelist = TRUE,
+    truncate.el.cuml = 0,
+    save.cumulative.edgelist = TRUE,
+    verbose = FALSE
+  )
+
+  mod <- netsim(est, param.net(inf.prob = 0.1),
+                init.net(i.num = 5), control)
+  el_cuml <- mod$cumulative.edgelist$sim1
+
+  # truncate=0 keeps only active edges: all rows must have stop==NA.
+  expect_true(all(is.na(el_cuml$stop)))
+})
+
+test_that("tergmLite cumulative edgelist seeds persistent edges with start=1 (#1016)", {
+  skip_on_cran()
+  set.seed(3)
+  nw <- network_initialize(n = 100)
+  est <- netest(
+    nw,
+    formation = ~edges,
+    target.stats = 20,
+    coef.diss = dissolution_coefs(~offset(edges), duration = 100),
+    verbose = FALSE
+  )
+
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 5,
+    resimulate.network = TRUE, tergmLite = TRUE,
+    cumulative.edgelist = TRUE,
+    truncate.el.cuml = Inf,
+    save.cumulative.edgelist = TRUE,
+    verbose = FALSE
+  )
+
+  mod <- netsim(est, param.net(inf.prob = 0.1),
+                init.net(i.num = 5), control)
+  el_cuml <- mod$cumulative.edgelist$sim1
+
+  expect_equal(min(el_cuml$start), 1)
+})
+
 test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   skip_on_cran()
   nw <- network_initialize(n = 100)

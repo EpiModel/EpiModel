@@ -84,6 +84,8 @@ sim_nets_t1 <- function(dat) {
     dat <- dat.updates(dat = dat, at = 1L, network = network)
   }
 
+  dat <- seed_cumulative_edgelist_t1(dat)
+
   return(dat)
 }
 

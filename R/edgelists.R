@@ -261,6 +261,77 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   return(dat)
 }
 
+# Seed the cumulative edgelist once at initialization. Runs at the end of
+# sim_nets_t1(), when current_timestep == 1. Without this, the first call to
+# update_cumulative_edgelist() happens at at=2 from resim_nets(), so edges
+# active only during the initial ERGM -> TERGM step are lost and persistent
+# edges receive start=2. See issue #1016.
+seed_cumulative_edgelist_t1 <- function(dat) {
+  if (!get_control(dat, "cumulative.edgelist")) {
+    return(dat)
+  }
+
+  truncate <- get_control(dat, "truncate.el.cuml")
+  tergmLite <- get_control(dat, "tergmLite")
+
+  for (network in seq_len(dat$num.nw)) {
+    # Seed el_cuml_cur with edges active at at=1 (both modes).
+    el <- get_edgelist(dat, network)
+    if (NROW(el) > 0) {
+      el_cuml_cur <- get_raw_elcuml(dat, network, active = TRUE)
+      seed_cur <- tibble::tibble(
+        head  = get_unique_ids(dat, el[, 1]),
+        tail  = get_unique_ids(dat, el[, 2]),
+        start = 1,
+        stop  = NA_real_
+      )
+      dat <- set_raw_elcuml(
+        dat, network,
+        dplyr::bind_rows(el_cuml_cur, seed_cur),
+        active = TRUE
+      )
+    }
+
+    # Seed el_cuml_hist with dyads active at t=0 but not t=1
+    # (networkDynamic onset=0, terminus=1 spells). Only recoverable in
+    # non-tergmLite mode; tergmLite's networkLite discards them.
+    if (!tergmLite && truncate != 0) {
+      nw <- get_network(dat, network = network)
+      el_at_0 <- networkDynamic::get.dyads.active(nw, at = 0)
+      el_at_1 <- networkDynamic::get.dyads.active(nw, at = 1)
+
+      if (NROW(el_at_0) > 0) {
+        keys_0 <- paste(el_at_0[, 1], el_at_0[, 2], sep = "_")
+        keys_1 <- if (NROW(el_at_1) > 0) {
+          paste(el_at_1[, 1], el_at_1[, 2], sep = "_")
+        } else {
+          character(0)
+        }
+        dropped_idx <- which(!keys_0 %in% keys_1)
+        if (length(dropped_idx) > 0) {
+          dropped <- el_at_0[dropped_idx, , drop = FALSE]
+          # start=stop=1 because make_restart_point filters el_cuml_hist to
+          # stop >= 1; using stop=0 would silently drop these rows on restart.
+          seed_hist <- tibble::tibble(
+            head  = get_unique_ids(dat, dropped[, 1]),
+            tail  = get_unique_ids(dat, dropped[, 2]),
+            start = 1,
+            stop  = 1
+          )
+          el_cuml_hist <- get_raw_elcuml(dat, network, active = FALSE)
+          dat <- set_raw_elcuml(
+            dat, network,
+            dplyr::bind_rows(el_cuml_hist, seed_hist),
+            active = FALSE
+          )
+        }
+      }
+    }
+  }
+
+  return(dat)
+}
+
 #' @title Get the Cumulative Edgelists of a Model
 #'
 #' @inheritParams recovery.net

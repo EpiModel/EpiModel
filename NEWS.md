@@ -21,6 +21,7 @@
 -   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls, preventing them from ever executing. Closes #982.
 -   Fix `ylim` in `plot.netsim(type = "epi")` so the auto-range expands to fit quantile polygons when `mean.line = FALSE`. The previous `qnts == TRUE` guard only matched `qnts = 1` / `qnts = TRUE`, leaving polygons potentially clipped at the default `qnts = 0.5`. Closes #1009.
 -   Fix `plot.icm()` to skip drawing quantile polygons when `qnts = FALSE`, matching the documented behavior. Previously this case produced a degenerate zero-width band rather than suppressing the polygon.
+-   Fix `netsim` cumulative edgelist (`cumulative.edgelist = TRUE`) to include edges from the initial network state. Previously, `update_cumulative_edgelist()` was first called at `at = 2` from `resim_nets()`, so persistent edges received `start = 2` (off-by-one) and edges active during the initial ERGM→TERGM step but not at `at = 1` (e.g., networkDynamic spells `onset=0,terminus=1`, `onset=0,terminus=2`, `onset=1,terminus=2`) were silently dropped. The cumulative edgelist is now seeded at the end of `sim_nets_t1()`; in non-`tergmLite` mode, initial-step dissolutions are recovered from the `networkDynamic` object and recorded with `start=1, stop=1`. In `tergmLite` mode only the `at=1` active edges are seeded (initial-step dissolutions are unrecoverable because `networkLite` discards them). Closes #1016.
 
 ### OTHER
 
