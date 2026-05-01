@@ -52,6 +52,7 @@ and
 accessors to work with network objects:
 
 ``` r
+
 # Get the network for layer 1
 nw <- get_network(dat, network = 1)
 
@@ -76,6 +77,7 @@ After a `netsim` call, extract network objects with
 [`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md):
 
 ``` r
+
 sim <- netsim(est, param, init, control)
 
 # Extract the network from simulation 1, network layer 1
@@ -103,6 +105,7 @@ The transmission matrix records every transmission event during the
 simulation:
 
 ``` r
+
 transmat <- get_transmat(sim, sim = 1)
 ```
 
@@ -126,6 +129,7 @@ returns the current edgelist for a given network as a two-column matrix
 of positional IDs:
 
 ``` r
+
 el <- get_edgelist(dat, network = 1)
 ```
 
@@ -140,6 +144,7 @@ combines edgelists from multiple network layers into a single
 `data.frame` with a `network` column:
 
 ``` r
+
 # All networks
 el_all <- get_edgelists_df(dat, networks = NULL)
 
@@ -157,6 +162,7 @@ modeling transmission. For example, in an SI model, discordant edges are
 those where one partner is susceptible and the other is infected:
 
 ``` r
+
 disc_el <- get_discordant_edgelist(
   dat,
   status.attr = "status",
@@ -214,6 +220,7 @@ Cumulative edgelist tracking must be explicitly enabled in
 [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md):
 
 ``` r
+
 control <- control.net(
   type = "SI",
   nsims = 1,
@@ -236,6 +243,7 @@ The cumulative edgelist must be updated at each time step after network
 resimulation. In a custom module or at the end of initialization:
 
 ``` r
+
 dat <- update_cumulative_edgelist(dat, network = 1, truncate = Inf)
 ```
 
@@ -250,6 +258,7 @@ The `truncate` argument controls memory usage:
 To update all networks in a multi-layer model:
 
 ``` r
+
 for (n_network in seq_len(dat$num.nw)) {
   dat <- update_cumulative_edgelist(dat, n_network, truncate = 100)
 }
@@ -260,6 +269,7 @@ for (n_network in seq_len(dat$num.nw)) {
 #### For a Specific Network
 
 ``` r
+
 el_cuml <- get_cumulative_edgelist(dat, network = 1)
 ```
 
@@ -281,6 +291,7 @@ exist or the cumulative edgelist was not enabled—in those cases, the
 #### For Multiple Networks
 
 ``` r
+
 el_cumls <- get_cumulative_edgelists_df(dat, networks = NULL)
 ```
 
@@ -294,6 +305,7 @@ identifying which network layer each edge belongs to.
 extracts the partners of specified nodes from the cumulative edgelist:
 
 ``` r
+
 partner_list <- get_partners(
     dat,
     index_posit_ids,
@@ -328,6 +340,7 @@ counts the number of distinct partners each node has had over the
 tracked history:
 
 ``` r
+
 cum_degree <- get_cumulative_degree(
     dat,
     index_posit_ids = 1:50,
@@ -356,6 +369,7 @@ These functions operate on cumulative edgelist objects directly—not on
 ### Forward Reachable Set
 
 ``` r
+
 el_cuml <- get_cumulative_edgelist(dat, network = 1)
 
 fwd <- get_forward_reachable(
@@ -384,6 +398,7 @@ output; their forward reachable set is just themselves (size 1).
 ### Backward Reachable Set
 
 ``` r
+
 bkwd <- get_backward_reachable(
   el_cuml,
   from_step = 1,
@@ -407,6 +422,7 @@ reporting. Wrap calls in
 to display a progress bar:
 
 ``` r
+
 progressr::with_progress({
   fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 260)
 })

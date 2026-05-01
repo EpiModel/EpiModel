@@ -38,6 +38,7 @@ concurrency (no more than 110 nodes with 2+ partners), and no one with
 4+ partners. Partnerships last an average of 50 time steps.
 
 ``` r
+
 library(EpiModel)
 set.seed(12345)
 
@@ -65,6 +66,7 @@ compares summary statistics against targets. This is a critical
 validation step.
 
 ``` r
+
 dx <- netdx(est, nsims = 5, nsteps = 500, verbose = FALSE)
 ```
 
@@ -74,6 +76,7 @@ simulations (solid line) and the interquartile range (shaded band)
 should track the targets closely:
 
 ``` r
+
 plot(dx)
 ```
 
@@ -83,6 +86,7 @@ The duration diagnostic confirms that partnership durations match the
 specified target of 50 time steps:
 
 ``` r
+
 plot(dx, type = "duration")
 ```
 
@@ -96,6 +100,7 @@ per time step, and a recovery rate of 0.05. We seed 10 infections and
 run 5 stochastic simulations for 500 time steps.
 
 ``` r
+
 param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.05)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SIS", nsims = 5, nsteps = 500, verbose = FALSE)
@@ -112,6 +117,7 @@ simulations (solid line), individual simulation traces, and a shaded
 interquartile range capturing stochastic variability:
 
 ``` r
+
 plot(sim, sim.lines = TRUE, sim.alpha = 0.3,
      mean.lwd = 3, qnts = 0.5, main = "SIS Epidemic on a Dynamic Network")
 ```
@@ -121,6 +127,7 @@ plot(sim, sim.lines = TRUE, sim.alpha = 0.3,
 For prevalence (proportions rather than counts), use `popfrac = TRUE`:
 
 ``` r
+
 plot(sim, y = "i.num", popfrac = TRUE, sim.lines = TRUE, sim.alpha = 0.3,
      mean.lwd = 3, qnts = 0.5, main = "Infection Prevalence",
      ylab = "Prevalence", legend = FALSE)
@@ -134,6 +141,7 @@ plot(sim, y = "i.num", popfrac = TRUE, sim.lines = TRUE, sim.alpha = 0.3,
 simulations at a specified time step:
 
 ``` r
+
 summary(sim, at = 500)
 ```
 
@@ -168,6 +176,7 @@ analysis—per-simulation values, means, or standard deviations across
 simulations:
 
 ``` r
+
 d <- as.data.frame(sim)
 head(d)
 ```
@@ -187,6 +196,7 @@ whom, when, and with what probability. This can be converted into a
 phylogenetic tree to visualize chains of transmission.
 
 ``` r
+
 # Run a separate SI model seeded with a single infection for a cleaner tree
 set.seed(42)
 param2 <- param.net(inf.prob = 0.5, act.rate = 2)
@@ -210,12 +220,14 @@ head(tm)
     ## 6    16   414   418       1     16       0.5       2      0.75
 
 ``` r
+
 tmPhylo <- as.phylo.transmat(tm)
 ```
 
     ## found multiple trees, returning a list of 3phylo objects
 
 ``` r
+
 par(mar = c(2, 1, 2, 1))
 plot(tmPhylo, show.node.label = TRUE, root.edge = TRUE, cex = 0.5,
      main = "Transmission Tree")
@@ -237,6 +249,7 @@ simulation state (`dat`) and current time step (`at`), modifies state,
 and returns it:
 
 ``` r
+
 # Example: a custom progression module for an SEIR model
 progress_module <- function(dat, at) {
   active <- get_attr(dat, "active")
@@ -322,6 +335,7 @@ The current version of EpiModel is v2.6.1. Within the package, consult
 the help documentation for each exported function:
 
 ``` r
+
 help(package = "EpiModel")
 ```
 

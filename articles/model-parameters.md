@@ -58,6 +58,7 @@ here](https://github.com/EpiModel/SexualDistancing).
 First, we set up a simple SIS model as the base case.
 
 ``` r
+
 set.seed(10)
 
 nw <- network_initialize(n = 200)
@@ -89,6 +90,7 @@ scenarios usable by EpiModel. We use
 here for readability, but any `data.frame` constructor works.
 
 ``` r
+
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -137,6 +139,7 @@ parameter changes at three different time points.
 To convert from the `data.frame` to a usable list of scenarios:
 
 ``` r
+
 scenarios.list <- create_scenario_list(scenarios.df)
 str(scenarios.list, max.level = 2)
 #> List of 3
@@ -159,6 +162,7 @@ parameter updaters (described in the Advanced section below) that apply
 the specified changes at the designated time steps.
 
 ``` r
+
 # List to hold simulation results
 d_list <- vector(mode = "list", length = length(scenarios.list))
 names(d_list) <- names(scenarios.list)
@@ -199,6 +203,7 @@ because we need to overlay results from separate `netsim` runs on a
 single axis.
 
 ``` r
+
 plot(d_list$base$time, d_list$base$i.num,
      type = "l", col = 1, lwd = 2, ylim = c(0, 250),
      xlab = "Time Step", ylab = "Number Infected")
@@ -237,6 +242,7 @@ using the naming convention `paramname_N`, where `N` is the position in
 the vector:
 
 ``` r
+
 scenarios.df <- tribble(
   ~.scenario.id, ~.at, ~hiv.test.rate_1, ~hiv.test.rate_2, ~hiv.test.rate_3,
   "base", 0, 0.001, 0.001, 0.001,
@@ -265,6 +271,7 @@ When working with many parameters, we recommend storing the
 editing.
 
 ``` r
+
 # CSV
 write.csv(scenarios.df, "scenarios.csv", row.names = FALSE)
 scenarios.df <- read.csv("scenarios.csv")
@@ -293,6 +300,7 @@ Additional columns (e.g., `details`, `source`) may be included for
 documentation but are ignored by EpiModel.
 
 ``` r
+
 df_params <- tribble(
   ~param, ~value, ~type,
   "hiv.test.rate_1",  "0.003",        "numeric",
@@ -319,6 +327,7 @@ with named parameters for maximum flexibility. In case of conflict,
 named parameters take priority over those in the `data.frame`:
 
 ``` r
+
 param <- param.net(data.frame.params = df_params,
                    other.param = c(5, 10), act.rate = 1)
 param
@@ -344,6 +353,7 @@ uses a different realization.
 We demonstrate with a simple SI model.
 
 ``` r
+
 nw <- network_initialize(n = 50)
 
 est <- netest(
@@ -429,6 +439,7 @@ to `param.net`. There are two approaches.
 Define a generator function for each random parameter:
 
 ``` r
+
 my.randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
   dummy.param = function() rbeta(1, 1, 2),
@@ -477,6 +488,7 @@ model, random parameters appear as function definitions since their
 values have not yet been realized.
 
 ``` r
+
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
@@ -534,6 +546,7 @@ because each realization is itself a vector of length 2.
 To inspect the realized values:
 
 ``` r
+
 all.params <- get_param_set(mod)
 all.params
 #>   sim inf.prob vital groups act.rate dummy.param dummy.strat.param_1
@@ -550,6 +563,7 @@ These can be merged with epidemic output for analysis of
 parameter-outcome relationships:
 
 ``` r
+
 epi <- as.data.frame(mod)
 left_join(epi, all.params)
 #> Joining with `by = join_by(sim)`
@@ -598,6 +612,7 @@ Define a `data.frame` where each row is a complete set of correlated
 parameter values:
 
 ``` r
+
 n <- 5
 
 related.param <- data.frame(
@@ -625,6 +640,7 @@ Save the parameter set in the `my.randoms` list under the reserved name
 `param.random.set`:
 
 ``` r
+
 my.randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
   param.random.set = related.param
@@ -652,6 +668,7 @@ random, and the two remaining parameters are drawn as correlated sets
 from the `data.frame`.
 
 ``` r
+
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
@@ -704,6 +721,7 @@ mod
 Verify that correlated sets are sampled together:
 
 ``` r
+
 related.param
 #>   dummy.param dummy.strat.param_1 dummy.strat.param_2
 #> 1  0.40042189           1.6831189           1.0748786
@@ -736,6 +754,7 @@ An updater is a `list` with two required elements: `at` (the time step
 for the change) and `param` (a named list of new parameter values):
 
 ``` r
+
 list(
   at = 10,
   param = list(
@@ -758,6 +777,7 @@ This updater sets `inf.prob` to 0.3 and `act.rate` to 0.5 at time step
 10. Multiple updaters are combined in a list:
 
 ``` r
+
 list.of.updaters <- list(
   list(
     at = 100,
@@ -781,6 +801,7 @@ Pass the updater list to `param.net` via the `.param.updater.list`
 argument:
 
 ``` r
+
 param <- param.net(
  inf.prob = 0.1,
  act.rate = 0.1,
@@ -796,6 +817,7 @@ control <- control.net(
 ```
 
 ``` r
+
 nw <- network_initialize(n = 100)
 est <- netest(
   nw,
@@ -833,6 +855,7 @@ accelerating transmission. At step 125, `inf.prob` drops to 0.01,
 slowing the epidemic.
 
 ``` r
+
 plot(mod, mean.smooth = FALSE)
 abline(v = c(100, 125), lty = 2, col = "grey50")
 ```
@@ -845,6 +868,7 @@ Each updater can include an optional `verbose` element. When `TRUE` (the
 default), EpiModel prints a message describing the changes:
 
 ``` r
+
 list(
   at = 10,
   param = list(
@@ -875,6 +899,7 @@ Instead of setting a parameter to a fixed new value, you can define a
 multiplicative changes or logit-scale adjustments.
 
 ``` r
+
 list(
   at = 10,
   param = list(
@@ -908,6 +933,7 @@ updater mechanism. Each control updater uses a `control` element
 (instead of `param`):
 
 ``` r
+
 list.of.updaters <- list(
   list(
     at = 100,
@@ -932,6 +958,7 @@ paralleling how parameter updaters are passed to `param.net` via
 `.param.updater.list`:
 
 ``` r
+
 control <- control.net(
  type = "SI",
  nsims = 1,

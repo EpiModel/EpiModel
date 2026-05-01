@@ -41,6 +41,14 @@
   These parameters were renamed to `a.rate` / `a.rate.g2` in v1.7.0;
   passing them now produces a standard R unused-argument error. Closes
   [\#989](https://github.com/EpiModel/EpiModel/issues/989).
+- Changed the default of `legend` in
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  from `TRUE` to `NULL`. The legend is now auto-shown only when `y` is
+  auto-populated (the no-`y` default); when the caller supplies `y`
+  explicitly, no legend is drawn unless `legend = TRUE` is passed. This
+  matches the more principled `plot.netsim(type = "epi")` policy and
+  avoids a single-entry legend for `plot(mod, y = "i.num")`-style calls.
+  Closes [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
 
 ### NEW FEATURES
 
@@ -89,6 +97,25 @@
   to skip drawing quantile polygons when `qnts = FALSE`, matching the
   documented behavior. Previously this case produced a degenerate
   zero-width band rather than suppressing the polygon.
+- Fix `ylim` in
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  so the auto-range expands to fit quantile polygons when
+  `mean.line = FALSE`. The previous guard only triggered when
+  `mean.line = TRUE`, leaving polygons potentially clipped against
+  compartment extrema. This is the
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  analog of the
+  [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+  fix in [\#1009](https://github.com/EpiModel/EpiModel/issues/1009).
+  Closes [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
+- Fix silent color recycling in
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  when more than three compartments are plotted. The internal palette
+  `bpal` was hard-coded to three entries (`c(4, 2, 3)`), so the fourth
+  and subsequent compartments could render as `NA` (invisible) under
+  [`adjustcolor()`](https://rdrr.io/r/grDevices/adjustcolor.html).
+  Extended to 99 entries to match `plot.netsim(type = "epi")`. Closes
+  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
 
 ### OTHER
 
@@ -124,10 +151,17 @@
   batch/HPC logs. Add tests for module ordering with both
   `resimulate.network` settings. Closes
   [\#466](https://github.com/EpiModel/EpiModel/issues/466).
-
-## EpiModel 2.6.0
-
-CRAN release: 2026-03-19
+- Align remaining stylistic differences between
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  and `plot_netsim_epi()`: switch `== TRUE` / `== FALSE` boolean guards
+  to the bare form, reorganize the `ylim` auto-calc so
+  `popfrac || sim.lines` is a first-class branch, simplify the
+  `x$param$groups` derivation, and drop the dead `lcomp == 1` special
+  case in the compartment-max block. No behavior change. Tracks the
+  structural-symmetry goal noted in `CLAUDE.md`. Closes
+  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012); the
+  remaining shared-helper refactor was filed as
+  [\#1018](https://github.com/EpiModel/EpiModel/issues/1018).
 
 ### BREAKING CHANGES
 
@@ -222,7 +256,7 @@ CRAN release: 2026-03-19
 - Set `MCMC.maxchanges` to `.Machine$integer.max` as default for
   TERGM MCMC. Lift the check on the maximum number of MCMC changes per
   step for bigger or dense networks.
-- Convert the Roxygen2 documentation to Markdown (previously $LaTeX$).
+- Convert the Roxygen2 documentation to Markdown (previously $`LaTeX`$).
 - Use `arg = NULL` in function definition instead of `missing(arg)` in
   function body when possible.
 - Add `message`s when a function restarts from a checkpointed state.

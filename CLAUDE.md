@@ -224,6 +224,7 @@ installed. When asked to run a full package test:
 3.  **Install R package dependencies**:
 
     ``` r
+
     install.packages(c("deSolve", "networkDynamic", "tergm", "statnet.common",
       "ergm", "network", "networkLite", "collections", "future", "future.apply",
       "RColorBrewer", "ape", "lazyeval", "ggplot2", "tibble", "rlang", "dplyr",
@@ -269,6 +270,7 @@ dynamics.
 The core workflow for any network epidemic model:
 
 ``` r
+
 # 1. Initialize network
 nw <- network_initialize(n = 500)
 nw <- set_vertex_attribute(nw, "risk", rep(0:1, each = 250))
@@ -385,6 +387,7 @@ other terms are preserved, so statistics shift as prevalence changes.
 ### Output Analysis
 
 ``` r
+
 as.data.frame(sim)                            # per-simulation raw data
 as.data.frame(sim, out = "mean")              # means across simulations
 get_network(sim, sim = 1)                     # extract network object

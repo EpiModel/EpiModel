@@ -31,6 +31,7 @@ The current release version can be found on
 [CRAN](https://CRAN.R-project.org/package=EpiModel) and installed with:
 
 ``` r
+
 install.packages("EpiModel", dependencies = TRUE)
 ```
 
@@ -38,6 +39,7 @@ To install the development version, use the
 [remotes](https://github.com/r-lib/remotes) package:
 
 ``` r
+
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("EpiModel/EpiModel")
 ```

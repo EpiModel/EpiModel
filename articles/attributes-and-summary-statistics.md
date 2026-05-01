@@ -48,6 +48,7 @@ with
 [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md):
 
 ``` r
+
 get_core_attributes()
 #> $active
 #> [1] 1
@@ -129,6 +130,7 @@ Use
 to extract an attribute vector:
 
 ``` r
+
 active <- get_attr(dat, "active")
 ```
 
@@ -140,6 +142,7 @@ Requesting a nonexistent attribute throws an error.
 Below is a minimal module that increments the age of all nodes by 1:
 
 ``` r
+
 aging_module <- function(dat, at) {
 
   # Extract current attribute
@@ -198,6 +201,7 @@ values `"s"` for susceptible, `"i"` for infected) and a `viral_load`
 attribute (continuous for infected nodes, `NA` otherwise).
 
 ``` r
+
 viral_load_logger_module <- function(dat, at) {
 
   # Run every 10 time steps
@@ -243,6 +247,7 @@ open-population models with many nodes over many time steps.
 Attribute histories are accessed after the simulation is complete:
 
 ``` r
+
 sim <- netsim(est, param, init, control)
 attr_history <- get_attr_history(sim)
 ```
@@ -252,6 +257,7 @@ attribute label. Suppose we recorded `"viral_load"` (as above) and also
 `"status"` transitions in another module. The output would look like:
 
 ``` r
+
 get_attr_history(sim)
 
 # $viral_load
@@ -296,6 +302,7 @@ Here is an extended aging module that also tracks mean age and its
 change over time:
 
 ``` r
+
 aging_track_module <- function(dat, at) {
 
   # Attributes
@@ -339,6 +346,7 @@ simulation. Access them by calling
 [`summary()`](https://rdrr.io/r/base/summary.html):
 
 ``` r
+
 sim <- netsim(est, param, init, control)
 
 # Raw per-simulation data
@@ -362,6 +370,7 @@ works like
 but operates on the `epi` list:
 
 ``` r
+
 # Add incidence rate and prevalence
 sim <- mutate_epi(sim, prev = i.num / num)
 sim <- mutate_epi(sim, ir = (si.flow / s.num) * 100)
@@ -378,6 +387,7 @@ automatically generates stratified compartment counts by a nodal
 attribute. For example, to track infection by a `"risk"` attribute:
 
 ``` r
+
 set.seed(0)
 
 nw <- network_initialize(n = 100)
@@ -405,6 +415,7 @@ With `epi.by = "risk"`, the output includes stratified columns
 automatically:
 
 ``` r
+
 d <- as.data.frame(sim)
 names(d)
 #>  [1] "sim"         "time"        "s.num"       "s.num.risk0" "s.num.risk1"
@@ -429,6 +440,7 @@ a **scalar** value (numeric, logical, or character). It is called
 automatically at the end of each time step, after all modules have run.
 
 ``` r
+
 epi_s_num <- function(dat) {
   needed_attributes <- c("status")
   output <- with(get_attr_list(dat, needed_attributes), {
@@ -442,6 +454,7 @@ Here is a tracker that computes the proportion of the population
 infected:
 
 ``` r
+
 epi_prop_infected <- function(dat) {
   needed_attributes <- c("status", "active")
   output <- with(get_attr_list(dat, needed_attributes), {
@@ -469,6 +482,7 @@ Pass tracker functions as a named list via `.tracker.list` in
 The names become column names in the output `data.frame`:
 
 ``` r
+
 some.trackers <- list(
   prop_infected = epi_prop_infected,
   s_num         = epi_s_num
@@ -547,6 +561,7 @@ state of an object during simulation without stopping it.
 saves any R object at a given time step for later inspection.
 
 ``` r
+
 introspect_module <- function(dat, at) {
   age <- get_attr(dat, "age")
 
@@ -565,6 +580,7 @@ introspect_module <- function(dat, at) {
 After simulation, access recorded objects from the `netsim` output:
 
 ``` r
+
 sim <- netsim(est, param, init, control)
 
 # Access raw records for simulation 1
