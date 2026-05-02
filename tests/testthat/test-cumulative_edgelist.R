@@ -102,7 +102,7 @@ test_that("netsim, SI, Cumulative Edgelist - missing args", {
 
 })
 
-test_that("netsim non-tergmLite cumulative edgelist captures initial-step edges (#1016)", {
+test_that("netsim non-tergmLite cumulative edgelist matches networkDynamic (#1016)", {
   skip_on_cran()
   set.seed(1)
   nw <- network_initialize(n = 500)
@@ -130,17 +130,33 @@ test_that("netsim non-tergmLite cumulative edgelist captures initial-step edges 
   cel_nd <- as.data.frame(get_network(mod, sim = 1))
   cel_epi <- mod$cumulative.edgelist$sim1
 
-  # MRE assertion: row counts must match after the fix.
+  # Row-count parity (the headline #1016 regression check).
   expect_equal(nrow(cel_epi), nrow(cel_nd))
 
-  # Initial duration-1 edges (onset=0, terminus=1) should appear with
-  # start=1, stop=1 in the cumulative edgelist.
-  n_dur1_initial <- sum(cel_nd$onset == 0 & cel_nd$terminus == 1)
-  got <- sum(cel_epi$start == 1 & cel_epi$stop == 1, na.rm = TRUE)
-  expect_gte(got, n_dur1_initial)
+  # Active-set parity at t=0 and t=1. networkDynamic spells are half-open
+  # [onset, terminus); the cumulative edgelist is closed [start, stop] with
+  # NA stop meaning ongoing. So an edge active at time t in nD has
+  # onset <= t < terminus, and in the cumulative edgelist has
+  # start <= t and (is.na(stop) | stop >= t).
+  n_active_t0_nd  <- sum(cel_nd$onset <= 0 & cel_nd$terminus > 0)
+  n_active_t0_epi <- sum(cel_epi$start <= 0 &
+                           (is.na(cel_epi$stop) | cel_epi$stop >= 0))
+  expect_equal(n_active_t0_epi, n_active_t0_nd)
 
-  # Persistent edges should have start=1 (off-by-one from pre-#1016 behavior).
-  expect_equal(min(cel_epi$start), 1)
+  n_active_t1_nd  <- sum(cel_nd$onset <= 1 & cel_nd$terminus > 1)
+  n_active_t1_epi <- sum(cel_epi$start <= 1 &
+                           (is.na(cel_epi$stop) | cel_epi$stop >= 1))
+  expect_equal(n_active_t1_epi, n_active_t1_nd)
+
+  # Initial duration-1 edges (onset=0, terminus=1 in nD) -> start=0, stop=0.
+  n_dur1_initial_nd  <- sum(cel_nd$onset == 0 & cel_nd$terminus == 1)
+  n_dur1_initial_epi <- sum(cel_epi$start == 0 & cel_epi$stop == 0,
+                            na.rm = TRUE)
+  expect_equal(n_dur1_initial_epi, n_dur1_initial_nd)
+
+  # Cross-section persistent edges live at start=0; nothing should be
+  # earlier than that.
+  expect_equal(min(cel_epi$start), 0)
 })
 
 test_that("truncate.el.cuml = 0 skips hist seed (#1016)", {
@@ -167,19 +183,24 @@ test_that("truncate.el.cuml = 0 skips hist seed (#1016)", {
                 init.net(i.num = 5), control)
   el_cuml <- mod$cumulative.edgelist$sim1
 
-  # truncate=0 keeps only active edges: all rows must have stop==NA.
+  # truncate=0 keeps only active edges: all rows must have stop==NA, and
+  # in particular the start=0/stop=0 hist seed must not be applied.
   expect_true(all(is.na(el_cuml$stop)))
 })
 
-test_that("tergmLite cumulative edgelist seeds persistent edges with start=1 (#1016)", {
+test_that("tergmLite cumulative edgelist captures initial-step edges (#1016)", {
   skip_on_cran()
   set.seed(3)
-  nw <- network_initialize(n = 100)
+  # Short duration so a substantial fraction of cross-section edges dissolves
+  # during the initial TERGM step. Without the fix in #1017 those rows would
+  # be missing entirely; with option (b) they should be present as
+  # start=0/stop=0 rows.
+  nw <- network_initialize(n = 200)
   est <- netest(
     nw,
     formation = ~edges,
-    target.stats = 20,
-    coef.diss = dissolution_coefs(~offset(edges), duration = 100),
+    target.stats = 80,
+    coef.diss = dissolution_coefs(~offset(edges), duration = 2),
     verbose = FALSE
   )
 
@@ -192,11 +213,62 @@ test_that("tergmLite cumulative edgelist seeds persistent edges with start=1 (#1
     verbose = FALSE
   )
 
+  set.seed(3)
   mod <- netsim(est, param.net(inf.prob = 0.1),
                 init.net(i.num = 5), control)
   el_cuml <- mod$cumulative.edgelist$sim1
 
-  expect_equal(min(el_cuml$start), 1)
+  # Cross-section persistent edges live at start=0 in tergmLite too, and
+  # tergmLite is no longer limited on the initial-step dissolutions because
+  # sim_nets_t1 stashes the t=0 edgelist before networkLite discards it.
+  expect_equal(min(el_cuml$start), 0)
+  expect_gt(sum(el_cuml$start == 0 & !is.na(el_cuml$stop) &
+                  el_cuml$stop == 0), 0)
+})
+
+test_that("cumulative edgelist start values align with networkDynamic onsets (#1016)", {
+  # Stronger pointwise check: every row's (start, stop) maps to a unique nD
+  # spell (onset = start, terminus = stop + 1 with NA stop -> Inf).
+  skip_on_cran()
+  set.seed(4)
+  nw <- network_initialize(n = 200)
+  est <- netest(
+    nw,
+    formation = ~edges,
+    target.stats = 60,
+    coef.diss = dissolution_coefs(~offset(edges), duration = 5),
+    verbose = FALSE
+  )
+
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 10,
+    cumulative.edgelist = TRUE,
+    truncate.el.cuml = Inf,
+    save.cumulative.edgelist = TRUE,
+    save.network = TRUE,
+    verbose = FALSE
+  )
+
+  set.seed(4)
+  mod <- netsim(est, param.net(inf.prob = 0.1),
+                init.net(i.num = 5), control)
+
+  cel_nd  <- as.data.frame(get_network(mod, sim = 1))
+  cel_epi <- mod$cumulative.edgelist$sim1
+
+  # Build comparable spell signatures. nD's terminus is exclusive; ours is
+  # inclusive, so terminus = stop + 1 with NA stop -> Inf. Right-censored
+  # terminus values (edges ongoing at end of observation) likewise map to
+  # Inf so they compare equal to NA stops in the cumulative edgelist.
+  nd_term  <- ifelse(cel_nd$terminus.censored, Inf, cel_nd$terminus)
+  epi_term <- ifelse(is.na(cel_epi$stop), Inf, cel_epi$stop + 1)
+  nd_key <- sort(paste(pmin(cel_nd$tail, cel_nd$head),
+                       pmax(cel_nd$tail, cel_nd$head),
+                       cel_nd$onset, nd_term, sep = "_"))
+  epi_key <- sort(paste(pmin(cel_epi$head, cel_epi$tail),
+                        pmax(cel_epi$head, cel_epi$tail),
+                        cel_epi$start, epi_term, sep = "_"))
+  expect_identical(epi_key, nd_key)
 })
 
 test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
