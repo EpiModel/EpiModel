@@ -30,7 +30,7 @@ indicating an \code{ergm.ego} fit.}
 the network should be reproduced by the model. Common terms include
 \code{edges} (overall connectivity), \code{nodematch} (homophily by attribute),
 \code{concurrent} (overlapping partnerships), and \code{degree} (degree
-distribution constraints). See \code{\link[ergm:ergmTerm]{ergm::ergm-terms}} for the full
+distribution constraints). See \code{\link[ergm:ergm-terms]{ergm::ergm-terms}} for the full
 list of available terms.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with

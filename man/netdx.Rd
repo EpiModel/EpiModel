@@ -116,7 +116,7 @@ Models fit with the full STERGM method in \code{netest} (setting the
 simulations may be set using \code{set.control.tergm} in \code{netdx}.
 The parameters should be input through the \code{control.simulate.formula.tergm}
 function, with the available parameters listed in the
-\code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}} help page in the \code{tergm}
+\code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm}} help page in the \code{tergm}
 package.
 
 Models fit with the ERGM method with the edges dissolution approximation
@@ -127,10 +127,10 @@ simulating that static network forward through time. Control parameters may
 be set for both processes in \code{netdx}. For the first, the parameters
 should be input through the \code{control.simulate.formula()} function, with
 the available parameters listed in the
-\code{\link[ergm:control.simulate.ergm]{ergm::control.simulate.formula}} help
+\code{\link[ergm:control.simulate.formula]{ergm::control.simulate.formula}} help
 page in the \code{ergm} package. For the second, parameters should be input
 through the \code{control.simulate.formula.tergm()} function, with the
-available parameters listed in the \code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}}
+available parameters listed in the \code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm}}
 help page in the \code{tergm} package. An example is shown below.
 }
 

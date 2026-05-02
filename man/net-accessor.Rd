@@ -86,8 +86,8 @@ object and other initialization information passed from
 
 \item{item}{A character vector containing the name of the element to access
 (for \code{get_} functions), create (for \code{add_} functions), or
-edit (for \code{set_} and \code{append_} functions). Can be of length
-> 1 for \verb{get_*_list} functions.}
+edit (for \code{set_} and \code{append_} functions). Can be of length greater
+than 1 for \verb{get_*_list} functions.}
 
 \item{posit_ids}{For \code{set_attr} and \code{get_attr}, a numeric vector of
 posit_ids to subset the desired \code{item}.}

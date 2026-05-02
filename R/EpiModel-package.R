@@ -131,16 +131,13 @@
 #' @import ergm network networkLite networkDynamic tergm ggplot2
 #' @importFrom deSolve dede ode
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
-#' @importFrom graphics abline arrows boxplot legend lines mtext par plot points
-#'             polygon text title
+#' @importFrom graphics abline arrows boxplot legend lines mtext par plot points polygon text title
 #' @importFrom grDevices col2rgb colorRampPalette rgb adjustcolor
-#' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
-#'             supsmu terms.formula update dgeom coef na.omit
+#' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate supsmu terms.formula update dgeom coef na.omit
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
-#' @importFrom statnet.common trim_env set.control.class check.control.class NVL
-#'             paste.and .Deprecate_once
+#' @importFrom statnet.common trim_env set.control.class check.control.class NVL paste.and .Deprecate_once
 #' @importFrom methods is
 #' @importFrom tibble as_tibble tibble
 #' @importFrom coda effectiveSize
