@@ -168,6 +168,73 @@ test_that("get_sims error flags", {
   expect_true(setequal(names(d.set), set.colnames))
   expect_error(get_param_set(control), "`sims` must be of class netsim")
   expect_equal(dim(get_param_set(mod)), c(3, length(set.colnames)))
+
+  mod.sub <- get_sims(mod, sims = 2)
+  d.sub <- get_param_set(mod.sub)
+  expect_equal(nrow(d.sub), 1)
+  expect_equal(d.sub$act.rate, d.set$act.rate[2])
+  expect_equal(d.sub$dummy.param, d.set$dummy.param[2])
+  expect_equal(d.sub$dummy.strat.param_1, d.set$dummy.strat.param_1[2])
+  expect_equal(d.sub$dummy.strat.param_2, d.set$dummy.strat.param_2[2])
+})
+
+test_that("get_param_set handles vector random parameters with one simulation", {
+  mod <- structure(
+    list(
+      param = list(
+        inf.prob = 0.3,
+        dummy.strat.param = c(0.1, 0.2),
+        random.params = list(dummy.strat.param = function() NULL),
+        random.params.values = list(dummy.strat.param = c(0.1, 0.2))
+      ),
+      control = list(nsims = 1)
+    ),
+    class = "netsim"
+  )
+
+  d.set <- get_param_set(mod)
+  expect_equal(nrow(d.set), 1)
+  expect_equal(d.set$dummy.strat.param_1, 0.1)
+  expect_equal(d.set$dummy.strat.param_2, 0.2)
+})
+
+test_that("get_sims subsets random parameter values", {
+  mod <- structure(
+    list(
+      param = list(
+        inf.prob = 0.3,
+        act.rate = 0.1,
+        dummy.strat.param = c(1, 2),
+        random.params = list(
+          act.rate = function() NULL,
+          dummy.strat.param = function() NULL
+        ),
+        random.params.values = list(
+          act.rate = c(0.1, 0.2, 0.3),
+          dummy.strat.param = list(c(1, 2), c(3, 4), c(5, 6))
+        )
+      ),
+      control = list(nsims = 3, save.other = character(0)),
+      epi = list(
+        i.num = data.frame(matrix(1:3, nrow = 1))
+      ),
+      stats = list(nwstats = NULL, transmat = NULL),
+      run = NULL,
+      network = NULL,
+      diss.stats = NULL
+    ),
+    class = "netsim"
+  )
+
+  mod.sub <- get_sims(mod, sims = 2)
+  d.sub <- get_param_set(mod.sub)
+
+  expect_equal(mod.sub$control$nsims, 1)
+  expect_equal(mod.sub$param$random.params.values$act.rate, 0.2)
+  expect_equal(mod.sub$param$random.params.values$dummy.strat.param, list(c(3, 4)))
+  expect_equal(d.sub$act.rate, 0.2)
+  expect_equal(d.sub$dummy.strat.param_1, 3)
+  expect_equal(d.sub$dummy.strat.param_2, 4)
 })
 
 dxs <- netdx(est, dynamic = FALSE, nsims = 5,
