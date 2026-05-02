@@ -72,7 +72,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
                      sim.alpha = NULL, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col = NULL, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
                      qnts.col = NULL, qnts.alpha = 0.5, qnts.smooth = TRUE,
-                     legend = TRUE, leg.cex = 0.8, grid = FALSE, add = FALSE,
+                     legend = NULL, leg.cex = 0.8, grid = FALSE, add = FALSE,
                      xlim = NULL, ylim = NULL, main = "", xlab = "Time",
                      ylab = NULL,
                      ...) {
@@ -89,16 +89,15 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     stop("Set sim to between 1 and ", nsims)
   }
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
-    groups <- 1
     x$param$groups <- 1
-  } else {
-    groups <- x$param$groups
   }
+  groups <- x$param$groups
 
 
   ## Compartments ##
   nocomp <- is.null(y)
-  if (nocomp == TRUE) {
+  if (nocomp) {
+    legend <- if (is.null(legend)) TRUE else legend
     if (groups == 1) {
       y <- grep(".num$", names(x$epi), value = TRUE)
     }
@@ -108,11 +107,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
                grep(".num.g2$", names(x$epi), value = TRUE))
       }
     }
-  }
-  if (nocomp == FALSE) {
-    if (any(y %in% names(x$epi) == FALSE)) {
-      stop("Specified y is not available in object")
-    }
+  } else if (!all(y %in% names(x$epi))) {
+    stop("Specified y is not available in object")
   }
   lcomp <- length(y)
 
@@ -120,7 +116,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   ## Color palettes ##
 
   # Main color palette
-  bpal <- c(4, 2, 3)
+  bpal <- c(4, 2, 3, 5:100)
 
   # Mean line
   if (is.null(mean.col)) {
@@ -162,14 +158,9 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   x <- denom(x, y, popfrac)
 
   # Compartment max
-  if (popfrac == FALSE) {
-    if (lcomp == 1) {
-      min.prev <- min(x$epi[[y]], na.rm = TRUE)
-      max.prev <- max(x$epi[[y]], na.rm = TRUE)
-    } else {
-      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
-      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
-    }
+  if (!popfrac) {
+    min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
+    max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
   } else {
     min.prev <- 0
     max.prev <- 1
@@ -197,7 +188,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     stop("qnts must be between 0 and 1")
   }
 
-  if (mean.line == TRUE) {
+  if (mean.line) {
     if (length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
@@ -213,7 +204,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   }
 
   ## Mean lines - ylim max ##
-  if (mean.line == TRUE) {
+  if (mean.line) {
     mean.min <- draw_means(x, y, mean.smooth, mean.lwd,
                            mean.pal, mean.lty, "epi", 0, "min", offset)
     mean.max <- draw_means(x, y, mean.smooth, mean.lwd,
@@ -221,25 +212,20 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   }
 
   # Dynamic scaling based on sim.lines and mean lines and quantile bands
-  if (is.null(ylim)) {
-    if (sim.lines == FALSE && mean.line == TRUE) {
-      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
-                max(qnt.max * 1.1, mean.max * 1.1))
-    } else {
-      ylim <- c(min.prev, max.prev)
-    }
+  if (is.null(ylim) && (popfrac || sim.lines)) {
+    ylim <- c(min.prev, max.prev)
+  } else if (is.null(ylim) && !popfrac && !sim.lines &&
+               (mean.line || disp.qnts)) {
+    ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+              max(qnt.max * 1.1, mean.max * 1.1))
   }
 
   if (is.null(ylab)) {
-    if (popfrac == FALSE) {
-      ylab <- "Number"
-    } else {
-      ylab <- "Prevalence"
-    }
+    ylab <- if (popfrac) "Prevalence" else "Number"
   }
 
   ## Main plot window ##
-  if (add == FALSE) {
+  if (!add) {
     plot(1, 1, type = "n", bty = "n",
          xlim = xlim, ylim = ylim,
          xlab = xlab, ylab = ylab, main = main, ...)
@@ -252,7 +238,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   }
 
   ## Simulation lines ##
-  if (sim.lines == TRUE) {
+  if (sim.lines) {
     for (j in seq_len(lcomp)) {
       for (i in sims) {
         lines(seq_len(nrow(x$epi[[y[j]]])) + offset,
@@ -263,19 +249,19 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
 
   ## Mean lines - plotting ##
-  if (mean.line == TRUE) {
+  if (mean.line) {
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty,
                "epi", 1, "max", offset)
   }
 
   ## Grid
-  if (grid == TRUE) {
+  if (grid) {
     grid()
   }
 
   ## Legends ##
-  if (legend) {
-    if (groups == 2 && nocomp == TRUE) {
+  if (!is.null(legend) && legend) {
+    if (groups == 2 && nocomp) {
       leg.lty <- mean.lty
     } else {
       leg.lty <- 1

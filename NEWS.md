@@ -9,6 +9,7 @@
     -   `births.FUN` / `deaths.FUN` in `control.net()` -- use `arrivals.FUN` / `departures.FUN` (deprecated since 1.7.0).
     -   `depend` in `control.net()` -- use `resimulate.network` (deprecated since 2.0).
 -   Removed `b.rate` / `b.rate.g2` deprecation guards from `param.dcm()`, `param.icm()`, and `param.net()`. These parameters were renamed to `a.rate` / `a.rate.g2` in v1.7.0; passing them now produces a standard R unused-argument error. Closes #989.
+-   Changed the default of `legend` in `plot.icm()` from `TRUE` to `NULL`. The legend is now auto-shown only when `y` is auto-populated (the no-`y` default); when the caller supplies `y` explicitly, no legend is drawn unless `legend = TRUE` is passed. This matches the more principled `plot.netsim(type = "epi")` policy and avoids a single-entry legend for `plot(mod, y = "i.num")`-style calls. Closes #1012.
 
 ### NEW FEATURES
 
@@ -21,6 +22,8 @@
 -   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls, preventing them from ever executing. Closes #982.
 -   Fix `ylim` in `plot.netsim(type = "epi")` so the auto-range expands to fit quantile polygons when `mean.line = FALSE`. The previous `qnts == TRUE` guard only matched `qnts = 1` / `qnts = TRUE`, leaving polygons potentially clipped at the default `qnts = 0.5`. Closes #1009.
 -   Fix `plot.icm()` to skip drawing quantile polygons when `qnts = FALSE`, matching the documented behavior. Previously this case produced a degenerate zero-width band rather than suppressing the polygon.
+-   Fix `ylim` in `plot.icm()` so the auto-range expands to fit quantile polygons when `mean.line = FALSE`. The previous guard only triggered when `mean.line = TRUE`, leaving polygons potentially clipped against compartment extrema. This is the `plot.icm()` analog of the `plot.netsim()` fix in #1009. Closes #1012.
+-   Fix silent color recycling in `plot.icm()` when more than three compartments are plotted. The internal palette `bpal` was hard-coded to three entries (`c(4, 2, 3)`), so the fourth and subsequent compartments could render as `NA` (invisible) under `adjustcolor()`. Extended to 99 entries to match `plot.netsim(type = "epi")`. Closes #1012.
 -   Fix `netsim` cumulative edgelist (`cumulative.edgelist = TRUE`) to include edges from the initial network state and to use the same time origin as the `networkDynamic` object. Previously, `update_cumulative_edgelist()` was first called at `at = 2` from `resim_nets()`, so persistent cross-section edges received `start = 2` (off-by-one) and edges active during the initial ERGM→TERGM step but not at `at = 1` were silently dropped. The cumulative edgelist is now seeded at the end of `sim_nets_t1()` so that `start` aligns with `networkDynamic` `onset`: persistent cross-section edges get `start = 0, stop = NA`; edges formed during the first TERGM step get `start = 1, stop = NA`; edges active in the cross-section but dissolved by the first TERGM step get `start = 0, stop = 0` (mirroring `networkDynamic` spells `[0, 1)`). The cumulative edgelist now matches `as.data.frame(get_network(sim))` row-for-row, including at `at = 0` and `at = 1`. In `tergmLite` mode the cross-section edgelist is captured before `simulate_dat()` overwrites it, so initial-step dissolutions are now recovered there as well. EpiModel epidemic outputs (e.g., the `epi` data frame) still begin at `at = 1`; only the network time origin is shifted to align with `networkDynamic`. Closes #1016.
 
 ### OTHER
@@ -30,8 +33,7 @@
 -   Apply the same consolidation to `plot.icm()` to keep the two sibling plotting paths structurally symmetric. Closes #1010.
 -   Extract duplicated stats validation logic from `plot_netsim_stats()` and `plot.netdx()` into a shared `validate_stats_selection()` helper; add `xlim`, `xlab`, `ylim`, `ylab` parameters to `plot.netdx()` for parity with `plot.netsim(type = "formation")`. Closes #998.
 -   Clarify in `control.net()` docs that `module.order` is independent of `resimulate.network`, and that `tergmLite = TRUE` forces `resimulate.network = TRUE`. Change the `tergmLite` override from `message()` to `warning()` so it is visible in batch/HPC logs. Add tests for module ordering with both `resimulate.network` settings. Closes #466.
-
-## EpiModel 2.6.0
+-   Align remaining stylistic differences between `plot.icm()` and `plot_netsim_epi()`: switch `== TRUE` / `== FALSE` boolean guards to the bare form, reorganize the `ylim` auto-calc so `popfrac || sim.lines` is a first-class branch, simplify the `x$param$groups` derivation, and drop the dead `lcomp == 1` special case in the compartment-max block. No behavior change. Tracks the structural-symmetry goal noted in `CLAUDE.md`. Closes #1012; the remaining shared-helper refactor was filed as #1018.
 
 ### BREAKING CHANGES
 
