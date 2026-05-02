@@ -74,8 +74,8 @@ append_core_attr(dat, at, n.new)
 
   A character vector containing the name of the element to access (for
   `get_` functions), create (for `add_` functions), or edit (for `set_`
-  and `append_` functions). Can be of length \> 1 for `get_*_list`
-  functions.
+  and `append_` functions). Can be of length greater than 1 for
+  `get_*_list` functions.
 
 - posit_ids:
 
