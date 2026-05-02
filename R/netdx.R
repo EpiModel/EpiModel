@@ -196,7 +196,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
     stop("x must be an object of class netest")
   }
 
-  ncores <- if (nsims == 1) 1 else min(parallelly::availableCores(), ncores)
+  ncores <- if (nsims == 1) 1 else cap_ncores(ncores)
 
   formation <- x$formation
   coef.form <- x$coef.form
