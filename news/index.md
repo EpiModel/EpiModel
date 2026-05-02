@@ -116,6 +116,31 @@
   [`adjustcolor()`](https://rdrr.io/r/grDevices/adjustcolor.html).
   Extended to 99 entries to match `plot.netsim(type = "epi")`. Closes
   [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
+- Fix `netsim` cumulative edgelist (`cumulative.edgelist = TRUE`) to
+  include edges from the initial network state and to use the same time
+  origin as the `networkDynamic` object. Previously,
+  [`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+  was first called at `at = 2` from
+  [`resim_nets()`](https://epimodel.github.io/EpiModel/reference/resim_nets.md),
+  so persistent cross-section edges received `start = 2` (off-by-one)
+  and edges active during the initial ERGM→TERGM step but not at
+  `at = 1` were silently dropped. The cumulative edgelist is now seeded
+  at the end of
+  [`sim_nets_t1()`](https://epimodel.github.io/EpiModel/reference/sim_nets_t1.md)
+  so that `start` aligns with `networkDynamic` `onset`: persistent
+  cross-section edges get `start = 0, stop = NA`; edges formed during
+  the first TERGM step get `start = 1, stop = NA`; edges active in the
+  cross-section but dissolved by the first TERGM step get
+  `start = 0, stop = 0` (mirroring `networkDynamic` spells `[0, 1)`).
+  The cumulative edgelist now matches `as.data.frame(get_network(sim))`
+  row-for-row, including at `at = 0` and `at = 1`. In `tergmLite` mode
+  the cross-section edgelist is captured before
+  [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
+  overwrites it, so initial-step dissolutions are now recovered there as
+  well. EpiModel epidemic outputs (e.g., the `epi` data frame) still
+  begin at `at = 1`; only the network time origin is shifted to align
+  with `networkDynamic`. Closes
+  [\#1016](https://github.com/EpiModel/EpiModel/issues/1016).
 
 ### OTHER
 
