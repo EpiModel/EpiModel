@@ -7,130 +7,35 @@
 - Removed extension/custom module support from ICM models.
   [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md)
   no longer accepts `.FUN` arguments (e.g., `infection.FUN`,
-  `departures.FUN`), `skip.check`, or additional modules via `...`. ICMs
+  `departures.FUN`), `skip.check`, or additional modules via `...`; ICMs
   now exclusively support the built-in SI, SIR, and SIS disease types.
-  Users who were passing custom module functions to
-  [`control.icm()`](https://epimodel.github.io/EpiModel/reference/control.icm.md)
-  should migrate to the network model class via
+  Users with custom modules should migrate to
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  /
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md),
   which provides full extension model support. Closes
   [\#634](https://github.com/EpiModel/EpiModel/issues/634).
 - Completed removal of all long-deprecated parameter names. The
   following now produce hard errors directing users to the current
-  names:
-  - `trans.rate` / `trans.rate.g2` in
-    [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
-    [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md)
-    – use `inf.prob` / `inf.prob.g2`.
-  - `.m2` parameter suffix in
-    [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
-    and
-    [`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
-    – use `.g2` suffix (deprecated since 2.0).
-  - `births.FUN` / `deaths.FUN` in
-    [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
-    – use `arrivals.FUN` / `departures.FUN` (deprecated since 1.7.0).
-  - `depend` in
-    [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
-    – use `resimulate.network` (deprecated since 2.0).
-- Removed `b.rate` / `b.rate.g2` deprecation guards from
-  [`param.dcm()`](https://epimodel.github.io/EpiModel/reference/param.dcm.md),
-  [`param.icm()`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
-  and
-  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md).
-  These parameters were renamed to `a.rate` / `a.rate.g2` in v1.7.0;
-  passing them now produces a standard R unused-argument error. Closes
+  names: `trans.rate` / `trans.rate.g2` → `inf.prob` / `inf.prob.g2`;
+  `.m2` suffix → `.g2`; `births.FUN` / `deaths.FUN` → `arrivals.FUN` /
+  `departures.FUN`; `depend` → `resimulate.network`; `b.rate` /
+  `b.rate.g2` → `a.rate` / `a.rate.g2` (the last now produces a standard
+  R unused-argument error). Closes
   [\#989](https://github.com/EpiModel/EpiModel/issues/989).
 - Changed the default of `legend` in
   [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
   from `TRUE` to `NULL`. The legend is now auto-shown only when `y` is
-  auto-populated (the no-`y` default); when the caller supplies `y`
-  explicitly, no legend is drawn unless `legend = TRUE` is passed. This
-  matches the more principled `plot.netsim(type = "epi")` policy and
-  avoids a single-entry legend for `plot(mod, y = "i.num")`-style calls.
+  auto-populated; when the caller supplies `y` explicitly, no legend is
+  drawn unless `legend = TRUE` is passed. Matches the
+  `plot.netsim(type = "epi")` policy and avoids single-entry legends.
   Closes [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
-
-### NEW FEATURES
 
 ### BUG FIXES
 
-- Fix `saveout.net` to preserve `NULL` values when saving simulation
-  outputs across multiple runs. Previously, assigning `NULL` via
-  `out[[name]][[s]] <- value` silently dropped the list entry, causing
-  misaligned simulation indices. Now uses
-  [`list()`](https://rdrr.io/r/base/list.html) wrapping to ensure `NULL`
-  values are stored as explicit list elements. Closes
-  [\#800](https://github.com/EpiModel/EpiModel/issues/800).
-- Fix
-  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md),
-  [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md),
-  and
-  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
-  to preserve and report per-simulation `random.params` draw metadata
-  correctly. Subsetting a `netsim` object now subsets
-  `param$random.params.values`; merging compatible `netsim` objects now
-  appends those values instead of retaining only the first object; and
-  one-simulation outputs with vector-valued random parameters are now
-  reported correctly by
-  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md).
-- Fix `plot.epi.data.frame` to correctly display truncated the time
-  axis.
-- Fix `paste0(..., sep = ", ")` misuse in
-  [`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
-  epi repair warnings and errors.
-  [`paste0()`](https://rdrr.io/r/base/paste.html) has no `sep`
-  parameter, causing malformed output with trailing commas. Changed to
-  `paste(..., collapse = ", ")`. Closes
-  [\#985](https://github.com/EpiModel/EpiModel/issues/985).
-- Fix
-  [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
-  to replicate scalar constants across all simulations/runs and use
-  existing column names instead of hardcoding `"run1"`. Closes
-  [\#984](https://github.com/EpiModel/EpiModel/issues/984).
-- Fix mismatched `mean.lwd` defaults in
-  [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
-  where dead-code `is.null` branches used inconsistent values (1.5 vs
-  2.5). Removed the dead branches since the function signature already
-  provides a default of 2. Closes
-  [\#983](https://github.com/EpiModel/EpiModel/issues/983).
-- Fix unreachable two-group validation in
-  [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
-  where checks for `rec.rate.g2` and `r.num.g2` were nested after
-  [`stop()`](https://rdrr.io/r/base/stop.html) calls, preventing them
-  from ever executing. Closes
-  [\#982](https://github.com/EpiModel/EpiModel/issues/982).
-- Fix `ylim` in `plot.netsim(type = "epi")` so the auto-range expands to
-  fit quantile polygons when `mean.line = FALSE`. The previous
-  `qnts == TRUE` guard only matched `qnts = 1` / `qnts = TRUE`, leaving
-  polygons potentially clipped at the default `qnts = 0.5`. Closes
-  [\#1009](https://github.com/EpiModel/EpiModel/issues/1009).
-- Fix
-  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  to skip drawing quantile polygons when `qnts = FALSE`, matching the
-  documented behavior. Previously this case produced a degenerate
-  zero-width band rather than suppressing the polygon.
-- Fix `ylim` in
-  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  so the auto-range expands to fit quantile polygons when
-  `mean.line = FALSE`. The previous guard only triggered when
-  `mean.line = TRUE`, leaving polygons potentially clipped against
-  compartment extrema. This is the
-  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  analog of the
-  [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
-  fix in [\#1009](https://github.com/EpiModel/EpiModel/issues/1009).
-  Closes [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
-- Fix silent color recycling in
-  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  when more than three compartments are plotted. The internal palette
-  `bpal` was hard-coded to three entries (`c(4, 2, 3)`), so the fourth
-  and subsequent compartments could render as `NA` (invisible) under
-  [`adjustcolor()`](https://rdrr.io/r/grDevices/adjustcolor.html).
-  Extended to 99 entries to match `plot.netsim(type = "epi")`. Closes
-  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
 - Fix `netsim` cumulative edgelist (`cumulative.edgelist = TRUE`) to
-  include edges from the initial network state and to use the same time
-  origin as the `networkDynamic` object. Previously,
+  include edges from the initial network state and to share the
+  `networkDynamic` time origin. Previously,
   [`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
   was first called at `at = 2` from
   [`resim_nets()`](https://epimodel.github.io/EpiModel/reference/resim_nets.md),
@@ -139,66 +44,111 @@
   `at = 1` were silently dropped. The cumulative edgelist is now seeded
   at the end of
   [`sim_nets_t1()`](https://epimodel.github.io/EpiModel/reference/sim_nets_t1.md)
-  so that `start` aligns with `networkDynamic` `onset`: persistent
-  cross-section edges get `start = 0, stop = NA`; edges formed during
-  the first TERGM step get `start = 1, stop = NA`; edges active in the
-  cross-section but dissolved by the first TERGM step get
-  `start = 0, stop = 0` (mirroring `networkDynamic` spells `[0, 1)`).
-  The cumulative edgelist now matches `as.data.frame(get_network(sim))`
-  row-for-row, including at `at = 0` and `at = 1`. In `tergmLite` mode
-  the cross-section edgelist is captured before
+  so persistent cross-section edges get `start = 0, stop = NA`; edges
+  formed during the first TERGM step get `start = 1, stop = NA`; edges
+  active in the cross-section but dissolved by the first TERGM step get
+  `start = 0, stop = 0` (mirroring `networkDynamic` spells `[0, 1)`). It
+  now matches `as.data.frame(get_network(sim))` row-for-row. In
+  `tergmLite` mode the cross-section edgelist is captured before
   [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
-  overwrites it, so initial-step dissolutions are now recovered there as
-  well. EpiModel epidemic outputs (e.g., the `epi` data frame) still
-  begin at `at = 1`; only the network time origin is shifted to align
-  with `networkDynamic`. Closes
+  overwrites it. Epidemic outputs still begin at `at = 1`; only the
+  network time origin shifts. Closes
   [\#1016](https://github.com/EpiModel/EpiModel/issues/1016).
+- Fix `saveout.net` to preserve `NULL` values when saving simulation
+  outputs across multiple runs. Previously, assigning `NULL` via
+  `out[[name]][[s]] <- value` silently dropped the list entry, causing
+  misaligned simulation indices. Closes
+  [\#800](https://github.com/EpiModel/EpiModel/issues/800).
+- Fix
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md),
+  [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md),
+  and
+  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
+  to preserve and report per-simulation `random.params` draw metadata
+  correctly. Subsetting now subsets `param$random.params.values`;
+  merging compatible `netsim` objects now appends those values instead
+  of retaining only the first object’s; one-simulation outputs with
+  vector-valued random parameters are now reported correctly.
+- Fix
+  [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
+  to replicate scalar constants across all simulations/runs and use
+  existing column names instead of hardcoding `"run1"`. Closes
+  [\#984](https://github.com/EpiModel/EpiModel/issues/984).
+- Fix `ylim` in both `plot.netsim(type = "epi")` and
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  so the auto-range expands to fit quantile polygons when
+  `mean.line = FALSE`. The previous guards only triggered for specific
+  `qnts` / `mean.line` combinations, leaving polygons clipped at default
+  settings. Closes
+  [\#1009](https://github.com/EpiModel/EpiModel/issues/1009),
+  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
+- Fix
+  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
+  to skip drawing quantile polygons when `qnts = FALSE` (previously
+  produced a degenerate zero-width band) and extend the internal `bpal`
+  palette beyond three entries so a fourth and later compartments no
+  longer render as `NA`. Closes
+  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
+- Fix unreachable two-group validation in
+  [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
+  where checks for `rec.rate.g2` and `r.num.g2` were nested after
+  [`stop()`](https://rdrr.io/r/base/stop.html) calls. Closes
+  [\#982](https://github.com/EpiModel/EpiModel/issues/982).
+- Fix mismatched `mean.lwd` defaults in
+  [`plot.netsim()`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+  where dead-code `is.null` branches used inconsistent values (1.5 vs
+  2.5). Closes [\#983](https://github.com/EpiModel/EpiModel/issues/983).
+- Fix `paste0(..., sep = ", ")` misuse in
+  [`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  epi repair messages (caused malformed output with trailing commas).
+  Closes [\#985](https://github.com/EpiModel/EpiModel/issues/985).
+- Fix `plot.epi.data.frame` to correctly display the truncated time
+  axis.
 
 ### OTHER
 
-- Replace direct `dat$run$nw[[network]]` accesses with
-  [`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md)/[`set_network()`](https://epimodel.github.io/EpiModel/reference/set_network.md)
-  accessors across internal modules (`edgelists.R`, `net.fn.utils.R`,
-  `net.mod.init.R`, `net.mod.nwupdate.R`, `saveout.R`, `update.R`)
-  ([\#977](https://github.com/EpiModel/EpiModel/issues/977)).
-- Consolidate duplicated quantile and mean-line logic in
-  `plot.netsim(type = "epi")` so the `disp.qnts` setup, `mean.lwd` /
-  `mean.lty` expansion, and `draw_qnts()` / `draw_means()` call
-  signatures are not repeated across the ylim-calc and drawing phases.
-  Closes [\#997](https://github.com/EpiModel/EpiModel/issues/997).
-- Apply the same consolidation to
+- Migrated internal modules to the accessor API: replaced direct
+  `dat$run$nw[[network]]` accesses with
+  [`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md)
+  /
+  [`set_network()`](https://epimodel.github.io/EpiModel/reference/set_network.md)
+  across `edgelists.R`, `net.fn.utils.R`, `net.mod.init.R`,
+  `net.mod.nwupdate.R`, `saveout.R`, and `update.R`. Closes
+  [\#977](https://github.com/EpiModel/EpiModel/issues/977).
+- Consolidated duplicated quantile and mean-line logic in
+  `plot.netsim(type = "epi")` and
   [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  to keep the two sibling plotting paths structurally symmetric. Closes
-  [\#1010](https://github.com/EpiModel/EpiModel/issues/1010).
-- Extract duplicated stats validation logic from `plot_netsim_stats()`
+  so the `disp.qnts` setup, `mean.lwd` / `mean.lty` expansion, and
+  `draw_qnts()` / `draw_means()` calls are not repeated across the
+  ylim-calc and drawing phases, and aligned remaining stylistic
+  differences between the two sibling paths to keep them structurally
+  symmetric. Closes
+  [\#997](https://github.com/EpiModel/EpiModel/issues/997),
+  [\#1010](https://github.com/EpiModel/EpiModel/issues/1010),
+  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012); the
+  remaining shared-helper refactor is tracked in
+  [\#1018](https://github.com/EpiModel/EpiModel/issues/1018).
+- Extracted duplicated stats validation logic from `plot_netsim_stats()`
   and
   [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
-  into a shared `validate_stats_selection()` helper; add `xlim`, `xlab`,
-  `ylim`, `ylab` parameters to
+  into a shared `validate_stats_selection()` helper; added `xlim`,
+  `xlab`, `ylim`, `ylab` parameters to
   [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
   for parity with `plot.netsim(type = "formation")`. Closes
   [\#998](https://github.com/EpiModel/EpiModel/issues/998).
-- Clarify in
+- Clarified
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
   docs that `module.order` is independent of `resimulate.network`, and
-  that `tergmLite = TRUE` forces `resimulate.network = TRUE`. Change the
-  `tergmLite` override from
+  that `tergmLite = TRUE` forces `resimulate.network = TRUE`; changed
+  the `tergmLite` override from
   [`message()`](https://rdrr.io/r/base/message.html) to
-  [`warning()`](https://rdrr.io/r/base/warning.html) so it is visible in
-  batch/HPC logs. Add tests for module ordering with both
-  `resimulate.network` settings. Closes
+  [`warning()`](https://rdrr.io/r/base/warning.html) so it surfaces in
+  batch/HPC logs. Closes
   [\#466](https://github.com/EpiModel/EpiModel/issues/466).
-- Align remaining stylistic differences between
-  [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  and `plot_netsim_epi()`: switch `== TRUE` / `== FALSE` boolean guards
-  to the bare form, reorganize the `ylim` auto-calc so
-  `popfrac || sim.lines` is a first-class branch, simplify the
-  `x$param$groups` derivation, and drop the dead `lcomp == 1` special
-  case in the compartment-max block. No behavior change. Tracks the
-  structural-symmetry goal noted in `CLAUDE.md`. Closes
-  [\#1012](https://github.com/EpiModel/EpiModel/issues/1012); the
-  remaining shared-helper refactor was filed as
-  [\#1018](https://github.com/EpiModel/EpiModel/issues/1018).
+
+## EpiModel 2.6.0
+
+CRAN release: 2026-03-19
 
 ### BREAKING CHANGES
 
