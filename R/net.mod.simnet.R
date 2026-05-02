@@ -76,6 +76,15 @@ sim_nets_t1 <- function(dat) {
   ## initialize num(.g2) run fields
   dat <- update_sim_num(dat)
 
+  ## In tergmLite mode the post-simulate state replaces dat$run$el and the
+  ## cross-section edgelist is no longer recoverable. Stash it now so
+  ## seed_cumulative_edgelist_t1() can diff t=0 vs t=1 below. See #1016.
+  if (get_control(dat, "tergmLite") && get_control(dat, "cumulative.edgelist")) {
+    dat$run$el_t0_seed <- lapply(seq_len(dat$num.nw), function(network) {
+      dat$run$el[[network]]
+    })
+  }
+
   ## simulate first timestep (if resimulate.network == TRUE)
   ## or all timesteps (if resimulate.network == FALSE)
   dat <- dat.updates(dat = dat, at = 1L, network = 0L)
@@ -83,6 +92,8 @@ sim_nets_t1 <- function(dat) {
     dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
     dat <- dat.updates(dat = dat, at = 1L, network = network)
   }
+
+  dat <- seed_cumulative_edgelist_t1(dat)
 
   return(dat)
 }

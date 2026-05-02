@@ -296,7 +296,7 @@ netsim_validate_control <- function(control) {
   if (control$nsims == 1) {
     control$ncores <- 1
   } else {
-    control$ncores <- min(parallel::detectCores(), control$ncores)
+    control$ncores <- min(parallelly::availableCores(), control$ncores)
     control$verbose <- FALSE
   }
 

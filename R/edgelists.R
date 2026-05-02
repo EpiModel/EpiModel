@@ -261,6 +261,113 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   return(dat)
 }
 
+# Seed the cumulative edgelist once at initialization, at the end of
+# sim_nets_t1(). Without it, the first call to update_cumulative_edgelist()
+# happens at at=2 from resim_nets(), so persistent edges receive start=2 and
+# edges that dissolved during the initial ERGM -> TERGM transition are lost
+# entirely. See issue #1016.
+#
+# The seed records two pieces of state, on the same clock as the underlying
+# networkDynamic object (where time 0 is the cross-sectional ergm sample and
+# time 1 is the state after the first TERGM step, which is what EpiModel
+# observes as at = 1):
+#
+#   * el_cuml_cur (active edges):
+#       - persistent initial edges (in t=0 and t=1) get start=0, stop=NA
+#       - edges formed during the first TERGM step (in t=1, not t=0) get
+#         start=1, stop=NA
+#   * el_cuml_hist (terminated edges, only when truncate.el.cuml != 0):
+#       - edges active in the cross-section but dissolved by t=1 get
+#         start=0, stop=0 (mirrors networkDynamic spell [0, 1))
+#
+# In tergmLite mode the cross-section edgelist is no longer recoverable from
+# the post-simulation state (networkLite discards history), so sim_nets_t1
+# stashes it on dat$run$el_t0_seed before simulate_dat() runs and we consume
+# it here. In non-tergmLite mode the full networkDynamic history is intact
+# and we query it directly via get.dyads.active().
+seed_cumulative_edgelist_t1 <- function(dat) {
+  if (!get_control(dat, "cumulative.edgelist")) {
+    dat$run$el_t0_seed <- NULL
+    return(dat)
+  }
+
+  truncate <- get_control(dat, "truncate.el.cuml")
+  tergmLite <- get_control(dat, "tergmLite")
+
+  for (network in seq_len(dat$num.nw)) {
+    if (tergmLite) {
+      el_t0 <- dat$run$el_t0_seed[[network]]
+      el_t1 <- dat$run$el[[network]]
+    } else {
+      nw <- get_network(dat, network = network)
+      el_t0 <- networkDynamic::get.dyads.active(nw, at = 0)
+      el_t1 <- networkDynamic::get.dyads.active(nw, at = 1)
+    }
+
+    keys_t0 <- if (NROW(el_t0) > 0) {
+      paste(el_t0[, 1], el_t0[, 2], sep = "_")
+    } else {
+      character(0)
+    }
+    keys_t1 <- if (NROW(el_t1) > 0) {
+      paste(el_t1[, 1], el_t1[, 2], sep = "_")
+    } else {
+      character(0)
+    }
+
+    persistent_idx <- which(keys_t1 %in% keys_t0)
+    new_idx        <- which(!keys_t1 %in% keys_t0)
+    dropped_idx    <- which(!keys_t0 %in% keys_t1)
+
+    seed_cur_pieces <- list()
+    if (length(persistent_idx) > 0) {
+      el_p <- el_t1[persistent_idx, , drop = FALSE]
+      seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
+        head  = get_unique_ids(dat, el_p[, 1]),
+        tail  = get_unique_ids(dat, el_p[, 2]),
+        start = 0,
+        stop  = NA_real_
+      )
+    }
+    if (length(new_idx) > 0) {
+      el_n <- el_t1[new_idx, , drop = FALSE]
+      seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
+        head  = get_unique_ids(dat, el_n[, 1]),
+        tail  = get_unique_ids(dat, el_n[, 2]),
+        start = 1,
+        stop  = NA_real_
+      )
+    }
+    if (length(seed_cur_pieces) > 0) {
+      el_cuml_cur <- get_raw_elcuml(dat, network, active = TRUE)
+      dat <- set_raw_elcuml(
+        dat, network,
+        dplyr::bind_rows(c(list(el_cuml_cur), seed_cur_pieces)),
+        active = TRUE
+      )
+    }
+
+    if (truncate != 0 && length(dropped_idx) > 0) {
+      el_d <- el_t0[dropped_idx, , drop = FALSE]
+      seed_hist <- tibble::tibble(
+        head  = get_unique_ids(dat, el_d[, 1]),
+        tail  = get_unique_ids(dat, el_d[, 2]),
+        start = 0,
+        stop  = 0
+      )
+      el_cuml_hist <- get_raw_elcuml(dat, network, active = FALSE)
+      dat <- set_raw_elcuml(
+        dat, network,
+        dplyr::bind_rows(el_cuml_hist, seed_hist),
+        active = FALSE
+      )
+    }
+  }
+
+  dat$run$el_t0_seed <- NULL
+  return(dat)
+}
+
 #' @title Get the Cumulative Edgelists of a Model
 #'
 #' @inheritParams recovery.net

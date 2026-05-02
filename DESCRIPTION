@@ -35,6 +35,7 @@ Depends:
 Imports:
     future,
     future.apply,
+    parallelly,
     graphics,
     grDevices,
     stats,
