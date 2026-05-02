@@ -61,6 +61,18 @@
   [`list()`](https://rdrr.io/r/base/list.html) wrapping to ensure `NULL`
   values are stored as explicit list elements. Closes
   [\#800](https://github.com/EpiModel/EpiModel/issues/800).
+- Fix
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md),
+  [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md),
+  and
+  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
+  to preserve and report per-simulation `random.params` draw metadata
+  correctly. Subsetting a `netsim` object now subsets
+  `param$random.params.values`; merging compatible `netsim` objects now
+  appends those values instead of retaining only the first object; and
+  one-simulation outputs with vector-valued random parameters are now
+  reported correctly by
+  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md).
 - Fix `plot.epi.data.frame` to correctly display truncated the time
   axis.
 - Fix `paste0(..., sep = ", ")` misuse in
