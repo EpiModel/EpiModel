@@ -33,6 +33,18 @@ The \code{new.param.list} object should be a named list object containing
 named parameters matching those already in \code{x} (in which case those
 original parameter values will be replaced) or not matching (in which case
 new parameters will be added to \code{param}).
+
+\code{update_params} modifies a \code{param.net} object \strong{before} it is passed
+to \code{\link[=netsim]{netsim()}}; it is the recommended helper for tweaking parameters
+outside of a running simulation. To modify parameters from \emph{inside} a
+module function during a simulation, use \code{\link[=set_param]{set_param()}} on the live
+\code{dat} object instead. There is no analogous \code{update_controls()} or
+\code{update_inits()} helper: for a \code{control.net} or \code{init.net} object,
+edit the list directly (e.g., \code{ctrl$nsteps <- 1000}) or rebuild it
+with a fresh call to the constructor. For \emph{scheduled} mid-simulation
+changes to parameters or control settings, see the
+\code{.param.updater.list} argument to \code{\link[=param.net]{param.net()}} and the
+\code{.control.updater.list} argument to \code{\link[=control.net]{control.net()}}.
 }
 \examples{
 x <- param.net(inf.prob = 0.5, act.rate = 2)
@@ -40,4 +52,9 @@ y <- list(inf.prob = 0.75, dx.rate = 0.2)
 z <- update_params(x, y)
 print(z)
 
+}
+\seealso{
+\code{\link[=set_param]{set_param()}} for editing parameters inside a module function
+during a simulation; \code{\link[=param.net]{param.net()}} for the parameter constructor;
+\code{\link[=netsim]{netsim()}} for running a simulation.
 }
