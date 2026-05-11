@@ -122,12 +122,56 @@ functions.
 These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 functions allow a safe and efficient way to retrieve and mutate
 the main \code{netsim_dat} class object of network models
-(typical variable name \code{dat}).
+(typical variable name \code{dat}). They are intended for use
+\emph{inside module functions} that run during a \code{\link[=netsim]{netsim()}}
+simulation, not for editing the user-facing \code{param.net},
+\code{init.net}, or \code{control.net} inputs before a run or the
+output object returned by \code{\link[=netsim]{netsim()}}. See the \strong{Intended
+Usage} section below for details and alternatives.
 
 This function returns an exhaustive named list of the attributes managed by
 EpiModel itself. It can be used to check the validity of an attributes list
 and of its types.
 }
+\section{Intended Usage}{
+
+These accessors operate on the live \code{netsim_dat} object that EpiModel
+constructs internally when a simulation starts and passes through each
+module at every time step. The expected calling context is \strong{inside a
+user-supplied module function} (e.g., a custom \code{infection.FUN},
+\code{recovery.FUN}, or arrivals/departures module) registered with
+\code{\link[=control.net]{control.net()}}.
+
+They are \emph{not} a general-purpose tool for editing the user-facing input
+or output objects of \code{\link[=netsim]{netsim()}}:
+\itemize{
+\item Calling them on a \code{\link[=param.net]{param.net()}}, \code{\link[=init.net]{init.net()}}, or \code{\link[=control.net]{control.net()}}
+object before a run will appear to succeed (those objects are also
+list-like) but produces an object that is not a valid simulation
+input.
+\item Calling them on the object returned by \code{\link[=netsim]{netsim()}} modifies only the
+saved input slot, not anything that would change the result of a
+re-run. Note also that \code{\link[=netsim]{netsim()}} strips the \verb{*.FUN} entries from
+its returned \code{control} slot, so feeding that slot back into a new
+simulation will fail.
+}
+
+For modifications outside a running simulation, use the following
+instead:
+\itemize{
+\item \strong{Editing parameters before a run:} \code{\link[=update_params]{update_params()}} for a
+\code{param.net} object, or direct list assignment
+(e.g., \code{p$inf.prob <- 0.5}).
+\item \strong{Editing init or control before a run:} direct list assignment
+(e.g., \code{ctrl$nsteps <- 1000}), or rebuild with a fresh call to the
+\code{\link[=init.net]{init.net()}} / \code{\link[=control.net]{control.net()}} constructor.
+\item \strong{Scheduled mid-simulation changes:} the \code{.param.updater.list}
+argument to \code{\link[=param.net]{param.net()}} and the \code{.control.updater.list} argument
+to \code{\link[=control.net]{control.net()}}. See the "model-parameters" vignette for the
+underlying updater module and the scenario API built on top of it.
+}
+}
+
 \section{Core Attribute}{
 
 The \code{append_core_attr} function initializes the attributes necessary for
@@ -195,4 +239,9 @@ get_control_list(dat)
 get_control_list(dat, c("x", "y"))
 get_control(dat, "x")
 
+}
+\seealso{
+\code{\link[=update_params]{update_params()}} for editing a \code{param.net} object outside a
+simulation; \code{\link[=param.net]{param.net()}}, \code{\link[=init.net]{init.net()}}, \code{\link[=control.net]{control.net()}} for input
+constructors; \code{\link[=netsim]{netsim()}} for running a simulation.
 }

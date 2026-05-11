@@ -3,7 +3,12 @@
 #' @description These `get_`, `set_`, `append_`, and `add_`
 #'              functions allow a safe and efficient way to retrieve and mutate
 #'              the main `netsim_dat` class object of network models
-#'              (typical variable name `dat`).
+#'              (typical variable name `dat`). They are intended for use
+#'              *inside module functions* that run during a [netsim()]
+#'              simulation, not for editing the user-facing `param.net`,
+#'              `init.net`, or `control.net` inputs before a run or the
+#'              output object returned by [netsim()]. See the **Intended
+#'              Usage** section below for details and alternatives.
 #'
 #' @inheritParams recovery.net
 #' @param item A character vector containing the name of the element to access
@@ -29,6 +34,41 @@
 #' @return A vector or a list of vectors for `get_` functions; the main
 #'         list object for `set_`, `append_`, and `add_`
 #'         functions.
+#'
+#' @section Intended Usage:
+#' These accessors operate on the live `netsim_dat` object that EpiModel
+#' constructs internally when a simulation starts and passes through each
+#' module at every time step. The expected calling context is **inside a
+#' user-supplied module function** (e.g., a custom `infection.FUN`,
+#' `recovery.FUN`, or arrivals/departures module) registered with
+#' [control.net()].
+#'
+#' They are *not* a general-purpose tool for editing the user-facing input
+#' or output objects of [netsim()]:
+#'
+#'  * Calling them on a [param.net()], [init.net()], or [control.net()]
+#'    object before a run will appear to succeed (those objects are also
+#'    list-like) but produces an object that is not a valid simulation
+#'    input.
+#'  * Calling them on the object returned by [netsim()] modifies only the
+#'    saved input slot, not anything that would change the result of a
+#'    re-run. Note also that [netsim()] strips the `*.FUN` entries from
+#'    its returned `control` slot, so feeding that slot back into a new
+#'    simulation will fail.
+#'
+#' For modifications outside a running simulation, use the following
+#' instead:
+#'
+#'  * **Editing parameters before a run:** [update_params()] for a
+#'    `param.net` object, or direct list assignment
+#'    (e.g., `p$inf.prob <- 0.5`).
+#'  * **Editing init or control before a run:** direct list assignment
+#'    (e.g., `ctrl$nsteps <- 1000`), or rebuild with a fresh call to the
+#'    [init.net()] / [control.net()] constructor.
+#'  * **Scheduled mid-simulation changes:** the `.param.updater.list`
+#'    argument to [param.net()] and the `.control.updater.list` argument
+#'    to [control.net()]. See the "model-parameters" vignette for the
+#'    underlying updater module and the scenario API built on top of it.
 #'
 #' @section Core Attribute:
 #' The `append_core_attr` function initializes the attributes necessary for
@@ -90,6 +130,10 @@
 #' get_control_list(dat)
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
+#'
+#' @seealso [update_params()] for editing a `param.net` object outside a
+#'   simulation; [param.net()], [init.net()], [control.net()] for input
+#'   constructors; [netsim()] for running a simulation.
 #'
 #' @name net-accessor
 NULL

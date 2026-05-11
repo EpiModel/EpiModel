@@ -293,9 +293,25 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' original parameter values will be replaced) or not matching (in which case
 #' new parameters will be added to `param`).
 #'
+#' `update_params` modifies a `param.net` object **before** it is passed
+#' to [netsim()]; it is the recommended helper for tweaking parameters
+#' outside of a running simulation. To modify parameters from *inside* a
+#' module function during a simulation, use [set_param()] on the live
+#' `dat` object instead. There is no analogous `update_controls()` or
+#' `update_inits()` helper: for a `control.net` or `init.net` object,
+#' edit the list directly (e.g., `ctrl$nsteps <- 1000`) or rebuild it
+#' with a fresh call to the constructor. For *scheduled* mid-simulation
+#' changes to parameters or control settings, see the
+#' `.param.updater.list` argument to [param.net()] and the
+#' `.control.updater.list` argument to [control.net()].
+#'
 #' @return
 #' An updated list object of class `param.net`, which can be passed to the
 #' EpiModel function [netsim()].
+#'
+#' @seealso [set_param()] for editing parameters inside a module function
+#'   during a simulation; [param.net()] for the parameter constructor;
+#'   [netsim()] for running a simulation.
 #'
 #' @examples
 #' x <- param.net(inf.prob = 0.5, act.rate = 2)
