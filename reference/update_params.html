@@ -77,6 +77,23 @@ other parameters fixed).</p>
 named parameters matching those already in <code>x</code> (in which case those
 original parameter values will be replaced) or not matching (in which case
 new parameters will be added to <code>param</code>).</p>
+<p><code>update_params</code> modifies a <code>param.net</code> object <strong>before</strong> it is passed
+to <code><a href="netsim.html">netsim()</a></code>; it is the recommended helper for tweaking parameters
+outside of a running simulation. To modify parameters from <em>inside</em> a
+module function during a simulation, use <code><a href="net-accessor.html">set_param()</a></code> on the live
+<code>dat</code> object instead. There is no analogous <code>update_controls()</code> or
+<code>update_inits()</code> helper: for a <code>control.net</code> or <code>init.net</code> object,
+edit the list directly (e.g., <code>ctrl$nsteps &lt;- 1000</code>) or rebuild it
+with a fresh call to the constructor. For <em>scheduled</em> mid-simulation
+changes to parameters or control settings, see the
+<code>.param.updater.list</code> argument to <code><a href="param.net.html">param.net()</a></code> and the
+<code>.control.updater.list</code> argument to <code><a href="control.net.html">control.net()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="net-accessor.html">set_param()</a></code> for editing parameters inside a module function
+during a simulation; <code><a href="param.net.html">param.net()</a></code> for the parameter constructor;
+<code><a href="netsim.html">netsim()</a></code> for running a simulation.</p></div>
     </div>
 
     <div class="section level2">
