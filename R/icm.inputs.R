@@ -278,10 +278,10 @@ crosscheck.icm <- function(param, init, control) {
   }
 
   if (!is.null(param$trans.rate)) {
-    stop("The trans.rate parameter has been removed. Use inf.prob instead.") 
+    stop("The trans.rate parameter has been removed. Use inf.prob instead.")
   }
   if (!is.null(param$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.") 
+    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.")
   }
 
   ## Assign built-in modules based on group parameter

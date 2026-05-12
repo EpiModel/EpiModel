@@ -249,7 +249,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     stop("Parameters using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., inf.prob.g2).") 
+         "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
   if (missing(act.rate)) {
     p[["act.rate"]] <- 1
@@ -258,7 +258,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                            !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
-            "If using built-in models, only act.rate parameter will apply.") 
+            "If using built-in models, only act.rate parameter will apply.")
   }
 
   if (!is.null(p[["inter.eff"]]) && is.null(p[["inter.start"]])) {
@@ -633,7 +633,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
     stop("Initial conditions using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., i.num.g2).") 
+         "Use the .g2 suffix instead (e.g., i.num.g2).")
   }
   if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -921,13 +921,13 @@ control.net <- function(type,
   }
 
   if ("births.FUN" %in% names(dot.args)) {
-    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.") 
+    stop("The births.FUN parameter has been removed. Use arrivals.FUN instead.")
   }
   if ("deaths.FUN" %in% names(dot.args)) {
-    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.") 
+    stop("The deaths.FUN parameter has been removed. Use departures.FUN instead.")
   }
   if ("depend" %in% names(dot.args)) {
-    stop("The depend parameter has been removed. Use resimulate.network instead.") 
+    stop("The depend parameter has been removed. Use resimulate.network instead.")
   }
 
   ## Module classification
@@ -1094,11 +1094,11 @@ crosscheck.net <- function(x, param, init, control) {
         if (control[["type"]] == "SIR") {
           if (any(svals %in% c("s", "i", "r") == FALSE)) {
             stop("status.vector contains values other than \"s\", \"i\",
-                 and \"r\" ") 
+                 and \"r\" ")
           }
         } else {
           if (any(svals %in% c("s", "i") == FALSE)) {
-            stop("status.vector contains values other than \"s\" and \"i\" ") 
+            stop("status.vector contains values other than \"s\" and \"i\" ")
           }
         }
       }
@@ -1153,7 +1153,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       if (control[["skip.check"]] == FALSE) {
         if (!inherits(x, "netsim")) {
-          stop("x must be a netsim object if control setting start > 1") 
+          stop("x must be a netsim object if control setting start > 1")
         }
         if (is.null(x[["run"]])) {
           stop("x must contain `run` to restart simulation, see `save.run` ",

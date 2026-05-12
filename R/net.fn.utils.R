@@ -888,7 +888,7 @@ truncate_sim <- function(x, at, reset.time) {
 truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
   row_start <- which(x$control$timesteps == at)
   if (length(row_start) == 0) {
-    stop("Specified value of at is not in the control$timesteps vector") 
+    stop("Specified value of at is not in the control$timesteps vector")
   }
   rows <- row_start:nrow(x$epi[[1]])
   # epi

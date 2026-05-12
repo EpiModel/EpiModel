@@ -212,7 +212,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
   }
 
   if (!inherits(coef.diss, "disscoef")) {
-    stop("dissolution must be input through the dissolution_coefs function") 
+    stop("dissolution must be input through the dissolution_coefs function")
   }
   dissolution <- coef.diss$dissolution
   if (coef.diss$duration[1] == 1) {
@@ -458,7 +458,7 @@ update_dissolution <- function(old.netest, new.coef.diss,
     stop("new.coef.diss must be an object of class disscoef")
   }
   if (old.netest$edapprox != TRUE) {
-    stop("Edges dissolution approximation must be used for this adjustment") 
+    stop("Edges dissolution approximation must be used for this adjustment")
   }
 
   out <- old.netest

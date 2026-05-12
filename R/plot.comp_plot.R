@@ -80,12 +80,12 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     groups <- x$param$groups
   }
   if (groups != 1) {
-    stop("Only 1-group models currently supported") 
+    stop("Only 1-group models currently supported")
   }
 
   # Time
   if (at > nsteps || at < 1) {
-    stop("Specify a timestep between 1 and ", nsteps) 
+    stop("Specify a timestep between 1 and ", nsteps)
   }
 
   ## Dataframe subsets for plots
@@ -169,7 +169,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
   ## Errors
   if (groups != 1) {
-    stop("Only 1-group dcm models currently supported") 
+    stop("Only 1-group dcm models currently supported")
   }
 
   ## Time

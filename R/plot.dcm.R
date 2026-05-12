@@ -117,11 +117,11 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
   nsteps <- x$control$nsteps
   nruns <- x$control$nruns
   if (norun == FALSE && any(run > nruns)) {
-    stop("Specify run between 1 and", nruns) 
+    stop("Specify run between 1 and", nruns)
   }
 
   if (!is.null(x$control$new.mod) && noy == TRUE) {
-    stop("Specify y when simulating a new model type in dcm") 
+    stop("Specify y when simulating a new model type in dcm")
   }
 
   groups <- x$param$groups
@@ -326,7 +326,7 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
       }
       if (norun == FALSE) {
         if (length(run) > 1) {
-          stop("Plotting multiple runs of multiple y is not supported") 
+          stop("Plotting multiple runs of multiple y is not supported")
         }
         for (i in 1:lcomp) {
           lines(x$control$timesteps, x$epi[[y[i]]][, run],
@@ -398,7 +398,7 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
       }
       if (lcomp > 1) {
         leg.names <- y
-        warning("Legend names ignored for multiple y plots of multiple run models") 
+        warning("Legend names ignored for multiple y plots of multiple run models")
       }
     }
   }

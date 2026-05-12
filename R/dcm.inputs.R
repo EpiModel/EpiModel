@@ -402,7 +402,7 @@ crosscheck.dcm <- function(param, init, control) {
 
     if (param$groups == 2 && (is.null(param$balance) ||
                                 !(param$balance %in% c("g1", "g2")))) {
-      stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models") 
+      stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
     }
 
     ## Error checks
@@ -436,23 +436,23 @@ crosscheck.dcm <- function(param, init, control) {
     }
     if (param$groups == 2 && init.groups == 1) {
       stop("Group 2 parameters specified in param.dcm,
-           \rbut missing group 2 initial states in init.dcm") 
+           \rbut missing group 2 initial states in init.dcm")
     }
     if (param$groups == 1 && init.groups == 2) {
       stop("Group 2 initial stats specified in init.dcm,
-           but missing group 2 parameters in param.dcm") 
+           but missing group 2 parameters in param.dcm")
     }
 
     # Over-specified initial conditions
     if (control$type != "SIR" && any(c("r.num", "r.num.g2") %in% names(init))) {
-      stop("Specified initial number recovered for non-SIR model") 
+      stop("Specified initial number recovered for non-SIR model")
     }
 
     if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter has been removed. Use inf.prob instead.") 
+      stop("The trans.rate parameter has been removed. Use inf.prob instead.")
     }
     if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.") 
+      stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.")
     }
   }
 
