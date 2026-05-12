@@ -179,7 +179,7 @@ plot(
 
 - ylim:
 
-  the y limits of the plot.
+  the y limits of the plot; see `xlim` for default and details.
 
 - ylab:
 
