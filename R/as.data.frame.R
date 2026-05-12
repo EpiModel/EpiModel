@@ -307,7 +307,7 @@ as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
                                 sim = NULL, ...) {
 
   if (is.null(x$tedgelist)) {
-    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter") 
+    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter")
   }
 
   if (is.null(sim)) {

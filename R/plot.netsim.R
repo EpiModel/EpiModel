@@ -282,7 +282,7 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
 
   if (!is.null(shp.g2)) {
     if (all(!shp.g2 %in% c("square", "triangle"))) {
-      stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ") 
+      stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ")
     }
 
     grp.flag <- length(unique(get_vertex_attribute(obj, "group")))

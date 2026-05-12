@@ -26,5 +26,13 @@ jobs:
           needs: lint
 
       - name: Lint
-        run: lintr::lint_package()
+        run: |
+          lints <- lintr::lint_package()
+          if (length(lints) > 0L) {
+            print(lints)
+            stop(
+              sprintf("lintr found %d issue(s); failing build.", length(lints)),
+              call. = FALSE
+            )
+          }
         shell: Rscript {0}
