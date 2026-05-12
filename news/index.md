@@ -82,12 +82,10 @@
   settings. Closes
   [\#1009](https://github.com/EpiModel/EpiModel/issues/1009),
   [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
-- Fix
+- Extend the internal `bpal` palette in
   [`plot.icm()`](https://epimodel.github.io/EpiModel/reference/plot.icm.md)
-  to skip drawing quantile polygons when `qnts = FALSE` (previously
-  produced a degenerate zero-width band) and extend the internal `bpal`
-  palette beyond three entries so a fourth and later compartments no
-  longer render as `NA`. Closes
+  beyond three entries so a fourth and later compartments no longer
+  render as `NA`. Closes
   [\#1012](https://github.com/EpiModel/EpiModel/issues/1012).
 - Fix unreachable two-group validation in
   [`crosscheck.dcm()`](https://epimodel.github.io/EpiModel/reference/crosscheck.dcm.md)
@@ -104,6 +102,15 @@
   Closes [\#985](https://github.com/EpiModel/EpiModel/issues/985).
 - Fix `plot.epi.data.frame` to correctly display the truncated time
   axis.
+- Fix [`on.exit()`](https://rdrr.io/r/base/on.exit.html) handler
+  registration in
+  [`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md)
+  and the internal `plot_stats_table()` helper so graphical parameters
+  and the `scipen` option are restored on both error and normal exit,
+  per CRAN policy. Previously the handler was registered after the
+  [`par()`](https://rdrr.io/r/graphics/par.html) /
+  [`options()`](https://rdrr.io/r/base/options.html) mutations, leaving
+  user state modified if plotting errored in between.
 
 ### OTHER
 
@@ -145,6 +152,14 @@
   [`warning()`](https://rdrr.io/r/base/warning.html) so it surfaces in
   batch/HPC logs. Closes
   [\#466](https://github.com/EpiModel/EpiModel/issues/466).
+- Refreshed package vignettes (`Intro`,
+  `attributes-and-summary-statistics`, `model-parameters`,
+  `network-objects`) to reflect the current API and accessor patterns.
+  Closes [\#976](https://github.com/EpiModel/EpiModel/issues/976).
+- Clarified intended usage in the documentation for the nodal-attribute
+  and parameter accessor functions (`?net-accessor`,
+  [`?update_params`](https://epimodel.github.io/EpiModel/reference/update_params.md)).
+  Closes [\#1024](https://github.com/EpiModel/EpiModel/issues/1024).
 
 ## EpiModel 2.6.0
 
