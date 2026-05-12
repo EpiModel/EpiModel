@@ -325,7 +325,7 @@ interested in stochastic network models, the primary focus of EpiModel.
 - **EpiModelHPC & slurmworkflow:** Tools for running large-scale
   simulations on high-performance computing clusters.
 - **Template repositories:**
-  [EpiModelHIV](https://github.com/EpiModel/EpiModelHIV-p) and
+  [EpiModelHIV](https://github.com/EpiModel/EpiModelHIV) and
   [EpiModelCOVID](https://github.com/EpiModel/EpiModelCOVID) provide
   full-scale research model implementations.
 
