@@ -11,4 +11,4 @@ exclusions: list(
   "R/test.R",
   "R/RcppExports.R",
   "R/dcm.mods.R",
-  list("R/EpiModel-package.R" = list(line_length_linter = 136)))
+  "R/EpiModel-package.R" = list(line_length_linter = 136))
