@@ -163,7 +163,10 @@ plot_stats_table <- function(data, nmstats, method,
       if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
 
       # Pull graphical parameters
+      # Register restore handler BEFORE mutating par() so user state is
+      # restored on both normal and error exit (CRAN policy).
       ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
+      on.exit(par(ops))
       par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
     }
 
@@ -217,11 +220,6 @@ plot_stats_table <- function(data, nmstats, method,
     if (isTRUE(draw_legend)) {
       legend("topleft", legend = nmstats, lwd = 2,
              col = sim.col[1:nstats], cex = 0.75, bg = "white")
-    }
-
-    if (isFALSE(plots.joined)) {
-      # Reset graphical parameters
-      on.exit(par(ops))
     }
   }
 

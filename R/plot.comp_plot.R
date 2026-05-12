@@ -95,8 +95,14 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   df.sd <- round(df.sd[at == df.sd$time, ], digits)
 
   ## Change graphical parameters
+  # Register restore handler BEFORE mutating par()/options() so user state is
+  # restored on both normal and error exit (CRAN policy).
   ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
   old_scipen <- getOption("scipen")
+  on.exit({
+    par(ops)
+    options(scipen = old_scipen)
+  })
   par(mar = c(0, 0, 2, 0))
   options(scipen = 10)
 
@@ -145,12 +151,6 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
       varrow(22, 40, "a.flow", df.mn$a.flow, dir = "in")
     }
   }
-
-  # Reset graphical parameters and options
-  on.exit({
-    par(ops)
-    options(scipen = old_scipen)
-  })
 }
 
 #' @param run Model run number, for `dcm` class models with multiple runs
@@ -184,8 +184,14 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
   df <- round(df[at, ], digits)
 
   ## Change graphical parameters
+  # Register restore handler BEFORE mutating par()/options() so user state is
+  # restored on both normal and error exit (CRAN policy).
   ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
   old_scipen <- getOption("scipen")
+  on.exit({
+    par(ops)
+    options(scipen = old_scipen)
+  })
   par(mar = c(0, 0, 2, 0))
   options(scipen = 10)
 
@@ -234,12 +240,6 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
       varrow(22, 40, "a.flow", df$a.flow, dir = "in")
     }
   }
-
-  # Reset graphical parameters and options
-  on.exit({
-    par(ops)
-    options(scipen = old_scipen)
-  })
 }
 
 ## comp_plot helper utilities ##

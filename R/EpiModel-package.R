@@ -5,7 +5,7 @@
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
 #'    Version: \tab 2.6.1\cr
-#'    Date: \tab 2026-03-21\cr
+#'    Date: \tab 2026-05-12\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
