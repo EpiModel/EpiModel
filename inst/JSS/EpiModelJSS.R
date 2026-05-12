@@ -1,3 +1,19 @@
+## ============================================================================
+## LEGACY SCRIPT -- 2018 JSS article companion
+##
+## This script reproduces examples from the original 2018 Journal of
+## Statistical Software manuscript describing EpiModel. It is preserved here
+## for historical reference only and will NOT run without error against
+## current EpiModel releases: many argument names, defaults, and APIs have
+## changed since 2018 (e.g., b.rate -> a.rate, trans.rate -> inf.prob, the
+## .m2 suffix -> .g2, births.FUN/deaths.FUN -> arrivals.FUN/departures.FUN,
+## depend -> resimulate.network, and custom-module support has been removed
+## from ICMs in favor of netsim()).
+##
+## For up-to-date tutorials, vignettes, and modern workflows, please see:
+##   https://www.epimodel.org/
+## ============================================================================
+
 ##
 ## R Script File for Journal of Statistical Software Manuscript
 ## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over
