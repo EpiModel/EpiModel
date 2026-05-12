@@ -13,11 +13,12 @@
 -   Fix `get_sims()`, `merge.netsim()`, and `get_param_set()` to preserve and report per-simulation `random.params` draw metadata correctly. Subsetting now subsets `param$random.params.values`; merging compatible `netsim` objects now appends those values instead of retaining only the first object's; one-simulation outputs with vector-valued random parameters are now reported correctly.
 -   Fix `mutate_epi()` to replicate scalar constants across all simulations/runs and use existing column names instead of hardcoding `"run1"`. Closes #984.
 -   Fix `ylim` in both `plot.netsim(type = "epi")` and `plot.icm()` so the auto-range expands to fit quantile polygons when `mean.line = FALSE`. The previous guards only triggered for specific `qnts` / `mean.line` combinations, leaving polygons clipped at default settings. Closes #1009, #1012.
--   Fix `plot.icm()` to skip drawing quantile polygons when `qnts = FALSE` (previously produced a degenerate zero-width band) and extend the internal `bpal` palette beyond three entries so a fourth and later compartments no longer render as `NA`. Closes #1012.
+-   Extend the internal `bpal` palette in `plot.icm()` beyond three entries so a fourth and later compartments no longer render as `NA`. Closes #1012.
 -   Fix unreachable two-group validation in `crosscheck.dcm()` where checks for `rec.rate.g2` and `r.num.g2` were nested after `stop()` calls. Closes #982.
 -   Fix mismatched `mean.lwd` defaults in `plot.netsim()` where dead-code `is.null` branches used inconsistent values (1.5 vs 2.5). Closes #983.
 -   Fix `paste0(..., sep = ", ")` misuse in `as.data.frame.icm()` epi repair messages (caused malformed output with trailing commas). Closes #985.
 -   Fix `plot.epi.data.frame` to correctly display the truncated time axis.
+-   Fix `on.exit()` handler registration in `comp_plot()` and the internal `plot_stats_table()` helper so graphical parameters and the `scipen` option are restored on both error and normal exit, per CRAN policy. Previously the handler was registered after the `par()` / `options()` mutations, leaving user state modified if plotting errored in between.
 
 ### OTHER
 
@@ -25,6 +26,8 @@
 -   Consolidated duplicated quantile and mean-line logic in `plot.netsim(type = "epi")` and `plot.icm()` so the `disp.qnts` setup, `mean.lwd` / `mean.lty` expansion, and `draw_qnts()` / `draw_means()` calls are not repeated across the ylim-calc and drawing phases, and aligned remaining stylistic differences between the two sibling paths to keep them structurally symmetric. Closes #997, #1010, #1012; the remaining shared-helper refactor is tracked in #1018.
 -   Extracted duplicated stats validation logic from `plot_netsim_stats()` and `plot.netdx()` into a shared `validate_stats_selection()` helper; added `xlim`, `xlab`, `ylim`, `ylab` parameters to `plot.netdx()` for parity with `plot.netsim(type = "formation")`. Closes #998.
 -   Clarified `control.net()` docs that `module.order` is independent of `resimulate.network`, and that `tergmLite = TRUE` forces `resimulate.network = TRUE`; changed the `tergmLite` override from `message()` to `warning()` so it surfaces in batch/HPC logs. Closes #466.
+-   Refreshed package vignettes (`Intro`, `attributes-and-summary-statistics`, `model-parameters`, `network-objects`) to reflect the current API and accessor patterns. Closes #976.
+-   Clarified intended usage in the documentation for the nodal-attribute and parameter accessor functions (`?net-accessor`, `?update_params`). Closes #1024.
 
 ## EpiModel 2.6.0
 
