@@ -192,7 +192,7 @@ We recommend the following tiered sequence for learning EpiModel, consistent wit
     - *Working with Custom Attributes and Summary Statistics:* Nodal attributes, attribute histories, epidemic trackers, and custom summary statistics.
     - *Working with Network Objects:* Accessing and manipulating network objects, edgelists, cumulative edgelists, and reachability analysis within custom modules.
 - **EpiModelHPC & slurmworkflow:** Tools for running large-scale simulations on high-performance computing clusters.
-- **Template repositories:** [EpiModelHIV](https://github.com/EpiModel/EpiModelHIV-p) and [EpiModelCOVID](https://github.com/EpiModel/EpiModelCOVID) provide full-scale research model implementations.
+- **Template repositories:** [EpiModelHIV](https://github.com/EpiModel/EpiModelHIV) and [EpiModelCOVID](https://github.com/EpiModel/EpiModelCOVID) provide full-scale research model implementations.
 
 ## Package Documentation
 

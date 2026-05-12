@@ -116,7 +116,7 @@ versus one plot per statistic if \code{FALSE}.}
 
 \item{xlab}{a label for the x axis, defaults to a description of \code{x}.}
 
-\item{ylim}{the y limits of the plot; see \code{xlim} for default and details.}
+\item{ylim}{the y limits of the plot.}
 
 \item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
 
