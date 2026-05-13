@@ -2,6 +2,8 @@
 
 ## EpiModel 2.6.1
 
+CRAN release: 2026-05-13
+
 ### BREAKING CHANGES
 
 - Removed extension/custom module support from ICM models.
