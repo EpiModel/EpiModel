@@ -30,3 +30,4 @@ inst/doc
 docs
 *.Rcheck/
 *.tar.gz
+.positai

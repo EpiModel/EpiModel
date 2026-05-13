@@ -89,6 +89,15 @@ test_that("check_degdist_bal", {
                 "deg.dist.g2 TOTAL != 1")
 })
 
+test_that("cap_ncores handles unknown detected core counts", {
+  expect_equal(EpiModel:::cap_ncores(2, detected = NA_integer_), 2)
+  expect_equal(EpiModel:::cap_ncores(2, detected = 0), 2)
+  expect_equal(EpiModel:::cap_ncores(2, detected = Inf), 2)
+  expect_equal(EpiModel:::cap_ncores(2, detected = 4), 2)
+  expect_equal(EpiModel:::cap_ncores(4, detected = 2), 2)
+  expect_error(EpiModel:::cap_ncores(NA_real_, detected = 2), "`ncores` must be")
+})
+
 test_that("edgelist_censor", {
   skip_on_cran()
   nw <- network_initialize(n = 100)

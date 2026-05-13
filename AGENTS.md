@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -117,7 +117,7 @@ Parallelization uses the `future` / `future.apply` framework (switched from `for
 
 ## Environment Setup for Testing
 
-R is not pre-installed in the Claude Code environment but can be installed. When asked to run a full package test:
+R is not pre-installed in the Codex environment but can be installed. When asked to run a full package test:
 
 1. **Install R 4.5+ from the CRAN repository** (the default Ubuntu repo has an older version):
    ```bash

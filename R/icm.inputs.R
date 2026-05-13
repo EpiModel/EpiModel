@@ -63,12 +63,6 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.") 
-  }
-  if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.") 
-  }
 
   ## Defaults and checks
   if (is.null(p$act.rate)) {
@@ -284,10 +278,10 @@ crosscheck.icm <- function(param, init, control) {
   }
 
   if (!is.null(param$trans.rate)) {
-    stop("The trans.rate parameter has been removed. Use inf.prob instead.") 
+    stop("The trans.rate parameter has been removed. Use inf.prob instead.")
   }
   if (!is.null(param$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.") 
+    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.")
   }
 
   ## Assign built-in modules based on group parameter

@@ -125,7 +125,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
                        mean.lty = 1, qnts = 0.5, qnts.col = NULL,
                        qnts.alpha = 0.5, qnts.smooth = TRUE, targ.line = TRUE,
                        targ.col = NULL, targ.lwd = 2, targ.lty = 2,
-                       plots.joined = NULL, legend = NULL, grid = FALSE, ...) {
+                       plots.joined = NULL, legend = NULL, grid = FALSE,
+                       xlim = NULL, xlab = NULL, ylim = NULL, ylab = NULL,
+                       ...) {
 
   type <- match.arg(type, c("formation", "duration", "dissolution"))
   sims <- if (is.null(sims)) seq_len(x$nsims) else sims
@@ -162,24 +164,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     }
   }
 
-  ## Find available stats
-  sts <- which(!is.na(stats_table[, "Sim Mean"]))
-  nmstats <- rownames(stats_table)[sts]
-
-  ## Pull and check stat argument
-  stats <- if (is.null(stats)) nmstats else stats
-  if (!all(stats %in% nmstats)) {
-    stop("One or more requested stats not contained in netdx object") 
-  }
-  outsts <- which(nmstats %in% stats)
-  nmstats <- nmstats[outsts]
-
-  ## Subset data
-  data <- data[, outsts, , drop = FALSE]
+  sel <- validate_stats_selection(stats_table, data, stats, "netdx object")
+  data <- sel$data
+  nmstats <- sel$nmstats
+  targets <- sel$targets
   # sims only used to subset data in dynamic case
   if (x$dynamic) data <- data[, , sims, drop = FALSE]
-  ## Pull target stats
-  targets <- stats_table$Target[sts][outsts]
 
   plot_stats_table(
     data = data,
@@ -206,6 +196,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     grid = grid,
     targets = targets,
     dynamic = x$dynamic,
+    xlim = xlim, xlab = xlab,
+    ylim = ylim, ylab = ylab,
     ...
   )
 }

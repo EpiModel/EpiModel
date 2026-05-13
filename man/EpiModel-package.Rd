@@ -10,7 +10,7 @@
 Package: \tab EpiModel\cr
 Type: \tab Package\cr
 Version: \tab 2.6.1\cr
-Date: \tab 2026-03-21\cr
+Date: \tab 2026-05-12\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -151,6 +151,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Samuel Jenness \email{samuel.m.jenness@emory.edu}
   \item Steven M. Goodreau \email{goodreau@uw.edu}
   \item Martina Morris \email{morrism@uw.edu}
   \item Adrien Le Guillou \email{contact@aleguillou.org}

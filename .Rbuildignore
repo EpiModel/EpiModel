@@ -22,3 +22,5 @@ inst/JSS/
 ^pkgdown$
 CLAUDE.md
 ^\.claude$
+^\.positai$
+AGENTS.md

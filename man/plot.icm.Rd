@@ -22,7 +22,7 @@
   qnts.col = NULL,
   qnts.alpha = 0.5,
   qnts.smooth = TRUE,
-  legend = TRUE,
+  legend = NULL,
   leg.cex = 0.8,
   grid = FALSE,
   add = FALSE,

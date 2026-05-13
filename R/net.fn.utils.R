@@ -1,5 +1,19 @@
 # Network-related Utility Functions -----------------------------------------
 
+cap_ncores <- function(ncores, detected = parallel::detectCores()) {
+  if (!is.numeric(ncores) || length(ncores) != 1 || is.na(ncores) ||
+        !is.finite(ncores) || ncores < 1) {
+    stop("`ncores` must be a positive finite number.", call. = FALSE)
+  }
+
+  if (!is.numeric(detected) || length(detected) != 1 || is.na(detected) ||
+        !is.finite(detected) || detected < 1) {
+    return(ncores)
+  }
+
+  return(min(detected, ncores))
+}
+
 #' @title Check Degree Distribution for Balance in Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
@@ -874,7 +888,7 @@ truncate_sim <- function(x, at, reset.time) {
 truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
   row_start <- which(x$control$timesteps == at)
   if (length(row_start) == 0) {
-    stop("Specified value of at is not in the control$timesteps vector") 
+    stop("Specified value of at is not in the control$timesteps vector")
   }
   rows <- row_start:nrow(x$epi[[1]])
   # epi

@@ -245,12 +245,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## Defaults and Checks
-  if ("b.rate" %in% names.dot.args) {
-    stop("The b.rate parameter has been removed. Use a.rate instead.")
-  }
-  if ("b.rate.g2" %in% names.dot.args) {
-    stop("The b.rate.g2 parameter has been removed. Use a.rate.g2 instead.")
-  }
   # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
@@ -303,9 +297,25 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' original parameter values will be replaced) or not matching (in which case
 #' new parameters will be added to `param`).
 #'
+#' `update_params` modifies a `param.net` object **before** it is passed
+#' to [netsim()]; it is the recommended helper for tweaking parameters
+#' outside of a running simulation. To modify parameters from *inside* a
+#' module function during a simulation, use [set_param()] on the live
+#' `dat` object instead. There is no analogous `update_controls()` or
+#' `update_inits()` helper: for a `control.net` or `init.net` object,
+#' edit the list directly (e.g., `ctrl$nsteps <- 1000`) or rebuild it
+#' with a fresh call to the constructor. For *scheduled* mid-simulation
+#' changes to parameters or control settings, see the
+#' `.param.updater.list` argument to [param.net()] and the
+#' `.control.updater.list` argument to [control.net()].
+#'
 #' @return
 #' An updated list object of class `param.net`, which can be passed to the
 #' EpiModel function [netsim()].
+#'
+#' @seealso [set_param()] for editing parameters inside a module function
+#'   during a simulation; [param.net()] for the parameter constructor;
+#'   [netsim()] for running a simulation.
 #'
 #' @examples
 #' x <- param.net(inf.prob = 0.5, act.rate = 2)
@@ -667,9 +677,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        simulation and must be less than the value in `nsteps`.
 #' @param resimulate.network If `TRUE`, resimulate the network at each time step. This is required
 #'        when the epidemic or demographic processes impact the network structure (e.g., vital
-#'        dynamics).
+#'        dynamics). This parameter controls whether `resim_nets.FUN` performs actual network
+#'        resimulation; it does not affect the order in which modules are executed (see
+#'        `module.order`). Setting `tergmLite = TRUE` forces `resimulate.network = TRUE` with a
+#'        warning.
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
-#'        (`tergmLite = TRUE`). Default of `FALSE`.
+#'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
+#'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
 #' @param cumulative.edgelist If `TRUE`, calculates a cumulative edgelist within the network
 #'        simulation module. This is used when tergmLite is used and the entire networkDynamic
 #'        object is not used.
@@ -705,6 +719,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        as follows: first any new modules supplied through `...` in the order in which they are
 #'        listed, then the built-in modules in the order in which they are listed as arguments
 #'        above. `initialize.FUN` will always be run first and `verbose.FUN` will always be run last.
+#'        Module ordering is independent of `resimulate.network`: the specified order is always
+#'        respected regardless of whether network resimulation is enabled. In the default ordering,
+#'        `resim_nets.FUN` runs before `infection.FUN`, so the network is resimulated before
+#'        transmission is evaluated at each time step.
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
@@ -1000,7 +1018,8 @@ control.net <- function(type,
   }
 
   if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
-    message("Because tergmLite = TRUE, resetting resimulate.network = TRUE")
+    warning("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
+            call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
 

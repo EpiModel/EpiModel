@@ -149,6 +149,62 @@ test_that("merge.netsim works as expected for transmat", {
   expect_true(is.null(mod4$stats$transmat))
 })
 
+test_that("merge.netsim preserves random parameter values", {
+  random.params <- list(
+    act.rate = function() NULL,
+    dummy.strat.param = function() NULL
+  )
+
+  make_mod <- function(act.rate, dummy.strat.param) {
+    nsims <- length(act.rate)
+    simnames <- paste0("sim", seq_len(nsims))
+    structure(
+      list(
+        param = list(
+          inf.prob = 0.3,
+          act.rate = act.rate[1],
+          dummy.strat.param = dummy.strat.param[[1]],
+          random.params = random.params,
+          random.params.values = list(
+            act.rate = act.rate,
+            dummy.strat.param = dummy.strat.param
+          )
+        ),
+        control = list(
+          nsims = nsims,
+          save.other = character(0),
+          monitors = NULL,
+          nwstats.formula = NULL
+        ),
+        epi = list(
+          i.num = data.frame(
+            matrix(seq_len(nsims), nrow = 1, dimnames = list(NULL, simnames))
+          )
+        ),
+        stats = list(nwstats = NULL, transmat = NULL),
+        run = NULL,
+        network = NULL,
+        diss.stats = NULL
+      ),
+      class = "netsim"
+    )
+  }
+
+  x <- make_mod(c(0.1, 0.2), list(c(1, 2), c(3, 4)))
+  y <- make_mod(c(0.3, 0.4), list(c(5, 6), c(7, 8)))
+
+  z <- merge(x, y)
+  d.set <- get_param_set(z)
+
+  expect_equal(z$control$nsims, 4)
+  expect_equal(z$param$random.params.values$act.rate, c(0.1, 0.2, 0.3, 0.4))
+  expect_equal(z$param$random.params.values$dummy.strat.param,
+               list(c(1, 2), c(3, 4), c(5, 6), c(7, 8)))
+  expect_equal(d.set$act.rate, c(0.1, 0.2, 0.3, 0.4))
+  expect_equal(d.set$dummy.strat.param_1, c(1, 3, 5, 7))
+  expect_equal(d.set$dummy.strat.param_2, c(2, 4, 6, 8))
+})
+
 test_that("merge and print work as expected for save.other", {
   skip_on_cran()
   nw <- network_initialize(n = 100)

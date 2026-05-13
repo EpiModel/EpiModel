@@ -520,6 +520,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   newnames <- paste0("sim", seq_len(out$control$nsims))
 
   delsim <- setdiff(1:nsims, sims)
+  keepsim <- setdiff(seq_len(nsims), delsim)
   if (length(delsim) > 0) {
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
@@ -554,9 +555,113 @@ get_sims <- function(x, sims = NULL, var = NULL) {
     }
   }
 
+  out$param$random.params.values <- subset_random_params_values(
+    out$param$random.params.values, keepsim, nsims
+  )
+
   if (!is.null(var)) {
     match.vars <- which(names(x$epi) %in% var)
     out$epi <- out$epi[match.vars]
+  }
+
+  return(out)
+}
+
+random_param_draws <- function(value, nsims) {
+  if (is.list(value)) {
+    return(value)
+  }
+
+  if (nsims > 1 && length(value) == nsims) {
+    return(as.list(value))
+  }
+
+  return(list(value))
+}
+
+random_param_from_draws <- function(draws) {
+  if (length(draws) == 0) {
+    return(draws)
+  }
+
+  draw_lengths <- vapply(draws, length, integer(1))
+  draw_is_list <- vapply(draws, is.list, logical(1))
+  if (all(draw_lengths == 1) && !any(draw_is_list)) {
+    return(unname(unlist(draws, recursive = FALSE, use.names = FALSE)))
+  }
+
+  return(draws)
+}
+
+normalize_random_params_values <- function(values, nsims) {
+  if (is.null(values)) {
+    return(NULL)
+  }
+
+  lapply(values, function(value) {
+    random_param_from_draws(random_param_draws(value, nsims))
+  })
+}
+
+subset_random_params_values <- function(values, sims, nsims) {
+  if (is.null(values)) {
+    return(NULL)
+  }
+
+  lapply(values, function(value) {
+    draws <- random_param_draws(value, nsims)
+    random_param_from_draws(draws[sims])
+  })
+}
+
+param_without_random_values <- function(param) {
+  random_value_names <- names(param[["random.params.values"]])
+  param[c(random_value_names, "random.params.values")] <- NULL
+  return(param)
+}
+
+random_param_na_like <- function(value) {
+  if (length(value) == 0) {
+    return(NA)
+  }
+
+  out <- value
+  out[] <- NA
+  return(out)
+}
+
+random_param_missing_draws <- function(nsims, template) {
+  rep(list(random_param_na_like(template)), nsims)
+}
+
+merge_random_params_values <- function(x_values, y_values, x_nsims, y_nsims) {
+  if (is.null(x_values) && is.null(y_values)) {
+    return(NULL)
+  }
+
+  random_names <- union(names(x_values), names(y_values))
+  out <- vector("list", length(random_names))
+  names(out) <- random_names
+
+  for (name in random_names) {
+    x_has_name <- name %in% names(x_values)
+    y_has_name <- name %in% names(y_values)
+
+    if (x_has_name) {
+      x_draws <- random_param_draws(x_values[[name]], x_nsims)
+    }
+    if (y_has_name) {
+      y_draws <- random_param_draws(y_values[[name]], y_nsims)
+    }
+
+    if (!x_has_name) {
+      x_draws <- random_param_missing_draws(x_nsims, y_draws[[1]])
+    }
+    if (!y_has_name) {
+      y_draws <- random_param_missing_draws(y_nsims, x_draws[[1]])
+    }
+
+    out[[name]] <- random_param_from_draws(c(x_draws, y_draws))
   }
 
   return(out)
@@ -655,7 +760,10 @@ get_param_set <- function(sims) {
     stop("`sims` must be of class netsim")
   }
 
-  p.random <- sims[["param"]][["random.params.values"]]
+  p.random <- normalize_random_params_values(
+    sims[["param"]][["random.params.values"]],
+    sims[["control"]][["nsims"]]
+  )
   fixed.names <- setdiff(
     names(sims[["param"]]),
     c(names(p.random), "random.params", "random.params.values")
