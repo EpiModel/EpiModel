@@ -1,4 +1,3 @@
-
 #' @title Get Epidemic Output from netsim Model
 #'
 #' @description Provides all active model state sizes from the network at the
@@ -46,8 +45,14 @@ prevalence.net <- function(dat, at) {
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "s" &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "s" &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
 
@@ -55,8 +60,14 @@ prevalence.net <- function(dat, at) {
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "i" &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "i" &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
 
@@ -65,8 +76,14 @@ prevalence.net <- function(dat, at) {
       if (!is.null(ebn)) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num", ebun[i])
-          dat <- set_epi(dat, ebn.temp, sum(status == "r" &
-                                                  get(ebn) == ebv[i]))
+          dat <- set_epi(
+            dat,
+            ebn.temp,
+            sum(
+              status == "r" &
+                get(ebn) == ebv[i]
+            )
+          )
         }
       }
     }
@@ -87,18 +104,30 @@ prevalence.net <- function(dat, at) {
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "s" &
-                                                group == 1 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "s" &
+              group == 1 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
     dat <- set_epi(dat, "i.num", sum(status == "i" & group == 1))
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "i" &
-                                                group == 1 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "i" &
+              group == 1 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
     if (type == "SIR") {
@@ -106,9 +135,15 @@ prevalence.net <- function(dat, at) {
       if (!is.null(ebn)) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num", ebun[i])
-          dat <- set_epi(dat, ebn.temp, sum(status == "r" &
-                                                  group == 1 &
-                                                  get(ebn) == ebv[i]))
+          dat <- set_epi(
+            dat,
+            ebn.temp,
+            sum(
+              status == "r" &
+                group == 1 &
+                get(ebn) == ebv[i]
+            )
+          )
         }
       }
     }
@@ -116,26 +151,44 @@ prevalence.net <- function(dat, at) {
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("num", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(group == 1 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            group == 1 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
     dat <- set_epi(dat, "s.num.g2", sum(status == "s" & group == 2))
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num.g2", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "s" &
-                                                group == 2 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "s" &
+              group == 2 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
     dat <- set_epi(dat, "i.num.g2", sum(status == "i" & group == 2))
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num.g2", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(status == "i" &
-                                                group == 2 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            status == "i" &
+              group == 2 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
     if (type == "SIR") {
@@ -143,9 +196,15 @@ prevalence.net <- function(dat, at) {
       if (!is.null(ebn)) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num.g2", ebun[i])
-          dat <- set_epi(dat, ebn.temp, sum(status == "r" &
-                                                  group == 2 &
-                                                  get(ebn) == ebv[i]))
+          dat <- set_epi(
+            dat,
+            ebn.temp,
+            sum(
+              status == "r" &
+                group == 2 &
+                get(ebn) == ebv[i]
+            )
+          )
         }
       }
     }
@@ -153,8 +212,14 @@ prevalence.net <- function(dat, at) {
     if (!is.null(ebn)) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("num.g2", ebun[i])
-        dat <- set_epi(dat, ebn.temp, sum(group == 2 &
-                                                get(ebn) == ebv[i]))
+        dat <- set_epi(
+          dat,
+          ebn.temp,
+          sum(
+            group == 2 &
+              get(ebn) == ebv[i]
+          )
+        )
       }
     }
   }
