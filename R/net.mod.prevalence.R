@@ -48,10 +48,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "s" &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "s" & get(ebn) == ebv[i])
         )
       }
     }
@@ -63,10 +60,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "i" &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "i" & get(ebn) == ebv[i])
         )
       }
     }
@@ -79,10 +73,7 @@ prevalence.net <- function(dat, at) {
           dat <- set_epi(
             dat,
             ebn.temp,
-            sum(
-              status == "r" &
-                get(ebn) == ebv[i]
-            )
+            sum(status == "r" & get(ebn) == ebv[i])
           )
         }
       }
@@ -107,11 +98,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "s" &
-              group == 1 &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "s" & group == 1 & get(ebn) == ebv[i])
         )
       }
     }
@@ -122,11 +109,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "i" &
-              group == 1 &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "i" & group == 1 & get(ebn) == ebv[i])
         )
       }
     }
@@ -138,11 +121,7 @@ prevalence.net <- function(dat, at) {
           dat <- set_epi(
             dat,
             ebn.temp,
-            sum(
-              status == "r" &
-                group == 1 &
-                get(ebn) == ebv[i]
-            )
+            sum(status == "r" & group == 1 & get(ebn) == ebv[i])
           )
         }
       }
@@ -154,10 +133,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            group == 1 &
-              get(ebn) == ebv[i]
-          )
+          sum(group == 1 & get(ebn) == ebv[i])
         )
       }
     }
@@ -168,11 +144,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "s" &
-              group == 2 &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "s" & group == 2 & get(ebn) == ebv[i])
         )
       }
     }
@@ -183,11 +155,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            status == "i" &
-              group == 2 &
-              get(ebn) == ebv[i]
-          )
+          sum(status == "i" & group == 2 & get(ebn) == ebv[i])
         )
       }
     }
@@ -199,11 +167,7 @@ prevalence.net <- function(dat, at) {
           dat <- set_epi(
             dat,
             ebn.temp,
-            sum(
-              status == "r" &
-                group == 2 &
-                get(ebn) == ebv[i]
-            )
+            sum(status == "r" & group == 2 & get(ebn) == ebv[i])
           )
         }
       }
@@ -215,10 +179,7 @@ prevalence.net <- function(dat, at) {
         dat <- set_epi(
           dat,
           ebn.temp,
-          sum(
-            group == 2 &
-              get(ebn) == ebv[i]
-          )
+          sum(group == 2 & get(ebn) == ebv[i])
         )
       }
     }
