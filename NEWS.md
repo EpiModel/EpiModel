@@ -6,7 +6,8 @@
 
 ### OTHER
 
--   Add an `egor.popsize` argument to netest to allow scaling the edges term in `ergm.ego` models
+- Add an `egor.popsize` argument to netest to allow scaling the edges term in `ergm.ego` models.
+- Increase `make_module_list` verbosity. It now `message`s if `control$module.order` is not provided and list the modules and there order.
 
 ## EpiModel 2.6.1
 
