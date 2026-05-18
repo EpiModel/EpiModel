@@ -1,3 +1,13 @@
+## EpiModel 2.6.2
+
+### BREAKING CHANGES
+
+### BUG FIXES
+
+-    Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
+
+### OTHER
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES
