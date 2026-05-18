@@ -33,6 +33,8 @@ make_module_list <- function(dat) {
   ## Module order
   morder <- get_control(dat, "module.order", override.null.error = TRUE)
   if (is.null(morder)) {
+    message("No `module.order` control found.\n",
+            "The ordering of the arguments to `contro.net` will be used.")
     bi.mods <- get_control(dat, "bi.mods")
     user.mods <- get_control(dat, "user.mods")
     lim.bi.mods <- bi.mods[
@@ -48,6 +50,9 @@ make_module_list <- function(dat) {
   }
   names(modules) <- morder
   dat <- set_modules(dat, modules)
+
+  message("The modules will be run in the following order:\n",
+          paste0("  - `", morder, "`\n"))
 
   return(dat)
 }
