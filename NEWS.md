@@ -8,6 +8,8 @@
 
 ### OTHER
 
+- Increase `make_module_list` verbosity. It now `message`s if `control$module.order` is not provided and list the modules and there order.
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES
