@@ -1,3 +1,13 @@
+## EpiModel 2.6.2
+
+### BREAKING CHANGES
+
+### BUG FIXES
+
+-   Fix `list_special_params` so `param.net_from_table` correctly fails if a reserved parameter name is passed in the parameter table.
+
+### OTHER
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES
