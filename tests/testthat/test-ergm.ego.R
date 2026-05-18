@@ -70,3 +70,27 @@ test_that("ergm and ergm.ego produce the same results in EpiModel", {
     }
   }
 })
+
+test_that("ergm.ego.popsize shifts the edges coefficient as expected", {
+  skip_on_cran()
+
+  N <- 50
+  nw <- network_initialize(n = N)
+  nw <- san(nw ~ edges, target.stats = c(50))
+  nwe <- ergm.ego:::as.egor.network(nw)
+
+  set.seed(0)
+  fit_default <- netest(nwe, formation = ~edges,
+                        coef.diss = dissolution_coefs(~offset(edges), 10, 0))
+
+  set.seed(0)
+  fit_per_capita <- netest(nwe, formation = ~edges,
+                           coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                           ergm.ego.popsize = 1)
+
+  # popsize = 1 (per-capita) shifts the edges coefficient by -log(N) relative
+  # to the default popsize = 0 (which scales to the egor sample size N).
+  expect_equal(unname(fit_per_capita$coef.form.crude["edges"]),
+               unname(fit_default$coef.form.crude["edges"]) - log(N),
+               tolerance = 1e-4)
+})
