@@ -1,3 +1,13 @@
+## EpiModel 2.6.2
+
+### BREAKING CHANGES
+
+### BUG FIXES
+
+### OTHER
+
+-   Add an `egor.popsize` argument to netest to allow scaling the edges term in `ergm.ego` models
+
 ## EpiModel 2.6.1
 
 ### BREAKING CHANGES

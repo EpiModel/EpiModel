@@ -52,6 +52,8 @@
 #' @param verbose If `TRUE`, print model fitting progress to console.
 #' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
 #'        model is an initial segment of the formation model (see details).
+#' @param egor.popsize Integer. If `nw` is an `egor`, sets the `ergm.ego`'s
+#'        `popsize` parameter. (See `?ergm.ego`)
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
@@ -205,7 +207,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(MCMC.maxchanges = .Machine$integer.max),
                    set.control.ergm.ego = NULL,
-                   verbose = FALSE, nested.edapprox = TRUE, ...) {
+                   verbose = FALSE, nested.edapprox = TRUE,
+                   egor.popsize = 0, ...) {
 
   if (is.null(constraints)) {
     constraints	<- trim_env(~.)
@@ -271,7 +274,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
       fit <- ergm.ego::ergm.ego(
         formation,
         basis = nw,
-        popsize = 0,
+        popsize = egor.popsize,
         constraints = constraints,
         offset.coef = coef.form,
         control = set.control.ergm.ego,

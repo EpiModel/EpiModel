@@ -17,6 +17,7 @@ netest(
   set.control.ergm.ego = NULL,
   verbose = FALSE,
   nested.edapprox = TRUE,
+  egor.popsize = 0,
   ...
 )
 }
@@ -30,7 +31,7 @@ indicating an \code{ergm.ego} fit.}
 the network should be reproduced by the model. Common terms include
 \code{edges} (overall connectivity), \code{nodematch} (homophily by attribute),
 \code{concurrent} (overlapping partnerships), and \code{degree} (degree
-distribution constraints). See \code{\link[ergm:ergm-terms]{ergm::ergm-terms}} for the full
+distribution constraints). See \code{\link[ergm:ergmTerm]{ergm::ergm-terms}} for the full
 list of available terms.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
@@ -77,6 +78,9 @@ details).}
 
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details).}
+
+\item{egor.popsize}{Integer. If \code{nw} is an \code{egor}, sets the \code{ergm.ego}'s
+\code{popsize} parameter. (See \code{?ergm.ego})}
 
 \item{...}{Additional arguments passed to other functions.}
 }
