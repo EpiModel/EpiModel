@@ -31,3 +31,4 @@ docs
 *.Rcheck/
 *.tar.gz
 .positai
+/renv

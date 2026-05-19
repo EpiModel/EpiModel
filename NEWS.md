@@ -8,7 +8,8 @@
 
 ### BUG FIXES
 
--    Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
+-   Fix `list_special_params` so `param.net_from_table` correctly fails if a reserved parameter name is passed in the parameter table.
+-   Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
 
 ### OTHER
 
