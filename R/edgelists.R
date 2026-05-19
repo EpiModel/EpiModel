@@ -226,8 +226,8 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   }
 
   el <- tibble::tibble(
-    head = get_unique_ids(dat, el[, 1]),
-    tail = get_unique_ids(dat, el[, 2]),
+    head = get_unique_ids(dat, el[, 2]),
+    tail = get_unique_ids(dat, el[, 1]),
     current = TRUE
   )
 
@@ -323,8 +323,8 @@ seed_cumulative_edgelist_t1 <- function(dat) {
     if (length(persistent_idx) > 0) {
       el_p <- el_t1[persistent_idx, , drop = FALSE]
       seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
-        head  = get_unique_ids(dat, el_p[, 1]),
-        tail  = get_unique_ids(dat, el_p[, 2]),
+        head  = get_unique_ids(dat, el_p[, 2]),
+        tail  = get_unique_ids(dat, el_p[, 1]),
         start = 0,
         stop  = NA_real_
       )
@@ -332,8 +332,8 @@ seed_cumulative_edgelist_t1 <- function(dat) {
     if (length(new_idx) > 0) {
       el_n <- el_t1[new_idx, , drop = FALSE]
       seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
-        head  = get_unique_ids(dat, el_n[, 1]),
-        tail  = get_unique_ids(dat, el_n[, 2]),
+        head  = get_unique_ids(dat, el_n[, 2]),
+        tail  = get_unique_ids(dat, el_n[, 1]),
         start = 1,
         stop  = NA_real_
       )
@@ -350,8 +350,8 @@ seed_cumulative_edgelist_t1 <- function(dat) {
     if (truncate != 0 && length(dropped_idx) > 0) {
       el_d <- el_t0[dropped_idx, , drop = FALSE]
       seed_hist <- tibble::tibble(
-        head  = get_unique_ids(dat, el_d[, 1]),
-        tail  = get_unique_ids(dat, el_d[, 2]),
+        head  = get_unique_ids(dat, el_d[, 2]),
+        tail  = get_unique_ids(dat, el_d[, 1]),
         start = 0,
         stop  = 0
       )
