@@ -196,6 +196,18 @@ control.net(
   regardless of whether network resimulation is enabled. In the default
   ordering, `resim_nets.FUN` runs before `infection.FUN`, so the network
   is resimulated before transmission is evaluated at each time step.
+  **Important:** when set, `module.order` replaces the entire dispatch
+  order — built-in modules not listed will not run. `control.net()`
+  validates the entries at construction time: each name must correspond
+  to a `.FUN` argument that has been supplied (either as a formal
+  argument or through `...`), and `initialize.FUN` / `verbose.FUN` may
+  not appear because they run outside the per-step module loop. Omitting
+  `resim_nets.FUN`, `summary_nets.FUN`, or `nwupdate.FUN` produces a
+  warning, since these built-ins are typically required for correct
+  semantics: `resim_nets.FUN` advances the TERGM each step,
+  `summary_nets.FUN` records network statistics, and `nwupdate.FUN`
+  applies vertex (de)activation from `active`/`exitTime`/`entrTime` and
+  copies nodal attributes to the network.
 
 - save.nwstats:
 
