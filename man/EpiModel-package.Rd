@@ -151,6 +151,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Samuel Jenness \email{samuel.m.jenness@emory.edu}
   \item Steven M. Goodreau \email{goodreau@uw.edu}
   \item Martina Morris \email{morrism@uw.edu}
   \item Adrien Le Guillou \email{contact@aleguillou.org}
