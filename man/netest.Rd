@@ -17,6 +17,7 @@ netest(
   set.control.ergm.ego = NULL,
   verbose = FALSE,
   nested.edapprox = TRUE,
+  ergm.ego.popsize = 0,
   ...
 )
 }
@@ -77,6 +78,16 @@ details).}
 
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details).}
+
+\item{ergm.ego.popsize}{Numeric. The \code{popsize} argument passed to
+\code{ergm.ego::ergm.ego()} when \code{nw} is an \code{egor}. Shifts the edges
+coefficient to reflect a target population size. The default of
+\code{0} scales the edges term to the size of the egor sample,
+matching the coefficient an equivalent \code{ergm} fit would produce.
+Set to \code{1} for per-capita scaling, which lets the fitted model
+be applied to a network of arbitrary size without knowing the
+population size assumed during estimation. See \code{?ergm.ego} for
+other accepted values.}
 
 \item{...}{Additional arguments passed to other functions.}
 }
