@@ -17,6 +17,10 @@
 
 ### BUG FIXES
 
+- Fix the `cumulative.edgelist` recording of the head and tail of nodes.
+  Previously it was inverted. This had no effect on undirected networks
+  but would on directed ones
+
 ### OTHER
 
 - Increase `make_module_list` verbosity. It now `message`s if

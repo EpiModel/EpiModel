@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-6-2">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-6-2"></a></h3>
-</div>
+<ul><li>Fix the <code>cumulative.edgelist</code> recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones</li>
+</ul></div>
 <div class="section level3">
 <h3 id="other-2-6-2">OTHER<a class="anchor" aria-label="anchor" href="#other-2-6-2"></a></h3>
 <ul><li>Increase <code>make_module_list</code> verbosity. It now <code>message</code>s if <code>control$module.order</code> is not provided and list the modules and there order.</li>
