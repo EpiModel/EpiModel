@@ -166,6 +166,8 @@ Useful links:
 
 Authors:
 
+- Samuel Jenness <samuel.m.jenness@emory.edu>
+
 - Steven M. Goodreau <goodreau@uw.edu>
 
 - Martina Morris <morrism@uw.edu>

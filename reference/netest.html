@@ -65,6 +65,7 @@ for model diagnostics and <code><a href="netsim.html">netsim</a></code> for epid
 <span>  set.control.ergm.ego <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nested.edapprox <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ergm.ego.popsize <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -152,6 +153,18 @@ details).</p></dd>
 <dt id="arg-nested-edapprox">nested.edapprox<a class="anchor" aria-label="anchor" href="#arg-nested-edapprox"></a></dt>
 <dd><p>Logical. If <code>edapprox = TRUE</code> the dissolution
 model is an initial segment of the formation model (see details).</p></dd>
+
+
+<dt id="arg-ergm-ego-popsize">ergm.ego.popsize<a class="anchor" aria-label="anchor" href="#arg-ergm-ego-popsize"></a></dt>
+<dd><p>Numeric. The <code>popsize</code> argument passed to
+<code><a href="https://rdrr.io/pkg/ergm.ego/man/ergm.ego.html" class="external-link">ergm.ego::ergm.ego()</a></code> when <code>nw</code> is an <code>egor</code>. Shifts the edges
+coefficient to reflect a target population size. The default of
+<code>0</code> scales the edges term to the size of the egor sample,
+matching the coefficient an equivalent <code>ergm</code> fit would produce.
+Set to <code>1</code> for per-capita scaling, which lets the fitted model
+be applied to a network of arbitrary size without knowing the
+population size assumed during estimation. See <code>?ergm.ego</code> for
+other accepted values.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -325,7 +338,7 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ff75e4c4f0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5648d3b70b68&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

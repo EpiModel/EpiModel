@@ -4,6 +4,17 @@
 
 ### BREAKING CHANGES
 
+### NEW FEATURES
+
+- Add an `ergm.ego.popsize` argument to
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+  exposing the `popsize` parameter of
+  [`ergm.ego::ergm.ego()`](https://rdrr.io/pkg/ergm.ego/man/ergm.ego.html).
+  Defaults to `0` (preserves prior behavior); set to `1` for per-capita
+  scaling of the edges coefficient, which lets the fitted model be
+  applied to networks of arbitrary size. Closes
+  [\#936](https://github.com/EpiModel/EpiModel/issues/936).
+
 ### BUG FIXES
 
 ### OTHER

@@ -25,6 +25,7 @@ netest(
   set.control.ergm.ego = NULL,
   verbose = FALSE,
   nested.edapprox = TRUE,
+  ergm.ego.popsize = 0,
   ...
 )
 ```
@@ -111,6 +112,18 @@ netest(
 
   Logical. If `edapprox = TRUE` the dissolution model is an initial
   segment of the formation model (see details).
+
+- ergm.ego.popsize:
+
+  Numeric. The `popsize` argument passed to
+  [`ergm.ego::ergm.ego()`](https://rdrr.io/pkg/ergm.ego/man/ergm.ego.html)
+  when `nw` is an `egor`. Shifts the edges coefficient to reflect a
+  target population size. The default of `0` scales the edges term to
+  the size of the egor sample, matching the coefficient an equivalent
+  `ergm` fit would produce. Set to `1` for per-capita scaling, which
+  lets the fitted model be applied to a network of arbitrary size
+  without knowing the population size assumed during estimation. See
+  `?ergm.ego` for other accepted values.
 
 - ...:
 
@@ -313,7 +326,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55ff75e4c4f0>
+#> <environment: 0x5648d3b70b68>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
