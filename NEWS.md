@@ -14,6 +14,7 @@
 ### OTHER
 
 - Increase `make_module_list` verbosity. It now `message`s if `control$module.order` is not provided and list the modules and there order.
+- `control.net()` now validates `module.order` at construction time. Entries that don't correspond to a `.FUN` argument supplied to `control.net()` (typos, or names whose function was never passed) now produce a clear error rather than a cryptic NULL-as-function failure at runtime. `initialize.FUN` and `verbose.FUN` are explicitly rejected from `module.order` since they run outside the per-step module loop and would double-execute if included. Additionally, `control.net()` now warns at construction time when a custom `module.order` is set but omits `resim_nets.FUN`, `summary_nets.FUN`, or `nwupdate.FUN` — three built-ins whose absence typically produces silently incorrect simulations rather than visible errors. The warning is suppressed for built-ins that the user has explicitly disabled by passing `NULL`. Resolves the remaining cryptic-error footgun from #988 and the silent-failure surface that motivated #1030.
 
 ## EpiModel 2.6.1
 
