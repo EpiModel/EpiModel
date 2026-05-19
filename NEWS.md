@@ -2,6 +2,10 @@
 
 ### BREAKING CHANGES
 
+### NEW FEATURES
+
+- Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
+
 ### BUG FIXES
 
 ### OTHER
