@@ -52,6 +52,15 @@
 #' @param verbose If `TRUE`, print model fitting progress to console.
 #' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
 #'        model is an initial segment of the formation model (see details).
+#' @param ergm.ego.popsize Numeric. The `popsize` argument passed to
+#'        `ergm.ego::ergm.ego()` when `nw` is an `egor`. Shifts the edges
+#'        coefficient to reflect a target population size. The default of
+#'        `0` scales the edges term to the size of the egor sample,
+#'        matching the coefficient an equivalent `ergm` fit would produce.
+#'        Set to `1` for per-capita scaling, which lets the fitted model
+#'        be applied to a network of arbitrary size without knowing the
+#'        population size assumed during estimation. See `?ergm.ego` for
+#'        other accepted values.
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
@@ -205,7 +214,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(MCMC.maxchanges = .Machine$integer.max),
                    set.control.ergm.ego = NULL,
-                   verbose = FALSE, nested.edapprox = TRUE, ...) {
+                   verbose = FALSE, nested.edapprox = TRUE,
+                   ergm.ego.popsize = 0, ...) {
 
   if (is.null(constraints)) {
     constraints	<- trim_env(~.)
@@ -271,7 +281,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
       fit <- ergm.ego::ergm.ego(
         formation,
         basis = nw,
-        popsize = 0,
+        popsize = ergm.ego.popsize,
         constraints = constraints,
         offset.coef = coef.form,
         control = set.control.ergm.ego,

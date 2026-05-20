@@ -168,14 +168,14 @@ flatten_params <- function(params) {
 #' list the "special parameters" from a param list. They include some EpiModel
 #' internals as well as all parameters starting with "."
 #' @noRd
-list_special_params <- function(params) {
+list_special_params <- function(params.names) {
   builtin.special.params <- c(
     "random.params",
     "random.params.values"
   )
 
-  builtin.special.params <- intersect(builtin.special.params, names(params))
-  dot.special.params <- names(params)[grep("^\\.", names(params))]
+  builtin.special.params <- intersect(builtin.special.params, params.names)
+  dot.special.params <- params.names[grep("^\\.", params.names)]
 
   return(unique(c(builtin.special.params, dot.special.params)))
 }
@@ -183,7 +183,7 @@ list_special_params <- function(params) {
 #' helper function to remove the "special parameters" from a param list.
 #' @noRd
 remove_special_params <- function(params) {
-  special.params.names <- list_special_params(params)
+  special.params.names <- list_special_params(names(params))
   params[!names(params) %in% special.params.names]
 }
 

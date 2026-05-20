@@ -149,7 +149,18 @@ above. \code{initialize.FUN} will always be run first and \code{verbose.FUN} wil
 Module ordering is independent of \code{resimulate.network}: the specified order is always
 respected regardless of whether network resimulation is enabled. In the default ordering,
 \code{resim_nets.FUN} runs before \code{infection.FUN}, so the network is resimulated before
-transmission is evaluated at each time step.}
+transmission is evaluated at each time step.
+\strong{Important:} when set, \code{module.order} replaces the entire dispatch order —
+built-in modules not listed will not run. \code{control.net()} validates the entries
+at construction time: each name must correspond to a \code{.FUN} argument that has
+been supplied (either as a formal argument or through \code{...}), and
+\code{initialize.FUN} / \code{verbose.FUN} may not appear because they run outside the
+per-step module loop. Omitting \code{resim_nets.FUN}, \code{summary_nets.FUN}, or
+\code{nwupdate.FUN} produces a warning, since these built-ins are typically required
+for correct semantics: \code{resim_nets.FUN} advances the TERGM each step,
+\code{summary_nets.FUN} records network statistics, and \code{nwupdate.FUN} applies
+vertex (de)activation from \code{active}/\code{exitTime}/\code{entrTime} and copies nodal
+attributes to the network.}
 
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame. The statistics to be
 saved are specified in the \code{nwstats.formula} argument.}
