@@ -722,6 +722,17 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        respected regardless of whether network resimulation is enabled. In the default ordering,
 #'        `resim_nets.FUN` runs before `infection.FUN`, so the network is resimulated before
 #'        transmission is evaluated at each time step.
+#'        **Important:** when set, `module.order` replaces the entire dispatch order —
+#'        built-in modules not listed will not run. `control.net()` validates the entries
+#'        at construction time: each name must correspond to a `.FUN` argument that has
+#'        been supplied (either as a formal argument or through `...`), and
+#'        `initialize.FUN` / `verbose.FUN` may not appear because they run outside the
+#'        per-step module loop. Omitting `resim_nets.FUN`, `summary_nets.FUN`, or
+#'        `nwupdate.FUN` produces a warning, since these built-ins are typically required
+#'        for correct semantics: `resim_nets.FUN` advances the TERGM each step,
+#'        `summary_nets.FUN` records network statistics, and `nwupdate.FUN` applies
+#'        vertex (de)activation from `active`/`exitTime`/`entrTime` and copies nodal
+#'        attributes to the network.
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
@@ -950,6 +961,69 @@ control.net <- function(type,
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
   p[["f.names"]] <- c(p[["bi.mods"]], p[["user.mods"]])
+
+  ## `module.order` validation
+  if (!is.null(p[["module.order"]])) {
+
+    # `initialize.FUN` and `verbose.FUN` are invoked outside the per-step
+    # module loop in `netsim_run_modules()`. Placing them in `module.order`
+    # would cause double execution and is almost certainly a mistake.
+    bad_special <- intersect(p[["module.order"]],
+                             c("initialize.FUN", "verbose.FUN"))
+    if (length(bad_special) > 0) {
+      stop(
+        "`module.order` cannot contain ",
+        paste0("`", bad_special, "`", collapse = ", "),
+        ". `initialize.FUN` runs once at simulation start and `verbose.FUN` ",
+        "runs outside the per-step module loop; including them in ",
+        "`module.order` would cause double execution. Remove them from ",
+        "`module.order`.",
+        call. = FALSE
+      )
+    }
+
+    # Every other entry must resolve to a `.FUN` argument that was supplied
+    # to `control.net()` (either as a formal argument with a non-NULL value
+    # or via `...`).
+    valid_mods <- setdiff(p[["f.names"]],
+                          c("initialize.FUN", "verbose.FUN"))
+    unknown <- setdiff(p[["module.order"]], valid_mods)
+    if (length(unknown) > 0) {
+      stop(
+        "`module.order` contains entries with no matching `.FUN` argument: ",
+        paste0("`", unknown, "`", collapse = ", "), ". ",
+        "Either remove them from `module.order`, fix the typo, or pass the ",
+        "corresponding `.FUN` argument to `control.net()`.",
+        call. = FALSE
+      )
+    }
+
+    # Warn (don't error) when a custom order omits built-ins that are
+    # available (non-NULL) and almost always required for correct semantics.
+    # We check `p[[mod]]` directly rather than `p[["bi.mods"]]` because the
+    # latter is unfiltered when `type` is non-NULL, and we want to respect
+    # explicit user disables (`nwupdate.FUN = NULL`, etc.) in either mode.
+    critical <- c("resim_nets.FUN", "summary_nets.FUN", "nwupdate.FUN")
+    critical_available <- critical[
+      vapply(critical, function(m) !is.null(p[[m]]), logical(1))
+    ]
+    missing_critical <- setdiff(critical_available, p[["module.order"]])
+    if (length(missing_critical) > 0) {
+      warning(
+        "`module.order` is set but omits built-in module(s): ",
+        paste0("`", missing_critical, "`", collapse = ", "), ".\n",
+        "  - `resim_nets.FUN`: advances the TERGM each step\n",
+        "  - `summary_nets.FUN`: records network statistics (`nwstats`)\n",
+        "  - `nwupdate.FUN`: applies vertex (de)activation from ",
+        "`active` / `exitTime` / `entrTime` and copies nodal attributes ",
+        "to the network\n",
+        "Without these the simulation usually still runs but produces ",
+        "silently incorrect results. Add them to `module.order` unless you ",
+        "intentionally want to skip them.",
+        call. = FALSE
+      )
+    }
+  }
 
   ## Defaults and checks
 

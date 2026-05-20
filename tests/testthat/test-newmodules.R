@@ -109,9 +109,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infection.net,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = FALSE, resimulate.network = TRUE, verbose = FALSE)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
@@ -133,9 +134,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infection.net,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")
@@ -146,9 +148,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infect,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod5 <- netsim(est, param, init, control)
   expect_is(mod5, "netsim")
@@ -171,7 +174,7 @@ test_that("module.order is independent of resimulate.network", {
   param <- param.net(inf.prob = 0.3)
   init <- init.net(i.num = 5)
 
-  custom_order <- c("resim_nets.FUN", "infection.FUN",
+  custom_order <- c("resim_nets.FUN", "summary_nets.FUN", "infection.FUN",
                      "nwupdate.FUN", "prevalence.FUN")
 
   # module.order preserved with resimulate.network = TRUE
@@ -630,4 +633,83 @@ test_that("Random parameters generators", {
   randoms <- c(my_randoms, list(param.random.set = list()))
   param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_error(generate_random_params(param))
+})
+
+# `module.order` validation (run at control.net() construction time) -----------
+
+test_that("module.order with an entry that has no matching .FUN errors", {
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infction.FUN", "nwupdate.FUN")),
+    "no matching `\\.FUN` argument"
+  )
+})
+
+test_that("module.order containing initialize.FUN or verbose.FUN errors", {
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("initialize.FUN", "resim_nets.FUN",
+                                 "summary_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "`initialize\\.FUN` runs once at simulation start"
+  )
+
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "nwupdate.FUN",
+                                 "prevalence.FUN", "verbose.FUN")),
+    "outside the per-step module loop"
+  )
+})
+
+test_that("module.order omitting a critical built-in warns", {
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "prevalence.FUN")),
+    "nwupdate\\.FUN"
+  )
+
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("summary_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "resim_nets\\.FUN"
+  )
+
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "summary_nets\\.FUN"
+  )
+})
+
+test_that("module.order with the recommended full ordering emits no warning", {
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "nwupdate.FUN",
+                                 "prevalence.FUN"))
+  )
+})
+
+test_that("module.order is not required (NULL skips validation)", {
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10)
+  )
+})
+
+test_that("module.order does not warn for built-ins explicitly set to NULL", {
+  # When a user disables a critical built-in by passing NULL, that module
+  # leaves `bi.mods` and so should not trigger the missing-critical warning
+  # if it is also absent from `module.order`.
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10,
+                nwupdate.FUN = NULL,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "prevalence.FUN"))
+  )
 })
