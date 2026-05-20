@@ -251,11 +251,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     stop("Parameters using the .m2 suffix have been removed. ",
          "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
-  if (missing(act.rate)) {
+  if (missing(act.rate) && is.null(p[["act.rate"]])) {
     p[["act.rate"]] <- 1
   }
-  p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                           !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+
+  p[["vital"]] <- !missing(a.rate) | !is.null(p[["a.rate"]]) |
+    !missing(ds.rate) | !is.null(p[["ds.rate"]]) |
+    !missing(di.rate) | !is.null(p[["di.rate"]]) |
+    !missing(dr.rate) | !is.null(p[["dr.rate"]])
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.")
