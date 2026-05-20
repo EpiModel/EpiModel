@@ -511,9 +511,22 @@ test_that("Load parameters from data.frame", {
   expect_s3_class(param, "param.net")
   expect_type(param, "list")
 
-  expect_silent(param <- param.net(data.frame.parameters = params.df))
+  expect_silent(param <- param.net(data.frame.params = params.df))
   expect_s3_class(param, "param.net")
   expect_type(param, "list")
+  # Verify the table was actually unpacked (not just stored as a dot arg)
+  expect_equal(param$p1, 10)
+  expect_true(param$p2)
+  expect_equal(param$p3, c(1, 3))
+  expect_equal(param$p4, "tsa")
+
+  # `data.frame.parameters` is accepted as a deprecated alias and emits a warning
+  expect_warning(
+    param_alias <- param.net(data.frame.parameters = params.df),
+    "deprecated alias"
+  )
+  expect_s3_class(param_alias, "param.net")
+  expect_equal(param_alias$p3, c(1, 3))
 
   # convert back to a `long.param.df`
   param.df_back <- param.net_from_table(params.df) |> param.net_to_table()
@@ -548,6 +561,43 @@ test_that("Load parameters from data.frame", {
     "p4", "tsa", "character", "foobaz"
   )
   expect_error(param <- param.net_from_table(params.df))
+})
+
+test_that("param.net preserves data.frame.params values against constructor defaults", {
+  skip_on_cran()
+
+  # Regression for #1029: vector `act.rate` from a long.param.df must not be
+  # silently overwritten by the scalar default of 1.
+  params.df <- data.frame(
+    param = c("act.rate_1", "act.rate_2", "act.rate_3", "act.rate_4",
+              "inf.prob"),
+    value = c("5", "1", "1", "1", "0.3"),
+    type  = rep("numeric", 5),
+    stringsAsFactors = FALSE
+  )
+  p <- param.net(data.frame.params = params.df)
+  expect_equal(p$act.rate, c(5, 1, 1, 1))
+  expect_equal(p$inf.prob, 0.3)
+
+  # Scalar default still applies when neither formal arg nor table provides it.
+  p_default <- param.net(inf.prob = 0.3)
+  expect_equal(p_default$act.rate, 1)
+
+  # Regression for #1031: `vital` must reflect table-supplied vital parameters
+  # after a round trip through `param.net_to_table` -> `param.net`.
+  p1 <- param.net(inf.prob = 0.3, a.rate = 0.1, ds.rate = 0.1, di.rate = 0.1)
+  expect_true(p1$vital)
+  p2 <- param.net(data.frame.params = param.net_to_table(p1))
+  expect_true(p2$vital)
+
+  # `vital` is FALSE when no vital params are supplied via either path.
+  p_no_vital <- param.net(
+    data.frame.params = data.frame(
+      param = "inf.prob", value = "0.3", type = "numeric",
+      stringsAsFactors = FALSE
+    )
+  )
+  expect_false(p_no_vital$vital)
 })
 
 context("Random Parameter Generators")
