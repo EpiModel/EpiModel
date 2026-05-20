@@ -50,6 +50,8 @@
 <div class="section level3">
 <h3 id="other-2-6-2">OTHER<a class="anchor" aria-label="anchor" href="#other-2-6-2"></a></h3>
 <ul><li>Increase <code>make_module_list</code> verbosity. It now <code>message</code>s if <code>control$module.order</code> is not provided and list the modules and there order.</li>
+<li>
+<code><a href="../reference/control.net.html">control.net()</a></code> now validates <code>module.order</code> at construction time. Entries that don’t correspond to a <code>.FUN</code> argument supplied to <code><a href="../reference/control.net.html">control.net()</a></code> (typos, or names whose function was never passed) now produce a clear error rather than a cryptic NULL-as-function failure at runtime. <code>initialize.FUN</code> and <code>verbose.FUN</code> are explicitly rejected from <code>module.order</code> since they run outside the per-step module loop and would double-execute if included. Additionally, <code><a href="../reference/control.net.html">control.net()</a></code> now warns at construction time when a custom <code>module.order</code> is set but omits <code>resim_nets.FUN</code>, <code>summary_nets.FUN</code>, or <code>nwupdate.FUN</code> — three built-ins whose absence typically produces silently incorrect simulations rather than visible errors. The warning is suppressed for built-ins that the user has explicitly disabled by passing <code>NULL</code>. Resolves the remaining cryptic-error footgun from <a href="https://github.com/EpiModel/EpiModel/issues/988" class="external-link">#988</a> and the silent-failure surface that motivated <a href="https://github.com/EpiModel/EpiModel/issues/1030" class="external-link">#1030</a>.</li>
 </ul></div>
 </div>
     <div class="section level2">
