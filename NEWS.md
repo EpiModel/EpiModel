@@ -10,6 +10,7 @@
 
 -   Fix `list_special_params` so `param.net_from_table` correctly fails if a reserved parameter name is passed in the parameter table.
 -   Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
+-   Fix `param.net` so that values supplied via `data.frame.params` (notably `act.rate`, and the vital-dynamics parameters `a.rate` / `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the constructor's defaults. Also accept `data.frame.parameters` as a deprecated alias for `data.frame.params` (with a warning) to match the documented argument name. Closes #1029 and #1031.
 
 ### OTHER
 

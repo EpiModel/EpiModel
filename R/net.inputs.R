@@ -137,8 +137,9 @@
 #' EpiModel.
 #'
 #' This data.frame is then passed in to `param.net` under a
-#' `data.frame.parameters` argument. Further details and examples are
-#' provided in the "Working with Model Parameters in EpiModel" vignette.
+#' `data.frame.params` argument (`data.frame.parameters` is also accepted as
+#' a deprecated alias). Further details and examples are provided in the
+#' "Working with Model Parameters in EpiModel" vignette.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
@@ -209,6 +210,17 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
 
+  # `data.frame.parameters` was the originally documented name but was never
+  # implemented; accept it as a deprecated alias for `data.frame.params`.
+  if ("data.frame.parameters" %in% names.dot.args &&
+        !"data.frame.params" %in% names.dot.args) {
+    warning("`data.frame.parameters` is a deprecated alias for ",
+            "`data.frame.params`; please use `data.frame.params`.")
+    dot.args[["data.frame.params"]] <- dot.args[["data.frame.parameters"]]
+    dot.args[["data.frame.parameters"]] <- NULL
+    names.dot.args <- names(dot.args)
+  }
+
   # Use "data.frame.params" as default if available
   if ("data.frame.params" %in% names.dot.args) {
     p <- param.net_from_table(dot.args[["data.frame.params"]])
@@ -251,11 +263,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     stop("Parameters using the .m2 suffix have been removed. ",
          "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
-  if (missing(act.rate)) {
+  if (missing(act.rate) && is.null(p[["act.rate"]])) {
     p[["act.rate"]] <- 1
   }
-  p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                           !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+
+  p[["vital"]] <- !missing(a.rate) | !is.null(p[["a.rate"]]) |
+    !missing(ds.rate) | !is.null(p[["ds.rate"]]) |
+    !missing(di.rate) | !is.null(p[["di.rate"]]) |
+    !missing(dr.rate) | !is.null(p[["dr.rate"]])
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.")
