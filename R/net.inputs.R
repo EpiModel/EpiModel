@@ -213,7 +213,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   # `data.frame.parameters` was the originally documented name but was never
   # implemented; accept it as a deprecated alias for `data.frame.params`.
   if ("data.frame.parameters" %in% names.dot.args &&
-      !"data.frame.params" %in% names.dot.args) {
+        !"data.frame.params" %in% names.dot.args) {
     warning("`data.frame.parameters` is a deprecated alias for ",
             "`data.frame.params`; please use `data.frame.params`.")
     dot.args[["data.frame.params"]] <- dot.args[["data.frame.parameters"]]
