@@ -41,7 +41,8 @@ validate_run <- function(run) {
   defaults <- list(
     attr = list(),
     current_timestep = 1L,
-    last_unique_id = 0L
+    last_unique_id = 0L,
+    tracking_attrs = FALSE
   )
 
   for (elt_name in names(defaults)) {

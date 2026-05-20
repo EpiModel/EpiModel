@@ -833,21 +833,26 @@ get_attr_history <- function(sims) {
 
   for (name in simnames) {
     records <- sims[["attr.history"]][[name]]
+    if (is.null(records)) next
     records <- records$as_list()
-    attributes <- vapply(records, function(x) x[["attribute"]], "")
-    attributes.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
-    for (a in attributes.names) {
-      parts <- Filter(function(x) x[["attribute"]] == a, records)
+    attributes <- vapply(records, function(x) x[["attribute"]], "")
+    attributes_pos <- split(seq_along(attributes), attributes)
+    for (a in names(attributes_pos)) {
+      parts <- records[attributes_pos[[a]]]
       parts <- lapply(parts, dplyr::as_tibble)
       d <- dplyr::bind_rows(parts)
       d[["sim"]] <- simnum
       d <- dplyr::select(d, "sim", "time", "attribute", "uids", "values")
-      dfs[[a]] <- dplyr::bind_rows(dfs[[a]], d)
+      dfs[[a]] <- c(dfs[[a]], list(d))
     }
   }
+
+  nms <- names(dfs)
+  dfs <- lapply(dfs, \(x) dplyr::bind_rows(x))
+  names(dfs) <- nms
 
   return(dfs)
 }

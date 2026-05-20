@@ -161,7 +161,8 @@ test_that("get_sims error flags", {
     "dummy.param",
     "dummy.strat.param_1",
     "dummy.strat.param_2",
-    "groups"
+    "groups",
+    "time.unit"
   )
 
   expect_is(d.set, "data.frame")

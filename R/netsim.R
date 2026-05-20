@@ -277,13 +277,19 @@ netsim_validate_control <- function(control) {
       "save.run"
     )
   )
-
-  if (is.null(control$save.other))
-    control$save.other <- character(0)
-
   for (val in names(control_default_bool)) {
     for (flag in control_default_bool[[val]])
       if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
+  }
+
+  # Controls to be set to `character(0)` if missing
+  control_default_char <- c(
+    "save.other",
+    "tracked.attributes",
+    "tracked.attributes.once"
+  )
+  for (val in control_default_char) {
+    if (is.null(control[[val]])) control[[val]] <- character(0)
   }
 
   # truncate the cumulative edgelists to keep only active partnerships
@@ -372,14 +378,25 @@ netsim_run_modules <- function(dat, s) {
       dat <- input_updater(dat)
       dat <- trigger_end_horizon(dat)
 
+      dat <- tracked_attrs_set_ref(dat)
+
       modules <- get_modules(dat)
 
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
-        dat <- modules[[i]](dat, at)
+        new_dat <- modules[[i]](dat, at)
+        # Test the output of `modules[i]`. Must be stored in `new_dat` before
+        # the test as `dat` is used by the logger function.
+        if (!inherits(new_dat, "netsim_dat")) {
+          stop("Module '", current_mod, "' must return the `dat` object. ",
+               "Got ", class(new_dat)[1], " instead.")
+        } else {
+          dat <- new_dat
+        }
       }
 
       current_mod <- "epimodel.internal"
+      dat <- tracked_attrs_record(dat)
       # Run the user-provided trackers, if any
       dat <- epi_trackers(dat)
 

@@ -4,49 +4,68 @@
 \alias{record_attr_history}
 \title{Record Attribute History}
 \usage{
-record_attr_history(dat, at, attribute, posit_ids, values)
+record_attr_history(
+  dat,
+  item,
+  value,
+  at = NULL,
+  posit_ids = NULL,
+  unique_ids = NULL
+)
 }
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
 \code{\link[=netsim]{netsim()}}.}
 
-\item{at}{The time where the recording happens.}
+\item{item}{The name of the attribute to record.}
 
-\item{attribute}{The name of the value to record.}
+\item{value}{The values to be recorded. Must be of length 1 (recycled for
+all nodes) or the same length as the number of nodes identified by
+\code{posit_ids} or \code{unique_ids}.}
 
-\item{posit_ids}{A numeric vector of posit_ids to which the measure applies.
-(see \code{get_posit_ids}).}
+\item{at}{The time step at which the recording happens. Defaults to the
+current time step if \code{NULL}.}
 
-\item{values}{The values to be recorded.}
+\item{posit_ids}{A numeric vector of positional IDs to which the values
+apply. Converted internally to unique IDs. Either \code{posit_ids} or
+\code{unique_ids} must be provided.}
+
+\item{unique_ids}{A numeric vector of unique IDs to which the values apply.
+When provided, skips the positional-to-unique ID conversion.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
 }
 \description{
-This function records values specific to a time-step and a group of nodes.
-In the records, the \code{posit_ids} are converted to \code{unique_ids} which
-allows the recording of data for nodes that are no longer in the network by
-the end of the run. The records are stored in \code{dat[["attr.history"]]}
-where \code{dat} is the main \code{netsim_dat} class object, and can be
-accessed from the \code{netsim} object with \code{get_attr_history}.
+Record values for a set of nodes at a specific time step. Records are stored
+in \code{dat[["attr.history"]]} as a \code{collections::queue} and can be accessed
+from the \code{netsim} object with \code{get_attr_history}.
+
+This function is called automatically by the tracked attributes system when
+\code{tracked.attributes} is set in \code{control.net}, but can also be called
+manually inside custom modules for ad-hoc recording.
 }
 \details{
+Exactly one of \code{posit_ids} or \code{unique_ids} must be non-\code{NULL}. When both
+are \code{NULL}, the function errors. When \code{unique_ids} is provided directly,
+the conversion from positional IDs is skipped, which is more efficient
+when unique IDs are already known (e.g., from the automatic tracking
+system).
+
 See the "Time-Varying Parameters" section of the "Working With Model
 Parameters" vignette.
 }
 \examples{
 \dontrun{
-# This function must be used inside a custom module
-dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
-some_nodes <- get_posit_ids(dat)
-some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]
-dat <- record_attr_history(
-  dat, at,
-  "attr_2",
-  some_nodes,
-  rnorm(length(some_nodes))
-)
+# Manual recording inside a custom module
+dat <- record_attr_history(dat, "status", get_attr(dat, "status"),
+                           posit_ids = get_posit_ids(dat))
+
+# Record for a subset of nodes using unique IDs directly
+some_uids <- c(10, 25, 42)
+dat <- record_attr_history(dat, "risk", c(1, 0, 1),
+                           unique_ids = some_uids)
 }
 
 }
