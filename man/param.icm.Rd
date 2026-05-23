@@ -109,12 +109,12 @@ models simulated with \code{icm}.
 }
 \details{
 \code{param.icm} sets the epidemic parameters for the stochastic individual
-contact models simulated with the \code{\link[=icm]{icm()}} function. Models
-may use the base types, for which these parameters are used, or new process
-modules which may use these parameters (but not necessarily).
+contact models simulated with the \code{\link[=icm]{icm()}} function. ICMs support the
+built-in SI, SIR, and SIS disease types only; for custom or extension
+epidemic models, use \code{\link[=param.net]{param.net()}} with the network model class.
 
-For base models, the model specification will be chosen as a result of
-the model parameters entered here and the control settings in
+The model specification will be chosen as a result of the model parameters
+entered here and the control settings in
 \code{\link[=control.icm]{control.icm()}}. One-group and two-group models are available,
 where the former assumes a homogeneous mixing in the population and the
 latter assumes some form of heterogeneous mixing between two distinct

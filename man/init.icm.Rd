@@ -38,7 +38,8 @@ models simulated with \code{icm}.
 \details{
 The initial conditions for a model solved with \code{\link[=icm]{icm()}} should be
 input into the \code{init.icm} function. This function handles initial
-conditions for both base models and original models using new modules.
+conditions for the built-in SI, SIR, and SIS disease types; for custom or
+extension epidemic models, use \code{\link[=init.net]{init.net()}} with the network model class.
 }
 \seealso{
 Use \code{\link[=param.icm]{param.icm()}} to specify model parameters and

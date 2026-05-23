@@ -185,8 +185,9 @@ parameter meta-data. However, these extra columns will not be used by
 EpiModel.
 
 This data.frame is then passed in to \code{param.net} under a
-\code{data.frame.parameters} argument. Further details and examples are
-provided in the "Working with Model Parameters in EpiModel" vignette.
+\code{data.frame.params} argument (\code{data.frame.parameters} is also accepted as
+a deprecated alias). Further details and examples are provided in the
+"Working with Model Parameters in EpiModel" vignette.
 }
 
 \section{Parameters with New Modules}{
