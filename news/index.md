@@ -31,6 +31,14 @@
 
 ### OTHER
 
+- [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  now validates that each per-step module returns the `netsim_dat`
+  object. When a custom module forgets `return(dat)` (or otherwise
+  returns the wrong type), the simulation now stops with a clear error
+  naming the offending module and pointing at the likely cause, instead
+  of failing on the next module with the cryptic
+  `argument "dat" is missing`. Closes
+  [\#987](https://github.com/EpiModel/EpiModel/issues/987).
 - Removed stale ICM custom-module / original-model language from
   [`?icm`](https://epimodel.github.io/EpiModel/reference/icm.md),
   [`?param.icm`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
