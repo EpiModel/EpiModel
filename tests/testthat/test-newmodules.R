@@ -755,3 +755,67 @@ test_that("module.order does not warn for built-ins explicitly set to NULL", {
                                  "infection.FUN", "prevalence.FUN"))
   )
 })
+
+context("Custom Module Return Value Validation")
+
+test_that("netsim errors clearly when a custom module omits return(dat)", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # Custom module that forgets to return dat (returns NULL implicitly)
+  bad_module <- function(dat, at) {
+    status <- get_attr(dat, "status")
+    invisible(NULL)
+  }
+
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_bad.FUN = bad_module,
+                         verbose = FALSE)
+
+  expect_error(
+    suppressMessages(netsim(est, param, init, control)),
+    "Module 'my_bad.FUN' did not return"
+  )
+})
+
+test_that("netsim errors when a custom module returns a plain list", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # Returns dat with its netsim_dat class stripped, mimicking a user who
+  # rebuilds the object via list() rather than returning the input.
+  unclass_module <- function(dat, at) {
+    unclass(dat)
+  }
+
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_unclass.FUN = unclass_module,
+                         verbose = FALSE)
+
+  expect_error(
+    suppressMessages(netsim(est, param, init, control)),
+    "Module 'my_unclass.FUN' did not return"
+  )
+})
