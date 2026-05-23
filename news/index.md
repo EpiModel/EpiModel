@@ -22,6 +22,12 @@
 - Fix the `cumulative.edgelist` recording of the head and tail of nodes.
   Previously it was inverted. This had no effect on undirected networks
   but would on directed ones
+- Fix `param.net` so that values supplied via `data.frame.params`
+  (notably `act.rate`, and the vital-dynamics parameters `a.rate` /
+  `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the
+  constructor’s defaults. Closes
+  [\#1029](https://github.com/EpiModel/EpiModel/issues/1029) and
+  [\#1031](https://github.com/EpiModel/EpiModel/issues/1031).
 
 ### OTHER
 
