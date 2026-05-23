@@ -121,3 +121,30 @@ test_that("print.control", {
   #FLAG 4/23
   #expect_output(print(co), "Base Modules: initialize.FUN")
 })
+
+context("summary methods: at-out-of-range guards")
+
+test_that("summary.dcm rejects at outside the simulation range", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 1, rec.rate = 0.1)
+  init <- init.dcm(s.num = 100, i.num = 1, r.num = 0)
+  control <- control.dcm(type = "SIR", nsteps = 20)
+  mod <- dcm(param, init, control)
+
+  expect_error(summary(mod, at = 0), "Specify at between 1 and 20")
+  expect_error(summary(mod, at = 25), "Specify at between 1 and 20")
+})
+
+test_that("summary.netsim rejects at outside the simulation range", {
+  skip_on_cran()
+  nw <- network_initialize(n = 30)
+  est <- netest(nw, formation = ~edges, target.stats = 15,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                         verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3),
+                init.net(i.num = 5), control)
+
+  expect_error(summary(mod, at = 0), "Specify at between 1 and 5")
+  expect_error(summary(mod, at = 99), "Specify at between 1 and 5")
+})
