@@ -376,7 +376,16 @@ netsim_run_modules <- function(dat, s) {
 
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
-        dat <- modules[[i]](dat, at)
+        new_dat <- modules[[i]](dat, at)
+        if (!inherits(new_dat, "netsim_dat")) {
+          # Don't overwrite `dat` so the error handler can still read
+          # `.traceback.on.error` / `.dump.frame.on.error` from it.
+          stop("Module '", current_mod, "' did not return a `netsim_dat` ",
+               "object (got ", class(new_dat)[1], "). The most common cause ",
+               "is a missing `return(dat)` at the end of the module function.",
+               call. = FALSE)
+        }
+        dat <- new_dat
       }
 
       current_mod <- "epimodel.internal"
