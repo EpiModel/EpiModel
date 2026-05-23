@@ -210,17 +210,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
 
-  # `data.frame.parameters` was the originally documented name but was never
-  # implemented; accept it as a deprecated alias for `data.frame.params`.
-  if ("data.frame.parameters" %in% names.dot.args &&
-        !"data.frame.params" %in% names.dot.args) {
-    warning("`data.frame.parameters` is a deprecated alias for ",
-            "`data.frame.params`; please use `data.frame.params`.")
-    dot.args[["data.frame.params"]] <- dot.args[["data.frame.parameters"]]
-    dot.args[["data.frame.parameters"]] <- NULL
-    names.dot.args <- names(dot.args)
-  }
-
   # Use "data.frame.params" as default if available
   if ("data.frame.params" %in% names.dot.args) {
     p <- param.net_from_table(dot.args[["data.frame.params"]])

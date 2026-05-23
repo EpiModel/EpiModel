@@ -520,14 +520,6 @@ test_that("Load parameters from data.frame", {
   expect_equal(param$p3, c(1, 3))
   expect_equal(param$p4, "tsa")
 
-  # `data.frame.parameters` is accepted as a deprecated alias and emits a warning
-  expect_warning(
-    param_alias <- param.net(data.frame.parameters = params.df),
-    "deprecated alias"
-  )
-  expect_s3_class(param_alias, "param.net")
-  expect_equal(param_alias$p3, c(1, 3))
-
   # convert back to a `long.param.df`
   param.df_back <- param.net_from_table(params.df) |> param.net_to_table()
   expect_true(all(params.df[c("param", "value", "type")] == param.df_back))
