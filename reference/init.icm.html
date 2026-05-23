@@ -93,7 +93,8 @@ parameter is only used for two-group <code>SIR</code> models.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The initial conditions for a model solved with <code><a href="icm.html">icm()</a></code> should be
 input into the <code>init.icm</code> function. This function handles initial
-conditions for both base models and original models using new modules.</p>
+conditions for the built-in SI, SIR, and SIS disease types; for custom or
+extension epidemic models, use <code><a href="init.net.html">init.net()</a></code> with the network model class.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

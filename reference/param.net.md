@@ -217,8 +217,9 @@ parameter meta-data. However, these extra columns will not be used by
 EpiModel.
 
 This data.frame is then passed in to `param.net` under a
-`data.frame.parameters` argument. Further details and examples are
-provided in the "Working with Model Parameters in EpiModel" vignette.
+`data.frame.params` argument (`data.frame.parameters` is also accepted
+as a deprecated alias). Further details and examples are provided in the
+"Working with Model Parameters in EpiModel" vignette.
 
 ## Parameters with New Modules
 

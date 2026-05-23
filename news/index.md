@@ -31,6 +31,18 @@
 
 ### OTHER
 
+- Removed stale ICM custom-module / original-model language from
+  [`?icm`](https://epimodel.github.io/EpiModel/reference/icm.md),
+  [`?param.icm`](https://epimodel.github.io/EpiModel/reference/param.icm.md),
+  and
+  [`?init.icm`](https://epimodel.github.io/EpiModel/reference/init.icm.md)
+  that lingered after
+  [\#980](https://github.com/EpiModel/EpiModel/issues/980). The help
+  pages now state plainly that ICMs support the built-in SI, SIR, and
+  SIS disease types only and direct custom-model users to
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  / `control.net(type = NULL, ...)`. Closes
+  [\#1032](https://github.com/EpiModel/EpiModel/issues/1032).
 - Increase `make_module_list` verbosity. It now `message`s if
   `control$module.order` is not provided and list the modules and there
   order.

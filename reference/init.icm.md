@@ -55,7 +55,10 @@ An `EpiModel` object of class `init.icm`.
 The initial conditions for a model solved with
 [`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) should
 be input into the `init.icm` function. This function handles initial
-conditions for both base models and original models using new modules.
+conditions for the built-in SI, SIR, and SIS disease types; for custom
+or extension epidemic models, use
+[`init.net()`](https://epimodel.github.io/EpiModel/reference/init.net.md)
+with the network model class.
 
 ## See also
 

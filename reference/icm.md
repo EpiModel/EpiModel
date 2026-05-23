@@ -37,9 +37,8 @@ A list of class `icm` with the following elements:
   `control`, with additional controls added as necessary.
 
 - **epi:** a list of data frames, one for each epidemiological output
-  from the model. Outputs for base models always include the size of
-  each compartment, as well as flows in, out of, and between
-  compartments.
+  from the model. Outputs always include the size of each compartment,
+  as well as flows in, out of, and between compartments.
 
 ## Details
 
@@ -50,14 +49,12 @@ function of processes with stochastic variation. The stochasticity is
 inherent in all transition processes: infection, recovery, and
 demographics.
 
-The `icm` function performs modeling of both the base model types and
-original models. Base model types include one-group and two-group models
-with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and
-Susceptible-Infected-Susceptible (SIS). Original models may be built by
-writing new process modules that either take the place of existing
-modules (for example, disease recovery), or supplement the set of
-existing processes with a new one contained in an original module.
+The `icm` function supports the built-in SI, SIR, and SIS disease types
+only, in one-group or two-group configurations, with or without
+demography. For custom or extension epidemic models, use the network
+model class via
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+with `control.net(type = NULL, ...)` and user-supplied module functions.
 
 ## See also
 

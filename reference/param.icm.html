@@ -186,11 +186,11 @@ set for group 1 (with <code>balance="g1"</code>) or group 2 (with
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>param.icm</code> sets the epidemic parameters for the stochastic individual
-contact models simulated with the <code><a href="icm.html">icm()</a></code> function. Models
-may use the base types, for which these parameters are used, or new process
-modules which may use these parameters (but not necessarily).</p>
-<p>For base models, the model specification will be chosen as a result of
-the model parameters entered here and the control settings in
+contact models simulated with the <code><a href="icm.html">icm()</a></code> function. ICMs support the
+built-in SI, SIR, and SIS disease types only; for custom or extension
+epidemic models, use <code><a href="param.net.html">param.net()</a></code> with the network model class.</p>
+<p>The model specification will be chosen as a result of the model parameters
+entered here and the control settings in
 <code><a href="control.icm.html">control.icm()</a></code>. One-group and two-group models are available,
 where the former assumes a homogeneous mixing in the population and the
 latter assumes some form of heterogeneous mixing between two distinct

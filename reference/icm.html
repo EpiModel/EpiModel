@@ -70,9 +70,8 @@ infectious disease.</p>
 <li><p><strong>control:</strong> the control settings passed into the model through
 <code>control</code>, with additional controls added as necessary.</p></li>
 <li><p><strong>epi:</strong> a list of data frames, one for each epidemiological
-output from the model. Outputs for base models always include the
-size of each compartment, as well as flows in, out of, and between
-compartments.</p></li>
+output from the model. Outputs always include the size of each
+compartment, as well as flows in, out of, and between compartments.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -81,14 +80,11 @@ analogs to deterministic compartmental models. ICMs simulate disease spread
 on individual agents in discrete time as a function of processes with
 stochastic variation. The stochasticity is inherent in all transition
 processes: infection, recovery, and demographics.</p>
-<p>The <code>icm</code> function performs modeling of both the base model types
-and original models. Base model types include one-group and two-group
-models with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
-(SIS). Original models may be built by writing new process modules that
-either take the place of existing modules (for example, disease recovery),
-or supplement the set of existing processes with a new one contained in an
-original module.</p>
+<p>The <code>icm</code> function supports the built-in SI, SIR, and SIS disease types
+only, in one-group or two-group configurations, with or without demography.
+For custom or extension epidemic models, use the network model class via
+<code><a href="netsim.html">netsim()</a></code> with <code>control.net(type = NULL, ...)</code> and user-supplied module
+functions.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
