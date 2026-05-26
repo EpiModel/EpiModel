@@ -103,16 +103,37 @@ control.net(
 
 - cumulative.edgelist:
 
-  If `TRUE`, calculates a cumulative edgelist within the network
-  simulation module. This is used when tergmLite is used and the entire
-  networkDynamic object is not used.
+  If `TRUE`, EpiModel maintains a running record of every edge across
+  the simulation (the *cumulative edgelist*) by calling
+  [`update_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+  once per network from the built-in network-resimulation module
+  ([`resim_nets`](https://epimodel.github.io/EpiModel/reference/resim_nets.md))
+  at every time step. Off by default. Enabling it is the canonical way
+  to query partnership histories under `tergmLite = TRUE`, where the
+  full `networkDynamic` history is not retained. Inside a custom module
+  the live data is read via
+  [`get_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+  or
+  [`get_cumulative_edgelists_df`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md),
+  and derived helpers
+  [`get_partners`](https://epimodel.github.io/EpiModel/reference/get_partners.md),
+  [`get_cumulative_degree`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md),
+  [`get_forward_reachable`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md),
+  and
+  [`get_backward_reachable`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md).
+  See the
+  [`vignette("network-objects", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/network-objects.md)
+  for a worked example.
 
 - truncate.el.cuml:
 
-  Number of time steps of the cumulative edgelist to retain. See help
-  for
+  Number of time steps of the cumulative edgelist to retain, passed as
+  the `truncate` argument to each automatic
   [`update_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
-  for options.
+  call. Default is `0`, which keeps only currently active edges; use
+  `Inf` to retain the full history (memory permitting) or a positive
+  integer to keep dissolved edges for that many steps after they ended.
+  Only relevant when `cumulative.edgelist = TRUE`.
 
 - attr.rules:
 
@@ -237,7 +258,12 @@ control.net(
 
 - save.cumulative.edgelist:
 
-  If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+  If `TRUE`, the cumulative edgelist is attached to the returned
+  `netsim` object as `sim$cumulative.edgelist`, a list with one element
+  per simulation (the same `data.frame` shape produced by
+  [`get_cumulative_edgelists_df`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)).
+  Requires `cumulative.edgelist = TRUE`; without it, no history is
+  collected to save. Off by default to keep output objects small.
 
 - save.other:
 

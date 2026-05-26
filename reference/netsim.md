@@ -166,6 +166,27 @@ processes (arrivals and departures) change the network composition over
 time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.
 
+## Partnership Histories (Cumulative Edgelist)
+
+For contact tracing, partnership-duration analysis, or reachability
+analysis, enable cumulative-edgelist tracking via
+`control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)`.
+This records every edge formed during the simulation along with its
+`start` and `stop` time steps, and attaches the result to the returned
+object as `sim$cumulative.edgelist`. Under `tergmLite = TRUE` this is
+the recommended substitute for the full `networkDynamic` history.
+
+The helper family
+([`get_cumulative_edgelist`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md),
+[`get_cumulative_edgelists_df`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md),
+[`get_partners`](https://epimodel.github.io/EpiModel/reference/get_partners.md),
+[`get_cumulative_degree`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md),
+[`get_forward_reachable`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md),
+[`get_backward_reachable`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md))
+operates on the tracked data. See
+[`vignette("network-objects", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/network-objects.md)
+for the full lifecycle.
+
 ## Multi-Network Models
 
 For models with multiple overlapping network layers (e.g., sexual and

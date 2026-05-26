@@ -1,6 +1,9 @@
 # Return the Cumulative Degree of a Set of Index Nodes
 
-Return the Cumulative Degree of a Set of Index Nodes
+Counts the number of distinct partners each of a set of index nodes has
+accumulated over the tracked history. A thin wrapper around
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
+that collapses the partner list to a count per index.
 
 ## Usage
 
@@ -35,7 +38,7 @@ get_cumulative_degree(
 - truncate:
 
   After how many time steps a partnership that is no longer active
-  should be removed from the output.
+  should be removed from the output. See the Truncation section.
 
 - only.active.nodes:
 
@@ -46,13 +49,38 @@ get_cumulative_degree(
 
 A `data.frame` with 2 columns:
 
-- `index_pid`: the positional ID (see `get_posit_ids`) of the indexes.
+- `index_pid`: the positional ID (see
+  [`get_posit_ids()`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md))
+  of the indexes.
 
 - `degree`: the cumulative degree of the index.
 
 ## Cumulative Degree
 
-The cumulative degree of a node is the number of edges connected to this
-node at during the time window. The time window is by default all the
-steps stored in the `cumulative_edgelist` or set by the `truncate`
-parameter.
+The cumulative degree of a node is the number of distinct partners
+connected to it during the tracked time window. The window is whatever
+history the cumulative edgelist currently contains (controlled at
+simulation time by `control$truncate.el.cuml` and at call time by the
+`truncate` argument).
+
+## See also
+
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
+for the full partner list backing this count.
+
+Other cumulative_edgelist:
+[`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md),
+[`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md),
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md),
+[`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md),
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md),
+[`reachable-nodes`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md),
+[`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+get_cumulative_degree(dat, index_posit_ids = 1:50, truncate = 52)
+} # }
+```

@@ -136,14 +136,29 @@ automatically set to <code>TRUE</code> (with a warning if the user explicitly se
 
 
 <dt id="arg-cumulative-edgelist">cumulative.edgelist<a class="anchor" aria-label="anchor" href="#arg-cumulative-edgelist"></a></dt>
-<dd><p>If <code>TRUE</code>, calculates a cumulative edgelist within the network
-simulation module. This is used when tergmLite is used and the entire networkDynamic
-object is not used.</p></dd>
+<dd><p>If <code>TRUE</code>, EpiModel maintains a running record
+of every edge across the simulation (the <em>cumulative edgelist</em>) by
+calling <code><a href="update_cumulative_edgelist.html">update_cumulative_edgelist</a></code> once per network from the
+built-in network-resimulation module (<code><a href="resim_nets.html">resim_nets</a></code>) at every
+time step. Off by default. Enabling it is the canonical way to
+query partnership histories under <code>tergmLite = TRUE</code>, where the
+full <code>networkDynamic</code> history is not retained. Inside a custom
+module the live data is read via <code><a href="get_cumulative_edgelist.html">get_cumulative_edgelist</a></code> or
+<code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></code>, and derived helpers
+<code><a href="get_partners.html">get_partners</a></code>, <code><a href="get_cumulative_degree.html">get_cumulative_degree</a></code>, <code><a href="reachable-nodes.html">get_forward_reachable</a></code>,
+and <code><a href="reachable-nodes.html">get_backward_reachable</a></code>. See the
+<code><a href="../articles/network-objects.html">vignette("network-objects", package = "EpiModel")</a></code> for a worked
+example.</p></dd>
 
 
 <dt id="arg-truncate-el-cuml">truncate.el.cuml<a class="anchor" aria-label="anchor" href="#arg-truncate-el-cuml"></a></dt>
-<dd><p>Number of time steps of the cumulative edgelist to retain. See help for
-<code><a href="update_cumulative_edgelist.html">update_cumulative_edgelist</a></code> for options.</p></dd>
+<dd><p>Number of time steps of the cumulative edgelist to
+retain, passed as the <code>truncate</code> argument to each automatic
+<code><a href="update_cumulative_edgelist.html">update_cumulative_edgelist</a></code> call. Default is <code>0</code>, which keeps
+only currently active edges; use <code>Inf</code> to retain the full history
+(memory permitting) or a positive integer to keep dissolved edges
+for that many steps after they ended. Only relevant when
+<code>cumulative.edgelist = TRUE</code>.</p></dd>
 
 
 <dt id="arg-attr-rules">attr.rules<a class="anchor" aria-label="anchor" href="#arg-attr-rules"></a></dt>
@@ -255,7 +270,12 @@ simulation to restart from this output.</p></dd>
 
 
 <dt id="arg-save-cumulative-edgelist">save.cumulative.edgelist<a class="anchor" aria-label="anchor" href="#arg-save-cumulative-edgelist"></a></dt>
-<dd><p>If <code>TRUE</code>, the <code>cumulative.edgelist</code> is saved at simulation end.</p></dd>
+<dd><p>If <code>TRUE</code>, the cumulative edgelist is
+attached to the returned <code>netsim</code> object as
+<code>sim$cumulative.edgelist</code>, a list with one element per simulation
+(the same <code>data.frame</code> shape produced by
+<code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></code>). Requires <code>cumulative.edgelist = TRUE</code>; without it, no history is collected to save. Off by default
+to keep output objects small.</p></dd>
 
 
 <dt id="arg-save-other">save.other<a class="anchor" aria-label="anchor" href="#arg-save-other"></a></dt>

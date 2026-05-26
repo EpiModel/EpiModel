@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.2</h4>
             
-            <h4 data-toc-skip class="date">2026-05-23</h4>
+            <h4 data-toc-skip class="date">2026-05-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/network-objects.Rmd" class="external-link"><code>vignettes/network-objects.Rmd</code></a></small>
       <div class="d-none name"><code>network-objects.Rmd</code></div>
@@ -252,6 +252,42 @@ This allows querying both current and past partnerships—essential for
 contact tracing, partnership duration analysis, and reachability
 analysis.</p>
 <div class="section level3">
+<h3 id="lifecycle">Lifecycle<a class="anchor" aria-label="anchor" href="#lifecycle"></a>
+</h3>
+<p>The cumulative edgelist follows a four-step lifecycle. The same data
+structure is produced once and read at different stages:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Enable</strong> in <code><a href="../reference/control.net.html">control.net()</a></code>: set
+<code>cumulative.edgelist = TRUE</code> (in-memory tracking during the
+run) and, if you want to use the result after <code><a href="../reference/netsim.html">netsim()</a></code>
+returns, also set <code>save.cumulative.edgelist = TRUE</code>.</li>
+<li>
+<strong>Track</strong> during the run: the built-in
+network-resimulation module updates the cumulative edgelist once per
+network at every time step, using <code>control$truncate.el.cuml</code>
+to decide how much dissolved-edge history to retain. Custom modules that
+mutate the network outside the TERGM machinery should also call
+<code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> after the change.</li>
+<li>
+<strong>Read during the run</strong> (inside a module) with
+<code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> /
+<code><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code>, or with one of the derived
+helpers below (<code><a href="../reference/get_partners.html">get_partners()</a></code>,
+<code><a href="../reference/get_cumulative_degree.html">get_cumulative_degree()</a></code>).</li>
+<li>
+<strong>Read after the run</strong> by accessing
+<code>sim$cumulative.edgelist[[s]]</code> directly on the returned
+<code>netsim</code> object.</li>
+</ol>
+<p>The control settings, accessors, and helpers all share the same
+column convention: <code>head</code>/<code>tail</code> (or
+<code>index</code>/<code>partner</code>) by unique ID,
+<code>start</code>/<code>stop</code> time steps (inclusive, with
+<code>NA</code> <code>stop</code> for active edges), and
+<code>network</code> index for multi-layer models.</p>
+</div>
+<div class="section level3">
 <h3 id="enabling-cumulative-edgelists">Enabling Cumulative Edgelists<a class="anchor" aria-label="anchor" href="#enabling-cumulative-edgelists"></a>
 </h3>
 <p>Cumulative edgelist tracking must be explicitly enabled in
@@ -261,14 +297,21 @@ analysis.</p>
 <span>  type <span class="op">=</span> <span class="st">"SI"</span>,</span>
 <span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  nsteps <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Enable tracking during simulation</span></span>
-<span>  save.cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># Save in output after simulation</span></span>
+<span>  cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Enable in-memory tracking during the run</span></span>
+<span>  truncate.el.cuml <span class="op">=</span> <span class="fl">0</span>,             <span class="co"># Drop dissolved edges immediately (default)</span></span>
+<span>  save.cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># Attach the result to the returned netsim</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Without <code>cumulative.edgelist = TRUE</code>, calls to
-<code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> silently do nothing and calls
-to <code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> return an empty
-<code>tibble</code>.</p>
+<code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> silently do nothing, and calls
+to <code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> raise an error.</p>
+<p>The <code>truncate.el.cuml</code> control sets the default truncation
+passed to every automatic <code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code>
+call. The default (<code>0</code>) keeps only currently active edges,
+which is enough for tracking active-edge start times while keeping
+memory low. Use <code>Inf</code> to keep full history, or a positive
+integer to retain dissolved edges for that many steps after they
+ended.</p>
 </div>
 <div class="section level3">
 <h3 id="updating-the-cumulative-edgelist">Updating the Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#updating-the-cumulative-edgelist"></a>
@@ -301,8 +344,10 @@ memory use.</li>
 <h3 id="accessing-the-cumulative-edgelist">Accessing the Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#accessing-the-cumulative-edgelist"></a>
 </h3>
 <div class="section level4">
-<h4 id="for-a-specific-network">For a Specific Network<a class="anchor" aria-label="anchor" href="#for-a-specific-network"></a>
+<h4 id="during-simulation-specific-network">During Simulation: Specific Network<a class="anchor" aria-label="anchor" href="#during-simulation-specific-network"></a>
 </h4>
+<p>Inside a custom module, where <code>dat</code> is the live
+<code>netsim_dat</code> object:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>The returned <code>tibble</code> has four columns:</p>
@@ -320,14 +365,14 @@ node.</li>
 <code>NA</code> if the edge is still active.</li>
 </ol>
 <p>An edge with <code>start = 5</code> and <code>stop = 12</code>
-existed from steps 5 through 12, inclusive.
-<code><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> always returns a
-<code>tibble</code> with these four columns, even if no edges exist or
-the cumulative edgelist was not enabled—in those cases, the
-<code>tibble</code> has zero rows.</p>
+existed from steps 5 through 12, inclusive. When no edges have been
+recorded yet, the function still returns a <code>tibble</code> with
+these four columns and zero rows. If
+<code>cumulative.edgelist = FALSE</code>, the function raises an error
+rather than silently returning empty.</p>
 </div>
 <div class="section level4">
-<h4 id="for-multiple-networks">For Multiple Networks<a class="anchor" aria-label="anchor" href="#for-multiple-networks"></a>
+<h4 id="during-simulation-multiple-networks">During Simulation: Multiple Networks<a class="anchor" aria-label="anchor" href="#during-simulation-multiple-networks"></a>
 </h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cumls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></span><span class="op">(</span><span class="va">dat</span>, networks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
@@ -336,13 +381,33 @@ indices or <code>NULL</code> (all networks). The returned
 <code>data.frame</code> adds a <code>network</code> column identifying
 which network layer each edge belongs to.</p>
 </div>
+<div class="section level4">
+<h4 id="after-simulation-1">After Simulation<a class="anchor" aria-label="anchor" href="#after-simulation-1"></a>
+</h4>
+<p>When <code>save.cumulative.edgelist = TRUE</code>, the cumulative
+edgelist is attached to the <code>netsim</code> return object as
+<code>sim$cumulative.edgelist</code>, a list with one element per
+simulation:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">cumulative.edgelist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>Each element is the <code>data.frame</code> produced by
+<code><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code> (<code>head</code>,
+<code>tail</code>, <code>start</code>, <code>stop</code>,
+<code>network</code>). Do not call the accessor functions on a processed
+<code>netsim</code> object: the live <code>dat$run</code> state they
+depend on is dropped during <code><a href="../reference/process_out.net.html">process_out.net()</a></code>. Note also
+that <code><a href="../reference/truncate_sim.html">truncate_sim()</a></code> left-truncates the epidemiological time
+series but does not currently trim <code>sim$cumulative.edgelist</code>;
+filter it manually by <code>start</code> / <code>stop</code> if you need
+a matching time window.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="contact-tracing">Contact Tracing<a class="anchor" aria-label="anchor" href="#contact-tracing"></a>
 </h3>
 <p><code><a href="../reference/get_partners.html">get_partners()</a></code> extracts the partners of specified nodes
 from the cumulative edgelist:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">partner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_partners.html">get_partners</a></span><span class="op">(</span></span>
 <span>    <span class="va">dat</span>,</span>
 <span>    <span class="va">index_posit_ids</span>,</span>
@@ -379,7 +444,7 @@ already departed.</p>
 </h3>
 <p><code><a href="../reference/get_cumulative_degree.html">get_cumulative_degree()</a></code> counts the number of distinct
 partners each node has had over the tracked history:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cum_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_degree.html">get_cumulative_degree</a></span><span class="op">(</span></span>
 <span>    <span class="va">dat</span>,</span>
 <span>    index_posit_ids <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,</span>
@@ -402,12 +467,16 @@ investigation (forward reachability: who could a node have infected?)
 and source tracing (backward reachability: who could have infected a
 node?).</p>
 <p>These functions operate on cumulative edgelist objects directly—not
-on <code>dat</code>—and are typically used for post-simulation
-analysis.</p>
+on <code>dat</code>—and are typically used for post-simulation analysis.
+Most often, the input comes from the saved
+<code>sim$cumulative.edgelist[[s]]</code> slot of a <code>netsim</code>
+run; see the <em>Converting External <code>networkDynamic</code>
+Objects</em> and <em>Deduplicating Across Sources</em> subsections below
+for two ways to construct input from other starting points.</p>
 <div class="section level3">
 <h3 id="forward-reachable-set">Forward Reachable Set<a class="anchor" aria-label="anchor" href="#forward-reachable-set"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span></span>
@@ -437,7 +506,7 @@ themselves (size 1).</p>
 <div class="section level3">
 <h3 id="backward-reachable-set">Backward Reachable Set<a class="anchor" aria-label="anchor" href="#backward-reachable-set"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bkwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_backward_reachable</a></span><span class="op">(</span></span>
 <span>  <span class="va">el_cuml</span>,</span>
 <span>  from_step <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -450,12 +519,42 @@ in time. This answers the question: which nodes could have reached this
 node through a chain of partnerships during the specified period?</p>
 </div>
 <div class="section level3">
+<h3 id="converting-external-networkdynamic-objects">Converting External <code>networkDynamic</code> Objects<a class="anchor" aria-label="anchor" href="#converting-external-networkdynamic-objects"></a>
+</h3>
+<p>If you have a <code>networkDynamic</code> object that was produced
+outside of a <code>cumulative.edgelist = TRUE</code> run (for example,
+from a non-<code>tergmLite</code> simulation, from a saved RDS file, or
+built manually), <code><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code> converts it into
+the same <code>data.frame</code> shape the reachability functions
+expect:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>   <span class="co"># full-mode netsim only</span></span>
+<span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist</a></span><span class="op">(</span><span class="va">nd</span><span class="op">)</span></span>
+<span><span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<p>This is the recommended entry point for post-hoc reachability
+analysis on simulations that did not enable cumulative-edgelist tracking
+up front, provided the run kept the full <code>networkDynamic</code>
+history (i.e., not <code>tergmLite</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="deduplicating-across-sources">Deduplicating Across Sources<a class="anchor" aria-label="anchor" href="#deduplicating-across-sources"></a>
+</h3>
+<p>The reachability functions assume non-overlapping spells per
+<code>(head, tail)</code> pair. When concatenating cumulative edgelists
+from multiple sources (e.g., separate simulation segments, or several
+<code><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code> conversions stitched together),
+use <code><a href="../reference/dedup_cumulative_edgelist.html">dedup_cumulative_edgelist()</a></code> to merge overlapping spells
+into a single row:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dedup_cumulative_edgelist.html">dedup_cumulative_edgelist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">el_run1</span>, <span class="va">el_run2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="performance-notes">Performance Notes<a class="anchor" aria-label="anchor" href="#performance-notes"></a>
 </h3>
 <p>Both reachability functions use the <a href="https://progressr.futureverse.org/" class="external-link">progressr</a> package for
 progress reporting. Wrap calls in
 <code><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">progressr::with_progress()</a></code> to display a progress bar:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">260</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>

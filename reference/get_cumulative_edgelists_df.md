@@ -1,6 +1,10 @@
 # Get the Cumulative Edgelists of a Model
 
-Get the Cumulative Edgelists of a Model
+Combines the cumulative edgelists from one or more network layers into a
+single `data.frame`, adding a `network` column to identify the layer.
+Like
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md),
+this requires `control.net(cumulative.edgelist = TRUE)`.
 
 ## Usage
 
@@ -26,15 +30,40 @@ get_cumulative_edgelists_df(dat, networks = NULL)
 
 A `data.frame` with 5 columns:
 
-- `index`: the unique ID (see `get_unique_ids`) of the indexes.
+- `head`: the unique ID (see
+  [`get_unique_ids()`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md))
+  of the head node.
 
-- `partner`: the unique ID (see `get_unique_ids`) of the
-  partners/contacts.
+- `tail`: the unique ID of the tail node.
 
-- `start`: the time step in which the edge started.
+- `start`: the time step at which the edge formed.
 
-- `stop`: the time step in which the edge stopped; if ongoing, then `NA`
-  is returned.
+- `stop`: the time step at which the edge dissolved, or `NA` if still
+  active.
 
-- `network`: the numerical index for the network on which the
-  partnership/contact is located.
+- `network`: the numerical index of the network on which the partnership
+  lives.
+
+Note: column names `head`/`tail` here match the single-network
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+output. The `index`/`partner` naming used by
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
+is reserved for queries about specific index nodes.
+
+## See also
+
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+(single network),
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+(`cumulative.edgelist`, `save.cumulative.edgelist`).
+[`vignette("network-objects", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/network-objects.md)
+walks through the full lifecycle.
+
+Other cumulative_edgelist:
+[`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md),
+[`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md),
+[`get_cumulative_degree()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md),
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md),
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md),
+[`reachable-nodes`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md),
+[`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)

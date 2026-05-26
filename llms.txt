@@ -482,45 +482,30 @@ cumulative edgelist tracking.
 
 - [`get_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_edgelist.md)
   : Get an Edgelist From the Specified Network
-
 - [`get_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_edgelists_df.md)
   : Get the Edgelist(s) from the Specified Network(s)
-
 - [`discord_edgelist()`](https://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
   : Discordant Edgelist
-
 - [`get_discordant_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.md)
   : Get Discordant Edgelist Based on Specified Status Variable
-
 - [`get_degree()`](https://epimodel.github.io/EpiModel/reference/get_degree.md)
   : Get Individual Degree from Network or Edgelist
-
 - [`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md)
   : Return the Historical Contacts (Partners) of a Set of Index Nodes
-
 - [`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
   : Get a Cumulative Edgelist From a Specified Network
-
 - [`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
   : Get the Cumulative Edgelists of a Model
-
 - [`get_cumulative_degree()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md)
   : Return the Cumulative Degree of a Set of Index Nodes
-
 - [`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md)
-  :
-
-  Convert an object to a `cumulative_edgelist`
-
+  : Convert an Object to a Cumulative Edgelist
 - [`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
   : Update a Cumulative Edgelist of the Specified Network
-
 - [`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md)
-  : Deduplicate a cumulative edgelist by combining overlapping edges
-
+  : Deduplicate a Cumulative Edgelist
 - [`as_tibble_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.md)
   : Convert an Edgelist into a Tibble
-
 - [`edgelist_censor()`](https://epimodel.github.io/EpiModel/reference/edgelist_censor.md)
   : Table of Edge Censoring
 

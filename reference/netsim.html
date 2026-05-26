@@ -174,6 +174,23 @@ time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.</p>
     </div>
     <div class="section level2">
+    <h2 id="partnership-histories-cumulative-edgelist-">Partnership Histories (Cumulative Edgelist)<a class="anchor" aria-label="anchor" href="#partnership-histories-cumulative-edgelist-"></a></h2>
+
+
+<p>For contact tracing, partnership-duration analysis, or reachability
+analysis, enable cumulative-edgelist tracking via
+<code>control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)</code>.
+This records every edge formed during the simulation along with its
+<code>start</code> and <code>stop</code> time steps, and attaches the result to the returned
+object as <code>sim$cumulative.edgelist</code>. Under <code>tergmLite = TRUE</code> this is
+the recommended substitute for the full <code>networkDynamic</code> history.</p>
+<p>The helper family (<code><a href="get_cumulative_edgelist.html">get_cumulative_edgelist</a></code>,
+<code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></code>, <code><a href="get_partners.html">get_partners</a></code>, <code><a href="get_cumulative_degree.html">get_cumulative_degree</a></code>,
+<code><a href="reachable-nodes.html">get_forward_reachable</a></code>, <code><a href="reachable-nodes.html">get_backward_reachable</a></code>) operates on the
+tracked data. See <code><a href="../articles/network-objects.html">vignette("network-objects", package = "EpiModel")</a></code>
+for the full lifecycle.</p>
+    </div>
+    <div class="section level2">
     <h2 id="multi-network-models">Multi-Network Models<a class="anchor" aria-label="anchor" href="#multi-network-models"></a></h2>
 
 

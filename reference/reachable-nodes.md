@@ -1,13 +1,23 @@
 # Get the Forward or Backward Reachable Nodes for a Set of Nodes
 
-These functions return the Forward or Backward Reachable Nodes of a set
-of nodes in a network over a time. Warning, these functions ignore nodes
-without edges in the period of interest. See the `Number of Nodes`
-section for details It is much faster than iterating
-[`tsna::tPath`](https://rdrr.io/pkg/tsna/man/paths.html). The distance
-between to each node can be back calculated using the length of the
-reachable set at each time step and the fact that the reachable sets are
-ordered by the time to arrival.
+These functions return the forward or backward reachable nodes of a set
+of nodes in a network over a time period. Forward reachability answers
+"who could a node have infected?"; backward reachability answers "who
+could have infected this node?". Both operate on a cumulative edgelist,
+the same structure produced by
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+/
+[`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
+from a `netsim` run, or by
+[`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md)
+applied to an external `networkDynamic` object.
+
+Warning: these functions ignore nodes without edges in the period of
+interest. See the `Number of Nodes` section for details. The distance to
+each node can be back-calculated using the length of the reachable set
+at each time step and the fact that the reachable sets are ordered by
+the time to arrival. These functions are much faster than iterating
+[`tsna::tPath()`](https://rdrr.io/pkg/tsna/man/paths.html).
 
 ## Usage
 
@@ -93,6 +103,28 @@ to display its progression. Use
 to display the progress bar. Or see the [progressr
 package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
 for more information and customization.
+
+## See also
+
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
+/
+[`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md)
+for the typical input source from a `netsim` run;
+[`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md)
+to derive a cumulative edgelist from a `networkDynamic` object;
+[`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md)
+when the input has been concatenated from multiple sources.
+[`vignette("network-objects", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/network-objects.md)
+walks through the full lifecycle.
+
+Other cumulative_edgelist:
+[`as_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.md),
+[`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md),
+[`get_cumulative_degree()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_degree.md),
+[`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md),
+[`get_cumulative_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.md),
+[`get_partners()`](https://epimodel.github.io/EpiModel/reference/get_partners.md),
+[`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
 
 ## Examples
 
