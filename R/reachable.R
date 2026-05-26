@@ -1,13 +1,21 @@
 #' @title Get the Forward or Backward Reachable Nodes for a Set of Nodes
 #'
 #' @description
-#' These functions return the Forward or Backward Reachable Nodes of a set of
-#' nodes in a network over a time. Warning, these functions ignore nodes without
-#' edges in the period of interest. See the `Number of Nodes` section for
-#' details It is much faster than iterating
-#' `tsna::tPath`. The distance between to each node can be back calculated
-#' using the length of the reachable set at each time step and the fact that the
-#' reachable sets are ordered by the time to arrival.
+#' These functions return the forward or backward reachable nodes of a set of
+#' nodes in a network over a time period. Forward reachability answers "who
+#' could a node have infected?"; backward reachability answers "who could
+#' have infected this node?". Both operate on a cumulative edgelist, the
+#' same structure produced by [get_cumulative_edgelist()] /
+#' [get_cumulative_edgelists_df()] from a `netsim` run, or by
+#' [as_cumulative_edgelist()] applied to an external `networkDynamic`
+#' object.
+#'
+#' Warning: these functions ignore nodes without edges in the period of
+#' interest. See the `Number of Nodes` section for details. The distance
+#' to each node can be back-calculated using the length of the reachable
+#' set at each time step and the fact that the reachable sets are ordered
+#' by the time to arrival. These functions are much faster than iterating
+#' `tsna::tPath()`.
 #'
 #' @param el_cuml a cumulative edgelist object. That is a data.frame with at
 #'   least columns: head, tail, start and stop. Start and stop are inclusive.
@@ -55,6 +63,15 @@
 #' to display the progress bar. Or see the
 #' [progressr package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
 #' for more information and customization.
+#'
+#' @family cumulative_edgelist
+#' @seealso [get_cumulative_edgelist()] / [get_cumulative_edgelists_df()]
+#'   for the typical input source from a `netsim` run;
+#'   [as_cumulative_edgelist()] to derive a cumulative edgelist from a
+#'   `networkDynamic` object; [dedup_cumulative_edgelist()] when the input
+#'   has been concatenated from multiple sources.
+#'   `vignette("network-objects", package = "EpiModel")` walks through the
+#'   full lifecycle.
 #'
 #' @examples
 #' \dontrun{
@@ -286,16 +303,40 @@ get_subnet_adj_list <- function(adj_list) {
   adj_list
 }
 
-#' Convert an object to a `cumulative_edgelist`
+#' Convert an Object to a Cumulative Edgelist
 #'
-#' @param x An object to be converted to a cumulative edgelist
+#' Converts an object that carries timed-edge information into a
+#' `cumulative_edgelist`: a `data.frame` with `head`, `tail`, `start`, `stop`
+#' columns matching the format used elsewhere in EpiModel. The typical use
+#' is feeding a `networkDynamic` object (from a non-`tergmLite` simulation,
+#' an external source, or a post-hoc construction) into the reachability
+#' tools.
 #'
-#' @return A `cumulative_edgelist` object, a `data.frame` with at least the
-#' following columns: `head`, `tail`, `start`, `stop`.
+#' @param x An object to be converted to a cumulative edgelist.
+#'
+#' @return A `cumulative_edgelist` object: a `data.frame` with at least the
+#'   columns `head`, `tail`, `start`, `stop`. Edges are active from time
+#'   `start` to time `stop` inclusive; `NA` in `stop` means the edge was
+#'   never observed to dissolve.
 #'
 #' @details
-#' The edges are active from time `start` to time `stop` included. If stop is
-#' `NA`, the edge was not disolved in the simulation that generated the list.
+#' The `networkDynamic` method subtracts 1 from each spell's `terminus` so
+#' that the resulting `start`/`stop` range is inclusive on both ends,
+#' matching the convention used by [get_cumulative_edgelist()] and the
+#' reachability functions.
+#'
+#' @family cumulative_edgelist
+#' @seealso [get_forward_reachable()] / [get_backward_reachable()] for
+#'   typical downstream uses; [dedup_cumulative_edgelist()] when the source
+#'   contains overlapping spells for the same pair of nodes.
+#'
+#' @examples
+#' \dontrun{
+#' # Convert a saved networkDynamic from a non-tergmLite netsim run
+#' nd <- get_network(sim, sim = 1, network = 1)
+#' el_cuml <- as_cumulative_edgelist(nd)
+#' fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 100)
+#' }
 #'
 #' @export
 as_cumulative_edgelist <- function(x) {
@@ -312,11 +353,28 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
   return(d)
 }
 
-#' Deduplicate a cumulative edgelist by combining overlapping edges
+#' Deduplicate a Cumulative Edgelist
 #'
-#' @param el A cumulative edgelist with potentially overlapping edges
+#' Merges overlapping spells for the same `(head, tail)` pair into a single
+#' row. Useful when concatenating cumulative edgelists across multiple
+#' simulations or sources, where the same partnership can appear in more
+#' than one segment. The reachability functions assume non-overlapping
+#' input.
 #'
-#' @return A cumulative edgelist with no overlapping edges
+#' @param el A cumulative edgelist with potentially overlapping edges.
+#'
+#' @return A cumulative edgelist with no overlapping edges for the same
+#'   `(head, tail)` pair.
+#'
+#' @family cumulative_edgelist
+#' @seealso [as_cumulative_edgelist()] for one source of duplicates;
+#'   [get_forward_reachable()] / [get_backward_reachable()], which expect
+#'   non-overlapping input.
+#'
+#' @examples
+#' \dontrun{
+#' el_cuml <- dedup_cumulative_edgelist(el_raw)
+#' }
 #'
 #' @export
 dedup_cumulative_edgelist <- function(el) {

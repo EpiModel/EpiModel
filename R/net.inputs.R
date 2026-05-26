@@ -684,11 +684,26 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
 #'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
 #'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
-#' @param cumulative.edgelist If `TRUE`, calculates a cumulative edgelist within the network
-#'        simulation module. This is used when tergmLite is used and the entire networkDynamic
-#'        object is not used.
-#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to retain. See help for
-#'        [`update_cumulative_edgelist`] for options.
+#' @param cumulative.edgelist If `TRUE`, EpiModel maintains a running record
+#'        of every edge across the simulation (the *cumulative edgelist*) by
+#'        calling [`update_cumulative_edgelist`] once per network from the
+#'        built-in network-resimulation module ([`resim_nets`]) at every
+#'        time step. Off by default. Enabling it is the canonical way to
+#'        query partnership histories under `tergmLite = TRUE`, where the
+#'        full `networkDynamic` history is not retained. Inside a custom
+#'        module the live data is read via [`get_cumulative_edgelist`] or
+#'        [`get_cumulative_edgelists_df`], and derived helpers
+#'        [`get_partners`], [`get_cumulative_degree`], [`get_forward_reachable`],
+#'        and [`get_backward_reachable`]. See the
+#'        `vignette("network-objects", package = "EpiModel")` for a worked
+#'        example.
+#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to
+#'        retain, passed as the `truncate` argument to each automatic
+#'        [`update_cumulative_edgelist`] call. Default is `0`, which keeps
+#'        only currently active edges; use `Inf` to retain the full history
+#'        (memory permitting) or a positive integer to keep dissolved edges
+#'        for that many steps after they ended. Only relevant when
+#'        `cumulative.edgelist = TRUE`.
 #' @param attr.rules A list containing the  rules for setting the attributes of incoming nodes, with
 #'        one list element per attribute to be set (see details below).
 #' @param epi.by A character vector of length 1 containing a nodal attribute for which subgroup
@@ -743,7 +758,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
 #' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
 #'   simulation to restart from this output.
-#' @param save.cumulative.edgelist If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+#' @param save.cumulative.edgelist If `TRUE`, the cumulative edgelist is
+#'        attached to the returned `netsim` object as
+#'        `sim$cumulative.edgelist`, a list with one element per simulation
+#'        (the same `data.frame` shape produced by
+#'        [`get_cumulative_edgelists_df`]). Requires `cumulative.edgelist =
+#'        TRUE`; without it, no history is collected to save. Off by default
+#'        to keep output objects small.
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.

@@ -86,6 +86,21 @@
 #' time. Without it, the network structure evolves independently of the
 #' epidemic and demographic dynamics.
 #'
+#' @section Partnership Histories (Cumulative Edgelist):
+#' For contact tracing, partnership-duration analysis, or reachability
+#' analysis, enable cumulative-edgelist tracking via
+#' `control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)`.
+#' This records every edge formed during the simulation along with its
+#' `start` and `stop` time steps, and attaches the result to the returned
+#' object as `sim$cumulative.edgelist`. Under `tergmLite = TRUE` this is
+#' the recommended substitute for the full `networkDynamic` history.
+#'
+#' The helper family ([`get_cumulative_edgelist`],
+#' [`get_cumulative_edgelists_df`], [`get_partners`], [`get_cumulative_degree`],
+#' [`get_forward_reachable`], [`get_backward_reachable`]) operates on the
+#' tracked data. See `vignette("network-objects", package = "EpiModel")`
+#' for the full lifecycle.
+#'
 #' @section Multi-Network Models:
 #' For models with multiple overlapping network layers (e.g., sexual and
 #' needle-sharing networks), pass a list of [`netest`] objects to the `x`
