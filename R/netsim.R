@@ -86,6 +86,21 @@
 #' time. Without it, the network structure evolves independently of the
 #' epidemic and demographic dynamics.
 #'
+#' @section Partnership Histories (Cumulative Edgelist):
+#' For contact tracing, partnership-duration analysis, or reachability
+#' analysis, enable cumulative-edgelist tracking via
+#' `control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)`.
+#' This records every edge formed during the simulation along with its
+#' `start` and `stop` time steps, and attaches the result to the returned
+#' object as `sim$cumulative.edgelist`. Under `tergmLite = TRUE` this is
+#' the recommended substitute for the full `networkDynamic` history.
+#'
+#' The helper family ([`get_cumulative_edgelist`],
+#' [`get_cumulative_edgelists_df`], [`get_partners`], [`get_cumulative_degree`],
+#' [`get_forward_reachable`], [`get_backward_reachable`]) operates on the
+#' tracked data. See `vignette("network-objects", package = "EpiModel")`
+#' for the full lifecycle.
+#'
 #' @section Multi-Network Models:
 #' For models with multiple overlapping network layers (e.g., sexual and
 #' needle-sharing networks), pass a list of [`netest`] objects to the `x`
@@ -376,7 +391,16 @@ netsim_run_modules <- function(dat, s) {
 
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
-        dat <- modules[[i]](dat, at)
+        new_dat <- modules[[i]](dat, at)
+        if (!inherits(new_dat, "netsim_dat")) {
+          # Don't overwrite `dat` so the error handler can still read
+          # `.traceback.on.error` / `.dump.frame.on.error` from it.
+          stop("Module '", current_mod, "' did not return a `netsim_dat` ",
+               "object (got ", class(new_dat)[1], "). The most common cause ",
+               "is a missing `return(dat)` at the end of the module function.",
+               call. = FALSE)
+        }
+        dat <- new_dat
       }
 
       current_mod <- "epimodel.internal"

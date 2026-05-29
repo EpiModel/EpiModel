@@ -16,21 +16,58 @@ edgelist will be updated. (May be > 1 for models with
 multiple overlapping networks.)}
 
 \item{truncate}{After how many time steps a partnership that is no longer
-active should be removed from the output.}
+active should be removed from the output. See the
+Truncation section.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
 }
 \description{
-Update a Cumulative Edgelist of the Specified Network
+Records the current network state into the cumulative edgelist, stamping
+newly observed edges with their \code{start} step and edges that have just
+dissolved with their \code{stop} step. Returns \code{dat} unchanged when
+cumulative-edgelist tracking is disabled.
+}
+\details{
+Calling this function is a no-op unless \code{control.net(cumulative.edgelist = TRUE)}. With tracking enabled, the built-in network-resimulation module
+\code{\link[=resim_nets]{resim_nets()}} calls this once per network at every time step, using
+\code{truncate = control$truncate.el.cuml}. Custom modules that mutate the
+network outside the TERGM machinery (e.g., forming or dissolving edges
+directly) should call this manually after the change so the cumulative
+record stays consistent.
 }
 \section{Truncation}{
 
 To avoid storing a cumulative edgelist too long, the \code{truncate}
 parameter defines a number of steps after which an edge that is no longer
-active is truncated out of the cumulative edgelist.
+active is dropped from the stored history.
 When \code{truncate = Inf}, no edges are ever removed. When
-\code{truncate = 0}, only the active edges are kept. You may want this
-behavior to keep track of the active edges' start step.
+\code{truncate = 0} (the default), only currently active edges are kept; this
+is useful for tracking the \code{start} step of each active edge while keeping
+memory low.
 }
 
+\examples{
+\dontrun{
+# Inside a custom module, after editing the network outside the TERGM:
+for (n in seq_len(dat$num.nw)) {
+  dat <- update_cumulative_edgelist(dat, n,
+    truncate = get_control(dat, "truncate.el.cuml"))
+}
+}
+
+}
+\seealso{
+\code{\link[=control.net]{control.net()}} (\code{cumulative.edgelist}, \code{truncate.el.cuml}),
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} to read the result.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}}
+}
+\concept{cumulative_edgelist}

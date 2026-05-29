@@ -2,16 +2,42 @@
 % Please edit documentation in R/reachable.R
 \name{dedup_cumulative_edgelist}
 \alias{dedup_cumulative_edgelist}
-\title{Deduplicate a cumulative edgelist by combining overlapping edges}
+\title{Deduplicate a Cumulative Edgelist}
 \usage{
 dedup_cumulative_edgelist(el)
 }
 \arguments{
-\item{el}{A cumulative edgelist with potentially overlapping edges}
+\item{el}{A cumulative edgelist with potentially overlapping edges.}
 }
 \value{
-A cumulative edgelist with no overlapping edges
+A cumulative edgelist with no overlapping edges for the same
+\verb{(head, tail)} pair.
 }
 \description{
-Deduplicate a cumulative edgelist by combining overlapping edges
+Merges overlapping spells for the same \verb{(head, tail)} pair into a single
+row. Useful when concatenating cumulative edgelists across multiple
+simulations or sources, where the same partnership can appear in more
+than one segment. The reachability functions assume non-overlapping
+input.
 }
+\examples{
+\dontrun{
+el_cuml <- dedup_cumulative_edgelist(el_raw)
+}
+
+}
+\seealso{
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}} for one source of duplicates;
+\code{\link[=get_forward_reachable]{get_forward_reachable()}} / \code{\link[=get_backward_reachable]{get_backward_reachable()}}, which expect
+non-overlapping input.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

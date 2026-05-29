@@ -23,7 +23,8 @@ object and other initialization information passed from
 for models with multi-layer networks.) If \code{NULL}, extract from all networks.}
 
 \item{truncate}{After how many time steps a partnership that is no longer
-active should be removed from the output.}
+active should be removed from the output. See the
+Truncation section.}
 
 \item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased) partners will be removed from
 the output.}
@@ -39,15 +40,48 @@ A \code{data.frame} with 5 columns:
 }
 }
 \description{
-From a full cumulative edgelist that contains the history of contacts (both persistent and
-one-time), this function returns a data frame containing details of the index (head) and partner
-(tail) nodes, along with start and stop time steps for the partnership and the network location.
+Pulls every cumulative-edgelist row touching one of the supplied "index"
+nodes, returning each \verb{(index, partner)} pair together with the
+partnership start/stop times and the network layer. This is the building
+block for contact tracing over the simulated network history.
 }
 \details{
-Note that \code{get_partners} takes as input the positional IDs of the indexes of interest but returns
-the unique IDs. That is by design, because while \code{get_partners} would be expected to be called
-for active nodes, some partners (contacts) of nodes may be inactive in the network history.
-Therefore, both index and partner IDs are returned as unique IDs for consistency. To convert
-between a positional to a unique ID, you may use \code{\link{get_unique_ids}}; to convert between a
-unique ID to a positional ID, you may use \code{\link{get_posit_ids}}.
+Indexes are passed as positional IDs but the output uses unique IDs,
+because partners may include nodes that have already departed (and thus
+no longer have a positional ID). Use \code{\link[=get_unique_ids]{get_unique_ids()}} and
+\code{\link[=get_posit_ids]{get_posit_ids()}} to convert between the two systems.
+
+The \code{truncate} argument here filters by edge age: only edges whose \code{stop}
+step is within \code{truncate} time steps of the current step are kept (active
+edges are always included). It operates on whatever history is already
+stored in the cumulative edgelist; it cannot recover edges that were
+dropped earlier by \code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}} or by
+\code{control$truncate.el.cuml}.
 }
+\examples{
+\dontrun{
+# Contacts of nodes 1..10 across all networks within the last 30 steps,
+# excluding partners who have since departed:
+get_partners(dat,
+             index_posit_ids = 1:10,
+             truncate = 30,
+             only.active.nodes = TRUE)
+}
+
+}
+\seealso{
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}} for a partner count per index;
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} / \code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}} for the
+underlying edgelist; \code{\link[=get_unique_ids]{get_unique_ids()}} / \code{\link[=get_posit_ids]{get_posit_ids()}} for ID
+conversion.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

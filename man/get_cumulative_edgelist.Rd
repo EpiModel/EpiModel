@@ -16,17 +16,61 @@ edgelist should be extracted. (May be > 1 for models with
 multiple overlapping networks.)}
 }
 \value{
-A cumulative edgelist in \code{data.frame} form with 4 columns:
+A \code{tibble} with four columns:
 \itemize{
-\item \code{head}: the unique ID (see \code{get_unique_ids}) of the
-head node on the edge.
-\item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
-tail node on the edge.
-\item \code{start}: the time step in which the edge started.
-\item \code{stop}: the time step in which the edge stopped; if ongoing,
-then \code{NA} is returned.
+\item \code{head}: the unique ID (see \code{\link[=get_unique_ids]{get_unique_ids()}}) of the head node.
+\item \code{tail}: the unique ID of the tail node.
+\item \code{start}: the time step at which the edge formed.
+\item \code{stop}: the time step at which the edge dissolved, or \code{NA} if the edge
+is still active. Edges are active over \verb{[start, stop]} inclusive.
 }
 }
 \description{
-Get a Cumulative Edgelist From a Specified Network
+Returns the cumulative edgelist for a given network: a record of every edge
+EpiModel has tracked, with the time steps at which each edge formed and
+(if no longer active) dissolved. This is the canonical mechanism for
+querying partnership histories during or after a simulation, and is
+particularly important under \code{tergmLite = TRUE}, where the full
+\code{networkDynamic} history is not retained.
 }
+\details{
+Cumulative-edgelist tracking is opt-in. It must be enabled via
+\code{control.net(cumulative.edgelist = TRUE)} (see \code{\link[=control.net]{control.net()}}); calling
+this function on a simulation that did not enable tracking raises an error.
+
+Inside a custom module (where \code{dat} is the live \code{netsim_dat} object), call
+this function directly. After a \code{netsim()} run, the saved edgelists are
+attached to the returned object as \code{sim$cumulative.edgelist[[s]]} (one
+element per simulation, populated when \code{save.cumulative.edgelist = TRUE});
+read those directly rather than calling this function on the processed
+output.
+
+For the \emph{current} (active-only, no history) edgelist, see \code{\link[=get_edgelist]{get_edgelist()}}
+and \code{\link[=get_edgelists_df]{get_edgelists_df()}}.
+}
+\examples{
+\dontrun{
+# Inside a custom module (dat is the live netsim_dat object):
+el <- get_cumulative_edgelist(dat, network = 1)
+
+# Post-simulation on a processed netsim object, read the saved slot:
+sim$cumulative.edgelist[[1]]
+}
+
+}
+\seealso{
+\code{\link[=control.net]{control.net()}} for the controlling flags (\code{cumulative.edgelist},
+\code{truncate.el.cuml}, \code{save.cumulative.edgelist}).
+\code{vignette("network-objects", package = "EpiModel")} walks through the
+full lifecycle.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

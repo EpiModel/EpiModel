@@ -137,8 +137,9 @@
 #' EpiModel.
 #'
 #' This data.frame is then passed in to `param.net` under a
-#' `data.frame.parameters` argument. Further details and examples are
-#' provided in the "Working with Model Parameters in EpiModel" vignette.
+#' `data.frame.params` argument (`data.frame.parameters` is also accepted as
+#' a deprecated alias). Further details and examples are provided in the
+#' "Working with Model Parameters in EpiModel" vignette.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
@@ -251,11 +252,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     stop("Parameters using the .m2 suffix have been removed. ",
          "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
-  if (missing(act.rate)) {
+  if (missing(act.rate) && is.null(p[["act.rate"]])) {
     p[["act.rate"]] <- 1
   }
-  p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                           !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+
+  p[["vital"]] <- !missing(a.rate) | !is.null(p[["a.rate"]]) |
+    !missing(ds.rate) | !is.null(p[["ds.rate"]]) |
+    !missing(di.rate) | !is.null(p[["di.rate"]]) |
+    !missing(dr.rate) | !is.null(p[["dr.rate"]])
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.")
@@ -680,11 +684,26 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
 #'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
 #'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
-#' @param cumulative.edgelist If `TRUE`, calculates a cumulative edgelist within the network
-#'        simulation module. This is used when tergmLite is used and the entire networkDynamic
-#'        object is not used.
-#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to retain. See help for
-#'        [`update_cumulative_edgelist`] for options.
+#' @param cumulative.edgelist If `TRUE`, EpiModel maintains a running record
+#'        of every edge across the simulation (the *cumulative edgelist*) by
+#'        calling [`update_cumulative_edgelist`] once per network from the
+#'        built-in network-resimulation module ([`resim_nets`]) at every
+#'        time step. Off by default. Enabling it is the canonical way to
+#'        query partnership histories under `tergmLite = TRUE`, where the
+#'        full `networkDynamic` history is not retained. Inside a custom
+#'        module the live data is read via [`get_cumulative_edgelist`] or
+#'        [`get_cumulative_edgelists_df`], and derived helpers
+#'        [`get_partners`], [`get_cumulative_degree`], [`get_forward_reachable`],
+#'        and [`get_backward_reachable`]. See the
+#'        `vignette("network-objects", package = "EpiModel")` for a worked
+#'        example.
+#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to
+#'        retain, passed as the `truncate` argument to each automatic
+#'        [`update_cumulative_edgelist`] call. Default is `0`, which keeps
+#'        only currently active edges; use `Inf` to retain the full history
+#'        (memory permitting) or a positive integer to keep dissolved edges
+#'        for that many steps after they ended. Only relevant when
+#'        `cumulative.edgelist = TRUE`.
 #' @param attr.rules A list containing the  rules for setting the attributes of incoming nodes, with
 #'        one list element per attribute to be set (see details below).
 #' @param epi.by A character vector of length 1 containing a nodal attribute for which subgroup
@@ -719,6 +738,17 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        respected regardless of whether network resimulation is enabled. In the default ordering,
 #'        `resim_nets.FUN` runs before `infection.FUN`, so the network is resimulated before
 #'        transmission is evaluated at each time step.
+#'        **Important:** when set, `module.order` replaces the entire dispatch order —
+#'        built-in modules not listed will not run. `control.net()` validates the entries
+#'        at construction time: each name must correspond to a `.FUN` argument that has
+#'        been supplied (either as a formal argument or through `...`), and
+#'        `initialize.FUN` / `verbose.FUN` may not appear because they run outside the
+#'        per-step module loop. Omitting `resim_nets.FUN`, `summary_nets.FUN`, or
+#'        `nwupdate.FUN` produces a warning, since these built-ins are typically required
+#'        for correct semantics: `resim_nets.FUN` advances the TERGM each step,
+#'        `summary_nets.FUN` records network statistics, and `nwupdate.FUN` applies
+#'        vertex (de)activation from `active`/`exitTime`/`entrTime` and copies nodal
+#'        attributes to the network.
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
@@ -728,7 +758,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
 #' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
 #'   simulation to restart from this output.
-#' @param save.cumulative.edgelist If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+#' @param save.cumulative.edgelist If `TRUE`, the cumulative edgelist is
+#'        attached to the returned `netsim` object as
+#'        `sim$cumulative.edgelist`, a list with one element per simulation
+#'        (the same `data.frame` shape produced by
+#'        [`get_cumulative_edgelists_df`]). Requires `cumulative.edgelist =
+#'        TRUE`; without it, no history is collected to save. Off by default
+#'        to keep output objects small.
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.
@@ -947,6 +983,69 @@ control.net <- function(type,
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
   p[["f.names"]] <- c(p[["bi.mods"]], p[["user.mods"]])
+
+  ## `module.order` validation
+  if (!is.null(p[["module.order"]])) {
+
+    # `initialize.FUN` and `verbose.FUN` are invoked outside the per-step
+    # module loop in `netsim_run_modules()`. Placing them in `module.order`
+    # would cause double execution and is almost certainly a mistake.
+    bad_special <- intersect(p[["module.order"]],
+                             c("initialize.FUN", "verbose.FUN"))
+    if (length(bad_special) > 0) {
+      stop(
+        "`module.order` cannot contain ",
+        paste0("`", bad_special, "`", collapse = ", "),
+        ". `initialize.FUN` runs once at simulation start and `verbose.FUN` ",
+        "runs outside the per-step module loop; including them in ",
+        "`module.order` would cause double execution. Remove them from ",
+        "`module.order`.",
+        call. = FALSE
+      )
+    }
+
+    # Every other entry must resolve to a `.FUN` argument that was supplied
+    # to `control.net()` (either as a formal argument with a non-NULL value
+    # or via `...`).
+    valid_mods <- setdiff(p[["f.names"]],
+                          c("initialize.FUN", "verbose.FUN"))
+    unknown <- setdiff(p[["module.order"]], valid_mods)
+    if (length(unknown) > 0) {
+      stop(
+        "`module.order` contains entries with no matching `.FUN` argument: ",
+        paste0("`", unknown, "`", collapse = ", "), ". ",
+        "Either remove them from `module.order`, fix the typo, or pass the ",
+        "corresponding `.FUN` argument to `control.net()`.",
+        call. = FALSE
+      )
+    }
+
+    # Warn (don't error) when a custom order omits built-ins that are
+    # available (non-NULL) and almost always required for correct semantics.
+    # We check `p[[mod]]` directly rather than `p[["bi.mods"]]` because the
+    # latter is unfiltered when `type` is non-NULL, and we want to respect
+    # explicit user disables (`nwupdate.FUN = NULL`, etc.) in either mode.
+    critical <- c("resim_nets.FUN", "summary_nets.FUN", "nwupdate.FUN")
+    critical_available <- critical[
+      vapply(critical, function(m) !is.null(p[[m]]), logical(1))
+    ]
+    missing_critical <- setdiff(critical_available, p[["module.order"]])
+    if (length(missing_critical) > 0) {
+      warning(
+        "`module.order` is set but omits built-in module(s): ",
+        paste0("`", missing_critical, "`", collapse = ", "), ".\n",
+        "  - `resim_nets.FUN`: advances the TERGM each step\n",
+        "  - `summary_nets.FUN`: records network statistics (`nwstats`)\n",
+        "  - `nwupdate.FUN`: applies vertex (de)activation from ",
+        "`active` / `exitTime` / `entrTime` and copies nodal attributes ",
+        "to the network\n",
+        "Without these the simulation usually still runs but produces ",
+        "silently incorrect results. Add them to `module.order` unless you ",
+        "intentionally want to skip them.",
+        call. = FALSE
+      )
+    }
+  }
 
   ## Defaults and checks
 

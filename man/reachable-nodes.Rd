@@ -48,13 +48,21 @@ to \code{to_step}. The first column is always one as the set of reachables
 at the beginning is just the node itself.
 }
 \description{
-These functions return the Forward or Backward Reachable Nodes of a set of
-nodes in a network over a time. Warning, these functions ignore nodes without
-edges in the period of interest. See the \verb{Number of Nodes} section for
-details It is much faster than iterating
-\code{tsna::tPath}. The distance between to each node can be back calculated
-using the length of the reachable set at each time step and the fact that the
-reachable sets are ordered by the time to arrival.
+These functions return the forward or backward reachable nodes of a set of
+nodes in a network over a time period. Forward reachability answers "who
+could a node have infected?"; backward reachability answers "who could
+have infected this node?". Both operate on a cumulative edgelist, the
+same structure produced by \code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} /
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}} from a \code{netsim} run, or by
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}} applied to an external \code{networkDynamic}
+object.
+
+Warning: these functions ignore nodes without edges in the period of
+interest. See the \verb{Number of Nodes} section for details. The distance
+to each node can be back-calculated using the length of the reachable
+set at each time step and the fact that the reachable sets are ordered
+by the time to arrival. These functions are much faster than iterating
+\code{tsna::tPath()}.
 }
 \section{Number of Nodes}{
 
@@ -133,3 +141,22 @@ setequal(el_bkwd[[1]], t_bkwd_set)
 }
 
 }
+\seealso{
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} / \code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}}
+for the typical input source from a \code{netsim} run;
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}} to derive a cumulative edgelist from a
+\code{networkDynamic} object; \code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}} when the input
+has been concatenated from multiple sources.
+\code{vignette("network-objects", package = "EpiModel")} walks through the
+full lifecycle.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

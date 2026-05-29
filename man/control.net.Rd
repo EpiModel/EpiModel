@@ -78,12 +78,27 @@ warning.}
 (\code{tergmLite = TRUE}). Default of \code{FALSE}. When \code{TRUE}, \code{resimulate.network} is
 automatically set to \code{TRUE} (with a warning if the user explicitly set it to \code{FALSE}).}
 
-\item{cumulative.edgelist}{If \code{TRUE}, calculates a cumulative edgelist within the network
-simulation module. This is used when tergmLite is used and the entire networkDynamic
-object is not used.}
+\item{cumulative.edgelist}{If \code{TRUE}, EpiModel maintains a running record
+of every edge across the simulation (the \emph{cumulative edgelist}) by
+calling \code{\link{update_cumulative_edgelist}} once per network from the
+built-in network-resimulation module (\code{\link{resim_nets}}) at every
+time step. Off by default. Enabling it is the canonical way to
+query partnership histories under \code{tergmLite = TRUE}, where the
+full \code{networkDynamic} history is not retained. Inside a custom
+module the live data is read via \code{\link{get_cumulative_edgelist}} or
+\code{\link{get_cumulative_edgelists_df}}, and derived helpers
+\code{\link{get_partners}}, \code{\link{get_cumulative_degree}}, \code{\link{get_forward_reachable}},
+and \code{\link{get_backward_reachable}}. See the
+\code{vignette("network-objects", package = "EpiModel")} for a worked
+example.}
 
-\item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to retain. See help for
-\code{\link{update_cumulative_edgelist}} for options.}
+\item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to
+retain, passed as the \code{truncate} argument to each automatic
+\code{\link{update_cumulative_edgelist}} call. Default is \code{0}, which keeps
+only currently active edges; use \code{Inf} to retain the full history
+(memory permitting) or a positive integer to keep dissolved edges
+for that many steps after they ended. Only relevant when
+\code{cumulative.edgelist = TRUE}.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of incoming nodes, with
 one list element per attribute to be set (see details below).}
@@ -157,7 +172,12 @@ specification.}
 \item{save.run}{If \code{TRUE}, the \code{run} sublist of \code{dat} is saved, allowing a
 simulation to restart from this output.}
 
-\item{save.cumulative.edgelist}{If \code{TRUE}, the \code{cumulative.edgelist} is saved at simulation end.}
+\item{save.cumulative.edgelist}{If \code{TRUE}, the cumulative edgelist is
+attached to the returned \code{netsim} object as
+\code{sim$cumulative.edgelist}, a list with one element per simulation
+(the same \code{data.frame} shape produced by
+\code{\link{get_cumulative_edgelists_df}}). Requires \code{cumulative.edgelist = TRUE}; without it, no history is collected to save. Off by default
+to keep output objects small.}
 
 \item{save.other}{A character vector of elements on the \code{netsim_dat} main data list to save out
 after each simulation. One example for base models is the attribute list, \code{"attr"}, at

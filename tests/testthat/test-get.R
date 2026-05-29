@@ -53,6 +53,38 @@ test_that("get_network error flags", {
   expect_error(get_network(mod, 1, 2), "Specify network")
 })
 
+test_that("get_network.netsim rejects collapse / at under tergmLite", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est_tl <- netest(nw, formation = ~edges, target.stats = 25,
+                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                   verbose = FALSE)
+  control_tl <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                            tergmLite = TRUE, verbose = FALSE)
+  mod_tl <- netsim(est_tl, param.net(inf.prob = 0.3),
+                   init.net(i.num = 5), control_tl)
+
+  expect_error(get_network(mod_tl, collapse = TRUE),
+               "collapse.*FALSE when.*tergmLite")
+  expect_error(get_network(mod_tl, at = 2),
+               "at.*NULL when.*tergmLite")
+})
+
+test_that("get_network.netdx validates sim argument length and range", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est_dx <- netest(nw, formation = ~edges, target.stats = 25,
+                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                   verbose = FALSE)
+  dx <- netdx(est_dx, nsims = 2, nsteps = 5, keep.tnetwork = TRUE,
+              verbose = FALSE)
+
+  expect_error(get_network(dx, sim = 1:2),
+               "Specify a single sim between 1 and 2")
+  expect_error(get_network(dx, sim = 5),
+               "Specify a single sim between 1 and 2")
+})
+
 
 # get transmat ------------------------------------------------------------
 
