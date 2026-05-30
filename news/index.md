@@ -28,6 +28,10 @@
   constructor’s defaults. Closes
   [\#1029](https://github.com/EpiModel/EpiModel/issues/1029) and
   [\#1031](https://github.com/EpiModel/EpiModel/issues/1031).
+- Fix `create_scenario_list` and `generate_random_params` so they no
+  longer fail when their input `data.frame` (a `scenarios.df`, or a
+  `param.random.set`) contains a single parameter column. Closes
+  [\#1045](https://github.com/EpiModel/EpiModel/issues/1045).
 
 ### OTHER
 
