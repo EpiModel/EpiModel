@@ -11,7 +11,7 @@
 -   Fix `list_special_params` so `param.net_from_table` correctly fails if a reserved parameter name is passed in the parameter table.
 -   Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
 -   Fix `param.net` so that values supplied via `data.frame.params` (notably `act.rate`, and the vital-dynamics parameters `a.rate` / `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the constructor's defaults. Closes #1029 and #1031.
--   Fix a bug when `create_scenario_list` fails if the `data.frame` of scenarios contains a single parameter.
+-   Fix `create_scenario_list` and `generate_random_params` so they no longer fail when their input `data.frame` (a `scenarios.df`, or a `param.random.set`) contains a single parameter column. Closes #1045.
 
 ### OTHER
 
