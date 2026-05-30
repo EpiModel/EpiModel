@@ -525,8 +525,9 @@ generate_random_params <- function(param, verbose = FALSE) {
     # Pick one row of the `data.frame`
     sampled.row <- sample.int(nrow(param.random.set), 1)
 
-    # Convert to `param` format
-    sampled.set <- unflatten_params(param.random.set[sampled.row, ])
+    # Convert to `param` format (`drop = FALSE` keeps the names when
+    # `param.random.set` has a single parameter column)
+    sampled.set <- unflatten_params(param.random.set[sampled.row, , drop = FALSE])
 
     # Update `rng_values`
     rng_values <- update_list(rng_values, sampled.set)
