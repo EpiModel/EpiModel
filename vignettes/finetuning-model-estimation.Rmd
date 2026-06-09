@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 library(EpiModel)
 ```
 
-
 ## Introduction
 
 This vignette assumes familiarity with setting up and running network models in EpiModel. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
@@ -28,42 +27,101 @@ This vignette demonstrates how to:
 
 ## Setup
 
-First, we set up a simple network model:
-
 ```{r setup, results = "hide"}
 rm(list=ls())
 set.seed(1)
+```
 
+We set up our network:
+
+```{r}
 nw <- network_initialize(n = 1000)
 nw <- set_vertex_attribute(nw, "age", sample(18:65, 1000, replace = TRUE))
 ```
 
-And now a network model:
+## Example 1: approximation works well, no STERGM needed
 
 ```{r}
-mean_reldur <- 10
-coef_diss <- dissolution_coefs(~offset(edges), mean_reldur, 0)
-formation <- ~edges + degree(0)
-target_stats <- c(400, 300)
+mean_reldur_1 <- 250
+coef_diss_1 <- dissolution_coefs(~offset(edges), mean_reldur_1, 0)
+formation_1 <- ~edges + degree(0)
+target_stats_1 <- c(400, 300)
 ```
 
-```{r}
-est_1 <- netest(nw, formation = formation, target.stats = target_stats, 
-                coef.diss = coef_diss,  verbose = FALSE)
+```{r, cache = TRUE}
+est_1 <- netest(nw, formation = formation_1, target.stats = target_stats_1, 
+                coef.diss = coef_diss_1,  verbose = FALSE)
 netdx_1 <- netdx(est_1, nsims = 10, nsteps = 1000) 
 plot(netdx_1, mean.smooth = FALSE, qnts.smooth = FALSE)
+netdx_1
 ```
 
-```{r}
+Just check static anyway:
+
+```{r, cache = TRUE}
 netdx_stat_1 <- netdx(est_1, dynamic = FALSE, nsims = 1e4) 
 plot(netdx_stat_1, mean.smooth = FALSE)
 ```
 
+# Example 2: approximation is not good, STERGM works
+
 ```{r}
-est_2 <- netest(nw, formation = formation, target.stats = target_stats, 
-                coef.diss = coef_diss,  verbose = FALSE, edapprox = FALSE)
+mean_reldur_2 <- 10
+coef_diss_2 <- dissolution_coefs(~offset(edges), mean_reldur_2, 0)
+formation_2 <- ~edges + degree(0)
+target_stats_2 <- c(400, 300)
+```
+
+```{r, cache = TRUE}
+est_2 <- netest(nw, formation = formation_2, target.stats = target_stats_2, 
+                coef.diss = coef_diss_2,  verbose = FALSE)
 netdx_2 <- netdx(est_2, nsims = 10, nsteps = 1000) 
 plot(netdx_2, mean.smooth = FALSE, qnts.smooth = FALSE)
 ```
 
+Very bad. How are the statics?
 
+```{r, cache = TRUE}
+netdx_stat_2 <- netdx(est_2, dynamic = FALSE, nsims = 1e4) 
+plot(netdx_stat_2, mean.smooth = FALSE)
+```
+
+Very good. So we need to do full STERGM:
+
+```{r, cache = TRUE}
+est_2f <- netest(nw, formation = formation_2, target.stats = target_stats_2, 
+                coef.diss = coef_diss_2,  verbose = FALSE, edapprox = FALSE)
+netdx_2f <- netdx(est_2f, nsims = 10, nsteps = 1000) 
+plot(netdx_2f, mean.smooth = FALSE, qnts.smooth = FALSE)
+```
+
+That works as is, so no need for further tuning of the estimation algorithm.
+
+## STERGM estimation fails
+
+```{r, cache = TRUE}
+
+formation_3 <- ~edges + degree(0) + nodecov("age")
+
+netdx_2f2 <- netdx(est_2f, nsims = 10, nsteps = 1000, 
+                   nwstats.formula = formation_3)
+
+mean_reldur_3 <- 10
+coef_diss_3 <- dissolution_coefs(~offset(edges), mean_reldur_3, 0)
+target_stats_3 <- c(400, 300, 15000)
+
+#est_3 <- netest(nw, formation = formation_3, target.stats = target_stats_3, 
+#                coef.diss = coef_diss_3,  verbose = FALSE, edapprox = FALSE)
+```
+
+`Starting Monte Carlo maximum likelihood estimation (MCMLE):`\
+`Iteration 1 of at most 60`\
+`Sampling`
+
+`Error in ergm.MCMLE(init, s, s.obs, control = control, verbose = verbose,  : `\
+`  MCMLE estimation stuck. There may be excessive correlation between model terms, suggesting a poor`\ `model for the observed data. If target.stats are specified, try increasing SAN parameters.`
+
+```{r}
+#netdx_stat_3 <- netdx(est_3, dynamic = FALSE, nsims = 1e4) 
+#plot(netdx_stat_3, mean.smooth = FALSE)
+```
