@@ -1,0 +1,69 @@
+---
+title: "Fine-tuning network model estimation EpiModel with set.control.tergm and set.control.ergm"
+author: "EpiModel v`r packageVersion('EpiModel')`"
+date: "`r Sys.Date()`"
+vignette: "%\\VignetteIndexEntry{Working with Model Parameters} %\\VignetteEncoding{UTF-8}
+  %\\VignetteEngine{knitr::rmarkdown}\n"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(EpiModel)
+```
+
+
+## Introduction
+
+This vignette assumes familiarity with setting up and running network models in EpiModel. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
+
+This vignette demonstrates how to:
+
+## Setup
+
+First, we set up a simple network model:
+
+```{r setup, results = "hide"}
+rm(list=ls())
+set.seed(1)
+
+nw <- network_initialize(n = 1000)
+nw <- set_vertex_attribute(nw, "age", sample(18:65, 1000, replace = TRUE))
+```
+
+And now a network model:
+
+```{r}
+mean_reldur <- 10
+coef_diss <- dissolution_coefs(~offset(edges), mean_reldur, 0)
+formation <- ~edges + degree(0)
+target_stats <- c(400, 300)
+```
+
+```{r}
+est_1 <- netest(nw, formation = formation, target.stats = target_stats, 
+                coef.diss = coef_diss,  verbose = FALSE)
+netdx_1 <- netdx(est_1, nsims = 10, nsteps = 1000) 
+plot(netdx_1, mean.smooth = FALSE, qnts.smooth = FALSE)
+```
+
+```{r}
+netdx_stat_1 <- netdx(est_1, dynamic = FALSE, nsims = 1e4) 
+plot(netdx_stat_1, mean.smooth = FALSE)
+```
+
+```{r}
+est_2 <- netest(nw, formation = formation, target.stats = target_stats, 
+                coef.diss = coef_diss,  verbose = FALSE, edapprox = FALSE)
+netdx_2 <- netdx(est_2, nsims = 10, nsteps = 1000) 
+plot(netdx_2, mean.smooth = FALSE, qnts.smooth = FALSE)
+```
+
+
