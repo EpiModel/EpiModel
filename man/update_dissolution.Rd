@@ -13,9 +13,10 @@ update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE)
 \item{new.coef.diss}{An object of class \code{disscoef}, from the
 \code{\link[=dissolution_coefs]{dissolution_coefs()}} function.}
 
-\item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
-model is an initial segment of the formation model (see details in
-\code{\link[=netest]{netest()}}).}
+\item{nested.edapprox}{Logical, only used when \code{edapprox = TRUE}. When
+\code{TRUE} (the default), the dissolution model must be an initial
+segment of the formation model; when \code{FALSE}, the dissolution terms
+need not be nested (see details in \code{\link[=netest]{netest()}}).}
 }
 \value{
 An updated network model object of class \code{netest}.

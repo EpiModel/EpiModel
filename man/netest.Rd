@@ -76,8 +76,10 @@ details).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
-\item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
-model is an initial segment of the formation model (see details).}
+\item{nested.edapprox}{Logical, only used when \code{edapprox = TRUE}. When
+\code{TRUE} (the default), the dissolution model must be an initial
+segment of the formation model; when \code{FALSE}, the dissolution terms
+need not be nested (see details).}
 
 \item{ergm.ego.popsize}{Numeric. The \code{popsize} argument passed to
 \code{ergm.ego::ergm.ego()} when \code{nw} is an \code{egor}. Shifts the edges
@@ -148,14 +150,17 @@ the vignette for the package \code{tergm}.
 It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by \code{netest}. The modified values subtracted from the formation
-coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1. The \code{nested.edapprox} argument
-toggles whether to implement this modified version by appending the
-dissolution terms to the formation model and appending the relevant values to
-the vector of formation model coefficients (value = \code{FALSE}), whereas
-the standard version subtracts the relevant values from the initial formation
-model coefficients (value = \code{TRUE}).
+applied by \code{netest} for both settings of \code{nested.edapprox}. The modified
+values subtracted from the formation coefficients are equivalent to the
+(crude) dissolution coefficients with their target durations increased by 1.
+The \code{nested.edapprox} argument does not change this approximation; it only
+controls how it is implemented. When \code{TRUE} (the default), the dissolution
+terms are an initial segment of the formation model, so the correction
+values are subtracted in place from the corresponding initial formation
+model coefficients. When \code{FALSE}, the dissolution terms need not be nested
+in the formation model: they are appended to the formation model and the
+corresponding correction values are appended to the vector of formation
+model coefficients.
 }
 
 \section{Control Arguments}{

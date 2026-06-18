@@ -50,8 +50,10 @@
 #'        details).
 #' @param set.control.tergm Control arguments passed to `tergm` (see details).
 #' @param verbose If `TRUE`, print model fitting progress to console.
-#' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
-#'        model is an initial segment of the formation model (see details).
+#' @param nested.edapprox Logical, only used when `edapprox = TRUE`. When
+#'        `TRUE` (the default), the dissolution model must be an initial
+#'        segment of the formation model; when `FALSE`, the dissolution terms
+#'        need not be nested (see details).
 #' @param ergm.ego.popsize Numeric. The `popsize` argument passed to
 #'        `ergm.ego::ergm.ego()` when `nw` is an `egor`. Shifts the edges
 #'        coefficient to reflect a target population size. The default of
@@ -104,14 +106,17 @@
 #' It has recently been found that subtracting a modified version of the
 #' dissolution coefficients from the formation coefficients provides a more
 #' principled approximation, and this is now the form of the approximation
-#' applied by `netest`. The modified values subtracted from the formation
-#' coefficients are equivalent to the (crude) dissolution coefficients with
-#' their target durations increased by 1. The `nested.edapprox` argument
-#' toggles whether to implement this modified version by appending the
-#' dissolution terms to the formation model and appending the relevant values to
-#' the vector of formation model coefficients (value = `FALSE`), whereas
-#' the standard version subtracts the relevant values from the initial formation
-#' model coefficients (value = `TRUE`).
+#' applied by `netest` for both settings of `nested.edapprox`. The modified
+#' values subtracted from the formation coefficients are equivalent to the
+#' (crude) dissolution coefficients with their target durations increased by 1.
+#' The `nested.edapprox` argument does not change this approximation; it only
+#' controls how it is implemented. When `TRUE` (the default), the dissolution
+#' terms are an initial segment of the formation model, so the correction
+#' values are subtracted in place from the corresponding initial formation
+#' model coefficients. When `FALSE`, the dissolution terms need not be nested
+#' in the formation model: they are appended to the formation model and the
+#' corresponding correction values are appended to the vector of formation
+#' model coefficients.
 #'
 #' @section Control Arguments:
 #' The `ergm`, `ergm.ego`, and `tergm` functions allow control settings for the
@@ -414,9 +419,10 @@ diss_check <- function(formation, dissolution) {
 #'        [netest()] function.
 #' @param new.coef.diss An object of class `disscoef`, from the
 #'        [dissolution_coefs()] function.
-#' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
-#'        model is an initial segment of the formation model (see details in
-#'        [netest()]).
+#' @param nested.edapprox Logical, only used when `edapprox = TRUE`. When
+#'        `TRUE` (the default), the dissolution model must be an initial
+#'        segment of the formation model; when `FALSE`, the dissolution terms
+#'        need not be nested (see details in [netest()]).
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
