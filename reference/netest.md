@@ -110,8 +110,10 @@ netest(
 
 - nested.edapprox:
 
-  Logical. If `edapprox = TRUE` the dissolution model is an initial
-  segment of the formation model (see details).
+  Logical, only used when `edapprox = TRUE`. When `TRUE` (the default),
+  the dissolution model must be an initial segment of the formation
+  model; when `FALSE`, the dissolution terms need not be nested (see
+  details).
 
 - ergm.ego.popsize:
 
@@ -189,14 +191,17 @@ package `tergm`.
 It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by `netest`. The modified values subtracted from the formation
-coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1. The `nested.edapprox` argument
-toggles whether to implement this modified version by appending the
-dissolution terms to the formation model and appending the relevant
-values to the vector of formation model coefficients (value = `FALSE`),
-whereas the standard version subtracts the relevant values from the
-initial formation model coefficients (value = `TRUE`).
+applied by `netest` for both settings of `nested.edapprox`. The modified
+values subtracted from the formation coefficients are equivalent to the
+(crude) dissolution coefficients with their target durations increased
+by 1. The `nested.edapprox` argument does not change this approximation;
+it only controls how it is implemented. When `TRUE` (the default), the
+dissolution terms are an initial segment of the formation model, so the
+correction values are subtracted in place from the corresponding initial
+formation model coefficients. When `FALSE`, the dissolution terms need
+not be nested in the formation model: they are appended to the formation
+model and the corresponding correction values are appended to the vector
+of formation model coefficients.
 
 ## Control Arguments
 
@@ -326,7 +331,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55629ecf6290>
+#> <environment: 0x55f6f92a0c30>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 

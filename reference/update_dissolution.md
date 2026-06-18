@@ -26,8 +26,10 @@ update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE)
 
 - nested.edapprox:
 
-  Logical. If `edapprox = TRUE` the dissolution model is an initial
-  segment of the formation model (see details in
+  Logical, only used when `edapprox = TRUE`. When `TRUE` (the default),
+  the dissolution model must be an initial segment of the formation
+  model; when `FALSE`, the dissolution terms need not be nested (see
+  details in
   [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)).
 
 ## Value

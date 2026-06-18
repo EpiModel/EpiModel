@@ -151,8 +151,10 @@ details).</p></dd>
 
 
 <dt id="arg-nested-edapprox">nested.edapprox<a class="anchor" aria-label="anchor" href="#arg-nested-edapprox"></a></dt>
-<dd><p>Logical. If <code>edapprox = TRUE</code> the dissolution
-model is an initial segment of the formation model (see details).</p></dd>
+<dd><p>Logical, only used when <code>edapprox = TRUE</code>. When
+<code>TRUE</code> (the default), the dissolution model must be an initial
+segment of the formation model; when <code>FALSE</code>, the dissolution terms
+need not be nested (see details).</p></dd>
 
 
 <dt id="arg-ergm-ego-popsize">ergm.ego.popsize<a class="anchor" aria-label="anchor" href="#arg-ergm-ego-popsize"></a></dt>
@@ -223,14 +225,17 @@ the vignette for the package <code>tergm</code>.</p>
 <p>It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by <code>netest</code>. The modified values subtracted from the formation
-coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1. The <code>nested.edapprox</code> argument
-toggles whether to implement this modified version by appending the
-dissolution terms to the formation model and appending the relevant values to
-the vector of formation model coefficients (value = <code>FALSE</code>), whereas
-the standard version subtracts the relevant values from the initial formation
-model coefficients (value = <code>TRUE</code>).</p>
+applied by <code>netest</code> for both settings of <code>nested.edapprox</code>. The modified
+values subtracted from the formation coefficients are equivalent to the
+(crude) dissolution coefficients with their target durations increased by 1.
+The <code>nested.edapprox</code> argument does not change this approximation; it only
+controls how it is implemented. When <code>TRUE</code> (the default), the dissolution
+terms are an initial segment of the formation model, so the correction
+values are subtracted in place from the corresponding initial formation
+model coefficients. When <code>FALSE</code>, the dissolution terms need not be nested
+in the formation model: they are appended to the formation model and the
+corresponding correction values are appended to the vector of formation
+model coefficients.</p>
     </div>
     <div class="section level2">
     <h2 id="control-arguments">Control Arguments<a class="anchor" aria-label="anchor" href="#control-arguments"></a></h2>
@@ -338,7 +343,7 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55629ecf6290&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f6f92a0c30&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
