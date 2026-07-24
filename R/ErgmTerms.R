@@ -181,3 +181,75 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
        dependence = FALSE,
        minval = 0)
 }
+
+
+#' @title Definition for edist ERGM Term
+#'
+#' @description This function defines and initializes the edist ERGM term that
+#'              adds one statistic per edge equal to the Euclidean distance
+#'              between the two incident nodes in a space defined by two or more
+#'              numeric nodal coordinates (e.g., latitude and longitude), raised
+#'              to one or more powers.
+#'
+#' @param nw An object of class `network`.
+#' @param arglist A list of arguments as specified in the `ergm.userterms`
+#'        package framework.
+#' @param ... Additional data passed into the function as specified in the
+#'        `ergm.userterms` package framework.
+#'
+#' @details
+#' For an edge between nodes \eqn{i} and \eqn{j} with numeric coordinate
+#' attributes \eqn{x_{i}} (each a vector over the supplied `attr` names), the
+#' per-edge statistic is the Euclidean distance
+#' \eqn{d_{ij} = \sqrt{\sum_k (x_{ik} - x_{jk})^2}} raised to the power `pow`,
+#' i.e., \eqn{d_{ij}^{\mathrm{pow}}}. The term statistic is the sum of
+#' \eqn{d_{ij}^{\mathrm{pow}}} over all edges.
+#'
+#' Unlike an equivalent `edgecov` specification, `edist` computes the distance
+#' on the fly from the length-\eqn{n} coordinate vectors and never materializes
+#' the \eqn{n \times n} distance matrix, so its memory cost is linear rather
+#' than quadratic in network size. Because the statistic is dyad-independent,
+#' the model contribution to the log-odds of an edge is
+#' \eqn{\theta \, d_{ij}^{\mathrm{pow}}}.
+#'
+#' The `pow` argument controls the functional form of that dependence. With
+#' `pow = 1` (the default) the log-odds are linear in Euclidean distance. Other
+#' values make the log-odds non-linear in distance: for example `pow = 2`
+#' yields squared Euclidean distance (a Gaussian-type decay in tie probability),
+#' and larger powers produce sharper declines in tie probability as distance
+#' increases. Supplying a vector of powers adds one statistic per power, so a
+#' single term can capture a polynomial in distance (e.g., `pow = c(1, 2)` fits
+#' \eqn{\theta_1 d_{ij} + \theta_2 d_{ij}^2}).
+#'
+#' @aliases edist
+#'
+InitErgmTerm.edist <- function(nw, arglist, ...) {
+  a <- check.ErgmTerm(nw, arglist,
+                      directed = FALSE,
+                      bipartite = FALSE,
+                      varnames = c("attr", "pow"),
+                      vartypes = c(ERGM_VATTR_SPEC, "numeric"),
+                      defaultvalues = list(NULL, 1),
+                      required = c(TRUE, FALSE))
+
+  coords <- ergm_get_vattr(a$attr, nw, accept = "numeric", multiple = "matrix")
+  coords <- as.matrix(coords)
+  ndim <- ncol(coords)
+  if (ndim < 2) {
+    ergm_Init_abort("The 'edist' term requires two or more numeric nodal ",
+                    "attributes (e.g., 'lat' and 'long'); use 'absdiff' for a ",
+                    "single dimension.")
+  }
+  cname <- attr(coords, "name")
+  pow <- a$pow
+
+  suffix <- ifelse(pow == 1, "", paste0(".pow", pow))
+  coef.names <- paste0("edist.", cname, suffix)
+
+  list(name = "edist",
+       coef.names = coef.names,
+       pkgname = "EpiModel",
+       inputs = c(ndim, length(pow), pow, as.vector(coords)),
+       dependence = FALSE,
+       emptynwstats = numeric(length(pow)))
+}

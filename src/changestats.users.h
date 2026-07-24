@@ -9,6 +9,7 @@
 
 CHANGESTAT_FN(d_absdiffnodemix);
 CHANGESTAT_FN(d_absdiffby);
+CHANGESTAT_FN(d_edist);
 C_CHANGESTAT_FN(c_fuzzynodematch);
 
 #endif

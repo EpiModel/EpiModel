@@ -69,6 +69,74 @@ test_that("EpiModel terms produce correct change statistics", {
                check.attributes = FALSE)
 })
 
+context("edist Term")
+
+lat  <- runif(50, 25, 32)
+long <- runif(50, 52, 81)
+nw_e <- nw
+nw_e %v% "lat"  <- lat
+nw_e %v% "long" <- long
+
+test_that("netest works for the edist term", {
+  skip_on_cran()
+  est <- netest(nw_e, formation = ~edges + edist(c("lat", "long")),
+                target.stats = c(25, 25 * 8),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  expect_is(est, "netest")
+})
+
+test_that("edist produces correct summary statistics", {
+  skip_on_cran()
+  nw1 <- san(nw_e ~ edges, target.stats = c(40))
+  el1 <- as.edgelist(nw1)
+  d2 <- (lat[el1[, 1]] - lat[el1[, 2]])^2 + (long[el1[, 1]] - long[el1[, 2]])^2
+
+  # pow = 1 is true Euclidean distance
+  expect_equal(summary(nw1 ~ edist(c("lat", "long"))),
+               sum(sqrt(d2)), check.attributes = FALSE)
+  # pow = 2 is squared Euclidean distance
+  expect_equal(summary(nw1 ~ edist(c("lat", "long"), pow = 2)),
+               sum(d2), check.attributes = FALSE)
+  # fractional power
+  expect_equal(summary(nw1 ~ edist(c("lat", "long"), pow = 1.5)),
+               sum(d2^0.75), check.attributes = FALSE)
+  # a vector of powers yields one statistic per power, in order
+  expect_equal(summary(nw1 ~ edist(c("lat", "long"), pow = c(1, 2))),
+               c(sum(sqrt(d2)), sum(d2)), check.attributes = FALSE)
+  # coefficient names distinguish the powers
+  expect_equal(names(summary(nw1 ~ edist(c("lat", "long"), pow = c(1, 2)))),
+               c("edist.lat.long", "edist.lat.long.pow2"))
+})
+
+test_that("edist produces correct change statistics", {
+  skip_on_cran()
+  nw1 <- simulate(nw_e ~ edges, coef = c(-3),
+                  monitor = ~edist(c("lat", "long")) + edist(c("lat", "long"), pow = 2))
+  stats1 <- attr(nw1, "stats")
+  el1 <- as.edgelist(nw1)
+  d2 <- (lat[el1[, 1]] - lat[el1[, 2]])^2 + (long[el1[, 1]] - long[el1[, 2]])^2
+  expect_equal(stats1[-1], c(sum(sqrt(d2)), sum(d2)), check.attributes = FALSE)
+})
+
+test_that("edist requires at least two dimensions", {
+  skip_on_cran()
+  expect_error(summary(nw_e ~ edist("lat")), "two or more")
+})
+
+test_that("edist supports three or more dimensions", {
+  skip_on_cran()
+  nw3 <- nw_e
+  alt <- runif(50, 0, 100)
+  nw3 %v% "alt" <- alt
+  nw1 <- san(nw3 ~ edges, target.stats = c(40))
+  el1 <- as.edgelist(nw1)
+  d2 <- (lat[el1[, 1]] - lat[el1[, 2]])^2 + (long[el1[, 1]] - long[el1[, 2]])^2 +
+    (alt[el1[, 1]] - alt[el1[, 2]])^2
+  expect_equal(summary(nw1 ~ edist(c("lat", "long", "alt"))),
+               sum(sqrt(d2)), check.attributes = FALSE)
+})
+
 context("fuzzynodematch Term")
 
 test_that("fuzzynodematch works as intended", {

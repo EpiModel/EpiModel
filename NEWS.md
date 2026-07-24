@@ -5,6 +5,7 @@
 ### NEW FEATURES
 
 - Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
+- Add an `edist` ERGM term for spatial network models. It adds one statistic per edge equal to the Euclidean distance between the incident nodes in a space defined by two or more numeric nodal coordinates (e.g., `edist(c("lat", "long"))`), raised to one or more powers via the `pow` argument. `pow = 1` (default) makes the log-odds of a tie linear in distance; other powers give non-linear decay (e.g., `pow = 2` is squared Euclidean distance / Gaussian decay), and a vector such as `pow = c(1, 2)` fits a polynomial in distance. The distance is computed on the fly from the length-`n` coordinate vectors, so memory use is linear rather than quadratic in network size, unlike an equivalent `edgecov` distance matrix.
 
 ### BUG FIXES
 

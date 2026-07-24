@@ -45,6 +45,34 @@ CHANGESTAT_FN(d_absdiffby) {
   UNDO_PREVIOUS_TOGGLES(i);
 }
 
+/* edist */
+
+CHANGESTAT_FN(d_edist) {
+  double change, d2, diff, expo, sign; Vertex t, h; int i, j, k, ndim, npow, coff;
+  ndim = (int) INPUT_PARAM[0];
+  npow = (int) INPUT_PARAM[1];
+  coff = 2 + npow;  /* offset into INPUT_PARAM where coordinate blocks begin */
+  ZERO_ALL_CHANGESTATS(i);
+  FOR_EACH_TOGGLE(i) {
+    t = TAIL(i); h = HEAD(i);
+    d2 = 0.0;
+    for (k = 0; k < ndim; k++) {
+      diff = INPUT_PARAM[coff + k * N_NODES + (t - 1)] - INPUT_PARAM[coff + k * N_NODES + (h - 1)];
+      d2 += diff * diff;
+    }
+    sign = IS_OUTEDGE(t, h) ? -1.0 : 1.0;
+    for (j = 0; j < npow; j++) {
+      /* Euclidean distance raised to expo: (sqrt(d2))^expo == d2^(expo/2) */
+      expo = INPUT_PARAM[2 + j];
+      change = pow(d2, expo / 2.0);
+      CHANGE_STAT[j] += sign * change;
+    }
+    TOGGLE_IF_MORE_TO_COME(i);
+  }
+  UNDO_PREVIOUS_TOGGLES(i);
+}
+
+
 typedef struct {
   int *venues;
   int *lengths;
