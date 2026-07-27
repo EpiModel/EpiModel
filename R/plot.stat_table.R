@@ -228,7 +228,7 @@ plot_stats_table <- function(data, nmstats, method,
     data <- matrix(aperm(data, c(1, 3, 2)), nrow = dim(data)[1] * dim(data)[3])
     colnames(data) <- nmstats
 
-    boxplot(data, ...)
+    boxplot(data, xlab = xlab, ylab = ylab, ...)
 
     for (j in seq_len(nstats)) {
       points(x = j, y = targets[j],
