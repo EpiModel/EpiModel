@@ -12,6 +12,7 @@
 -   Fix the `cumulative.edgelist` recording of the head and tail of nodes. Previously it was inverted. This had no effect on undirected networks but would on directed ones
 -   Fix `param.net` so that values supplied via `data.frame.params` (notably `act.rate`, and the vital-dynamics parameters `a.rate` / `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the constructor's defaults. Closes #1029 and #1031.
 -   Fix `create_scenario_list` and `generate_random_params` so they no longer fail when their input `data.frame` (a `scenarios.df`, or a `param.random.set`) contains a single parameter column. Closes #1045.
+-   Fix the y-axis labels on `plot.netdx()`. The `duration` and `dissolution` plots now default to "Mean Age of Active Ties" and "Proportion of Ties Dissolved" rather than the statistic name. `xlab` and `ylab` are also now honored for `method = "b"`, where they were previously dropped, in both `plot.netdx()` and `plot.netsim(type = "formation")`. Boxplot axes take their own defaults, since their x axis is categorical (one box per statistic) rather than time. Closes #1051.
 
 ### OTHER
 

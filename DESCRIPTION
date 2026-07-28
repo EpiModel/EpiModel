@@ -62,7 +62,7 @@ Suggests:
     plotly (>= 4.10.0),
     rmarkdown,
     shiny,
-    testthat,
+    testthat (>= 3.1.8),
     progressr,
     tidyr
 VignetteBuilder: knitr

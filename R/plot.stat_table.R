@@ -16,6 +16,32 @@ validate_stats_selection <- function(stats_table, data, stats,
   list(data = data, nmstats = nmstats, targets = targets)
 }
 
+## Axis label defaults for `plot_stats_table`.
+##
+## Line plots are drawn over time (or over simulation number, when static), and
+## when `plots.joined` is FALSE each statistic gets its own panel titled with
+## the statistic name, so the shared axis labels are dropped.
+##
+## Box plots differ on both counts. Their x axis is categorical, with one box
+## per statistic, so labeling it "time" would be wrong. They are also always a
+## single panel, so `plots.joined` does not apply to them and must not blank out
+## a caller-supplied label.
+stats_plot_labs <- function(method, plots.joined, dynamic, nstats, nmstats,
+                            xlab = NULL, ylab = NULL) {
+  default.ylab <- if (nstats == 1) nmstats else "Statistic"
+
+  if (method == "b") {
+    return(list(xlab = NVL(xlab, ""), ylab = NVL(ylab, default.ylab)))
+  }
+
+  default.xlab <- if (isTRUE(dynamic)) "time" else "simulation number"
+
+  list(
+    xlab = if (isFALSE(plots.joined)) "" else NVL(xlab, default.xlab),
+    ylab = if (isFALSE(plots.joined)) "" else NVL(ylab, default.ylab)
+  )
+}
+
 plot_stats_table <- function(data, nmstats, method,
                              sim.lines,
                              sim.col = NULL, sim.lwd = NULL, mean.line,
@@ -42,8 +68,10 @@ plot_stats_table <- function(data, nmstats, method,
 
   xlim <- NVL(xlim, c(1, dim(data)[1]))
 
-  xlab <- if (isFALSE(plots.joined)) "" else NVL(xlab, if (isTRUE(dynamic)) "time" else "simulation number")
-  ylab <- if (isFALSE(plots.joined)) "" else NVL(ylab, if (nstats == 1) nmstats else "Statistic")
+  labs <- stats_plot_labs(method, plots.joined, dynamic, nstats, nmstats,
+                          xlab, ylab)
+  xlab <- labs$xlab
+  ylab <- labs$ylab
 
   if (is.null(sim.lwd)) {
     if (dim(data)[3] > 1) {
