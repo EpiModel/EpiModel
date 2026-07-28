@@ -158,9 +158,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     if (type == "duration") {
       data <- if (duration.imputed) x$pages_imptd else x$pages
       stats_table <- x$stats.table.duration
+      ylab <- NVL(ylab, "Mean Age of Active Ties")
     } else { # if type is "dissolution"
       data <- x$prop.diss
       stats_table <- x$stats.table.dissolution
+      ylab <- NVL(ylab, "Proportion of Ties Dissolved")
     }
   }
 

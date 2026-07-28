@@ -402,3 +402,79 @@ test_that("make_stats_table behaves as expected", {
   expect_equal(mst[["Target"]], targs)
   expect_equal(mst[["Pct Diff"]], 100*((stats_1 + stats_2)/2 - targs)/targs)
 })
+
+test_that("stats_plot_labs sets axis label defaults", {
+  # Line plots run over time, or over simulation number when static
+  expect_equal(
+    stats_plot_labs("l", TRUE, TRUE, 1, "edges"),
+    list(xlab = "time", ylab = "edges")
+  )
+  expect_equal(
+    stats_plot_labs("l", TRUE, FALSE, 2, c("edges", "concurrent")),
+    list(xlab = "simulation number", ylab = "Statistic")
+  )
+
+  # Separate panels are titled by statistic, so shared labels are dropped
+  expect_equal(
+    stats_plot_labs("l", FALSE, TRUE, 4, letters[1:4]),
+    list(xlab = "", ylab = "")
+  )
+
+  # Box plots have a categorical x axis and are always a single panel, so
+  # they never take the "time" default and never blank labels out
+  expect_equal(
+    stats_plot_labs("b", TRUE, TRUE, 1, "edges"),
+    list(xlab = "", ylab = "edges")
+  )
+  expect_equal(
+    stats_plot_labs("b", FALSE, TRUE, 4, letters[1:4]),
+    list(xlab = "", ylab = "Statistic")
+  )
+  expect_equal(
+    stats_plot_labs("b", FALSE, TRUE, 4, letters[1:4], "My X", "My Y"),
+    list(xlab = "My X", ylab = "My Y")
+  )
+
+  # Caller-supplied labels always win where labels are drawn at all
+  expect_equal(
+    stats_plot_labs("l", TRUE, TRUE, 1, "edges", "My X", "My Y"),
+    list(xlab = "My X", ylab = "My Y")
+  )
+})
+
+test_that("plot.netdx labels duration and dissolution axes", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est <- netest(nw, ~edges, 15, coef.diss, verbose = FALSE)
+  dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
+
+  # Capture what the box plot method is handed, rather than drawing it
+  seen <- NULL
+  local_mocked_bindings(
+    boxplot = function(x, ...) {
+      seen <<- list(...)
+      invisible(NULL)
+    },
+    points = function(...) invisible(NULL),
+    .package = "EpiModel"
+  )
+
+  plot(dx, type = "duration", method = "b")
+  expect_equal(seen$xlab, "")
+  expect_equal(seen$ylab, "Mean Age of Active Ties")
+
+  plot(dx, type = "dissolution", method = "b")
+  expect_equal(seen$xlab, "")
+  expect_equal(seen$ylab, "Proportion of Ties Dissolved")
+
+  plot(dx, type = "formation", method = "b")
+  expect_equal(seen$xlab, "")
+  expect_equal(seen$ylab, "edges")
+
+  # Caller-supplied labels reach the box plot method
+  plot(dx, type = "duration", method = "b", xlab = "My X", ylab = "My Y")
+  expect_equal(seen$xlab, "My X")
+  expect_equal(seen$ylab, "My Y")
+})
