@@ -227,7 +227,10 @@ check_params_flat <- function(params.flat) {
 #' helper function to check the correctness of the flat parameters names
 #' @noRd
 check_params_names <- function(params.names) {
-  params.pattern <- "^[[:alpha:]][[:alnum:].]*(_[1-9]+)?$"
+  # The position suffix is a decimal integer with no leading zero. The bracket
+  # expression must allow 0 after the first digit, otherwise any position
+  # containing a 0 (`_10`, `_20`, `_100`) is rejected while its neighbors pass.
+  params.pattern <- "^[[:alpha:]][[:alnum:].]*(_[1-9][0-9]*)?$"
   correct.format <- grepl(params.pattern, params.names)
 
   if (!all(correct.format)) {
@@ -239,10 +242,15 @@ check_params_names <- function(params.names) {
     )
   }
 
-  special.params.names <- list_special_params(params.names)
-  if (length(special.params.names) != 0) {
+  # Reserved names must be rejected when they carry a position suffix as well as
+  # when they are scalar. `unflatten_params` strips the suffix, so a table with
+  # `random.params_1` and `random.params_2` would otherwise rebuild a forbidden
+  # `random.params` element.
+  base.names <- sub("_[0-9]+$", "", params.names)
+  is.special <- base.names %in% list_special_params(base.names)
+  if (any(is.special)) {
     stop("The following special parameter names are not allowed: \n`",
-      paste0(special.params.names, collapse = "`, `"), "`\n\n"
+      paste0(params.names[is.special], collapse = "`, `"), "`\n\n"
     )
   }
 
