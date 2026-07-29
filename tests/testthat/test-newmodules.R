@@ -555,6 +555,102 @@ test_that("Load parameters from data.frame", {
   expect_error(param <- param.net_from_table(params.df))
 })
 
+test_that("parameter vectors with ten or more elements round trip", {
+  skip_on_cran()
+
+  # The position suffix pattern was `(_[1-9]+)?`, which rejected any position
+  # containing a zero. `x_10` failed while `x_11` passed.
+  p <- param.net(inf.prob = 0.3, x = 1:10)
+  tbl <- param.net_to_table(p)
+  expect_true(all(paste0("x_", 1:10) %in% tbl$param))
+
+  back <- param.net_from_table(tbl)
+  expect_equal(back$x, as.numeric(1:10))
+  expect_equal(back$inf.prob, 0.3)
+
+  # Three-digit positions, and positions that are multiples of ten.
+  p100 <- param.net(y = seq_len(100) / 10)
+  expect_equal(param.net_from_table(param.net_to_table(p100))$y,
+               seq_len(100) / 10)
+
+  # Non-numeric vectors longer than nine elements.
+  p.chr <- param.net(z = letters[1:12])
+  expect_equal(param.net_from_table(param.net_to_table(p.chr))$z, letters[1:12])
+
+  # Zero and leading-zero positions are still malformed.
+  for (nm in c("x_0", "x_01", "x_007")) {
+    bad <- data.frame(param = nm, value = "1", type = "numeric",
+                      stringsAsFactors = FALSE)
+    expect_error(param.net_from_table(bad), "malformed")
+  }
+
+  # Names that merely end in digits are unaffected.
+  ok <- data.frame(param = c("beta2", "paramSet10"), value = c("1", "2"),
+                   type = rep("numeric", 2), stringsAsFactors = FALSE)
+  expect_silent(ok.param <- param.net_from_table(ok))
+  expect_equal(ok.param$beta2, 1)
+  expect_equal(ok.param$paramSet10, 2)
+
+  # The scenario path shares `unflatten_params`.
+  sc.df <- data.frame(.scenario.id = "s1", .at = 1, inf.prob = 0.3,
+                      stringsAsFactors = FALSE)
+  for (i in 1:12) sc.df[[paste0("v_", i)]] <- i
+  sc <- create_scenario_list(sc.df)
+  expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
+})
+
+test_that("reserved parameter names are rejected with and without a suffix", {
+  skip_on_cran()
+
+  # Scalar reserved names were already rejected.
+  for (nm in c("random.params", "random.params.values")) {
+    df <- data.frame(param = c("inf.prob", nm), value = c("0.3", "1"),
+                     type = rep("numeric", 2), stringsAsFactors = FALSE)
+    expect_error(param.net_from_table(df), "not allowed")
+  }
+
+  # Dot-prefixed internals are caught earlier, by the name format check, since
+  # a flat parameter name must begin with a letter.
+  for (nm in c(".param.updater.list", ".param.updater.list_1")) {
+    df <- data.frame(param = c("inf.prob", nm), value = c("0.3", "1"),
+                     type = rep("numeric", 2), stringsAsFactors = FALSE)
+    expect_error(param.net_from_table(df), "malformed")
+  }
+
+  # Suffixed reserved names bypassed the guard, and `unflatten_params` then
+  # rebuilt the forbidden parameter from the pieces.
+  df <- data.frame(
+    param = c("inf.prob", "random.params_1", "random.params_2"),
+    value = c("0.3", "1", "2"),
+    type  = rep("numeric", 3),
+    stringsAsFactors = FALSE
+  )
+  expect_error(param.net_from_table(df), "not allowed")
+  # The error names the offending entries as the user wrote them.
+  expect_error(param.net_from_table(df), "random.params_1")
+
+  df2 <- data.frame(
+    param = c("inf.prob", "random.params.values_1"),
+    value = c("0.3", "1"),
+    type  = rep("numeric", 2),
+    stringsAsFactors = FALSE
+  )
+  expect_error(param.net_from_table(df2), "not allowed")
+
+  # Same guard through the scenario path.
+  sc.df <- data.frame(.scenario.id = "s1", .at = 1, inf.prob = 0.3,
+                      random.params_1 = 1, random.params_2 = 2,
+                      check.names = FALSE, stringsAsFactors = FALSE)
+  expect_error(create_scenario_list(sc.df), "not allowed")
+
+  # Ordinary parameters whose names merely start with a reserved prefix are
+  # still accepted.
+  ok <- data.frame(param = c("random.params.mine", "random.paramsX"),
+                   value = c("1", "2"), type = rep("numeric", 2),
+                   stringsAsFactors = FALSE)
+  expect_silent(param.net_from_table(ok))
+})
+
 test_that("param.net preserves data.frame.params values against constructor defaults", {
   skip_on_cran()
 
