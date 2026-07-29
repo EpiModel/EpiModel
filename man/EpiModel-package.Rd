@@ -108,8 +108,9 @@ initial conditions, and controls defined above.
 }
 
 Network models may also use multiple network layers over a shared node set,
-for example separate sexual and needle-sharing contact networks. Layers are
-estimated separately and combined for simulation with \code{\link[=multilayer]{multilayer()}}.
+for example separate sexual and needle-sharing contact networks. Each layer
+is estimated separately and the fits are passed together to \code{\link[=netsim]{netsim()}}, with
+\code{\link[=multilayer]{multilayer()}} specifying any controls that vary by layer.
 }
 
 \section{Extending the Built-In Models}{
@@ -163,10 +164,13 @@ Beyond the package documentation:
 \itemize{
 \item The \strong{Network Modeling for Epidemics} course materials provide a full
 treatment of network model theory, estimation, diagnostics, and
-epidemic simulation, at \url{https://epimodel.github.io/sismid/}.
+epidemic simulation, followed by the extension API and advanced
+topics such as multi-layer networks and epidemics over fully observed
+networks, at \url{https://epimodel.github.io/sismid/}.
 \item The \strong{EpiModel Gallery} provides worked extension models, from adding a
 single compartment through multi-stage disease models with
-interventions, at \url{https://epimodel.github.io/EpiModel-Gallery/}.
+interventions and cost-effectiveness analysis, at
+\url{https://epimodel.github.io/EpiModel-Gallery/}.
 \item The \strong{EpiModel website} collects these resources and a suggested
 learning pathway, at \url{https://www.epimodel.org/}.
 }

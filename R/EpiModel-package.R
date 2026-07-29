@@ -95,8 +95,9 @@
 #'
 #'
 #' Network models may also use multiple network layers over a shared node set,
-#' for example separate sexual and needle-sharing contact networks. Layers are
-#' estimated separately and combined for simulation with [multilayer()].
+#' for example separate sexual and needle-sharing contact networks. Each layer
+#' is estimated separately and the fits are passed together to [netsim()], with
+#' [multilayer()] specifying any controls that vary by layer.
 #'
 #' @section Extending the Built-In Models:
 #' Research applications typically require disease states or processes beyond
@@ -144,10 +145,13 @@
 #'
 #'  * The **Network Modeling for Epidemics** course materials provide a full
 #'        treatment of network model theory, estimation, diagnostics, and
-#'        epidemic simulation, at <https://epimodel.github.io/sismid/>.
+#'        epidemic simulation, followed by the extension API and advanced
+#'        topics such as multi-layer networks and epidemics over fully observed
+#'        networks, at <https://epimodel.github.io/sismid/>.
 #'  * The **EpiModel Gallery** provides worked extension models, from adding a
 #'        single compartment through multi-stage disease models with
-#'        interventions, at <https://epimodel.github.io/EpiModel-Gallery/>.
+#'        interventions and cost-effectiveness analysis, at
+#'        <https://epimodel.github.io/EpiModel-Gallery/>.
 #'  * The **EpiModel website** collects these resources and a suggested
 #'        learning pathway, at <https://www.epimodel.org/>.
 #'
