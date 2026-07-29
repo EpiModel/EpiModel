@@ -137,9 +137,11 @@
 #' EpiModel.
 #'
 #' This data.frame is then passed in to `param.net` under a
-#' `data.frame.params` argument (`data.frame.parameters` is also accepted as
-#' a deprecated alias). Further details and examples are provided in the
-#' "Working with Model Parameters in EpiModel" vignette.
+#' `data.frame.params` argument. Further details and examples are provided in
+#' the "Working with Model Parameters in EpiModel" vignette. Note that releases
+#' through v2.6.1 documented this argument as `data.frame.parameters`, which
+#' was never an accepted name; passing it now produces an error pointing to
+#' `data.frame.params`.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
@@ -209,6 +211,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   # Get arguments
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
+
+  # "data.frame.parameters" was documented in error through v2.6.1; it was
+  # never an accepted argument name, and would otherwise be silently stored
+  # as a parameter of that name without unpacking the table
+  if ("data.frame.parameters" %in% names.dot.args) {
+    stop("The data.frame.parameters argument is not accepted. ",
+         "Use data.frame.params instead.")
+  }
 
   # Use "data.frame.params" as default if available
   if ("data.frame.params" %in% names.dot.args) {
@@ -1365,6 +1375,11 @@ crosscheck.net <- function(x, param, init, control) {
 #'
 #' @return an object of class `multilayer` containing the specified
 #'         control arguments
+#'
+#' @seealso [netsim()] for passing a list of [netest()] fits, one per layer.
+#'   The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+#'   chapter of the Network Modeling for Epidemics course materials works
+#'   through a two-layer model in full.
 #'
 #' @export
 #'
