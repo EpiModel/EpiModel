@@ -25,3 +25,13 @@ multilayer(...)
 
 an object of class `multilayer` containing the specified control
 arguments
+
+## See also
+
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+for passing a list of
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+fits, one per layer. The [Multi-Layer
+Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+chapter of the Network Modeling for Epidemics course materials works
+through a two-layer model in full.

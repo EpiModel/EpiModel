@@ -194,7 +194,12 @@ needle-sharing networks), pass a list of
 [`netest`](https://epimodel.github.io/EpiModel/reference/netest.md)
 objects to the `x` argument, one per network layer. Each layer has its
 own formation/dissolution dynamics but shares the same node set. See the
-`multilayer` documentation and `test-multinets.R` for examples.
+[`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+documentation for specifying controls that vary by layer, and the
+[Multi-Layer
+Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+chapter of the Network Modeling for Epidemics course materials for a
+worked example building from independent to cross-dependent layers.
 
 ## Restarting and Checkpointing
 
