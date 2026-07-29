@@ -17,9 +17,11 @@
 ### OTHER
 
 - `netsim()` now validates that each per-step module returns the `netsim_dat` object. When a custom module forgets `return(dat)` (or otherwise returns the wrong type), the simulation now stops with a clear error naming the offending module and pointing at the likely cause, instead of failing on the next module with the cryptic `argument "dat" is missing`. Closes #987.
+- Rewrote the `?EpiModel-package` overview. It now describes the current API rather than the v2.4-era one: the three model classes and what distinguishes them, the setup and simulation functions for each, the network-only extension API and its accessor functions, how to work with simulation output, and pointers to the vignettes, the NME course materials, and the EpiModel Gallery. This removes the stale claim that controls accept new modules for ICMs (removed in v2.6.1) and the hand-maintained version/date/license table, which duplicated `DESCRIPTION`, was already out of date, and displaced the package description on the help page.
+- Replaced two dead EpiModel Gallery links in historical NEWS entries with the corresponding Network Modeling for Epidemics course chapters on multi-layer networks and epidemics over observed networks.
 - Removed stale ICM custom-module / original-model language from `?icm`, `?param.icm`, and `?init.icm` that lingered after #980. The help pages now state plainly that ICMs support the built-in SI, SIR, and SIS disease types only and direct custom-model users to `netsim()` / `control.net(type = NULL, ...)`. Closes #1032.
 - Increase `make_module_list` verbosity. It now `message`s if `control$module.order` is not provided and list the modules and there order.
-- `control.net()` now validates `module.order` at construction time. Entries that don't correspond to a `.FUN` argument supplied to `control.net()` (typos, or names whose function was never passed) now produce a clear error rather than a cryptic NULL-as-function failure at runtime. `initialize.FUN` and `verbose.FUN` are explicitly rejected from `module.order` since they run outside the per-step module loop and would double-execute if included. Additionally, `control.net()` now warns at construction time when a custom `module.order` is set but omits `resim_nets.FUN`, `summary_nets.FUN`, or `nwupdate.FUN` — three built-ins whose absence typically produces silently incorrect simulations rather than visible errors. The warning is suppressed for built-ins that the user has explicitly disabled by passing `NULL`. Resolves the remaining cryptic-error footgun from #988 and the silent-failure surface that motivated #1030.
+- `control.net()` now validates `module.order` at construction time. Entries that don't correspond to a `.FUN` argument supplied to `control.net()` (typos, or names whose function was never passed) now produce a clear error rather than a cryptic NULL-as-function failure at runtime. `initialize.FUN` and `verbose.FUN` are explicitly rejected from `module.order` since they run outside the per-step module loop and would double-execute if included. Additionally, `control.net()` now warns at construction time when a custom `module.order` is set but omits `resim_nets.FUN`, `summary_nets.FUN`, or `nwupdate.FUN`. These are three built-ins whose absence typically produces silently incorrect simulations rather than visible errors. The warning is suppressed for built-ins that the user has explicitly disabled by passing `NULL`. Resolves the remaining cryptic-error footgun from #988 and the silent-failure surface that motivated #1030.
 
 ## EpiModel 2.6.1
 
@@ -121,7 +123,7 @@
 
 ### NEW FEATURES
 
--   Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/examples/multinets/).
+-   Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found in the [Multi-Layer Networks tutorial](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html) of the Network Modeling for Epidemics course materials.
 -   Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.
 -   Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
 
@@ -162,7 +164,7 @@
 
 -   Fix `get_sims` not properly subsetting `el.cuml` and `_last_unique_id`.
 -   Fix parallel memory leak in `netsim`.
--   Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://epimodel.github.io/EpiModel-Gallery/examples/observed-network-data/).
+-   Rework the network resimulation module to allow for working with observed network data. See [Epidemics over Observed Networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html) in the Network Modeling for Epidemics course materials.
 -   Fix error message for tergmLite/resimulate.network collision
 
 ### OTHER
