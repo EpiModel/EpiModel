@@ -1376,6 +1376,11 @@ crosscheck.net <- function(x, param, init, control) {
 #' @return an object of class `multilayer` containing the specified
 #'         control arguments
 #'
+#' @seealso [netsim()] for passing a list of [netest()] fits, one per layer.
+#'   The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+#'   chapter of the Network Modeling for Epidemics course materials works
+#'   through a two-layer model in full.
+#'
 #' @export
 #'
 multilayer <- function(...) {
