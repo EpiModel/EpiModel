@@ -592,6 +592,30 @@ test_that("param.net preserves data.frame.params values against constructor defa
   expect_false(p_no_vital$vital)
 })
 
+test_that("param.net rejects the misdocumented data.frame.parameters name", {
+  skip_on_cran()
+
+  # Regression for #1031: releases through v2.6.1 documented the table argument
+  # as `data.frame.parameters`, which the constructor never accepted. It used to
+  # fall through to `...` and be stored as a parameter of that name, leaving the
+  # table unpacked and the model silently misparameterized.
+  params.df <- data.frame(
+    param = c("inf.prob", "act.rate"),
+    value = c("0.3", "2"),
+    type  = rep("numeric", 2),
+    stringsAsFactors = FALSE
+  )
+  expect_error(
+    param.net(data.frame.parameters = params.df),
+    "Use data.frame.params instead"
+  )
+
+  # The correct name still works.
+  p <- param.net(data.frame.params = params.df)
+  expect_equal(p$inf.prob, 0.3)
+  expect_equal(p$act.rate, 2)
+})
+
 context("Random Parameter Generators")
 
 test_that("Random parameters generators", {
