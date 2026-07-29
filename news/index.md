@@ -19,6 +19,25 @@
 
 - Fix `list_special_params` so `param.net_from_table` correctly fails if
   a reserved parameter name is passed in the parameter table.
+- Fix the flat parameter name pattern so vector positions containing a
+  zero are accepted. The suffix was matched with `(_[1-9]+)?`, which
+  rejected `x_10`, `x_20`, and `x_100` while accepting `x_11` and
+  `x_99`, so
+  [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
+  and
+  [`param.net_from_table()`](https://epimodel.github.io/EpiModel/reference/param.net_from_table.md)
+  failed on any parameter vector longer than nine elements. Positions of
+  `0` or with a leading zero (`x_0`, `x_01`) remain malformed. This also
+  affects
+  [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
+  and `param.random.set`, which share the same name check.
+- Fix the reserved parameter name guard so it also rejects reserved
+  names carrying a vector position suffix. A table containing
+  `random.params_1` and `random.params_2` passed the check, and the
+  parameter list was then rebuilt with a forbidden `random.params`
+  element holding numeric values instead of generator functions. The
+  guard now compares against the name with its suffix removed, and
+  reports the offending entries as the user wrote them.
 - Fix the `cumulative.edgelist` recording of the head and tail of nodes.
   Previously it was inverted. This had no effect on undirected networks
   but would on directed ones
