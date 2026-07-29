@@ -1177,11 +1177,16 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Check that prevalence in NW attr status and initial conditions match
       if (statOnNw == TRUE) {
-        nw1 <- sum(get_vertex_attribute(nw, "status") == 1)
+        # Network status values are the character codes "s", "i", and "r", as
+        # required by statOnNw above. Comparing against 1 never matched, so this
+        # counted 0 infected nodes regardless of the network and warned on every
+        # model that set both a status attribute and i.num, including ones where
+        # the two agreed.
+        nw1 <- sum(get_vertex_attribute(nw, "status") == "i")
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
-          warning("Overriding init infected settings with network
-                  status attribute", immediate. = TRUE)
+          warning("Overriding init infected settings with network status ",
+                  "attribute", immediate. = TRUE)
         }
       }
 
