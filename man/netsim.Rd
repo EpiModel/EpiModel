@@ -153,7 +153,10 @@ For models with multiple overlapping network layers (e.g., sexual and
 needle-sharing networks), pass a list of \code{\link{netest}} objects to the \code{x}
 argument, one per network layer. Each layer has its own
 formation/dissolution dynamics but shares the same node set. See the
-\code{multilayer} documentation and \code{test-multinets.R} for examples.
+\code{\link{multilayer}} documentation for specifying controls that vary by layer, and
+the \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
+chapter of the Network Modeling for Epidemics course materials for a worked
+example building from independent to cross-dependent layers.
 }
 
 \section{Restarting and Checkpointing}{

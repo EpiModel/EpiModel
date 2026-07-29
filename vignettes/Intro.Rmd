@@ -182,8 +182,8 @@ We recommend the following tiered sequence for learning EpiModel, consistent wit
 
 ### Intermediate
 
-- **NME Course, Section II (Chapters 36--49):** [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) materials covering the extension API for building custom models with novel disease states, demographics, and interventions.
-- **EpiModel Gallery:** A library of worked extension model templates demonstrating custom disease states, demographics, interventions, and multi-layer networks (<https://epimodel.github.io/EpiModel-Gallery/>).
+- **NME Course, Section II (Chapters 36--49):** [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) materials covering the extension API for building custom models with new disease states, demographics, and interventions, along with advanced topics including [multi-layer networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html) and [epidemics over observed networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html).
+- **EpiModel Gallery:** A library of worked extension model templates demonstrating custom disease states, demographics, interventions, and cost-effectiveness analysis (<https://epimodel.github.io/EpiModel-Gallery/>).
 
 ### Advanced
 
