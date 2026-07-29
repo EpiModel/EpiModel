@@ -25,8 +25,14 @@
 - Fix `param.net` so that values supplied via `data.frame.params`
   (notably `act.rate`, and the vital-dynamics parameters `a.rate` /
   `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the
-  constructor’s defaults. Closes
-  [\#1029](https://github.com/EpiModel/EpiModel/issues/1029) and
+  constructor’s defaults. Also corrected the
+  [`?param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  help, which through v2.6.1 documented the parameter table argument as
+  `data.frame.parameters`. That name was never accepted by the
+  constructor: a table passed under it fell through to `...` and was
+  silently stored as a parameter of that name, leaving the table
+  unpacked. It now produces an error pointing to `data.frame.params`.
+  Closes [\#1029](https://github.com/EpiModel/EpiModel/issues/1029) and
   [\#1031](https://github.com/EpiModel/EpiModel/issues/1031).
 - Fix `create_scenario_list` and `generate_random_params` so they no
   longer fail when their input `data.frame` (a `scenarios.df`, or a
