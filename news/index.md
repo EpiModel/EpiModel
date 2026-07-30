@@ -19,6 +19,16 @@
 
 - Fix `list_special_params` so `param.net_from_table` correctly fails if
   a reserved parameter name is passed in the parameter table.
+- Fix the infected-count comparison in
+  [`crosscheck.net()`](https://epimodel.github.io/EpiModel/reference/crosscheck.net.md).
+  Built-in network statuses are the character codes `"s"`, `"i"`, and
+  `"r"`, but the count used `status == 1`, which never matches a
+  character vector. The count was therefore always 0, so the “Overriding
+  init infected settings with network status attribute” warning fired on
+  every model that supplied both a `status` vertex attribute and
+  `i.num`, including models where the two agreed. The comparison now
+  uses `status == "i"`, and the warning fires only on a genuine
+  mismatch.
 - Fix the flat parameter name pattern so vector positions containing a
   zero are accepted. The suffix was matched with `(_[1-9]+)?`, which
   rejected `x_10`, `x_20`, and `x_100` while accepting `x_11` and
