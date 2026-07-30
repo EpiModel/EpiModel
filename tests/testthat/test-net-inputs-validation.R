@@ -162,6 +162,74 @@ test_that("crosscheck.net validates status.vector length and values", {
                "values other than")
 })
 
+test_that("crosscheck.net compares network status against i.num correctly", {
+  skip_on_cran()
+
+  # Built-in network statuses are the character codes "s", "i", and "r". The
+  # infected count was taken with `status == 1`, which never matches a character
+  # vector, so the count was always 0 and the override warning fired on every
+  # model that set both a status attribute and i.num, matching or not.
+  build_status_est <- function(n.inf, n = 20) {
+    nw <- network_initialize(n = n)
+    nw <- set_vertex_attribute(nw, "status",
+                               rep(c("i", "s"), c(n.inf, n - n.inf)))
+    netest(nw,
+           formation = ~edges,
+           target.stats = 5,
+           coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+           verbose = FALSE)
+  }
+
+  msg <- "Overriding init infected settings"
+
+  # Matching counts must not warn.
+  est5 <- build_status_est(5)
+  expect_no_warning(
+    EpiModel:::crosscheck.net(est5, param.net(inf.prob = 0.3),
+                              init.net(i.num = 5), ctrl_small("SI")),
+    message = msg
+  )
+
+  # Mismatching counts must warn.
+  expect_warning(
+    EpiModel:::crosscheck.net(est5, param.net(inf.prob = 0.3),
+                              init.net(i.num = 12), ctrl_small("SI")),
+    msg
+  )
+
+  # A network with no infected nodes and a nonzero i.num is also a mismatch.
+  est0 <- build_status_est(0)
+  expect_warning(
+    EpiModel:::crosscheck.net(est0, param.net(inf.prob = 0.3),
+                              init.net(i.num = 5), ctrl_small("SI")),
+    msg
+  )
+
+  # Two-group models compare the network total against i.num + i.num.g2.
+  nw2 <- network_initialize(n = 20)
+  nw2 <- set_vertex_attribute(nw2, "group", rep(1:2, each = 10))
+  nw2 <- set_vertex_attribute(nw2, "status",
+                              c(rep(c("i", "s"), c(3, 7)),
+                                rep(c("i", "s"), c(2, 8))))
+  est2g <- netest(nw2, formation = ~edges, target.stats = 5,
+                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                  verbose = FALSE)
+  expect_no_warning(
+    EpiModel:::crosscheck.net(est2g,
+                              param.net(inf.prob = 0.3, inf.prob.g2 = 0.2),
+                              init.net(i.num = 3, i.num.g2 = 2),
+                              ctrl_small("SI")),
+    message = msg
+  )
+  expect_warning(
+    EpiModel:::crosscheck.net(est2g,
+                              param.net(inf.prob = 0.3, inf.prob.g2 = 0.2),
+                              init.net(i.num = 6, i.num.g2 = 4),
+                              ctrl_small("SI")),
+    msg
+  )
+})
+
 test_that("crosscheck.net requires i.num.g2 in two-group models", {
   skip_on_cran()
   est <- build_small_est(two_group = TRUE)
