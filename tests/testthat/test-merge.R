@@ -238,3 +238,103 @@ test_that("merge and print work as expected for save.other", {
   expect_true(is.null(mod3[["run"]]))
   expect_true(is.null(mod3[["el"]]))
 })
+
+# per-simulation slots ----------------------------------------------------
+
+# A run carrying every per-simulation slot: the saved run state, networks,
+# network statistics, transmission matrices, dissolution statistics, cumulative
+# edgelists, a `save.other` element, and both kinds of record.
+build_slots_sim <- function(nsims = 3) {
+  rec <- function(dat, at) {
+    dat <- record_raw_object(dat, at, "note", list(step = at))
+    dat <- record_attr_history(dat, at, "i.count", posit_ids = 1,
+                               values = sum(get_attr(dat, "status") == "i"))
+    dat$my.other <- at
+    return(dat)
+  }
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = NULL, nsteps = 5, nsims = nsims,
+                         infection.FUN = infection.net, records.FUN = rec,
+                         tergmLite = FALSE, resimulate.network = TRUE,
+                         save.run = TRUE, save.network = TRUE,
+                         save.nwstats = TRUE, save.transmat = TRUE,
+                         save.diss.stats = TRUE, cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         save.other = "my.other", verbose = FALSE)
+  netsim(est, param.net(inf.prob = 0.5), init.net(i.num = 5), control)
+}
+
+test_that("merge.netsim combines every per-simulation slot", {
+  skip_on_cran()
+  x <- build_slots_sim()
+  y <- build_slots_sim()
+
+  z <- merge(x, y)
+  expect_equal(z$control$nsims, 6)
+  for (path in netsim_sim_slots(z)) {
+    expect_equal(length(z[[path]]), 6, info = paste(path, collapse = "$"))
+    expect_equal(names(z[[path]]), paste0("sim", 1:6),
+                 info = paste(path, collapse = "$"))
+    ## the second object's simulations follow the first object's
+    expect_equal(z[[path]][[4]], y[[path]][[1]],
+                 info = paste(path, collapse = "$"))
+  }
+  expect_equal(ncol(z$epi$i.num), 6)
+  expect_s3_class(z$stats$transmat, "transmat")
+})
+
+test_that("splitting and merging a netsim returns the original simulations", {
+  skip_on_cran()
+  x <- build_slots_sim()
+
+  z <- merge(get_sims(x, sims = 1), get_sims(x, sims = 2:3))
+  expect_equal(z$control$nsims, x$control$nsims)
+  for (path in netsim_sim_slots(z)) {
+    expect_equal(z[[path]], x[[path]], info = paste(path, collapse = "$"))
+  }
+  expect_equal(unname(as.matrix(z$epi$i.num)), unname(as.matrix(x$epi$i.num)))
+  expect_equal(names(z$epi$i.num), names(x$epi$i.num))
+})
+
+test_that("merge.netsim keep arguments still drop their slots", {
+  skip_on_cran()
+  x <- build_slots_sim(nsims = 2)
+  y <- build_slots_sim(nsims = 2)
+
+  z <- merge(x, y, keep.transmat = FALSE, keep.network = FALSE,
+             keep.nwstats = FALSE, keep.other = FALSE, keep.diss.stats = FALSE)
+  expect_null(z$stats$transmat)
+  expect_null(z$network)
+  expect_null(z$stats$nwstats)
+  expect_null(z$my.other)
+  expect_null(z$diss.stats)
+
+  ## the slots without a keep argument are still merged
+  expect_equal(length(z$run), 4)
+  expect_equal(length(z$coef.form), 4)
+  expect_equal(length(z$cumulative.edgelist), 4)
+  expect_equal(length(z$attr.history), 4)
+  expect_equal(length(z$raw.records), 4)
+})
+
+test_that("merge.netsim accepts controls built by separate calls", {
+  skip_on_cran()
+  nw <- network_initialize(n = 30)
+  est <- netest(nw, formation = ~edges, target.stats = 15,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  run.one <- function() {
+    netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5),
+           control.net(type = "SI", nsteps = 3, nsims = 1, verbose = FALSE))
+  }
+
+  ## the two controls hold equal but not identical statnet control objects,
+  ## whose formula environments differ between calls
+  z <- merge(run.one(), run.one())
+  expect_equal(z$control$nsims, 2)
+  expect_equal(ncol(z$epi$i.num), 2)
+})

@@ -21,7 +21,10 @@ selecting the average simulation from the set if \code{sims = "mean"}.}
 \value{
 An updated object of class \code{netsim} containing only the
 simulations specified in \code{sims} and the variables specified in
-\code{var}.
+\code{var}. Every per-simulation element of the object is subset
+together, in the order given in \code{sims}, and renumbered \code{sim1} to
+\code{simN}, so that the result is structured as a run of \code{length(sims)}
+simulations.
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of

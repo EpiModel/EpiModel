@@ -186,17 +186,20 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   ## Check params
   check1 <- identical(param_without_random_values(x$param),
                       param_without_random_values(y$param))
-  check2 <- identical(x$control[-which(names(x$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))],
-                      y$control[-which(names(y$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))])
+  ## these carry formulas, whose environments differ between two calls to
+  ## `control.net`, so they are compared by value below rather than by identity
+  env.controls <- c("monitors", "nwstats.formula", "set.control.ergm",
+                    "set.control.tergm")
 
-  ## handle formulas separately due to environments
+  check2 <- identical(x$control[-which(names(x$control) %in%
+                                         c("nsims", env.controls))],
+                      y$control[-which(names(y$control) %in%
+                                         c("nsims", env.controls))])
+
   check2 <- check2 &&
-    isTRUE(all.equal(x$control$monitors, y$control$monitors)) &&
-    isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
+    all(vapply(env.controls,
+               function(nm) isTRUE(all.equal(x$control[[nm]], y$control[[nm]])),
+               logical(1)))
 
   if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
@@ -219,62 +222,35 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     names(z$epi[[i]]) <- newnames
   }
 
-  ## Transmission matrix
-  if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
-        !is.null(y$stats$transmat)) {
-    z$stats$transmat <- c(x$stats$transmat, y$stats$transmat)
-    names(z$stats$transmat) <- newnames
-  } else {
-    z$stats$transmat <- NULL
+  ## `save.other` must name the same elements in both objects for them to be
+  ## combined
+  if (keep.other == TRUE && !is.null(x$control$save.other) &&
+        !is.null(y$control$save.other) &&
+        !identical(x$control$save.other, y$control$save.other)) {
+    stop("Elements in save.other differ between x and y")
   }
 
-  ## Network objects
-  if (keep.network == TRUE && !is.null(x$network) && !is.null(y$network)) {
-    z$network <- c(x$network, y$network)
-    names(z$network) <- newnames
+  ## slots the caller asked to drop rather than merge
+  dropped <- c(
+    if (keep.transmat == FALSE) "stats$transmat",
+    if (keep.network == FALSE) "network",
+    if (keep.nwstats == FALSE) "stats$nwstats",
+    if (keep.diss.stats == FALSE) "diss.stats",
+    if (keep.other == FALSE) x$control$save.other
+  )
 
-  } else {
-    z$network <- NULL
-  }
-
-  ## Network statistics
-  if (keep.nwstats == TRUE && !is.null(x$stats$nwstats) && !is.null(y$stats$nwstats)) {
-    z$stats$nwstats <- c(x$stats$nwstats, y$stats$nwstats)
-    names(z$stats$nwstats) <- newnames
-  } else {
-    z$stats$nwstats <- NULL
-  }
-
-  ## Other
-  if (!is.null(x$control$save.other) && !is.null(y$control$save.other)) {
-    other.x <- x$control$save.other
-    other.y <- y$control$save.other
-    if (keep.other == TRUE) {
-      if (!identical(other.x, other.y)) {
-        stop("Elements in save.other differ between x and y")
-      }
-      new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
-      for (j in seq_along(other.x)) {
-        for (i in new.range) {
-          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
-        }
-        if (!is.null(z[[other.x[j]]])) {
-          names(z[[other.x[j]]]) <- newnames
-        }
-      }
+  ## every other slot holding one element per simulation is concatenated. A
+  ## slot that only one of the objects carries is dropped rather than left
+  ## holding one object's simulations alone
+  for (path in netsim_sim_slots(x)) {
+    if (paste(path, collapse = "$") %in% dropped || is.null(y[[path]])) {
+      z[[path]] <- NULL
     } else {
-      for (j in seq_along(other.x)) {
-        z[[other.x[j]]] <- NULL
-      }
+      merged <- setNames(c(x[[path]], y[[path]]), newnames)
+      ## `c` drops attributes, so any class on the list itself is restored
+      class(merged) <- oldClass(x[[path]])
+      z[[path]] <- merged
     }
-  }
-
-  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) &&
-        !is.null(y$diss.stats)) {
-    z$diss.stats <- c(x$diss.stats, y$diss.stats)
-    names(z$diss.stats) <- newnames
-  } else {
-    z$diss.stats <- NULL
   }
 
   return(z)
