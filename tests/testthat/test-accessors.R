@@ -196,3 +196,58 @@ test_that("Copying attributes from network to attribute list", {
     expect_equal(dat.attr, nw.attr)
   }
 })
+
+test_that("set_attr and append_attr keep one value per node", {
+  n_nodes <- 10
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = n_nodes)
+
+  ## Creating an attribute through posit_ids fills the other nodes with NA
+  d1 <- set_attr(dat, "new", c(5, 6), posit_ids = c(1, 2))
+  expect_length(get_attr(d1, "new"), n_nodes)
+  expect_equal(get_attr(d1, "new"), c(5, 6, rep(NA, n_nodes - 2)))
+  expect_true(check_attr_lengths(d1))
+
+  ## The length does not depend on which nodes were selected
+  d2 <- set_attr(dat, "new", c(5, 6), posit_ids = c(4, 7))
+  expect_length(get_attr(d2, "new"), n_nodes)
+  expect_equal(which(!is.na(get_attr(d2, "new"))), c(4, 7))
+
+  ## Writing to an attribute that already exists is unchanged
+  d3 <- set_attr(dat, "age", seq_len(n_nodes))
+  d3 <- set_attr(d3, "age", 99, posit_ids = 3)
+  expect_length(get_attr(d3, "age"), n_nodes)
+  expect_equal(get_attr(d3, "age")[3], 99)
+
+  ## Appending an attribute that does not exist yet pads the older nodes
+  d4 <- append_core_attr(dat, at = 2, n.new = 2)
+  d4 <- append_attr(d4, "brandnew", 99, 2)
+  expect_length(get_attr(d4, "brandnew"), n_nodes + 2)
+  expect_equal(get_attr(d4, "brandnew"), c(rep(NA, n_nodes), 99, 99))
+  expect_true(check_attr_lengths(d4))
+
+  ## The padding does not change the type of the appended values
+  expect_type(get_attr(append_attr(d4, "int", 3L, 2), "int"), "integer")
+  expect_type(get_attr(append_attr(d4, "chr", "a", 2), "chr"), "character")
+
+  ## Core attributes are still created from an empty attribute list
+  d5 <- create_dat_object(control = list(nsteps = 10))
+  d5 <- append_core_attr(d5, at = 1, n.new = 4)
+  expect_equal(get_attr(d5, "unique_id"), 1:4)
+  expect_length(get_attr(d5, "active"), 4)
+  expect_true(check_attr_lengths(d5))
+})
+
+test_that("check_attr_lengths flags attributes of the wrong length", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 10)
+  expect_true(check_attr_lengths(dat))
+
+  bad <- dat
+  bad$run$attr$broken <- 1:3
+  expect_error(check_attr_lengths(bad), "`broken`: 3")
+
+  no.active <- dat
+  no.active$run$attr$active <- NULL
+  expect_error(check_attr_lengths(no.active), "`active` nodal attribute is missing")
+})

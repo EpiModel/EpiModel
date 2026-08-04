@@ -939,3 +939,39 @@ test_that("netsim errors when a custom module returns a plain list", {
     "Module 'my_unclass.FUN' did not return"
   )
 })
+
+test_that("an attribute first appended mid-simulation covers every node", {
+  skip_on_cran()
+
+  ## Arrivals module creating a custom attribute that does not exist at
+  ## initialization, so the first arrivals are the first nodes to hold it
+  afunc <- function(dat, at) {
+    n.new <- 2
+    dat <- append_core_attr(dat, at, n.new)
+    dat <- append_attr(dat, "status", "s", n.new)
+    dat <- append_attr(dat, "infTime", NA, n.new)
+    dat <- append_attr(dat, "arrival.step", at, n.new)
+    dat <- set_epi(dat, "a.flow", at, n.new)
+    return(dat)
+  }
+
+  nw <- network_initialize(n = 20)
+  est <- netest(nw, formation = ~edges, target.stats = 5,
+                coef.diss = dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 2)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 3,
+                         arrivals.FUN = afunc, infection.FUN = infection.net,
+                         resimulate.network = TRUE, tergmLite = FALSE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+
+  ## the modules run from the second time step, so 2 arrival steps of 2 nodes
+  attrs <- mod$run[[1]]$attr
+  n.nodes <- length(attrs$active)
+  expect_equal(n.nodes, 20 + 2 * 2)
+  expect_true(all(vapply(attrs, length, integer(1)) == n.nodes))
+  ## the 20 initial nodes have no arrival step, the 4 arrivals do
+  expect_equal(attrs$arrival.step, c(rep(NA, 20), rep(2:3, each = 2)))
+})
