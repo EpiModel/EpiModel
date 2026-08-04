@@ -236,6 +236,14 @@ model coefficients. When <code>FALSE</code>, the dissolution terms need not be n
 in the formation model: they are appended to the formation model and the
 corresponding correction values are appended to the vector of formation
 model coefficients.</p>
+<p>The nesting requirement is a property of the approximation, so it is only
+checked when <code>edapprox = TRUE</code>. A direct STERGM fit (<code>edapprox = FALSE</code>)
+estimates formation and persistence jointly and places no such requirement on
+the dissolution terms. Note, however, that <code>tergm</code> derives the starting
+values for its EGMME fit from the same approximation, so a direct fit whose
+persistence terms have no formation analog needs starting values supplied
+through <code>set.control.tergm</code>, with <code>control.tergm(init = ...)</code> or
+<code>control.tergm(init.method = "zeros")</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="control-arguments">Control Arguments<a class="anchor" aria-label="anchor" href="#control-arguments"></a></h2>
@@ -338,7 +346,7 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ceeca145e0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55991b75bbe8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

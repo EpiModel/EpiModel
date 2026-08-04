@@ -35,6 +35,22 @@
 
 ### BUG FIXES
 
+- Fix the `diss_check()` gate in
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+  which ran on direct STERGM fits. The call was conditioned on
+  `nested.edapprox`, which defaults to `TRUE` and, as documented,
+  applies only when `edapprox = TRUE`. The nesting requirement comes
+  from the edges dissolution approximation, so a direct STERGM fit
+  (`edapprox = FALSE`), which estimates formation and persistence
+  jointly and has no such requirement, was rejected before
+  [`tergm()`](https://rdrr.io/pkg/tergm/man/tergm.html) was ever called.
+  The check is now gated on `edapprox` as well.
+  [`?netest`](https://epimodel.github.io/EpiModel/reference/netest.md)
+  also notes that `tergm` derives its EGMME starting values from the
+  same approximation, so a direct fit whose persistence terms have no
+  formation analog needs starting values supplied through
+  `set.control.tergm`. Closes
+  [\#1060](https://github.com/EpiModel/EpiModel/issues/1060).
 - Fix `list_special_params` so `param.net_from_table` correctly fails if
   a reserved parameter name is passed in the parameter table.
 - Fix the infected-count comparison in

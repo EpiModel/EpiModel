@@ -203,6 +203,15 @@ not be nested in the formation model: they are appended to the formation
 model and the corresponding correction values are appended to the vector
 of formation model coefficients.
 
+The nesting requirement is a property of the approximation, so it is
+only checked when `edapprox = TRUE`. A direct STERGM fit
+(`edapprox = FALSE`) estimates formation and persistence jointly and
+places no such requirement on the dissolution terms. Note, however, that
+`tergm` derives the starting values for its EGMME fit from the same
+approximation, so a direct fit whose persistence terms have no formation
+analog needs starting values supplied through `set.control.tergm`, with
+`control.tergm(init = ...)` or `control.tergm(init.method = "zeros")`.
+
 ## Control Arguments
 
 The `ergm`, `ergm.ego`, and `tergm` functions allow control settings for
@@ -326,7 +335,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55ceeca145e0>
+#> <environment: 0x55991b75bbe8>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
