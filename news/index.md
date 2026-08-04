@@ -35,6 +35,38 @@
 
 ### BUG FIXES
 
+- Fix the `dcm` methods that broke when
+  [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
+  was given an explicit vector of times in `nsteps` rather than a scalar
+  maximum, a documented input that solved correctly but that every
+  downstream method then failed on:
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) errored
+  with “‘to’ must be of length 1”,
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) with “invalid
+  ‘xlim’ value”, and [`summary()`](https://rdrr.io/r/base/summary.html)
+  and
+  [`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md)
+  with “‘length = 4’ in coercion to ‘logical(1)’”. Each of these treated
+  `control$nsteps` as a scalar; they now take their time coordinates
+  from `control$timesteps`, which holds the times the model was actually
+  solved over. A requested `at` is validated by membership in that
+  vector rather than against a range, so a time between two solved times
+  is now rejected instead of silently returning an empty summary, and a
+  time such as `1.3` under a `dt` of `0.1` is matched despite the
+  floating point error of the sequence. Both
+  [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) also reported the
+  number of time steps wrongly for these models, the former printing the
+  whole time vector and the latter a blank (it read `object$nsteps`,
+  which does not exist); they now report the number of times solved,
+  adding the range when those times are not `1, 2, ..., n`. Closes
+  [\#1062](https://github.com/EpiModel/EpiModel/issues/1062).
+- Fix
+  [`as.data.frame.dcm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md)
+  for an unsorted `run` selection, which errored with “numbers of
+  columns of arguments do not match”, and for a repeated one, which
+  silently returned a single copy. Runs are now returned once per
+  request, in the order requested.
 - Fix the `diss_check()` gate in
   [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
   which ran on direct STERGM fits. The call was conditioned on

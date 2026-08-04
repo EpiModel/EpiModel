@@ -17,7 +17,10 @@ summary(object, at, run = 1, digits = 3, ...)
 
 - at:
 
-  Time step for model statistics.
+  Time step for model statistics. Must be one of the times the model was
+  solved over, held in `control$timesteps`, which for a model with a
+  non-integer `dt` or an explicit vector of times in `nsteps` need be
+  neither integer nor evenly spaced.
 
 - run:
 
@@ -63,7 +66,7 @@ summary(mod, at = 25, run = 1)
 #> -----------------------
 #> Model type: SIR
 #> No. runs: 3
-#> No. time steps:
+#> No. time steps: 50
 #> No. groups: 1
 #> 
 #> Model Statistics
@@ -91,7 +94,7 @@ summary(mod, at = 25, run = 3)
 #> -----------------------
 #> Model type: SIR
 #> No. runs: 3
-#> No. time steps:
+#> No. time steps: 50
 #> No. groups: 1
 #> 
 #> Model Statistics
@@ -119,7 +122,7 @@ summary(mod, at = 26, run = 3)
 #> -----------------------
 #> Model type: SIR
 #> No. runs: 3
-#> No. time steps:
+#> No. time steps: 50
 #> No. groups: 1
 #> 
 #> Model Statistics

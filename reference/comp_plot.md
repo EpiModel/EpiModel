@@ -26,7 +26,8 @@ comp_plot(x, at = 1, digits = 3, run = 1, ...)
 
 - at:
 
-  Time step for model statistics.
+  Time step for model statistics. For `dcm` models, must be one of the
+  times the model was solved over, held in `control$timesteps`.
 
 - digits:
 

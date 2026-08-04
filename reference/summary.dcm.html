@@ -53,7 +53,10 @@
 
 
 <dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
-<dd><p>Time step for model statistics.</p></dd>
+<dd><p>Time step for model statistics. Must be one of the times the model
+was solved over, held in <code>control$timesteps</code>, which for a model with
+a non-integer <code>dt</code> or an explicit vector of times in <code>nsteps</code> need be
+neither integer nor evenly spaced.</p></dd>
 
 
 <dt id="arg-run">run<a class="anchor" aria-label="anchor" href="#arg-run"></a></dt>
@@ -100,7 +103,7 @@ model run number. See examples below.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model type: SIR</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. runs: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. groups: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Statistics</span>
@@ -128,7 +131,7 @@ model run number. See examples below.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model type: SIR</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. runs: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. groups: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Statistics</span>
@@ -156,7 +159,7 @@ model run number. See examples below.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model type: SIR</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. runs: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. groups: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Statistics</span>
