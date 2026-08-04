@@ -292,3 +292,46 @@ dcm <- function(param, init, control) {
   class(out) <- "dcm"
   invisible(out)
 }
+
+## Match a requested time to the time vector of a solved `dcm` model.
+##
+## `control$nsteps` may hold either the maximum time or the full vector of
+## times, and `dt` may be non-integer, so requested times are matched against
+## `control$timesteps` rather than compared against a scalar. The comparison
+## allows for the floating point error of a non-integer `dt` sequence, in which
+## a time such as 1.3 is not stored exactly. Returns the index into
+## `timesteps`.
+match_dcm_time <- function(at, timesteps) {
+  if (length(at) != 1 || !is.numeric(at) || is.na(at)) {
+    stop("Specify at as a single numeric time step")
+  }
+
+  tol <- sqrt(.Machine$double.eps) * max(1, abs(at))
+  idx <- which(abs(timesteps - at) <= tol)
+
+  if (length(idx) == 0) {
+    stop("Specify at as one of the time steps of the model, between ",
+         min(timesteps), " and ", max(timesteps))
+  }
+
+  return(idx[1])
+}
+
+
+## Describe the time coordinate of a solved `dcm` model for printing. Reports
+## the number of time steps, adding the range when the model was solved over
+## times other than 1, 2, ..., n, as a non-integer `dt` or an explicit vector of
+## times in `nsteps` produces.
+format_dcm_timesteps <- function(control) {
+  timesteps <- control$timesteps
+
+  if (is.null(timesteps)) {
+    return(paste(control$nsteps, collapse = " "))
+  }
+  if (identical(as.numeric(timesteps), as.numeric(seq_along(timesteps)))) {
+    return(paste(length(timesteps)))
+  }
+
+  paste0(length(timesteps), " (", min(timesteps), " to ",
+         max(timesteps), ")")
+}

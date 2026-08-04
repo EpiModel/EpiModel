@@ -35,7 +35,7 @@ print.dcm <- function(x, ...) {
     cat("\nModel type:", x$control$type)
   }
   cat("\nNo. runs:", x$control$nruns)
-  cat("\nNo. time steps:", x$control$nsteps)
+  cat("\nNo. time steps:", format_dcm_timesteps(x$control))
   if (new.mod == FALSE) {
     cat("\nNo. groups:", x$param$groups)
   }

@@ -87,6 +87,7 @@ reference:
       - set_vertex_attribute
       - netest
       - netdx
+      - get_degree_dist
       - dissolution_coefs
       - update_dissolution
       - trim_netest

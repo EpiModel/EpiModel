@@ -114,7 +114,6 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
   noleg <- is.null(legend)
 
   ## Model dimensions
-  nsteps <- x$control$nsteps
   nruns <- x$control$nruns
   if (norun == FALSE && any(run > nruns)) {
     stop("Specify run between 1 and", nruns)
@@ -159,7 +158,10 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
   }
 
   if (is.null(xlim)) {
-    xlim <- c(0, nsteps)
+    ## `nsteps` may hold the full time vector rather than a maximum, so the
+    ## limits come from the times the model was solved over. The lower bound
+    ## keeps the origin of the standard case, where times start at 1
+    xlim <- range(c(0, x$control$timesteps))
   }
 
   ## Defaults for lwd

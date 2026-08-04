@@ -6,11 +6,12 @@
 #' @param x An `EpiModel` object of class `netdx`.
 #' @param type Plot type, with options of `"formation"` for network
 #'        model formation statistics, `"duration"` for dissolution model
-#'        statistics for average edge duration, or `"dissolution"` for
+#'        statistics for average edge duration, `"dissolution"` for
 #'        dissolution model statistics for proportion of ties dissolved per time
-#'        step.
+#'        step, or `"cumldeg"` for the cumulative degree distribution.
 #' @param method Plot method, with options of `"l"` for line plots and
-#'        `"b"` for box plots.
+#'        `"b"` for box plots. For `type = "cumldeg"`, `"b"` gives a bar plot
+#'        of the degree distribution.
 #' @param sims A vector of simulation numbers to plot.
 #' @param stats Statistics to plot. For `type = "formation"`, `stats`
 #'        are among those specified in the call to [netdx()];
@@ -19,6 +20,18 @@
 #'        is to plot all statistics.
 #' @param plots.joined If `TRUE`, combine all statistics in one plot,
 #'        versus one plot per statistic if `FALSE`.
+#' @param momentary If `TRUE`, add the momentary degree distribution to the
+#'        cumulative degree plot for comparison. Used only when
+#'        `type = "cumldeg"`.
+#' @param window A vector of length 2 giving the first and last time step over
+#'        which degrees are counted, with the default of the full simulation.
+#'        Used only when `type = "cumldeg"`.
+#' @param maxdeg Highest degree to show on the x-axis, with degrees above it
+#'        collapsed into a final `"maxdeg+"` category. Used only when
+#'        `type = "cumldeg"`.
+#' @param unique.partners If `TRUE`, a dyad that forms, dissolves, and then
+#'        re-forms within the window counts as one cumulative partner rather
+#'        than two. Used only when `type = "cumldeg"`.
 #' @inheritParams plot.netsim
 #' @inheritParams graphics::plot
 #'
@@ -53,11 +66,31 @@
 #' statistics requested. The layout of the separate plots within the larger plot
 #' window is also based on the number of statistics.
 #'
+#' The `cumldeg` plot shows the cumulative degree distribution: the proportion
+#' of nodes with each count of partners accumulated over the simulation, rather
+#' than the count held at one point in time. It requires a `netdx` object run
+#' with `keep.tedgelist = TRUE`, since it is calculated from the timed edgelist
+#' with [get_degree_dist()]. Setting `momentary = TRUE` adds the momentary
+#' degree distribution over the same window, calculated from the same edgelist,
+#' which is the distribution summarized by the `degree(k)` terms of the
+#' formation plot. Two models with the same mean degree and mean partnership
+#' duration have the same mean cumulative degree even when their momentary
+#' degree distributions differ, as the example below shows for models with high
+#' and low concurrency. Legend entries report the mean of each distribution.
+#'
+#' Because the cumulative degree grows with the length of the observation
+#' window, use `window` to restrict it to a substantively meaningful period
+#' when comparing across models. The lines or bars show the mean across
+#' simulations, with `qnts` giving the inter-simulation quantile band; the
+#' `targ.line`, `mean.smooth`, `qnts.smooth`, and `plots.joined` arguments do
+#' not apply to this plot type.
+#'
 #' @method plot netdx
 #' @export
 #'
 #' @keywords plot
-#' @seealso [netdx()]
+#' @seealso [netdx()], and [get_degree_dist()] for the degree distributions
+#'   behind `type = "cumldeg"`.
 #'
 #' @examples
 #' \dontrun{
@@ -116,6 +149,46 @@
 #' # Dissolution statistics plot
 #' plot(dx2, type = "dissolution", qnts = 0.25, grid = TRUE)
 #' plot(dx2, type = "dissolution", method = "b", col = "pink1")
+#'
+#' # Cumulative degree distribution: two models with the same mean degree and
+#' # the same mean partnership duration, differing only in how much
+#' # concurrency (overlapping partnerships) they allow
+#' nw <- network_initialize(n = 500)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+#'
+#' est.hi <- netest(nw, formation = ~edges + concurrent,
+#'                  target.stats = c(200, 150), coef.diss = coef.diss,
+#'                  verbose = FALSE)
+#' est.lo <- netest(nw, formation = ~edges + concurrent,
+#'                  target.stats = c(200, 40), coef.diss = coef.diss,
+#'                  verbose = FALSE)
+#'
+#' dx.hi <- netdx(est.hi, nsims = 5, nsteps = 250, keep.tedgelist = TRUE,
+#'                nwstats.formula = ~edges + concurrent + degree(0:3))
+#' dx.lo <- netdx(est.lo, nsims = 5, nsteps = 250, keep.tedgelist = TRUE,
+#'                nwstats.formula = ~edges + concurrent + degree(0:3))
+#'
+#' # The momentary degree distributions are far apart: about half the nodes in
+#' # the high-concurrency model have no partner at any given time and a quarter
+#' # have two, while most nodes in the low-concurrency model have exactly one.
+#' # Over 250 time steps both accumulate about 8.5 partners per node.
+#' par(mfrow = c(1, 2))
+#' plot(dx.hi, type = "cumldeg", momentary = TRUE, xlim = c(0, 25),
+#'      main = "High concurrency")
+#' plot(dx.lo, type = "cumldeg", momentary = TRUE, xlim = c(0, 25),
+#'      main = "Low concurrency")
+#'
+#' # As bars, with the tail of the distribution collapsed into one category
+#' # and the inter-simulation range shown
+#' par(mfrow = c(1, 1))
+#' plot(dx.hi, type = "cumldeg", method = "b", maxdeg = 15, qnts = 0.95)
+#'
+#' # Partners accumulated over the last 100 steps only
+#' plot(dx.hi, type = "cumldeg", window = c(150, 250), momentary = TRUE)
+#'
+#' # The plotted distributions are returned invisibly
+#' dd <- plot(dx.hi, type = "cumldeg")
+#' tapply(dd$degree * dd$prop, dd$sim, sum)
 #' }
 #'
 plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
@@ -127,11 +200,49 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
                        targ.col = NULL, targ.lwd = 2, targ.lty = 2,
                        plots.joined = NULL, legend = NULL, grid = FALSE,
                        xlim = NULL, xlab = NULL, ylim = NULL, ylab = NULL,
-                       ...) {
+                       momentary = FALSE, window = NULL, maxdeg = NULL,
+                       unique.partners = TRUE, ...) {
 
-  type <- match.arg(type, c("formation", "duration", "dissolution"))
+  type <- match.arg(type, c("formation", "duration", "dissolution", "cumldeg"))
   sims <- if (is.null(sims)) seq_len(x$nsims) else sims
   if (max(sims) > x$nsims) stop("Maximum sim number is", x$nsims)
+
+  # Cumulative Degree Plot -----------------------------------------------------
+  if (type == "cumldeg") {
+    dists <- list(cumulative = get_degree_dist(x, type = "cumulative",
+                                               sims = sims, window = window,
+                                               unique.partners = unique.partners))
+    if (isTRUE(momentary)) {
+      dists$momentary <- get_degree_dist(x, type = "momentary", sims = sims,
+                                         window = window)
+    }
+
+    plot_degree_dist(
+      dists = dists,
+      method = method,
+      maxdeg = maxdeg,
+      sim.lines = sim.lines,
+      sim.col = sim.col,
+      sim.lwd = sim.lwd,
+      mean.line = mean.line,
+      mean.col = mean.col,
+      mean.lwd = mean.lwd,
+      mean.lty = mean.lty,
+      qnts = qnts,
+      qnts.col = qnts.col,
+      qnts.alpha = qnts.alpha,
+      draw_legend = legend,
+      grid = grid,
+      xlim = xlim, xlab = xlab,
+      ylim = ylim, ylab = ylab,
+      ...
+    )
+
+    out <- do.call(rbind, Map(function(nm, d) cbind(type = nm, d),
+                              names(dists), dists))
+    row.names(out) <- NULL
+    return(invisible(out))
+  }
 
   # Formation Plot -------------------------------------------------------------
   if (type == "formation") {
