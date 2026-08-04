@@ -4,7 +4,10 @@
 #' @description Extracts and prints model statistics solved with `dcm`.
 #'
 #' @param object An `EpiModel` object of class `dcm`.
-#' @param at Time step for model statistics.
+#' @param at Time step for model statistics. Must be one of the times the model
+#'        was solved over, held in `control$timesteps`, which for a model with
+#'        a non-integer `dt` or an explicit vector of times in `nsteps` need be
+#'        neither integer nor evenly spaced.
 #' @param run Model run number, for `dcm` class models with multiple runs
 #'        (sensitivity analyses).
 #' @param digits Number of significant digits to print.
@@ -41,7 +44,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
   type <- object$control$type
   groups <- object$param$groups
   vital <- object$param$vital
-  nsteps <- object$control$nsteps
+  timesteps <- object$control$timesteps
 
   if (!is.null(object$control$new.mod)) {
     stop("summary method not available for new model types in dcm")
@@ -49,9 +52,9 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 
   df <- as.data.frame(object, run = run)
 
-  if (at > nsteps || at < 1) {
-    stop("Specify at between 1 and ", nsteps)
-  }
+  ## `at` is matched against the times the model was solved over, which need be
+  ## neither integer nor evenly spaced
+  at <- timesteps[match_dcm_time(at, timesteps)]
   df <- df[df$time == at, ]
 
   ## Prevalence calculations
@@ -191,7 +194,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
   cat("\n-----------------------")
   cat("\nModel type:", type)
   cat("\nNo. runs:", nruns)
-  cat("\nNo. time steps:", object$nsteps)
+  cat("\nNo. time steps:", format_dcm_timesteps(object$control))
   cat("\nNo. groups:", groups)
 
   if (groups == 1) {

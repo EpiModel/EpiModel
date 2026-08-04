@@ -52,9 +52,9 @@ test_that("comp_plot.dcm validates at and rejects two-group models", {
 
   mod <- run_dcm("SI")
   expect_error(comp_plot(mod, at = 0),
-               "Specify a time step between 1 and 12")
+               "Specify at as one of the time steps of the model, between 1 and 12")
   expect_error(comp_plot(mod, at = 999),
-               "Specify a time step between 1 and 12")
+               "Specify at as one of the time steps of the model, between 1 and 12")
 
   # Two-group DCM should hit the 1-group guard.
   param <- param.dcm(inf.prob = 0.3, inf.prob.g2 = 0.2, act.rate = 1,

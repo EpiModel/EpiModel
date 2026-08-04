@@ -130,8 +130,10 @@ test_that("summary.dcm rejects at outside the simulation range", {
   control <- control.dcm(type = "SIR", nsteps = 20)
   mod <- dcm(param, init, control)
 
-  expect_error(summary(mod, at = 0), "Specify at between 1 and 20")
-  expect_error(summary(mod, at = 25), "Specify at between 1 and 20")
+  expect_error(summary(mod, at = 0),
+               "Specify at as one of the time steps of the model, between 1 and 20")
+  expect_error(summary(mod, at = 25),
+               "Specify at as one of the time steps of the model, between 1 and 20")
 })
 
 test_that("summary.netsim rejects at outside the simulation range", {
