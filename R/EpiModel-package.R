@@ -180,7 +180,8 @@
 #' @import ergm network networkLite networkDynamic tergm ggplot2
 #' @importFrom deSolve dede ode
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
-#' @importFrom graphics abline arrows boxplot legend lines mtext par plot points polygon text title
+#' @importFrom graphics abline arrows axis barplot boxplot grid legend lines mtext par plot points
+#' @importFrom graphics polygon segments text title
 #' @importFrom grDevices col2rgb colorRampPalette rgb adjustcolor
 #' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
 #' @importFrom stats supsmu terms.formula update dgeom coef na.omit

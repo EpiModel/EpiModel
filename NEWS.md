@@ -4,6 +4,7 @@
 
 ### NEW FEATURES
 
+- Add a cumulative degree distribution plot to `plot.netdx()`, via `type = "cumldeg"`, along with the `get_degree_dist()` function that calculates it. Both work off the timed edgelist, so they require a `netdx()` run with `keep.tedgelist = TRUE`. The cumulative distribution counts the partners each node accumulates over the simulation, rather than the partners held at one moment in time; `momentary = TRUE` overlays the momentary distribution over the same window for comparison, and `window` restricts both to a period of interest. Two models with the same mean degree and mean partnership duration accumulate the same number of partners per node even when their momentary degree distributions differ, which the `?plot.netdx` example shows for models with high and low concurrency. Closes #1050.
 - Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
 
 ### BUG FIXES

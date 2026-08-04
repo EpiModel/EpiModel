@@ -478,3 +478,94 @@ test_that("plot.netdx labels duration and dissolution axes", {
   expect_equal(seen$xlab, "My X")
   expect_equal(seen$ylab, "My Y")
 })
+
+test_that("timed edgelist degree helpers count spells correctly", {
+  # Two partnerships of node 1, in sequence: 1-2 over steps 0 and 1, then
+  # 1-3 over steps 2 and 3. Node 4 is never partnered.
+  tel <- data.frame(onset = c(0, 2), terminus = c(2, 4),
+                    tail = c(1, 1), head = c(2, 3))
+
+  expect_equal(tedgelist_cumulative_degree(tel, n = 4, window = c(0, 3)),
+               c(2, 1, 1, 0))
+  # only the first partnership falls in this window
+  expect_equal(tedgelist_cumulative_degree(tel, n = 4, window = c(0, 1)),
+               c(1, 1, 0, 0))
+  # a repeated dyad counts once as a partner but twice as a partnership
+  rep.tel <- data.frame(onset = c(0, 2), terminus = c(2, 4),
+                        tail = c(1, 1), head = c(2, 2))
+  expect_equal(tedgelist_cumulative_degree(rep.tel, n = 4, window = c(0, 3)),
+               c(1, 1, 0, 0))
+  expect_equal(tedgelist_cumulative_degree(rep.tel, n = 4, window = c(0, 3),
+                                           unique.partners = FALSE),
+               c(2, 2, 0, 0))
+
+  # exactly one partnership is active at each of the four steps
+  mom <- tedgelist_momentary_degree(tel, n = 4, window = c(0, 3))
+  expect_equal(mom[1:2], c(2, 2))
+  expect_equal(sum(mom), 4)
+  # the second partnership has not formed yet over the first two steps
+  mom <- tedgelist_momentary_degree(tel, n = 4, window = c(0, 1))
+  expect_equal(mom[1:2], c(2, 2))
+})
+
+test_that("get_degree_dist and plot.netdx cumldeg", {
+  skip_on_cran()
+  set.seed(1)
+  num <- 50
+  nw <- network_initialize(n = num)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 5)
+  est <- netest(nw, ~edges, 15, coef.diss, verbose = FALSE)
+  dx <- netdx(est, nsims = 2, nsteps = 20, keep.tedgelist = TRUE,
+              verbose = FALSE)
+
+  cd <- get_degree_dist(dx, type = "cumulative")
+  expect_named(cd, c("sim", "degree", "count", "prop"))
+  expect_equal(sort(unique(cd$sim)), 1:2)
+  expect_equal(as.vector(tapply(cd$count, cd$sim, sum)), rep(num, 2))
+  expect_equal(as.vector(tapply(cd$prop, cd$sim, sum)), rep(1, 2))
+  expect_equal(cd$degree, rep(0:(nrow(cd) / 2 - 1), 2))
+
+  # matches a direct tabulation of the timed edgelist
+  tel <- dx$tedgelist[[1]]
+  degs <- tabulate(c(tel$tail, tel$head), nbins = num)
+  cd1 <- get_degree_dist(dx, type = "cumulative", sims = 1,
+                         unique.partners = FALSE)
+  expect_equal(cd1$count, tabulate(degs + 1, nbins = nrow(cd1)))
+
+  md <- get_degree_dist(dx, type = "momentary")
+  expect_equal(as.vector(tapply(md$prop, md$sim, sum)), rep(1, 2))
+  # mean momentary degree over all steps equals twice the mean edge count
+  mean.deg <- sum(md$degree * md$prop) / 2
+  mean.edges <- mean(c(dx$stats[[1]][, "edges"], dx$stats[[2]][, "edges"]))
+  expect_lt(abs(mean.deg - 2 * mean.edges / num), 0.1)
+
+  # a shorter window accumulates no more partners than the full simulation
+  cd.win <- get_degree_dist(dx, type = "cumulative", window = c(10, 20))
+  expect_lte(sum(cd.win$degree * cd.win$prop), sum(cd$degree * cd$prop))
+
+  expect_error(get_degree_dist(est), "class netdx")
+  expect_error(get_degree_dist(dx, window = c(0, 100)), "simulated time range")
+  expect_error(get_degree_dist(dx, window = c(10, 5)), "less than window end")
+  expect_error(get_degree_dist(dx, window = 10), "length 2")
+
+  dx.nokeep <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
+  expect_error(get_degree_dist(dx.nokeep), "keep.tedgelist = TRUE")
+  expect_error(plot(dx.nokeep, type = "cumldeg"), "keep.tedgelist = TRUE")
+
+  # Plots
+  plot(dx, type = "cumldeg")
+  plot(dx, type = "cumldeg", momentary = TRUE, grid = TRUE)
+  plot(dx, type = "cumldeg", method = "b", qnts = FALSE)
+  plot(dx, type = "cumldeg", method = "b", momentary = TRUE, maxdeg = 3)
+  plot(dx, type = "cumldeg", sims = 1, sim.lines = TRUE, mean.line = FALSE)
+  plot(dx, type = "cumldeg", sim.col = "green", mean.col = "black",
+       qnts.col = "grey", legend = TRUE, xlab = "cumul deg", ylab = "prop")
+
+  out <- plot(dx, type = "cumldeg", momentary = TRUE)
+  expect_equal(unique(out$type), c("cumulative", "momentary"))
+  expect_named(out, c("type", "sim", "degree", "count", "prop"))
+  expect_equal(out$degree[out$type == "cumulative"], cd$degree)
+  expect_equal(out$count[out$type == "cumulative"], cd$count)
+
+  expect_error(plot(dx, type = "cumldeg", qnts = 5), "qnts must be between")
+})
