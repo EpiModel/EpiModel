@@ -459,7 +459,10 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' @return An updated object of class `netsim` containing only the
 #'         simulations specified in `sims` and the variables specified in
-#'         `var`.
+#'         `var`. Every per-simulation element of the object is subset
+#'         together, in the order given in `sims`, and renumbered `sim1` to
+#'         `simN`, so that the result is structured as a run of `length(sims)`
+#'         simulations.
 #'
 #' @keywords extract
 #' @export
@@ -515,48 +518,31 @@ get_sims <- function(x, sims = NULL, var = NULL) {
     stop("Maximum sims value for this object is ", nsims)
   }
 
+  if (min(sims) < 1) {
+    stop("Minimum sims value is 1")
+  }
+
   out <- x
   out$control$nsims <- length(sims)
   newnames <- paste0("sim", seq_len(out$control$nsims))
 
-  delsim <- setdiff(1:nsims, sims)
-  keepsim <- setdiff(seq_len(nsims), delsim)
-  if (length(delsim) > 0) {
-    for (i in seq_along(out$epi)) {
-      out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
-    }
+  ## every slot holding one element per simulation is subset in the order
+  ## requested and renamed, so that the result is indistinguishable from a run
+  ## of `length(sims)` simulations
+  for (i in seq_along(out$epi)) {
+    out$epi[[i]] <- out$epi[[i]][, sims, drop = FALSE]
+    names(out$epi[[i]]) <- newnames
+  }
 
-    if (!is.null(out$run)) {
-      out$run[delsim] <- NULL
-      names(out$run) <- newnames
-    }
-    if (!is.null(out$network)) {
-      out$network[delsim] <- NULL
-      names(out$network) <- newnames
-    }
-    if (!is.null(out$stats$nwstats)) {
-      out$stats$nwstats[delsim] <- NULL
-      names(out$stats$nwstats) <- newnames
-    }
-    if (!is.null(out$stats$transmat)) {
-      out$stats$transmat[delsim] <- NULL
-      names(out$stats$transmat) <- newnames
-    }
-    if (!is.null(out$diss.stats)) {
-      out$diss.stats[delsim] <- NULL
-      names(out$diss.stats) <- newnames
-    }
-    if (!is.null(out$control$save.other)) {
-      oname <- out$control$save.other
-      for (i in seq_along(oname)) {
-        out[[oname[i]]][delsim] <- NULL
-        names(out[[oname[i]]]) <- newnames
-      }
-    }
+  for (path in netsim_sim_slots(out)) {
+    kept <- setNames(out[[path]][sims], newnames)
+    ## `[` drops attributes, so any class on the list itself is restored
+    class(kept) <- oldClass(out[[path]])
+    out[[path]] <- kept
   }
 
   out$param$random.params.values <- subset_random_params_values(
-    out$param$random.params.values, keepsim, nsims
+    out$param$random.params.values, sims, nsims
   )
 
   if (!is.null(var)) {

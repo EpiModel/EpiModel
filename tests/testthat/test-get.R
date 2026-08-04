@@ -339,3 +339,109 @@ test_that("get_network_attributes functions as intended", {
                                                 n = 10,
                                                 newattr = "string"))
 })
+
+# per-simulation slots ----------------------------------------------------
+
+# A 3 simulation run carrying every per-simulation slot: the saved run state,
+# networks, network statistics, transmission matrices, dissolution statistics,
+# cumulative edgelists, a `save.other` element, and both kinds of record.
+build_slots_sim <- function(nsims = 3) {
+  rec <- function(dat, at) {
+    dat <- record_raw_object(dat, at, "note", list(step = at))
+    dat <- record_attr_history(dat, at, "i.count", posit_ids = 1,
+                               values = sum(get_attr(dat, "status") == "i"))
+    dat$my.other <- at
+    return(dat)
+  }
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = NULL, nsteps = 5, nsims = nsims,
+                         infection.FUN = infection.net, records.FUN = rec,
+                         tergmLite = FALSE, resimulate.network = TRUE,
+                         save.run = TRUE, save.network = TRUE,
+                         save.nwstats = TRUE, save.transmat = TRUE,
+                         save.diss.stats = TRUE, cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         save.other = "my.other", verbose = FALSE)
+  netsim(est, param.net(inf.prob = 0.5), init.net(i.num = 5), control)
+}
+
+test_that("netsim names every per-simulation slot", {
+  skip_on_cran()
+  x <- build_slots_sim()
+  slots <- netsim_sim_slots(x)
+
+  ## the slots the fixture is meant to exercise are all present
+  expect_setequal(
+    vapply(slots, paste, "", collapse = "$"),
+    c("run", "coef.form", "cumulative.edgelist", "attr.history", "raw.records",
+      "network", "diss.stats", "stats$nwstats", "stats$transmat", "my.other")
+  )
+
+  for (path in slots) {
+    expect_equal(length(x[[path]]), 3, info = paste(path, collapse = "$"))
+    expect_equal(names(x[[path]]), c("sim1", "sim2", "sim3"),
+                 info = paste(path, collapse = "$"))
+  }
+  expect_equal(names(x$epi$i.num), c("sim1", "sim2", "sim3"))
+})
+
+test_that("get_sims subsets every per-simulation slot", {
+  skip_on_cran()
+  x <- build_slots_sim()
+
+  sub <- get_sims(x, sims = 2)
+  expect_equal(sub$control$nsims, 1)
+  for (path in netsim_sim_slots(sub)) {
+    expect_equal(length(sub[[path]]), 1, info = paste(path, collapse = "$"))
+    expect_equal(names(sub[[path]]), "sim1", info = paste(path, collapse = "$"))
+    ## the kept element is the one that was asked for
+    expect_equal(sub[[path]][[1]], x[[path]][[2]],
+                 info = paste(path, collapse = "$"))
+  }
+  expect_equal(names(sub$epi$i.num), "sim1")
+  expect_equal(unname(sub$epi$i.num[[1]]), unname(x$epi$i.num[[2]]))
+
+  ## simulations come back in the order requested
+  rev.sub <- get_sims(x, sims = c(3, 1))
+  expect_equal(unname(rev.sub$coef.form), unname(x$coef.form[c(3, 1)]))
+  expect_equal(unname(as.matrix(rev.sub$epi$i.num)),
+               unname(as.matrix(x$epi$i.num[, c(3, 1)])))
+
+  ## the class of a classed slot survives subsetting
+  expect_s3_class(get_sims(x, sims = 1:2)$stats$transmat, "transmat")
+
+  expect_error(get_sims(x, sims = 0), "Minimum sims value is 1")
+})
+
+test_that("a get_sims subset restarts from its own simulation", {
+  skip_on_cran()
+  ## vital dynamics make the formation coefficient drift apart across
+  ## simulations, so a subset can be checked against the right one
+  nw <- network_initialize(n = 60)
+  est <- netest(nw, formation = ~edges, target.stats = 30,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.4, a.rate = 0.02, ds.rate = 0.01,
+                     di.rate = 0.01)
+  control <- control.net(type = "SI", nsteps = 8, nsims = 3, tergmLite = TRUE,
+                         resimulate.network = TRUE, save.run = TRUE,
+                         verbose = FALSE)
+  x <- netsim(est, param, init.net(i.num = 6), control)
+
+  sub <- get_sims(x, sims = 2)
+  expect_equal(sub$coef.form[[1]], x$coef.form[[2]])
+  expect_equal(sub$run[[1]], x$run[[2]])
+
+  ## the restart reads `coef.form[[s]]` and `run[[s]]` positionally, so both
+  ## must describe the same simulation
+  restart.control <- control.net(type = "SI", nsteps = 12, start = 9, nsims = 1,
+                                 tergmLite = TRUE, resimulate.network = TRUE,
+                                 save.run = TRUE, verbose = FALSE)
+  restarted <- netsim(sub, param, init.net(i.num = 6), restart.control)
+  expect_is(restarted, "netsim")
+  expect_equal(nrow(restarted$epi$i.num), 12)
+})

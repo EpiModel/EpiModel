@@ -293,48 +293,11 @@ saveout.net <- function(dat, s, out = NULL) {
       colnames(out$epi[[i]]) <- simnames
     }
 
-    if (length(out$run) > 0) {
-      out$run <- name_saveout_elts(out$run, "run", simnames)
-    }
-
-    top_lvl_elts <- c("attr.history", ".records")
-    for (elt in top_lvl_elts) {
-      out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
-    }
-
-    if (dat$control$save.cumulative.edgelist) {
-      out$cumulative.edgelist <- name_saveout_elts(
-        out$cumulative.edgelist, "cumulative.edgelist", simnames
-      )
-    }
-
-    out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)
-
-    if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats <- name_saveout_elts(out$stats$nwstats,
-                                             "stats$nwstats", simnames)
-    }
-
-    if (dat$control$save.transmat == TRUE) {
-      out$stats$transmat <- name_saveout_elts(out$stats$transmat,
-                                              "stats$transmat", simnames)
-    }
-
-    if (dat$control$save.network == TRUE) {
-      out$network <- name_saveout_elts(out$network, "network", simnames)
-    }
-
-    if (dat$control$save.diss.stats == TRUE &&
-          dat$control$save.network == TRUE &&
-          dat$control$tergmLite == FALSE) {
-      out$diss.stats <- name_saveout_elts(out$diss.stats, "diss.stats", simnames)
-    }
-
-    # only rename top level elements, not the ones part of `run`
-    for (el.name in dat$control$save.other) {
-      if (el.name %in% names(out)) {
-        out[[el.name]] <- name_saveout_elts(out[[el.name]], el.name, simnames)
-      }
+    ## every slot holding one element per simulation is named here, including
+    ## the elements of `save.other` that were stored at the top level
+    for (path in netsim_sim_slots(out)) {
+      out[[path]] <- name_saveout_elts(out[[path]],
+                                       paste(path, collapse = "$"), simnames)
     }
 
     # Remove functions from control list
@@ -392,6 +355,27 @@ process_out.net <- function(dat_list) {
   class(out) <- "netsim"
 
   return(out)
+}
+
+# Paths into a `netsim` object holding one element per simulation. Paths are
+# character vectors, so that `x[[path]]` reads and writes both top level slots
+# and the ones nested in `stats`. Paths the object does not carry are dropped,
+# as most of these slots depend on a `save.*` control.
+#
+# `epi` is not listed: its simulations are the columns of its data frames rather
+# than list elements. `param$random.params.values` is not either, as it has its
+# own subsetting and merging helpers.
+#
+# This is the single list of what counts as per-simulation state, used when
+# naming the elements at the end of a run, when subsetting an object with
+# `get_sims`, and when combining two objects with `merge.netsim`.
+netsim_sim_slots <- function(x) {
+  paths <- list("run", "coef.form", "cumulative.edgelist", "attr.history",
+                "raw.records", "network", "diss.stats",
+                c("stats", "nwstats"), c("stats", "transmat"))
+  paths <- c(paths, as.list(x$control$save.other))
+
+  Filter(function(path) !is.null(x[[path]]), paths)
 }
 
 # Assign names to the save elements
