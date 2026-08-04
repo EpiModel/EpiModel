@@ -2,6 +2,8 @@
 
 ### BREAKING CHANGES
 
+-   The `sims` argument of `plot.icm()` and of `plot.netsim(type = "epi")` now selects the simulations the whole plot describes, rather than only the individual lines. Its documented meaning is "a vector of simulation numbers to plot", but it was applied only to the simulation-line loop: `draw_means()` and `draw_qnts()` took no `sims` argument and always computed over every simulation. A four-simulation model with `i.num` of 34, 47, 47, and 51 at a time step drew a mean line at 44.75 under `sims = 1:2`, where the two plotted lines average 40.5. The mean line and the quantile band are now calculated over the selected simulations, so they describe the same runs as the lines drawn beside them. Plots that pass `sims` will change; plots that do not are unaffected. Closes #1064.
+
 ### NEW FEATURES
 
 - Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.

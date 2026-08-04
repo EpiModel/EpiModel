@@ -14,7 +14,9 @@
 #' @param sim.lines If `TRUE`, plot individual simulation lines. Default is
 #'        to plot lines for one-group models but not for two-group models.
 #' @param sims If `type="epi"` or `"formation"`, a vector of
-#'        simulation numbers to plot. If `type="network"`, a single
+#'        simulation numbers to plot. The plot then describes those
+#'        simulations alone: the mean line and quantile bands are calculated
+#'        over them, not over the full set. If `type="network"`, a single
 #'        simulation number for which to plot the network, or else `"min"`
 #'        to plot the simulation number with the lowest disease prevalence,
 #'        `"max"` for the simulation with the highest disease prevalence,
@@ -346,7 +348,16 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   offset <- start - 1
   nsims <- x$control$nsims
   sims <- if (is.null(sims)) seq_len(nsims) else sims
-  if (max(sims) > nsims) stop("Set sim to between 1 and ", nsims)
+  if (max(sims) > nsims || min(sims) < 1) {
+    stop("Set sim to between 1 and ", nsims)
+  }
+
+  ## `sims` selects the simulations the plot describes, so the data is
+  ## restricted to them here and every summary drawn below is calculated over
+  ## the same set
+  x <- subset_epi_sims(x, sims)
+  nsims <- x$control$nsims
+  sims <- seq_len(nsims)
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
     x$param$groups <- 1
   }
