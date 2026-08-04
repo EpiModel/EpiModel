@@ -118,6 +118,15 @@
 #' corresponding correction values are appended to the vector of formation
 #' model coefficients.
 #'
+#' The nesting requirement is a property of the approximation, so it is only
+#' checked when `edapprox = TRUE`. A direct STERGM fit (`edapprox = FALSE`)
+#' estimates formation and persistence jointly and places no such requirement on
+#' the dissolution terms. Note, however, that `tergm` derives the starting
+#' values for its EGMME fit from the same approximation, so a direct fit whose
+#' persistence terms have no formation analog needs starting values supplied
+#' through `set.control.tergm`, with `control.tergm(init = ...)` or
+#' `control.tergm(init.method = "zeros")`.
+#'
 #' @section Control Arguments:
 #' The `ergm`, `ergm.ego`, and `tergm` functions allow control settings for the
 #' model fitting process. When fitting a STERGM directly (setting
@@ -236,7 +245,10 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
     is.tergm <- TRUE
   }
 
-  if (is.tergm == TRUE && nested.edapprox == TRUE) {
+  ## the nesting requirement comes from the edges dissolution approximation, so
+  ## it does not apply to a direct STERGM fit, which estimates formation and
+  ## persistence jointly
+  if (is.tergm == TRUE && edapprox == TRUE && nested.edapprox == TRUE) {
     diss_check(formation, dissolution)
   }
 

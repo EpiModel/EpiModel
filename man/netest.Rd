@@ -161,6 +161,15 @@ model coefficients. When \code{FALSE}, the dissolution terms need not be nested
 in the formation model: they are appended to the formation model and the
 corresponding correction values are appended to the vector of formation
 model coefficients.
+
+The nesting requirement is a property of the approximation, so it is only
+checked when \code{edapprox = TRUE}. A direct STERGM fit (\code{edapprox = FALSE})
+estimates formation and persistence jointly and places no such requirement on
+the dissolution terms. Note, however, that \code{tergm} derives the starting
+values for its EGMME fit from the same approximation, so a direct fit whose
+persistence terms have no formation analog needs starting values supplied
+through \code{set.control.tergm}, with \code{control.tergm(init = ...)} or
+\code{control.tergm(init.method = "zeros")}.
 }
 
 \section{Control Arguments}{

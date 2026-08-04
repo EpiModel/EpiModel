@@ -264,3 +264,4 @@ Other exported accessors and helpers worth knowing:
 - **Restart & truncation**: `truncate_sim()` is an S3 generic over `dcm` / `icm` / `netsim` with a `reset.time` argument; `make_restart_point()` trims a `netsim` to the minimum state needed to resume.
 - **Attribute utilities**: `overwrite_attrs()` applies an `init_attr` data frame at initialization; `get_core_attributes()` lists the core attributes and their types (#969).
 - **Parameter tables**: `param.net_from_table()` / `param.net_to_table()` convert between list and data.frame parameter representations.
+- **Degree distributions**: `get_degree_dist()` computes the cumulative or momentary degree distribution from a `netdx` timed edgelist (`netdx(keep.tedgelist = TRUE)`); `plot.netdx(type = "cumldeg")` plots it, optionally overlaying the momentary distribution (#1050).

@@ -222,6 +222,8 @@ plot(dx3, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 \seealso{
 Estimate the network model with \code{\link{netest}} before running diagnostics.
 Plot diagnostics with \code{\link{plot.netdx}} and print summary tables with
-\code{\link{print.netdx}}. After diagnostics confirm a good fit, simulate the
-epidemic with \code{\link{netsim}}.
+\code{\link{print.netdx}}. With \code{keep.tedgelist = TRUE}, extract the timed edgelist
+with \code{\link[=as.data.frame.netdx]{as.data.frame.netdx()}} and the cumulative or momentary degree
+distribution with \code{\link{get_degree_dist}}. After diagnostics confirm a good fit,
+simulate the epidemic with \code{\link{netsim}}.
 }
