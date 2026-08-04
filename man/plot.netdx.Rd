@@ -34,6 +34,10 @@
   xlab = NULL,
   ylim = NULL,
   ylab = NULL,
+  momentary = FALSE,
+  window = NULL,
+  maxdeg = NULL,
+  unique.partners = TRUE,
   ...
 )
 }
@@ -42,12 +46,13 @@
 
 \item{type}{Plot type, with options of \code{"formation"} for network
 model formation statistics, \code{"duration"} for dissolution model
-statistics for average edge duration, or \code{"dissolution"} for
+statistics for average edge duration, \code{"dissolution"} for
 dissolution model statistics for proportion of ties dissolved per time
-step.}
+step, or \code{"cumldeg"} for the cumulative degree distribution.}
 
 \item{method}{Plot method, with options of \code{"l"} for line plots and
-\code{"b"} for box plots.}
+\code{"b"} for box plots. For \code{type = "cumldeg"}, \code{"b"} gives a bar plot
+of the degree distribution.}
 
 \item{sims}{A vector of simulation numbers to plot.}
 
@@ -120,6 +125,22 @@ versus one plot per statistic if \code{FALSE}.}
 
 \item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
 
+\item{momentary}{If \code{TRUE}, add the momentary degree distribution to the
+cumulative degree plot for comparison. Used only when
+\code{type = "cumldeg"}.}
+
+\item{window}{A vector of length 2 giving the first and last time step over
+which degrees are counted, with the default of the full simulation.
+Used only when \code{type = "cumldeg"}.}
+
+\item{maxdeg}{Highest degree to show on the x-axis, with degrees above it
+collapsed into a final \code{"maxdeg+"} category. Used only when
+\code{type = "cumldeg"}.}
+
+\item{unique.partners}{If \code{TRUE}, a dyad that forms, dissolves, and then
+re-forms within the window counts as one cumulative partner rather
+than two. Used only when \code{type = "cumldeg"}.}
+
 \item{...}{Additional arguments to pass.}
 }
 \description{
@@ -156,6 +177,25 @@ are joined in one plot or plotted separately, assuming there are multiple
 statistics in the model. The default is based on the number of network
 statistics requested. The layout of the separate plots within the larger plot
 window is also based on the number of statistics.
+
+The \code{cumldeg} plot shows the cumulative degree distribution: the proportion
+of nodes with each count of partners accumulated over the simulation, rather
+than the count held at one point in time. It requires a \code{netdx} object run
+with \code{keep.tedgelist = TRUE}, since it is calculated from the timed edgelist
+with \code{\link[=get_degree_dist]{get_degree_dist()}}. Setting \code{momentary = TRUE} adds the momentary
+degree distribution over the same window, calculated from the same edgelist,
+which is the distribution summarized by the \code{degree(k)} terms of the
+formation plot. Two models with the same mean degree and mean partnership
+duration have the same mean cumulative degree even when their momentary
+degree distributions differ, as the example below shows for models with high
+and low concurrency. Legend entries report the mean of each distribution.
+
+Because the cumulative degree grows with the length of the observation
+window, use \code{window} to restrict it to a substantively meaningful period
+when comparing across models. The lines or bars show the mean across
+simulations, with \code{qnts} giving the inter-simulation quantile band; the
+\code{targ.line}, \code{mean.smooth}, \code{qnts.smooth}, and \code{plots.joined} arguments do
+not apply to this plot type.
 }
 \examples{
 \dontrun{
@@ -214,10 +254,51 @@ plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
 # Dissolution statistics plot
 plot(dx2, type = "dissolution", qnts = 0.25, grid = TRUE)
 plot(dx2, type = "dissolution", method = "b", col = "pink1")
+
+# Cumulative degree distribution: two models with the same mean degree and
+# the same mean partnership duration, differing only in how much
+# concurrency (overlapping partnerships) they allow
+nw <- network_initialize(n = 500)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+
+est.hi <- netest(nw, formation = ~edges + concurrent,
+                 target.stats = c(200, 150), coef.diss = coef.diss,
+                 verbose = FALSE)
+est.lo <- netest(nw, formation = ~edges + concurrent,
+                 target.stats = c(200, 40), coef.diss = coef.diss,
+                 verbose = FALSE)
+
+dx.hi <- netdx(est.hi, nsims = 5, nsteps = 250, keep.tedgelist = TRUE,
+               nwstats.formula = ~edges + concurrent + degree(0:3))
+dx.lo <- netdx(est.lo, nsims = 5, nsteps = 250, keep.tedgelist = TRUE,
+               nwstats.formula = ~edges + concurrent + degree(0:3))
+
+# The momentary degree distributions are far apart: about half the nodes in
+# the high-concurrency model have no partner at any given time and a quarter
+# have two, while most nodes in the low-concurrency model have exactly one.
+# Over 250 time steps both accumulate about 8.5 partners per node.
+par(mfrow = c(1, 2))
+plot(dx.hi, type = "cumldeg", momentary = TRUE, xlim = c(0, 25),
+     main = "High concurrency")
+plot(dx.lo, type = "cumldeg", momentary = TRUE, xlim = c(0, 25),
+     main = "Low concurrency")
+
+# As bars, with the tail of the distribution collapsed into one category
+# and the inter-simulation range shown
+par(mfrow = c(1, 1))
+plot(dx.hi, type = "cumldeg", method = "b", maxdeg = 15, qnts = 0.95)
+
+# Partners accumulated over the last 100 steps only
+plot(dx.hi, type = "cumldeg", window = c(150, 250), momentary = TRUE)
+
+# The plotted distributions are returned invisibly
+dd <- plot(dx.hi, type = "cumldeg")
+tapply(dd$degree * dd$prop, dd$sim, sum)
 }
 
 }
 \seealso{
-\code{\link[=netdx]{netdx()}}
+\code{\link[=netdx]{netdx()}}, and \code{\link[=get_degree_dist]{get_degree_dist()}} for the degree distributions
+behind \code{type = "cumldeg"}.
 }
 \keyword{plot}
