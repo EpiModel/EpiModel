@@ -77,22 +77,18 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
     if (max(run) > nruns) {
       stop("Maximum run is ", nruns)
     }
-    for (j in run) {
-      if (j == min(run)) {
-        for (i in seq_along(x$epi)) {
-          df[, i + 1] <- x$epi[[i]][, j]
-        }
-        df$run <- j
-      } else {
-        tdf <- data.frame(time = seq(1, x$control$nsteps, x$control$dt))
-        for (i in seq_along(x$epi)) {
-          tdf[, i + 1] <- x$epi[[i]][, j]
-        }
-        tdf$run <- j
-        df <- rbind(df, tdf)
+    ## one block of rows per requested run, in the order requested, so that an
+    ## unsorted or repeated `run` selection is returned as asked for
+    df <- do.call(rbind, lapply(run, function(j) {
+      tdf <- data.frame(time = x$control$timesteps)
+      for (i in seq_along(x$epi)) {
+        tdf[, i + 1] <- x$epi[[i]][, j]
       }
-    }
+      tdf$run <- j
+      tdf
+    }))
     df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+    row.names(df) <- NULL
   }
 
   if (nruns > 1) {
