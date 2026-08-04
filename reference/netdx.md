@@ -220,6 +220,10 @@ before running diagnostics. Plot diagnostics with
 [`plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
 and print summary tables with
 [`print.netdx`](https://epimodel.github.io/EpiModel/reference/print.netdx.md).
+With `keep.tedgelist = TRUE`, extract the timed edgelist with
+[`as.data.frame.netdx()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.md)
+and the cumulative or momentary degree distribution with
+[`get_degree_dist`](https://epimodel.github.io/EpiModel/reference/get_degree_dist.md).
 After diagnostics confirm a good fit, simulate the epidemic with
 [`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
@@ -251,7 +255,7 @@ dx
 #> Formation Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50   50.169    0.337   0.07   2.394            NA         7.039
+#> edges     50   49.953   -0.094   0.07  -0.669            NA         7.038
 plot(dx)
 
 # }

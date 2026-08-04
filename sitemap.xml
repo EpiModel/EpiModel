@@ -78,6 +78,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_current_timestep.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_degree.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_degree_dist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_edgelists_df.html</loc></url>
@@ -178,6 +179,8 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/summary.netest.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/summary.netsim.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/summary_nets.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/tedgelist_cumulative_degree.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/tedgelist_momentary_degree.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/test_icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/test_net.html</loc></url>

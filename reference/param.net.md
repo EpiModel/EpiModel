@@ -315,8 +315,8 @@ sim
 #> 
 #> Random Parameters
 #> ---------------------------
-#> act.rate = 2 3 3
-#> inf.prob = 0.7019984 0.5867389 0.06030901
+#> act.rate = 3 3 3
+#> inf.prob = 0.2075029 0.2819335 0.7256071
 #> 
 #> Model Output
 #> -----------------------
@@ -327,25 +327,25 @@ sim
 #> Formation Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50     47.5       -5  0.844  -2.962         4.414         4.092
+#> edges     50     57.2     14.4  1.684   4.276         7.326         6.451
 #> 
 #> 
 #> Duration Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     20   19.483   -2.584  0.576  -0.897         1.594         1.922
+#> edges     20   19.562   -2.189   0.47  -0.931         3.007         2.576
 #> 
 #> Dissolution Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges   0.05    0.057   13.785  0.004   1.812         0.004         0.026
+#> edges   0.05     0.05    0.556  0.004    0.07         0.004         0.022
 #> 
 
 # Parameter sets can be extracted with:
 get_param_set(sim)
-#>   sim rec.rate vital groups act.rate   inf.prob
-#> 1   1     0.02 FALSE      1        2 0.70199839
-#> 2   2     0.02 FALSE      1        3 0.58673890
-#> 3   3     0.02 FALSE      1        3 0.06030901
+#>   sim rec.rate vital groups act.rate  inf.prob
+#> 1   1     0.02 FALSE      1        3 0.2075029
+#> 2   2     0.02 FALSE      1        3 0.2819335
+#> 3   3     0.02 FALSE      1        3 0.7256071
 # }
 ```

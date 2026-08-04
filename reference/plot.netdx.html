@@ -74,6 +74,10 @@ netdx()."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.
 <span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  momentary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxdeg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  unique.partners <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -89,14 +93,15 @@ netdx()."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>Plot type, with options of <code>"formation"</code> for network
 model formation statistics, <code>"duration"</code> for dissolution model
-statistics for average edge duration, or <code>"dissolution"</code> for
+statistics for average edge duration, <code>"dissolution"</code> for
 dissolution model statistics for proportion of ties dissolved per time
-step.</p></dd>
+step, or <code>"cumldeg"</code> for the cumulative degree distribution.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>Plot method, with options of <code>"l"</code> for line plots and
-<code>"b"</code> for box plots.</p></dd>
+<code>"b"</code> for box plots. For <code>type = "cumldeg"</code>, <code>"b"</code> gives a bar plot
+of the degree distribution.</p></dd>
 
 
 <dt id="arg-sims">sims<a class="anchor" aria-label="anchor" href="#arg-sims"></a></dt>
@@ -221,6 +226,30 @@ versus one plot per statistic if <code>FALSE</code>.</p></dd>
 <dd><p>a label for the y axis, defaults to a description of <code>y</code>.</p></dd>
 
 
+<dt id="arg-momentary">momentary<a class="anchor" aria-label="anchor" href="#arg-momentary"></a></dt>
+<dd><p>If <code>TRUE</code>, add the momentary degree distribution to the
+cumulative degree plot for comparison. Used only when
+<code>type = "cumldeg"</code>.</p></dd>
+
+
+<dt id="arg-window">window<a class="anchor" aria-label="anchor" href="#arg-window"></a></dt>
+<dd><p>A vector of length 2 giving the first and last time step over
+which degrees are counted, with the default of the full simulation.
+Used only when <code>type = "cumldeg"</code>.</p></dd>
+
+
+<dt id="arg-maxdeg">maxdeg<a class="anchor" aria-label="anchor" href="#arg-maxdeg"></a></dt>
+<dd><p>Highest degree to show on the x-axis, with degrees above it
+collapsed into a final <code>"maxdeg+"</code> category. Used only when
+<code>type = "cumldeg"</code>.</p></dd>
+
+
+<dt id="arg-unique-partners">unique.partners<a class="anchor" aria-label="anchor" href="#arg-unique-partners"></a></dt>
+<dd><p>If <code>TRUE</code>, a dyad that forms, dissolves, and then
+re-forms within the window counts as one cumulative partner rather
+than two. Used only when <code>type = "cumldeg"</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments to pass.</p></dd>
 
@@ -253,10 +282,28 @@ are joined in one plot or plotted separately, assuming there are multiple
 statistics in the model. The default is based on the number of network
 statistics requested. The layout of the separate plots within the larger plot
 window is also based on the number of statistics.</p>
+<p>The <code>cumldeg</code> plot shows the cumulative degree distribution: the proportion
+of nodes with each count of partners accumulated over the simulation, rather
+than the count held at one point in time. It requires a <code>netdx</code> object run
+with <code>keep.tedgelist = TRUE</code>, since it is calculated from the timed edgelist
+with <code><a href="get_degree_dist.html">get_degree_dist()</a></code>. Setting <code>momentary = TRUE</code> adds the momentary
+degree distribution over the same window, calculated from the same edgelist,
+which is the distribution summarized by the <code>degree(k)</code> terms of the
+formation plot. Two models with the same mean degree and mean partnership
+duration have the same mean cumulative degree even when their momentary
+degree distributions differ, as the example below shows for models with high
+and low concurrency. Legend entries report the mean of each distribution.</p>
+<p>Because the cumulative degree grows with the length of the observation
+window, use <code>window</code> to restrict it to a substantively meaningful period
+when comparing across models. The lines or bars show the mean across
+simulations, with <code>qnts</code> giving the inter-simulation quantile band; the
+<code>targ.line</code>, <code>mean.smooth</code>, <code>qnts.smooth</code>, and <code>plots.joined</code> arguments do
+not apply to this plot type.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="netdx.html">netdx()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="netdx.html">netdx()</a></code>, and <code><a href="get_degree_dist.html">get_degree_dist()</a></code> for the degree distributions
+behind <code>type = "cumldeg"</code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -317,6 +364,46 @@ window is also based on the number of statistics.</p>
 <span class="r-in"><span><span class="co"># Dissolution statistics plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx2</span>, type <span class="op">=</span> <span class="st">"dissolution"</span>, qnts <span class="op">=</span> <span class="fl">0.25</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx2</span>, type <span class="op">=</span> <span class="st">"dissolution"</span>, method <span class="op">=</span> <span class="st">"b"</span>, col <span class="op">=</span> <span class="st">"pink1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Cumulative degree distribution: two models with the same mean degree and</span></span></span>
+<span class="r-in"><span><span class="co"># the same mean partnership duration, differing only in how much</span></span></span>
+<span class="r-in"><span><span class="co"># concurrency (overlapping partnerships) they allow</span></span></span>
+<span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">est.hi</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span>,</span></span>
+<span class="r-in"><span>                 target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">150</span><span class="op">)</span>, coef.diss <span class="op">=</span> <span class="va">coef.diss</span>,</span></span>
+<span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est.lo</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span>,</span></span>
+<span class="r-in"><span>                 target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">40</span><span class="op">)</span>, coef.diss <span class="op">=</span> <span class="va">coef.diss</span>,</span></span>
+<span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dx.hi</span> <span class="op">&lt;-</span> <span class="fu"><a href="netdx.html">netdx</a></span><span class="op">(</span><span class="va">est.hi</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">250</span>, keep.tedgelist <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>               nwstats.formula <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span> <span class="op">+</span> <span class="fu">degree</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dx.lo</span> <span class="op">&lt;-</span> <span class="fu"><a href="netdx.html">netdx</a></span><span class="op">(</span><span class="va">est.lo</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">250</span>, keep.tedgelist <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>               nwstats.formula <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span> <span class="op">+</span> <span class="fu">degree</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The momentary degree distributions are far apart: about half the nodes in</span></span></span>
+<span class="r-in"><span><span class="co"># the high-concurrency model have no partner at any given time and a quarter</span></span></span>
+<span class="r-in"><span><span class="co"># have two, while most nodes in the low-concurrency model have exactly one.</span></span></span>
+<span class="r-in"><span><span class="co"># Over 250 time steps both accumulate about 8.5 partners per node.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx.hi</span>, type <span class="op">=</span> <span class="st">"cumldeg"</span>, momentary <span class="op">=</span> <span class="cn">TRUE</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     main <span class="op">=</span> <span class="st">"High concurrency"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx.lo</span>, type <span class="op">=</span> <span class="st">"cumldeg"</span>, momentary <span class="op">=</span> <span class="cn">TRUE</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Low concurrency"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># As bars, with the tail of the distribution collapsed into one category</span></span></span>
+<span class="r-in"><span><span class="co"># and the inter-simulation range shown</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx.hi</span>, type <span class="op">=</span> <span class="st">"cumldeg"</span>, method <span class="op">=</span> <span class="st">"b"</span>, maxdeg <span class="op">=</span> <span class="fl">15</span>, qnts <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Partners accumulated over the last 100 steps only</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx.hi</span>, type <span class="op">=</span> <span class="st">"cumldeg"</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">250</span><span class="op">)</span>, momentary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The plotted distributions are returned invisibly</span></span></span>
+<span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx.hi</span>, type <span class="op">=</span> <span class="st">"cumldeg"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">dd</span><span class="op">$</span><span class="va">degree</span> <span class="op">*</span> <span class="va">dd</span><span class="op">$</span><span class="va">prop</span>, <span class="va">dd</span><span class="op">$</span><span class="va">sim</span>, <span class="va">sum</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

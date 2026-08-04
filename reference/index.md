@@ -68,6 +68,9 @@ netsim().
 - [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) :
   Dynamic Network Model Diagnostics
 
+- [`get_degree_dist()`](https://epimodel.github.io/EpiModel/reference/get_degree_dist.md)
+  : Extract Degree Distributions from Network Diagnostics
+
 - [`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
   : Dissolution Coefficients for Stochastic Network Models
 

@@ -435,3 +435,9 @@ Other exported accessors and helpers worth knowing:
   /
   [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
   convert between list and data.frame parameter representations.
+- **Degree distributions**:
+  [`get_degree_dist()`](https://epimodel.github.io/EpiModel/reference/get_degree_dist.md)
+  computes the cumulative or momentary degree distribution from a
+  `netdx` timed edgelist (`netdx(keep.tedgelist = TRUE)`);
+  `plot.netdx(type = "cumldeg")` plots it, optionally overlaying the
+  momentary distribution (#1050).

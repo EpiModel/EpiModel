@@ -73,20 +73,20 @@ mod <- netsim(est, param, init, control)
 
 ## Extract the transmission matrix from simulation 2
 get_transmat(mod, sim = 2)
-#> # A tibble: 24 × 8
-#> # Groups:   at, sus [24]
+#> # A tibble: 23 × 8
+#> # Groups:   at, sus [23]
 #>       at   sus   inf network infDur transProb actRate finalProb
 #>    <int> <int> <int>   <int>  <dbl>     <dbl>   <dbl>     <dbl>
-#>  1     2     1    68       1      9      0.3        1      0.3 
-#>  2     2    19    81       1      8      0.3        1      0.3 
-#>  3     2    21    92       1      8      0.3        1      0.3 
-#>  4     2    43    77       1      9      0.3        1      0.3 
-#>  5     3    13    81       1      9      0.3        1      0.3 
-#>  6     3    35     8       1      9      0.3        1      0.3 
-#>  7     3    36    42       1      3      0.3        1      0.3 
-#>  8     4    20    16       1      7      0.3        1      0.3 
-#>  9     4    45    78       1      5      0.3        1      0.3 
-#> 10     4    84    36       1      1      0.15       1      0.15
-#> # ℹ 14 more rows
+#>  1     2    25    82       1      3      0.3        1      0.3 
+#>  2     2    33    82       1      3      0.3        1      0.3 
+#>  3     2    46    54       1      5      0.3        1      0.3 
+#>  4     3    15    60       1      5      0.3        1      0.3 
+#>  5     3    96    94       1      3      0.15       1      0.15
+#>  6     4     6    96       1      1      0.3        1      0.3 
+#>  7     4     9    94       1      4      0.3        1      0.3 
+#>  8     5    42    66       1      4      0.3        1      0.3 
+#>  9     5    68    45       1      8      0.15       1      0.15
+#> 10     5    71    63       1      9      0.15       1      0.15
+#> # ℹ 13 more rows
 # }
 ```

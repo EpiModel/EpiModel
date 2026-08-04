@@ -6,6 +6,24 @@
 
 ### NEW FEATURES
 
+- Add a cumulative degree distribution plot to
+  [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md),
+  via `type = "cumldeg"`, along with the
+  [`get_degree_dist()`](https://epimodel.github.io/EpiModel/reference/get_degree_dist.md)
+  function that calculates it. Both work off the timed edgelist, so they
+  require a
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
+  run with `keep.tedgelist = TRUE`. The cumulative distribution counts
+  the partners each node accumulates over the simulation, rather than
+  the partners held at one moment in time; `momentary = TRUE` overlays
+  the momentary distribution over the same window for comparison, and
+  `window` restricts both to a period of interest. Two models with the
+  same mean degree and mean partnership duration accumulate the same
+  number of partners per node even when their momentary degree
+  distributions differ, which the
+  [`?plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
+  example shows for models with high and low concurrency. Closes
+  [\#1050](https://github.com/EpiModel/EpiModel/issues/1050).
 - Add an `ergm.ego.popsize` argument to
   [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
   exposing the `popsize` parameter of

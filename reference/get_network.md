@@ -131,9 +131,9 @@ get_network(dx, sim = 2)
 #>   multiple = FALSE 
 #>   bipartite = FALSE 
 #>   net.obs.period: (not shown)
-#>   total edges= 72 
+#>   total edges= 79 
 #>     missing edges= 0 
-#>     non-missing edges= 72 
+#>     non-missing edges= 79 
 #> 
 #>  Vertex attribute names: 
 #>     group vertex.names 
@@ -150,9 +150,9 @@ get_network(dx, collapse = TRUE, at = 5)
 #>   loops = FALSE 
 #>   multiple = FALSE 
 #>   bipartite = FALSE 
-#>   total edges= 49 
+#>   total edges= 44 
 #>     missing edges= 0 
-#>     non-missing edges= 49 
+#>     non-missing edges= 44 
 #> 
 #>  Vertex attribute names: 
 #>     group vertex.names 
@@ -191,9 +191,9 @@ get_network(mod, sim = 2)
 #>   bipartite = FALSE 
 #>   net.obs.period: (not shown)
 #>   vertex.pid = tergm_pid 
-#>   total edges= 79 
+#>   total edges= 70 
 #>     missing edges= 0 
-#>     non-missing edges= 79 
+#>     non-missing edges= 70 
 #> 
 #>  Vertex attribute names: 
 #>     active group status tergm_pid testatus.active vertex.names 
@@ -211,9 +211,9 @@ get_network(mod, collapse = TRUE, at = 5)
 #>   multiple = FALSE 
 #>   bipartite = FALSE 
 #>   vertex.pid = tergm_pid 
-#>   total edges= 64 
+#>   total edges= 42 
 #>     missing edges= 0 
-#>     non-missing edges= 64 
+#>     non-missing edges= 42 
 #> 
 #>  Vertex attribute names: 
 #>     group status tergm_pid testatus vertex.names 

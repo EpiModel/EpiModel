@@ -79,12 +79,12 @@ mod <- netsim(est, param, init, control)
 
 get_param_set(mod)
 #>   sim inf.prob dummy_1 dummy_2 dummy_3 vital groups act.rate dummy.param
-#> 1   1      0.3       0       1       2 FALSE      1     0.25  0.24777053
-#> 2   2      0.3       0       1       2 FALSE      1     0.75  0.68605240
-#> 3   3      0.3       0       1       2 FALSE      1     0.50  0.03437539
+#> 1   1      0.3       0       1       2 FALSE      1     0.25  0.09510458
+#> 2   2      0.3       0       1       2 FALSE      1     0.75  0.04711438
+#> 3   3      0.3       0       1       2 FALSE      1     0.75  0.06408864
 #>   dummy.strat.param_1 dummy.strat.param_2
-#> 1            6.567364            8.571406
-#> 2            9.652140           11.637548
-#> 3           12.641034            9.052961
+#> 1           16.412011            9.315508
+#> 2          -21.477819            9.875208
+#> 3            4.135546           10.531481
 # }
 ```
