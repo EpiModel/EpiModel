@@ -129,8 +129,10 @@
 #' @seealso
 #' Estimate the network model with [`netest`] before running diagnostics.
 #' Plot diagnostics with [`plot.netdx`] and print summary tables with
-#' [`print.netdx`]. After diagnostics confirm a good fit, simulate the
-#' epidemic with [`netsim`].
+#' [`print.netdx`]. With `keep.tedgelist = TRUE`, extract the timed edgelist
+#' with [as.data.frame.netdx()] and the cumulative or momentary degree
+#' distribution with [`get_degree_dist`]. After diagnostics confirm a good fit,
+#' simulate the epidemic with [`netsim`].
 #'
 #' @export
 #'
