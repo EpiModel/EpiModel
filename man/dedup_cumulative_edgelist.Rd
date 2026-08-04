@@ -10,20 +10,35 @@ dedup_cumulative_edgelist(el)
 \item{el}{A cumulative edgelist with potentially overlapping edges.}
 }
 \value{
-A cumulative edgelist with no overlapping edges for the same
-\verb{(head, tail)} pair.
+A cumulative edgelist with no overlapping spells for the same edge,
+sorted by edge and then by \code{start}.
 }
 \description{
-Merges overlapping spells for the same \verb{(head, tail)} pair into a single
-row. Useful when concatenating cumulative edgelists across multiple
-simulations or sources, where the same partnership can appear in more
-than one segment. The reachability functions assume non-overlapping
-input.
+Merges overlapping spells for the same edge into a single row. Useful when
+concatenating cumulative edgelists across multiple simulations or sources,
+where the same partnership can appear in more than one segment. The
+reachability functions assume non-overlapping input.
+}
+\details{
+Spells are active from \code{start} to \code{stop} inclusive, and a \code{stop} of \code{NA}
+means the edge was never observed to dissolve. Two spells are merged when
+they overlap, that is when one starts at or before the other ends, and a
+chain of overlapping spells collapses into a single row. An open-ended
+(\code{NA} stop) spell therefore absorbs every spell of that edge starting at or
+after its \code{start}, and the merged row stays open-ended. Spells that merely
+touch, one starting the step after another ends, are left as separate rows,
+since they are already non-overlapping.
+
+Spells are grouped by every column other than \code{start} and \code{stop}, so an
+edgelist carrying a \code{network} column (as \code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}}
+returns) is merged within each network rather than across networks.
 }
 \examples{
-\dontrun{
-el_cuml <- dedup_cumulative_edgelist(el_raw)
-}
+el <- data.frame(head = c(1, 1, 1, 2), tail = c(2, 2, 2, 3),
+                 start = c(1, 2, 8, 4), stop = c(3, 5, 9, NA))
+# the first two spells of the 1-2 edge overlap and are merged; its third
+# spell is disjoint and is kept; the open-ended 2-3 spell is kept as is
+dedup_cumulative_edgelist(el)
 
 }
 \seealso{

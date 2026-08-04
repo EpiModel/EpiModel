@@ -316,3 +316,90 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))
 
 })
+
+test_that("dedup_cumulative_edgelist merges overlapping spells", {
+  spells <- function(start, stop, head = 1, tail = 2) {
+    data.frame(head = head, tail = tail, start = start, stop = stop)
+  }
+
+  ## overlapping spells of one edge collapse into a single row
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 2), c(3, 4))),
+               spells(1, 4))
+  ## a chain of overlaps collapses transitively
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 2, 4), c(3, 5, 8))),
+               spells(1, 8))
+  ## a spell fully contained in another is absorbed
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 2), c(9, 3))),
+               spells(1, 9))
+
+  ## disjoint spells are kept, including ones that merely touch
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 5), c(2, 6))),
+               spells(c(1, 5), c(2, 6)))
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 3), c(2, 5))),
+               spells(c(1, 3), c(2, 5)))
+
+  ## the input need not be sorted
+  expect_equal(dedup_cumulative_edgelist(spells(c(7, 1), c(9, 8))),
+               spells(1, 9))
+
+  ## edges are merged separately, and the output is sorted by edge then start
+  el <- data.frame(head = c(1, 1, 1, 2), tail = c(2, 2, 2, 3),
+                   start = c(2, 8, 1, 4), stop = c(5, 9, 3, 6))
+  expect_equal(dedup_cumulative_edgelist(el),
+               data.frame(head = c(1, 1, 2), tail = c(2, 2, 3),
+                          start = c(1, 8, 4), stop = c(5, 9, 6)))
+})
+
+test_that("dedup_cumulative_edgelist keeps open-ended spells", {
+  spells <- function(start, stop, head = 1, tail = 2) {
+    data.frame(head = head, tail = tail, start = start, stop = stop)
+  }
+
+  ## an NA stop means the edge never dissolved, so it is never dropped
+  expect_equal(dedup_cumulative_edgelist(spells(1, NA_real_)), spells(1, NA_real_))
+
+  ## an open-ended spell overlapping a closed one absorbs it and stays open
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 2), c(3, NA))),
+               spells(1, NA_real_))
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 3), c(NA, 5))),
+               spells(1, NA_real_))
+
+  ## it also absorbs every later spell of that edge
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 3, 20), c(NA, 5, 25))),
+               spells(1, NA_real_))
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 4), c(NA, NA))),
+               spells(1, NA_real_))
+
+  ## an open-ended spell starting after a closed one ends stays separate
+  expect_equal(dedup_cumulative_edgelist(spells(c(1, 5), c(2, NA))),
+               spells(c(1, 5), c(2, NA)))
+})
+
+test_that("dedup_cumulative_edgelist handles other columns and edge cases", {
+  ## spells are kept apart by any other column, such as `network`
+  el <- data.frame(head = c(1, 1), tail = c(2, 2), start = c(1, 2),
+                   stop = c(3, 4), network = c(1, 2))
+  expect_equal(dedup_cumulative_edgelist(el), el)
+  el$network <- c(1, 1)
+  expect_equal(dedup_cumulative_edgelist(el),
+               data.frame(head = 1, tail = 2, start = 1, stop = 4,
+                          network = 1))
+
+  ## empty input, storage modes, and the object class are preserved
+  empty <- data.frame(head = numeric(0), tail = numeric(0),
+                      start = numeric(0), stop = numeric(0))
+  expect_equal(dedup_cumulative_edgelist(empty), empty)
+
+  int.el <- data.frame(head = c(1L, 1L), tail = c(2L, 2L),
+                       start = c(1L, 2L), stop = c(3L, 4L))
+  expect_type(dedup_cumulative_edgelist(int.el)$stop, "integer")
+
+  class(int.el) <- c("cumulative_edgelist", class(int.el))
+  expect_s3_class(dedup_cumulative_edgelist(int.el), "cumulative_edgelist")
+
+  expect_error(
+    dedup_cumulative_edgelist(data.frame(head = 1, tail = 2, start = NA,
+                                         stop = 3)),
+    "cannot contain NA"
+  )
+})

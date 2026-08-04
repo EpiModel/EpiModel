@@ -355,16 +355,29 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 
 #' Deduplicate a Cumulative Edgelist
 #'
-#' Merges overlapping spells for the same `(head, tail)` pair into a single
-#' row. Useful when concatenating cumulative edgelists across multiple
-#' simulations or sources, where the same partnership can appear in more
-#' than one segment. The reachability functions assume non-overlapping
-#' input.
+#' Merges overlapping spells for the same edge into a single row. Useful when
+#' concatenating cumulative edgelists across multiple simulations or sources,
+#' where the same partnership can appear in more than one segment. The
+#' reachability functions assume non-overlapping input.
 #'
 #' @param el A cumulative edgelist with potentially overlapping edges.
 #'
-#' @return A cumulative edgelist with no overlapping edges for the same
-#'   `(head, tail)` pair.
+#' @return A cumulative edgelist with no overlapping spells for the same edge,
+#'   sorted by edge and then by `start`.
+#'
+#' @details
+#' Spells are active from `start` to `stop` inclusive, and a `stop` of `NA`
+#' means the edge was never observed to dissolve. Two spells are merged when
+#' they overlap, that is when one starts at or before the other ends, and a
+#' chain of overlapping spells collapses into a single row. An open-ended
+#' (`NA` stop) spell therefore absorbs every spell of that edge starting at or
+#' after its `start`, and the merged row stays open-ended. Spells that merely
+#' touch, one starting the step after another ends, are left as separate rows,
+#' since they are already non-overlapping.
+#'
+#' Spells are grouped by every column other than `start` and `stop`, so an
+#' edgelist carrying a `network` column (as [get_cumulative_edgelists_df()]
+#' returns) is merged within each network rather than across networks.
 #'
 #' @family cumulative_edgelist
 #' @seealso [as_cumulative_edgelist()] for one source of duplicates;
@@ -372,41 +385,59 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 #'   non-overlapping input.
 #'
 #' @examples
-#' \dontrun{
-#' el_cuml <- dedup_cumulative_edgelist(el_raw)
-#' }
+#' el <- data.frame(head = c(1, 1, 1, 2), tail = c(2, 2, 2, 3),
+#'                  start = c(1, 2, 8, 4), stop = c(3, 5, 9, NA))
+#' # the first two spells of the 1-2 edge overlap and are merged; its third
+#' # spell is disjoint and is kept; the open-ended 2-3 spell is kept as is
+#' dedup_cumulative_edgelist(el)
 #'
 #' @export
 dedup_cumulative_edgelist <- function(el) {
-  el_n <- el |>
-    dplyr::group_by(head, tail) |>
-    dplyr::mutate(n = dplyr::n()) |>
-    dplyr::ungroup()
+  if (nrow(el) == 0L) {
+    return(el)
+  }
 
-  e_unique <- el_n |>
-    dplyr::filter(.data$n == 1) |>
-    dplyr::select(-"n")
+  if (anyNA(el$start)) {
+    stop("The `start` column of a cumulative edgelist cannot contain NA")
+  }
 
-  e_dup <- el_n |>
-    dplyr::filter(.data$n > 1) |>
-    dplyr::select(-"n") |>
-    dplyr::arrange(.data$head, .data$tail, .data$start, .data$stop)
+  ## a `stop` of NA means the edge was never observed to dissolve, so it acts
+  ## as an end point of Inf throughout the merge
+  stop_open <- ifelse(is.na(el$stop), Inf, el$stop)
 
-  e_dedup <- e_dup |>
-    dplyr::group_by(.data$head, .data$tail) |>
-    dplyr::mutate(
-      lstart = dplyr::lag(.data$start),
-      lstop = dplyr::lag(.data$stop),
-      overlap =
-        !is.na(.data$lstop) &
-        !is.na(.data$lstart) &
-        .data$start <= .data$lstop,
-      stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
-      start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
-    ) |>
-    dplyr::select(-c("lstart", "lstop", "overlap")) |>
-    dplyr::ungroup() |>
-    unique()
+  ## spells are merged within groups of rows sharing every column other than
+  ## `start` and `stop`, so that a column such as `network` keeps them apart
+  id_cols <- setdiff(names(el), c("start", "stop"))
+  ids <- if (length(id_cols) > 0L) {
+    do.call(paste, c(unname(as.list(el[id_cols])), sep = "\r"))
+  } else {
+    rep("", nrow(el))
+  }
 
-  dplyr::bind_rows(e_unique, e_dedup)
+  ord <- order(ids, el$start, stop_open)
+  el <- el[ord, , drop = FALSE]
+  ids <- ids[ord]
+  stop_open <- stop_open[ord]
+
+  ## rows are sorted by start within each edge, so a row opens a new spell when
+  ## it belongs to a new edge, or when it starts after every spell of that edge
+  ## seen so far has ended
+  n <- nrow(el)
+  new_edge <- c(TRUE, ids[-1L] != ids[-n])
+  running_stop <- unlist(
+    lapply(split(stop_open, cumsum(new_edge)),
+           function(x) c(-Inf, cummax(x)[-length(x)])),
+    use.names = FALSE
+  )
+  new_spell <- new_edge | el$start > running_stop
+
+  out <- el[new_spell, , drop = FALSE]
+  new_stop <- vapply(split(stop_open, cumsum(new_spell)), max, numeric(1),
+                     USE.NAMES = FALSE)
+  new_stop[is.infinite(new_stop)] <- NA
+  ## the merged end points keep the storage mode of the input
+  out$stop <- if (is.integer(el$stop)) as.integer(new_stop) else new_stop
+  row.names(out) <- NULL
+
+  return(out)
 }
