@@ -120,7 +120,9 @@ to plot lines for one-group models but not for two-group models.</p></dd>
 
 <dt id="arg-sims">sims<a class="anchor" aria-label="anchor" href="#arg-sims"></a></dt>
 <dd><p>If <code>type="epi"</code> or <code>"formation"</code>, a vector of
-simulation numbers to plot. If <code>type="network"</code>, a single
+simulation numbers to plot. The plot then describes those
+simulations alone: the mean line and quantile bands are calculated
+over them, not over the full set. If <code>type="network"</code>, a single
 simulation number for which to plot the network, or else <code>"min"</code>
 to plot the simulation number with the lowest disease prevalence,
 <code>"max"</code> for the simulation with the highest disease prevalence,

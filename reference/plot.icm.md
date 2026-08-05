@@ -61,7 +61,9 @@ plot(
 
 - sims:
 
-  A vector of simulation numbers to plot.
+  A vector of simulation numbers to plot. The plot then describes those
+  simulations alone: the mean line and quantile bands are calculated
+  over them, not over the full set.
 
 - sim.col:
 

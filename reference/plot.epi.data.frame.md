@@ -51,12 +51,13 @@ plot(
 - sims:
 
   If `type="epi"` or `"formation"`, a vector of simulation numbers to
-  plot. If `type="network"`, a single simulation number for which to
-  plot the network, or else `"min"` to plot the simulation number with
-  the lowest disease prevalence, `"max"` for the simulation with the
-  highest disease prevalence, or `"mean"` for the simulation with the
-  prevalence closest to the mean across simulations at the specified
-  time step.
+  plot. The plot then describes those simulations alone: the mean line
+  and quantile bands are calculated over them, not over the full set. If
+  `type="network"`, a single simulation number for which to plot the
+  network, or else `"min"` to plot the simulation number with the lowest
+  disease prevalence, `"max"` for the simulation with the highest
+  disease prevalence, or `"mean"` for the simulation with the prevalence
+  closest to the mean across simulations at the specified time step.
 
 - legend:
 
