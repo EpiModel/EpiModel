@@ -88,6 +88,15 @@
 #' create a new one if it does not exist already by calling the `add_`
 #' functions internally.
 #'
+#' @section One Value Per Node:
+#' Every nodal attribute holds exactly one value per node, and [netsim()]
+#' checks this at the end of each time step. When `set_attr` and `append_attr`
+#' create an attribute, the nodes they do not write to are filled with `NA` to
+#' preserve that: `set_attr` with `posit_ids` fills the unselected nodes, and
+#' `append_attr` fills the nodes that predate the ones being appended. This
+#' means `append_core_attr` must be called before `append_attr` when adding new
+#' nodes, as it is what makes those nodes known to the rest of the object.
+#'
 #' @examples
 #' dat <- create_dat_object(control = list(nsteps = 150))
 #' dat <- append_core_attr(dat, 1, 100)
@@ -208,6 +217,9 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
   attr_list <- raw_get_attr_list(dat)
   if (!item %in% names(attr_list)) {
     dat <- add_attr(dat, item)
+    # re-read, so that the `posit_ids` branch below writes into the full-length
+    # NA vector just created rather than into the pre-creation snapshot
+    attr_list <- raw_get_attr_list(dat)
   }
 
   if (is.null(posit_ids)) {
@@ -257,6 +269,15 @@ append_attr <- function(dat, item, value, n.new) {
   }
 
   old_vals <- get_attr(dat, item, override.null.error = TRUE)
+  if (is.null(old_vals) && item != "active") {
+    # the attribute does not exist yet: the nodes that predate the ones being
+    # appended get NA, so that the result is still one value per node.
+    # `append_core_attr` appends to `active` first, so `active` already covers
+    # the new nodes here. `active` itself is exempt, as it is what defines the
+    # number of nodes and creating it is how the first nodes come to exist
+    n_active <- length(get_posit_ids(dat))
+    old_vals <- rep(NA, max(n_active - n.new, 0L))
+  }
   dat <- set_attr(dat, item, c(old_vals, new_vals),
                   override.length.check = TRUE)
 
@@ -567,29 +588,38 @@ update_unique_ids <- function(dat, n.new) {
 #' @title Check that All Attributes in the Main `netsim_dat` Object are of Equal
 #'        Length
 #'
+#' @description Every nodal attribute must hold exactly one value per node, the
+#'              number of nodes being the length of the `active` attribute.
+#'              This is checked at the end of each time step of [netsim()].
+#'              An attribute of the wrong length is usually created by an
+#'              [append_attr()] call that does not cover every new node, or by
+#'              direct assignment into `dat$run$attr` in place of the accessors.
+#'
 #' @inheritParams recovery.net
 #'
 #' @return invisible(TRUE) if everything is correct; an error if not.
 #'
-#' @keywords internal not_used
+#' @keywords internal
 check_attr_lengths <- function(dat) {
   attr_list <- raw_get_attr_list(dat)
   attr_lengths <- vapply(attr_list, length, integer(1))
-  expected_length <- attr_lengths$active
-  wrong_lengths <- which(attr_lengths != expected_length)
 
-  if (length(wrong_lengths > 0L)) {
-    msg <- c(
-      "Some attributes are not of the correct length \n",
-      "Expected length: ", expected_length, "\n",
-      "Wrong length attributes: \n"
+  if (!"active" %in% names(attr_lengths)) {
+    stop("The `active` nodal attribute is missing from the main list object ",
+         "(dat), so the number of nodes is undefined")
+  }
+
+  expected_length <- attr_lengths[["active"]]
+  wrong_lengths <- attr_lengths[attr_lengths != expected_length]
+
+  if (length(wrong_lengths) > 0L) {
+    stop(
+      "Some nodal attributes are not of the correct length \n",
+      "Expected length (the length of `active`): ", expected_length, "\n",
+      "Wrong length attributes: \n",
+      paste0("`", names(wrong_lengths), "`: ", wrong_lengths, "\n",
+             collapse = "")
     )
-
-    for (i in seq_along(wrong_lengths)) {
-      msg <- c(msg, "`", names(wrong_lengths)[i], "`: ", wrong_lengths[i], "\n")
-    }
-
-    stop(msg)
   }
 
   return(invisible(TRUE))
