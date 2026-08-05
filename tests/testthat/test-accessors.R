@@ -236,6 +236,10 @@ test_that("set_attr and append_attr keep one value per node", {
   expect_equal(get_attr(d5, "unique_id"), 1:4)
   expect_length(get_attr(d5, "active"), 4)
   expect_true(check_attr_lengths(d5))
+
+  ## Appending any other attribute before the nodes exist is an error
+  d6 <- create_dat_object(control = list(nsteps = 10))
+  expect_error(append_attr(d6, "brandnew", 99, 2), "no attribute called `active`")
 })
 
 test_that("check_attr_lengths flags attributes of the wrong length", {

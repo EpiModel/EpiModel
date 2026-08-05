@@ -269,13 +269,14 @@ append_attr <- function(dat, item, value, n.new) {
   }
 
   old_vals <- get_attr(dat, item, override.null.error = TRUE)
-  if (is.null(old_vals)) {
+  if (is.null(old_vals) && item != "active") {
     # the attribute does not exist yet: the nodes that predate the ones being
     # appended get NA, so that the result is still one value per node.
-    # `append_core_attr` runs first, so `active` already covers the new nodes.
-    # At initialization `active` is itself being created, so there is no padding
-    n.active <- length(get_attr(dat, "active", override.null.error = TRUE))
-    old_vals <- rep(NA, max(n.active - n.new, 0L))
+    # `append_core_attr` appends to `active` first, so `active` already covers
+    # the new nodes here. `active` itself is exempt, as it is what defines the
+    # number of nodes and creating it is how the first nodes come to exist
+    n_active <- length(get_posit_ids(dat))
+    old_vals <- rep(NA, max(n_active - n.new, 0L))
   }
   dat <- set_attr(dat, item, c(old_vals, new_vals),
                   override.length.check = TRUE)
