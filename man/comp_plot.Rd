@@ -19,7 +19,8 @@ comp_plot(x, at, digits, ...)
 \item{x}{An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 \code{netsim}.}
 
-\item{at}{Time step for model statistics.}
+\item{at}{Time step for model statistics. For \code{dcm} models, must be one of
+the times the model was solved over, held in \code{control$timesteps}.}
 
 \item{digits}{Number of significant digits to print.}
 
