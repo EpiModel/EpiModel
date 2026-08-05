@@ -40,7 +40,9 @@
 \item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
 \item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
-simulation numbers to plot. If \code{type="network"}, a single
+simulation numbers to plot. The plot then describes those
+simulations alone: the mean line and quantile bands are calculated
+over them, not over the full set. If \code{type="network"}, a single
 simulation number for which to plot the network, or else \code{"min"}
 to plot the simulation number with the lowest disease prevalence,
 \code{"max"} for the simulation with the highest disease prevalence,

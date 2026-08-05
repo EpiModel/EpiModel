@@ -2,6 +2,8 @@
 
 ### BREAKING CHANGES
 
+-   The `sims` argument of `plot.icm()` and of `plot.netsim(type = "epi")` now selects the simulations the whole plot describes, rather than only the individual lines. Its documented meaning is "a vector of simulation numbers to plot", but it was applied only to the simulation-line loop: `draw_means()` and `draw_qnts()` took no `sims` argument and always computed over every simulation. A four-simulation model with `i.num` of 34, 47, 47, and 51 at a time step drew a mean line at 44.75 under `sims = 1:2`, where the two plotted lines average 40.5. The mean line and the quantile band are now calculated over the selected simulations, so they describe the same runs as the lines drawn beside them. Plots that pass `sims` will change; plots that do not are unaffected. Closes #1064.
+
 ### NEW FEATURES
 
 - Add a cumulative degree distribution plot to `plot.netdx()`, via `type = "cumldeg"`, along with the `get_degree_dist()` function that calculates it. Both work off the timed edgelist, so they require a `netdx()` run with `keep.tedgelist = TRUE`. The cumulative distribution counts the partners each node accumulates over the simulation, rather than the partners held at one moment in time; `momentary = TRUE` overlays the momentary distribution over the same window for comparison, and `window` restricts both to a period of interest. Two models with the same mean degree and mean partnership duration accumulate the same number of partners per node even when their momentary degree distributions differ, which the `?plot.netdx` example shows for models with high and low concurrency. Closes #1050.

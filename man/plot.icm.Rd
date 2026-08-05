@@ -45,7 +45,9 @@
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
 
-\item{sims}{A vector of simulation numbers to plot.}
+\item{sims}{A vector of simulation numbers to plot. The plot then describes
+those simulations alone: the mean line and quantile bands are
+calculated over them, not over the full set.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
 

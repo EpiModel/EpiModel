@@ -1,4 +1,24 @@
 ## Helper utilities ------------------------------------------------------------
+
+## Restrict the epidemic output of a stochastic model to a subset of its
+## simulations, so that everything drawn from it afterwards (the individual
+## simulation lines, the mean line, and the quantile bands) describes the same
+## set of simulations. `control$nsims` is updated to match, since it drives the
+## quantile band and transparency defaults downstream. Selecting every
+## simulation leaves the object untouched.
+subset_epi_sims <- function(x, sims) {
+  if (length(sims) == x$control$nsims && all(sims == seq_len(x$control$nsims))) {
+    return(x)
+  }
+
+  x$epi <- lapply(x$epi, function(comp) {
+    if (is.null(dim(comp))) comp else comp[, sims, drop = FALSE]
+  })
+  x$control$nsims <- length(sims)
+
+  return(x)
+}
+
 draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
                       loc = "epi", plot.qnts = 1, qnts.min_max = "max",
                       offset = 0) {
