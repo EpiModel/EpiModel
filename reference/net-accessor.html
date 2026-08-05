@@ -245,6 +245,18 @@ create a new one if it does not exist already by calling the <code>add_</code>
 functions internally.</p>
     </div>
     <div class="section level2">
+    <h2 id="one-value-per-node">One Value Per Node<a class="anchor" aria-label="anchor" href="#one-value-per-node"></a></h2>
+
+
+<p>Every nodal attribute holds exactly one value per node, and <code><a href="netsim.html">netsim()</a></code>
+checks this at the end of each time step. When <code>set_attr</code> and <code>append_attr</code>
+create an attribute, the nodes they do not write to are filled with <code>NA</code> to
+preserve that: <code>set_attr</code> with <code>posit_ids</code> fills the unselected nodes, and
+<code>append_attr</code> fills the nodes that predate the ones being appended. This
+means <code>append_core_attr</code> must be called before <code>append_attr</code> when adding new
+nodes, as it is what makes those nodes known to the rest of the object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="update_params.html">update_params()</a></code> for editing a <code>param.net</code> object outside a
 simulation; <code><a href="param.net.html">param.net()</a></code>, <code><a href="init.net.html">init.net()</a></code>, <code><a href="control.net.html">control.net()</a></code> for input

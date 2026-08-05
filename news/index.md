@@ -50,6 +50,30 @@
 
 ### BUG FIXES
 
+- Fix
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  and
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  so that a nodal attribute they create always holds one value per node.
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  with `posit_ids` on an attribute that did not exist yet wrote into a
+  snapshot of the attribute list taken before the attribute was created,
+  so the result was as long as the highest selected position (length 2
+  for `posit_ids = c(1, 2)`, length 7 for `c(4, 7)`) rather than one
+  entry per node.
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  on an attribute that did not exist yet returned the appended values
+  alone, so an arrivals module creating a custom attribute on the first
+  step with any arrival left that attribute covering only the new nodes.
+  Both now fill the nodes they do not write to with `NA`.
+  [`check_attr_lengths()`](https://epimodel.github.io/EpiModel/reference/check_attr_lengths.md)
+  is also fixed: it errored on its first line for every input (`$` on an
+  atomic vector), and reported attribute positions rather than lengths.
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  now calls it at the end of each time step, so an attribute of the
+  wrong length is reported when it appears rather than surfacing later
+  as a recycling error or as silently wrong output. Closes
+  [\#1058](https://github.com/EpiModel/EpiModel/issues/1058).
 - Fix the `dcm` methods that broke when
   [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
   was given an explicit vector of times in `nsteps` rather than a scalar

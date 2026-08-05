@@ -198,6 +198,18 @@ The `set_` and `append_` functions edit a pre-existing element or create
 a new one if it does not exist already by calling the `add_` functions
 internally.
 
+## One Value Per Node
+
+Every nodal attribute holds exactly one value per node, and
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+checks this at the end of each time step. When `set_attr` and
+`append_attr` create an attribute, the nodes they do not write to are
+filled with `NA` to preserve that: `set_attr` with `posit_ids` fills the
+unselected nodes, and `append_attr` fills the nodes that predate the
+ones being appended. This means `append_core_attr` must be called before
+`append_attr` when adding new nodes, as it is what makes those nodes
+known to the rest of the object.
+
 ## See also
 
 [`update_params()`](https://epimodel.github.io/EpiModel/reference/update_params.md)
