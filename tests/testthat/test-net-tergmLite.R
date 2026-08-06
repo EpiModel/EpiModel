@@ -15,8 +15,11 @@ test_that("tergmLite: 1G, Closed", {
 
   param <- param.net(inf.prob = 0.1, act.rate = 5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")
@@ -28,8 +31,11 @@ test_that("tergmLite: 1G, Closed", {
   # SIS
   param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.02)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")
@@ -41,8 +47,11 @@ test_that("tergmLite: 1G, Closed", {
   # SIR
   param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 5)
-  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")
@@ -67,8 +76,11 @@ test_that("tergmLite: 2G, Closed", {
   # Parameters
   param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2)
   init <- init.net(i.num = 20, i.num.g2 = 20)
-  control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")
@@ -81,8 +93,11 @@ test_that("tergmLite: 2G, Closed", {
   param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2,
                      rec.rate = 0.02, rec.rate.g2 = 0.02)
   init <- init.net(i.num = 20, i.num.g2 = 20)
-  control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")
@@ -95,8 +110,11 @@ test_that("tergmLite: 2G, Closed", {
   param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2,
                      rec.rate = 0.02, rec.rate.g2 = 0.02)
   init <- init.net(i.num = 10, i.num.g2 = 10, r.num = 5, r.num.g2 = 5)
-  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
-                         resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
+                           resimulate.network = FALSE, tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
 
   sim <- netsim(est, param, init, control)
   expect_s3_class(sim, "netsim")

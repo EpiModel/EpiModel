@@ -59,8 +59,11 @@ test_that("get_network.netsim rejects collapse / at under tergmLite", {
   est_tl <- netest(nw, formation = ~edges, target.stats = 25,
                    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                    verbose = FALSE)
-  control_tl <- control.net(type = "SI", nsteps = 5, nsims = 1,
-                            tergmLite = TRUE, verbose = FALSE)
+  expect_warning(
+    control_tl <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                              tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
   mod_tl <- netsim(est_tl, param.net(inf.prob = 0.3),
                    init.net(i.num = 5), control_tl)
 

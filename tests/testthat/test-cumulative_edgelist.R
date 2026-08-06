@@ -316,3 +316,96 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))
 
 })
+
+context("Cumulative Edgelist: head/tail orientation")
+
+# (t)ergm edgelists carry the tail in column 1 and the head in column 2. The
+# cumulative edgelist recorded them the other way round (#1021). On an
+# undirected network the stored dyad is sorted, so the inversion is invisible;
+# it only changes the output for a directed one. EpiModel simulates undirected
+# networks only, so these drive the recorders directly with edgelists whose two
+# columns are distinguishable. Cheap and deterministic, so not skipped on CRAN.
+
+test_that("update_cumulative_edgelist takes tail from column 1 (#1021)", {
+  dat <- create_dat_object(
+    control = list(tergmLite = TRUE, cumulative.edgelist = TRUE,
+                   truncate.el.cuml = Inf)
+  )
+  dat <- append_core_attr(dat, 1, 8)
+  dat$num.nw <- 1
+  # Every row runs high -> low or low -> high, so an inversion cannot pass.
+  dat$run$el <- list(matrix(c(5L, 3L,
+                              2L, 6L), ncol = 2, byrow = TRUE))
+  dat <- set_current_timestep(dat, 4)
+
+  dat <- update_cumulative_edgelist(dat, 1, truncate = Inf)
+  el <- get_cumulative_edgelist(dat, 1)
+
+  expect_equal(el$tail, c(5, 2))
+  expect_equal(el$head, c(3, 6))
+  expect_equal(el$start, c(4, 4))
+})
+
+test_that("cumulative edgelist preserves direction on a directed network (#1021)", {
+  # The non-tergmLite path reads its dyads from the networkDynamic object, so
+  # this one can use a genuinely directed network rather than a bare matrix.
+  nw <- network::network.initialize(8, directed = TRUE)
+  nwd <- networkDynamic(
+    base.net = nw,
+    edge.spells = data.frame(onset = 0, terminus = Inf,
+                             tail = c(5, 2), head = c(3, 6)),
+    verbose = FALSE
+  )
+
+  dat <- create_dat_object(
+    control = list(tergmLite = FALSE, cumulative.edgelist = TRUE,
+                   truncate.el.cuml = Inf)
+  )
+  dat <- append_core_attr(dat, 1, 8)
+  dat$num.nw <- 1
+  dat$run$nw <- list(nwd)
+  dat <- set_current_timestep(dat, 4)
+
+  dat <- update_cumulative_edgelist(dat, 1, truncate = Inf)
+  el <- get_cumulative_edgelist(dat, 1)
+
+  # Same dyads as the network was given them, not transposed.
+  expect_equal(el$tail, c(5, 2))
+  expect_equal(el$head, c(3, 6))
+})
+
+test_that("seed_cumulative_edgelist_t1 keeps orientation in all branches (#1021)", {
+  # The seed writes head/tail in three places: edges present at both t=0 and
+  # t=1, edges new at t=1, and edges dropped after t=0. All three were
+  # inverted, so all three are checked.
+  dat <- create_dat_object(
+    control = list(tergmLite = TRUE, cumulative.edgelist = TRUE,
+                   truncate.el.cuml = Inf)
+  )
+  dat <- append_core_attr(dat, 1, 8)
+  dat$num.nw <- 1
+  # 5 -> 3 persists, 2 -> 6 is dropped after t=0, 7 -> 1 forms at t=1.
+  dat$run$el_t0_seed <- list(matrix(c(5L, 3L,
+                                      2L, 6L), ncol = 2, byrow = TRUE))
+  dat$run$el <- list(matrix(c(5L, 3L,
+                              7L, 1L), ncol = 2, byrow = TRUE))
+
+  dat <- seed_cumulative_edgelist_t1(dat)
+  el <- get_cumulative_edgelist(dat, 1)
+
+  expect_setequal(paste(el$tail, el$head, sep = "->"),
+                  c("5->3", "2->6", "7->1"))
+
+  persistent <- el[el$tail == 5, ]
+  expect_equal(persistent$head, 3)
+  expect_equal(persistent$start, 0)
+  expect_true(is.na(persistent$stop))
+
+  new_edge <- el[el$tail == 7, ]
+  expect_equal(new_edge$head, 1)
+  expect_equal(new_edge$start, 1)
+
+  dropped <- el[el$tail == 2, ]
+  expect_equal(dropped$head, 6)
+  expect_equal(c(dropped$start, dropped$stop), c(0, 0))
+})

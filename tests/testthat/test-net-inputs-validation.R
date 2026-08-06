@@ -69,6 +69,36 @@ test_that("param.net warns on act.rate.g2", {
                  "act.rate.g2.*only act.rate parameter will apply")
 })
 
+test_that("control.net warns and resets resimulate.network under tergmLite", {
+  # tergmLite cannot hold a network fixed across steps, so the combination is
+  # silently corrected. The warning is expected, and several test files trip
+  # it; asserting it here is what makes those wrappers meaningful rather than
+  # noise. Also covers the case where resimulate.network is simply left out.
+  expect_warning(
+    ctrl <- control.net(type = "SI", nsteps = 5, resimulate.network = FALSE,
+                        tergmLite = TRUE, verbose = FALSE),
+    "Because tergmLite = TRUE, resetting resimulate.network = TRUE"
+  )
+  expect_true(ctrl$resimulate.network)
+
+  expect_warning(
+    ctrl <- control.net(type = "SI", nsteps = 5, tergmLite = TRUE,
+                        verbose = FALSE),
+    "resetting resimulate.network"
+  )
+  expect_true(ctrl$resimulate.network)
+
+  # No warning when the two settings already agree, or when tergmLite is off.
+  expect_silent(ctrl <- control.net(type = "SI", nsteps = 5, tergmLite = TRUE,
+                                    resimulate.network = TRUE, verbose = FALSE))
+  expect_true(ctrl$resimulate.network)
+
+  expect_silent(ctrl <- control.net(type = "SI", nsteps = 5, tergmLite = FALSE,
+                                    resimulate.network = FALSE,
+                                    verbose = FALSE))
+  expect_false(ctrl$resimulate.network)
+})
+
 test_that("generate_random_params validates random.params structure", {
   # random.params validation runs at simulation time, inside
   # generate_random_params(). Calling that function directly lets us hit
