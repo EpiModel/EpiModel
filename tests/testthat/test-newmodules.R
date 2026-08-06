@@ -351,6 +351,56 @@ test_that("SIS with scenarios", {
   expect_error(sc.param <- use_scenario(param, scenarios.list[[1]]))
 })
 
+test_that("create_scenario_list handles a single parameter column (#1045)", {
+  # Selecting a row of a one-parameter table dropped it to an unnamed scalar,
+  # so `unflatten_params` was handed NULL names and `strsplit` failed with
+  # "non-character argument". No netsim here, so this runs on CRAN too.
+  sc.df <- data.frame(
+    .scenario.id = c("a", "b"),
+    .at          = 0,
+    inf.prob     = c(0.2, 0.3),
+    stringsAsFactors = FALSE
+  )
+
+  sc <- create_scenario_list(sc.df)
+  expect_length(sc, 2)
+  expect_equal(names(sc), c("a", "b"))
+  expect_equal(sc[["a"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.2))
+  expect_equal(sc[["b"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.3))
+
+  # The value reaches `param` through `use_scenario` as well.
+  param <- param.net(inf.prob = 0.9, act.rate = 2)
+  expect_equal(use_scenario(param, sc[["b"]])$inf.prob, 0.3)
+
+  # Several `.at` rows for one scenario, still one parameter column.
+  sc.df2 <- data.frame(
+    .scenario.id = "ramp",
+    .at          = c(0, 10, 20),
+    inf.prob     = c(0.1, 0.2, 0.3),
+    stringsAsFactors = FALSE
+  )
+  updaters <- create_scenario_list(sc.df2)[["ramp"]][[".param.updater.list"]]
+  expect_length(updaters, 3)
+  expect_equal(vapply(updaters, function(u) u$param$inf.prob, numeric(1)),
+               c(0.1, 0.2, 0.3))
+
+  # A lone column carrying a position suffix rebuilds a length-1 vector.
+  sc.df3 <- data.frame(.scenario.id = "s", .at = 0, d.rate_1 = 0.5,
+                       check.names = FALSE, stringsAsFactors = FALSE)
+  expect_equal(
+    create_scenario_list(sc.df3)[["s"]][[".param.updater.list"]][[1]]$param,
+    list(d.rate = 0.5)
+  )
+
+  # Two parameter columns were never affected; kept as the contrast case.
+  sc.df4 <- data.frame(.scenario.id = "a", .at = 0, inf.prob = 0.2,
+                       act.rate = 1, stringsAsFactors = FALSE)
+  expect_equal(create_scenario_list(sc.df4)[["a"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.2, act.rate = 1))
+})
+
 context("Records: attr_history and Raw Objects")
 
 test_that("Time varying elements", {
@@ -795,6 +845,30 @@ test_that("Random parameters generators", {
   randoms <- c(my_randoms, list(param.random.set = list()))
   param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_error(generate_random_params(param))
+})
+
+test_that("generate_random_params handles a single-column param.random.set (#1045)", {
+  # Same root cause as the scenario path: picking a row of a one-column
+  # `param.random.set` dropped it to an unnamed scalar, so `unflatten_params`
+  # errored on NULL names. No netsim here, so this runs on CRAN too.
+  set.seed(11)
+  prs <- data.frame(tx.halt.prob = c(0.25, 0.5, 0.75))
+  param <- param.net(inf.prob = 0.3,
+                     random.params = list(param.random.set = prs))
+
+  expect_silent(p <- generate_random_params(param))
+  expect_length(p$tx.halt.prob, 1)
+  expect_true(p$tx.halt.prob %in% prs$tx.halt.prob)
+  # The drawn value is also recorded for the run.
+  expect_equal(p$random.params.values, list(tx.halt.prob = p$tx.halt.prob))
+
+  # A lone column carrying a position suffix rebuilds the vector parameter.
+  prs2 <- data.frame(d.rate_1 = c(0.1, 0.2), check.names = FALSE)
+  param2 <- param.net(inf.prob = 0.3,
+                      random.params = list(param.random.set = prs2))
+  p2 <- generate_random_params(param2)
+  expect_length(p2$d.rate, 1)
+  expect_true(p2$d.rate %in% prs2$d.rate_1)
 })
 
 # `module.order` validation (run at control.net() construction time) -----------
