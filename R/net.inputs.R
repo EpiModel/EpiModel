@@ -695,6 +695,18 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
 #'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
 #'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
+#' @param edges.correct.attr Name of a binary nodal attribute marking the nodes
+#'        eligible to form ties, used by [`edges_correct`] when it rescales the
+#'        edges coefficient to preserve mean degree as the population changes.
+#'        `NULL` by default, which counts every active node and is correct
+#'        whenever every active node can form a tie. Set it when the model
+#'        carries a subpopulation that stays active but is structurally
+#'        excluded from the network, such as an age band past a sexual-cessation
+#'        age whose target statistics are all zero. Without it the correction
+#'        counts nodes that can never hold an edge, and the whole of the
+#'        adjustment lands on the nodes that can, thinning mean degree among
+#'        them by the excluded share. Nodes with a value of `1` are eligible;
+#'        `NA` is treated as ineligible.
 #' @param cumulative.edgelist If `TRUE`, EpiModel maintains a running record
 #'        of every edge across the simulation (the *cumulative edgelist*) by
 #'        calling [`update_cumulative_edgelist`] once per network from the
@@ -916,6 +928,7 @@ control.net <- function(type,
                         ncores = 1,
                         resimulate.network = FALSE,
                         tergmLite = FALSE,
+                        edges.correct.attr = NULL,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
                         attr.rules,
