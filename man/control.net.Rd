@@ -12,6 +12,7 @@ control.net(
   ncores = 1,
   resimulate.network = FALSE,
   tergmLite = FALSE,
+  edges.correct.attr = NULL,
   cumulative.edgelist = FALSE,
   truncate.el.cuml = 0,
   attr.rules,
@@ -77,6 +78,19 @@ warning.}
 \item{tergmLite}{Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}), or \code{tergmLite}
 (\code{tergmLite = TRUE}). Default of \code{FALSE}. When \code{TRUE}, \code{resimulate.network} is
 automatically set to \code{TRUE} (with a warning if the user explicitly set it to \code{FALSE}).}
+
+\item{edges.correct.attr}{Name of a binary nodal attribute marking the nodes
+eligible to form ties, used by \code{\link{edges_correct}} when it rescales the
+edges coefficient to preserve mean degree as the population changes.
+\code{NULL} by default, which counts every active node and is correct
+whenever every active node can form a tie. Set it when the model
+carries a subpopulation that stays active but is structurally
+excluded from the network, such as an age band past a sexual-cessation
+age whose target statistics are all zero. Without it the correction
+counts nodes that can never hold an edge, and the whole of the
+adjustment lands on the nodes that can, thinning mean degree among
+them by the excluded share. Nodes with a value of \code{1} are eligible;
+\code{NA} is treated as ineligible.}
 
 \item{cumulative.edgelist}{If \code{TRUE}, EpiModel maintains a running record
 of every edge across the simulation (the \emph{cumulative edgelist}) by
