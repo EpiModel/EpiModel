@@ -76,6 +76,24 @@ object and other initialization information passed from
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The updated <code>netsim_dat</code> main list object.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>By default the correction counts every active node. That is correct when
+every active node can form a tie, which is the usual case.</p>
+<p>It is not correct when a model carries a subpopulation that stays active but
+is structurally excluded from the network, for example an age band past a
+sexual-cessation age whose target statistics are all zero, so that <code>ergm</code>
+pins its terms off and no tie incident to those nodes can form. The
+population the correction sees then grows while the population that can hold
+an edge does not, and the whole of the adjustment lands on the nodes that
+can. The <code>edges.correct.attr</code> control names a binary nodal attribute
+identifying the nodes eligible to form ties, and the correction then counts
+only those.</p>
+<p>The size of the error is the size of the excluded share. A model whose
+excluded band grows to a quarter of the population dilutes mean degree among
+the remainder by the same quarter, and none of it appears in the network
+diagnostics, because <code><a href="netdx.html">netdx()</a></code> runs before any node has been excluded.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

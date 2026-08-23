@@ -51,6 +51,7 @@ netsim."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.g
 <span>  ncores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  resimulate.network <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tergmLite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  edges.correct.attr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cumulative.edgelist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  truncate.el.cuml <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">attr.rules</span>,</span>
@@ -133,6 +134,21 @@ warning.</p></dd>
 <dd><p>Logical indicating usage of either <code>tergm</code> (<code>tergmLite = FALSE</code>), or <code>tergmLite</code>
 (<code>tergmLite = TRUE</code>). Default of <code>FALSE</code>. When <code>TRUE</code>, <code>resimulate.network</code> is
 automatically set to <code>TRUE</code> (with a warning if the user explicitly set it to <code>FALSE</code>).</p></dd>
+
+
+<dt id="arg-edges-correct-attr">edges.correct.attr<a class="anchor" aria-label="anchor" href="#arg-edges-correct-attr"></a></dt>
+<dd><p>Name of a binary nodal attribute marking the nodes
+eligible to form ties, used by <code><a href="edges_correct.html">edges_correct</a></code> when it rescales the
+edges coefficient to preserve mean degree as the population changes.
+<code>NULL</code> by default, which counts every active node and is correct
+whenever every active node can form a tie. Set it when the model
+carries a subpopulation that stays active but is structurally
+excluded from the network, such as an age band past a sexual-cessation
+age whose target statistics are all zero. Without it the correction
+counts nodes that can never hold an edge, and the whole of the
+adjustment lands on the nodes that can, thinning mean degree among
+them by the excluded share. Nodes with a value of <code>1</code> are eligible;
+<code>NA</code> is treated as ineligible.</p></dd>
 
 
 <dt id="arg-cumulative-edgelist">cumulative.edgelist<a class="anchor" aria-label="anchor" href="#arg-cumulative-edgelist"></a></dt>

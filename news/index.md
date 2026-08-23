@@ -39,6 +39,31 @@
   [`?plot.netdx`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md)
   example shows for models with high and low concurrency. Closes
   [\#1050](https://github.com/EpiModel/EpiModel/issues/1050).
+
+- Add an `edges.correct.attr` control to
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md),
+  naming a binary nodal attribute that marks the nodes eligible to form
+  ties.
+  [`edges_correct()`](https://epimodel.github.io/EpiModel/reference/edges_correct.md)
+  rescales the edges coefficient to preserve mean degree as the
+  population changes, and by default it counts every active node, which
+  is correct whenever every active node can form a tie. It is not
+  correct when a model carries a subpopulation that stays active but is
+  structurally excluded from the network, such as an age band past a
+  sexual-cessation age whose target statistics are all zero, so that
+  `ergm` pins its terms off and no tie incident to those nodes can form.
+  The correction then counts nodes that can never hold an edge, and the
+  whole of the adjustment lands on the nodes that can, thinning mean
+  degree among them by the excluded share. In an HIV model with
+  cessation at 65 and a retired band growing to a fifth of the
+  population, mean degree among the sexually active fell 18% over 25
+  years and all three bacterial sexually transmitted infections went
+  extinct. None of it appears in
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md),
+  which runs before any node has been excluded. Setting the control
+  counts only the eligible nodes and leaves the default behavior
+  untouched.
+
 - Add an `ergm.ego.popsize` argument to
   [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
   exposing the `popsize` parameter of
@@ -49,6 +74,15 @@
   [\#936](https://github.com/EpiModel/EpiModel/issues/936).
 
 ### BUG FIXES
+
+- Fix
+  [`edges_correct()`](https://epimodel.github.io/EpiModel/reference/edges_correct.md)
+  to leave the edges coefficients alone, with a warning naming the time
+  step, when the adjustment it computes is not finite. A population
+  count reaching zero made the adjustment infinite, and an infinite or
+  `NaN` value added to an edges coefficient causes every proposed tie to
+  be rejected for the remainder of the run, which presents as a slow
+  collapse of the network rather than as an error.
 
 - Fix
   [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
@@ -74,6 +108,7 @@
   wrong length is reported when it appears rather than surfacing later
   as a recycling error or as silently wrong output. Closes
   [\#1058](https://github.com/EpiModel/EpiModel/issues/1058).
+
 - Fix the `dcm` methods that broke when
   [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
   was given an explicit vector of times in `nsteps` rather than a scalar
@@ -100,12 +135,14 @@
   which does not exist); they now report the number of times solved,
   adding the range when those times are not `1, 2, ..., n`. Closes
   [\#1062](https://github.com/EpiModel/EpiModel/issues/1062).
+
 - Fix
   [`as.data.frame.dcm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.md)
   for an unsorted `run` selection, which errored with “numbers of
   columns of arguments do not match”, and for a repeated one, which
   silently returned a single copy. Runs are now returned once per
   request, in the order requested.
+
 - Fix the `diss_check()` gate in
   [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
   which ran on direct STERGM fits. The call was conditioned on
@@ -122,8 +159,10 @@
   formation analog needs starting values supplied through
   `set.control.tergm`. Closes
   [\#1060](https://github.com/EpiModel/EpiModel/issues/1060).
+
 - Fix `list_special_params` so `param.net_from_table` correctly fails if
   a reserved parameter name is passed in the parameter table.
+
 - Fix the infected-count comparison in
   [`crosscheck.net()`](https://epimodel.github.io/EpiModel/reference/crosscheck.net.md).
   Built-in network statuses are the character codes `"s"`, `"i"`, and
@@ -134,6 +173,7 @@
   `i.num`, including models where the two agreed. The comparison now
   uses `status == "i"`, and the warning fires only on a genuine
   mismatch.
+
 - Fix the flat parameter name pattern so vector positions containing a
   zero are accepted. The suffix was matched with `(_[1-9]+)?`, which
   rejected `x_10`, `x_20`, and `x_100` while accepting `x_11` and
@@ -146,6 +186,7 @@
   affects
   [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
   and `param.random.set`, which share the same name check.
+
 - Fix the reserved parameter name guard so it also rejects reserved
   names carrying a vector position suffix. A table containing
   `random.params_1` and `random.params_2` passed the check, and the
@@ -153,9 +194,11 @@
   element holding numeric values instead of generator functions. The
   guard now compares against the name with its suffix removed, and
   reports the offending entries as the user wrote them.
+
 - Fix the `cumulative.edgelist` recording of the head and tail of nodes.
   Previously it was inverted. This had no effect on undirected networks
   but would on directed ones
+
 - Fix `param.net` so that values supplied via `data.frame.params`
   (notably `act.rate`, and the vital-dynamics parameters `a.rate` /
   `ds.rate` / `di.rate` / `dr.rate`) are no longer overwritten by the
@@ -168,10 +211,12 @@
   unpacked. It now produces an error pointing to `data.frame.params`.
   Closes [\#1029](https://github.com/EpiModel/EpiModel/issues/1029) and
   [\#1031](https://github.com/EpiModel/EpiModel/issues/1031).
+
 - Fix `create_scenario_list` and `generate_random_params` so they no
   longer fail when their input `data.frame` (a `scenarios.df`, or a
   `param.random.set`) contains a single parameter column. Closes
   [\#1045](https://github.com/EpiModel/EpiModel/issues/1045).
+
 - Fix the y-axis labels on
   [`plot.netdx()`](https://epimodel.github.io/EpiModel/reference/plot.netdx.md).
   The `duration` and `dissolution` plots now default to “Mean Age of
