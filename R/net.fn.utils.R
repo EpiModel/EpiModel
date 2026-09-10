@@ -992,6 +992,7 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #' @export
 make_restart_point <- function(sim_obj, time_attrs,
                                sim_num = 1, keep_steps = 1) {
+  # TODO: make this function able to output a multiple sim object
   if (!inherits(sim_obj, c("netsim"))) {
     stop("`sim_obj` must be  an object of class `netsim`")
   }
