@@ -59,24 +59,23 @@ initialize.net <- function(x, param, init, control, s) {
       )
     }
 
-    # TODO: Here I want to have a control to chose which element of the restart
-    # to use
-    #   - "recycle": what is currently implemented, use simnum or recycle
-    #   - "random": `sample` one of them
-    #   - `<an_integer>`: use a specific one
-    #
-    # I will want to save somewhere which one was used in the end
-    # A value in `run` probably (`run[["_restart_simnum"]]`)
-
-    # recycle sims in the restart object
-    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
-    s <- (s - 1) %% length(x$run) + 1
+    # TODO: document
+    if (control$randomize.restart) {
+      s <- sample(length(x$run), 1)
+    } else {
+      # recycle sims in the restart object
+      # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
+      s <- (s - 1) %% length(x$run) + 1
+    }
 
     dat <- create_dat_object(
       param = param,
       control = control,
       run = x$run[[s]]
     )
+
+    # TODO: document
+    dat$run[["_restart_simnum"]] <- s
 
     missing_params <- setdiff(names(x$param), names(param))
     for (mp in missing_params) {
