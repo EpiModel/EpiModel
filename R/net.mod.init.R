@@ -76,6 +76,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # TODO: document
     dat$run[["_restart_simnum"]] <- s
+    # TODO: if verbose: message with sim-number
 
     missing_params <- setdiff(names(x$param), names(param))
     for (mp in missing_params) {
