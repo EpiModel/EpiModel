@@ -65,14 +65,14 @@ test_that("truncate_sim.netsim delegates to the icm method", {
 
 context("make_restart_point validation and roundtrip")
 
-build_restart_sim <- function(nsteps = 5) {
+build_restart_sim <- function(nsteps = 5, nsims = 1) {
   nw <- network_initialize(n = 30)
   est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
   # Set resimulate.network = TRUE explicitly so control.net() doesn't emit
   # the "tergmLite = TRUE ... resetting resimulate.network" notice.
-  control <- control.net(type = "SI", nsteps = nsteps, nsims = 1,
+  control <- control.net(type = "SI", nsteps = nsteps, nsims = nsims,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
   netsim(est, param.net(inf.prob = 0.3),
@@ -101,14 +101,16 @@ test_that("make_restart_point rejects non-tergmLite simulations", {
                "tergmLite == TRUE")
 })
 
-test_that("make_restart_point validates sim_num and keep_steps ranges", {
+test_that("make_restart_point validates sims_num and keep_steps ranges", {
   skip_on_cran()
   mod <- build_restart_sim(nsteps = 5)
 
-  expect_error(make_restart_point(mod, time_attrs = c(), sim_num = 0),
-               "sim_num.*>= 1.*<=")
-  expect_error(make_restart_point(mod, time_attrs = c(), sim_num = 99),
-               "sim_num.*>= 1.*<=")
+  expect_error(make_restart_point(mod, time_attrs = c(), sims_num = 0),
+               "sims_num.*>= 1.*<=")
+  expect_error(make_restart_point(mod, time_attrs = c(), sims_num = 99),
+               "sims_num.*>= 1.*<=")
+  expect_error(make_restart_point(mod, time_attrs = c(), sims_num = c(1, 99)),
+               "sims_num.*>= 1.*<=")
   expect_error(make_restart_point(mod, time_attrs = c(), keep_steps = 0),
                "keep_steps.*>= 1.*<=")
   expect_error(make_restart_point(mod, time_attrs = c(), keep_steps = 99),
@@ -139,4 +141,42 @@ test_that("make_restart_point keeps multiple history steps when requested", {
   rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 3)
   expect_equal(rp$control$nsteps, 3)
   expect_equal(nrow(rp$epi[[1]]), 3)
+})
+
+test_that("make_restart_point defaults to every simulation when `sims_num` is NULL", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 5, nsims = 3)
+
+  expect_message(
+    rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 1),
+    "all \\(3\\) simulations"
+  )
+  expect_equal(rp$control$nsims, 3)
+  expect_length(rp$run, 3)
+  expect_named(rp$run, c("sim1", "sim2", "sim3"))
+})
+
+test_that("make_restart_point extracts and trims a subset of simulations", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6, nsims = 3)
+
+  rp <- make_restart_point(mod, time_attrs = c(), sims_num = c(1, 3),
+                           keep_steps = 2)
+
+  expect_equal(rp$control$nsims, 2)
+  expect_length(rp$run, 2)
+
+  # Each kept simulation gets its own UID offset (smallest id is 1).
+  for (run in rp$run) {
+    expect_equal(min(run$attr$unique_id), 1)
+  }
+
+  # `nwstats` and `transmat` are trimmed for every kept simulation, not just
+  # the first one.
+  for (nws in rp$stats$nwstats) {
+    expect_equal(nrow(nws[[1]]), 2)
+  }
+  for (tsmt in rp$stats$transmat) {
+    expect_true(all(tsmt$at > 0))
+  }
 })

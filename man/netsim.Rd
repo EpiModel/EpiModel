@@ -166,7 +166,10 @@ Simulations can be checkpointed and restarted if interrupted. Set
 automatic checkpointing. To restart a simulation from a prior \code{netsim}
 output, pass the \code{netsim} object as \code{x} and set \code{control$start} to one
 greater than the final time step of the prior simulation. See the
-Checkpointing Simulations section of \code{\link{control.net}} for full details.
+Checkpointing Simulations and Restarting from a Prior Simulation sections
+of \code{\link{control.net}} for full details, including the \code{randomize.restart}
+control governing how source simulations are chosen when \code{nsims} changes
+across the restart.
 }
 
 \examples{
