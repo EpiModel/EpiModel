@@ -885,6 +885,18 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' content are removed before returning the `netsim` object. The `.checkpoint.keep` argument can be
 #' set to `TRUE` to prevent this removal to inspect the raw simulation objects.
 #'
+#' @section Restarting from a Prior Simulation:
+#' Apart from checkpointing, a simulation can be manually restarted by passing a prior `netsim`
+#' object as `x` to [`netsim`] and setting `start` to one greater than the final time step of that
+#' prior simulation (this requires `save.run = TRUE` to have been set on the prior run).
+#'
+#' If the new `nsims` differs from the number of simulations saved in the prior object, each new
+#' simulation must be assigned a source simulation to restart from. A `randomize.restart` control
+#' argument governs this assignment: when `FALSE` (the default), source simulations are recycled in
+#' order (e.g., 5 new simulations restarting from a saved set of 3 draw from source simulations 1,
+#' 2, 3, 1, 2); when `TRUE`, a source simulation is instead sampled at random, independently, for
+#' each new simulation.
+#'
 #' @section New Modules:
 #' Base network models use a set of module functions that specify how the individual nodes in the
 #' network are subjected to infection, recovery, demographics, and other processes. Core modules are
