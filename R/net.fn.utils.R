@@ -1032,7 +1032,7 @@ make_restart_point <- function(
     sims_num <- seq_len(nsims)
     message("Making a restart object with all (", nsims, ") simulations")
   } else if (!all(sims_num %in% seq_len(sim_obj$control$nsims))) {
-    stop( "All `sims_num` must be >= 1 and <= `control$nsims` (", nsims, ")")
+    stop("All `sims_num` must be >= 1 and <= `control$nsims` (", nsims, ")")
   }
 
   if (!sim_obj$control$tergmLite) {
