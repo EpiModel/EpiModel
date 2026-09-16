@@ -160,7 +160,7 @@ Module ordering is independent of \code{resimulate.network}: the specified order
 respected regardless of whether network resimulation is enabled. In the default ordering,
 \code{resim_nets.FUN} runs before \code{infection.FUN}, so the network is resimulated before
 transmission is evaluated at each time step.
-\strong{Important:} when set, \code{module.order} replaces the entire dispatch order —
+\strong{Important:} when set, \code{module.order} replaces the entire dispatch order:
 built-in modules not listed will not run. \code{control.net()} validates the entries
 at construction time: each name must correspond to a \code{.FUN} argument that has
 been supplied (either as a formal argument or through \code{...}), and
@@ -211,8 +211,10 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of raw data (one per simulation) instead
 of a cleaned and formatted \code{netsim} object.}
 
-\item{future.use.plan}{If \code{FALSE}, \code{netsim} will use \code{multisession} is used with \verb{workers = ncores for its parallelization. If }TRUE\verb{, }netsim\verb{will use the user defined plan from}globalEnv\verb{. Finally, it can take the output of a }future::tweak()\verb{call to setup a user defined temporary plan within}netsim`.
-Which can be useful for distributed computation (HPC).}
+\item{future.use.plan}{If \code{FALSE}, \code{netsim} uses \code{multisession} with \code{workers = ncores} for its
+parallelization. If \code{TRUE}, \code{netsim} uses the user-defined plan from \code{globalEnv}. It may also be
+given the output of a \code{future::tweak()} call, which sets up a user-defined temporary plan within
+\code{netsim}; this can be useful for distributed computation (HPC).}
 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
 simulations. Supports \code{\link{multilayer}} specification.}
@@ -351,8 +353,7 @@ the \code{end.horizon} parameter to \code{control.net}.
 
 This parameter must receive a \code{list} with fields \code{at}, the time step at which
 the end horizon occurs, and \code{modules}, a character vector with the names of
-the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
-"infections.FUN")))
+the modules to remove. For example, \code{list(at = 208, modules = c("arrivals.FUN", "infections.FUN"))}.
 }
 
 \seealso{

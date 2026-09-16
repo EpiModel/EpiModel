@@ -78,8 +78,10 @@ on, using the \code{future} framework.}
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in \code{netdx}.}
 
-\item{future.use.plan}{If \code{FALSE}, \code{netdx} will use \code{multisession} is used with \verb{workers = ncores for its parallelization. If }TRUE\verb{, }netdx\verb{will use the user defined plan from}globalEnv\verb{. Finally, it can take the output of a }future::tweak()\verb{call to setup a user defined temporary plan within}netdx`.
-Which can be useful for distributed computation (HPC).}
+\item{future.use.plan}{If \code{FALSE}, \code{netdx} uses \code{multisession} with \code{workers = ncores} for its
+parallelization. If \code{TRUE}, \code{netdx} uses the user-defined plan from \code{globalEnv}. It may also be
+given the output of a \code{future::tweak()} call, which sets up a user-defined temporary plan within
+\code{netdx}; this can be useful for distributed computation (HPC).}
 }
 \value{
 A list of class \code{netdx}. Use \code{print()} to view summary tables of

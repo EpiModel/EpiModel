@@ -50,10 +50,10 @@
 #'        on, using the `future` framework.
 #' @param skip.dissolution If `TRUE`, skip over the calculations of
 #'        duration and dissolution stats in `netdx`.
-#' @param future.use.plan If `FALSE`, `netdx` will use `multisession` is used with `workers = ncores for its
-#'        parallelization. If `TRUE`, `netdx` will use the user defined plan from `globalEnv`. Finally, it can
-#'        take the output of a `future::tweak()` call to setup a user defined temporary plan within `netdx`.
-#'        Which can be useful for distributed computation (HPC).
+#' @param future.use.plan If `FALSE`, `netdx` uses `multisession` with `workers = ncores` for its
+#'        parallelization. If `TRUE`, `netdx` uses the user-defined plan from `globalEnv`. It may also be
+#'        given the output of a `future::tweak()` call, which sets up a user-defined temporary plan within
+#'        `netdx`; this can be useful for distributed computation (HPC).
 #'
 #' @details
 #' The `netdx` function handles dynamic network diagnostics for network
