@@ -13,8 +13,11 @@
 
 - Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
 - `control$randomize.restart` is a new control governing whether the simulations should use the available restart point randomly or by matching the sim number (previous behavior)
+- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. Merged `run` sublists can serve as a pool of restart points. Only `keep.cumulative.edgelist` defaults to `FALSE`.
 
 ### BUG FIXES
+
+-   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a merged object read the wrong formation coefficients for the simulations coming from `y`.
 
 -   Fix `edges_correct()` to leave the edges coefficients alone, with a warning naming the time step, when the adjustment it computes is not finite. A population count reaching zero made the adjustment infinite, and an infinite or `NaN` value added to an edges coefficient causes every proposed tie to be rejected for the remainder of the run, which presents as a slow collapse of the network rather than as an error.
 

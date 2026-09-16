@@ -118,6 +118,18 @@ merge.icm <- function(x, y, ...) {
 #'        `FALSE` to override that check.
 #' @param keep.diss.stats If `TRUE`, keep `diss.stats` from the
 #'        original `x` and `y` objects.
+#' @param keep.run If `TRUE`, keep the `run` sublists (as set by the
+#'        `save.run` parameter in `control.net`) from the original `x` and
+#'        `y` elements. These are required to use the merged object as a
+#'        restart point in [netsim()].
+#' @param keep.cumulative.edgelist If `TRUE`, keep the cumulative edgelists
+#'        (as set by the `save.cumulative.edgelist` parameter in
+#'        `control.net`) from the original `x` and `y` elements. `FALSE` by
+#'        default, as these grow with the length of the simulation.
+#' @param keep.attr.history If `TRUE`, keep the recorded histories (as set by
+#'        [record_attr_history()] and [record_raw_object()]) from the original
+#'        `x` and `y` elements. This governs both `attr.history` and
+#'        `raw.records`.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -169,7 +181,9 @@ merge.icm <- function(x, y, ...) {
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          keep.nwstats = TRUE, keep.other = TRUE,
-                         param.error = TRUE, keep.diss.stats = TRUE, ...) {
+                         param.error = TRUE, keep.diss.stats = TRUE,
+                         keep.run = TRUE, keep.cumulative.edgelist = FALSE,
+                         keep.attr.history = TRUE, ...) {
 
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
@@ -219,6 +233,15 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     names(z$epi[[i]]) <- newnames
   }
 
+  ## Formation coefficients (always saved, one element per simulation, and
+  ## required along with `run` to restart from the merged object)
+  if (!is.null(x$coef.form) && !is.null(y$coef.form)) {
+    z$coef.form <- c(x$coef.form, y$coef.form)
+    names(z$coef.form) <- newnames
+  } else {
+    z$coef.form <- NULL
+  }
+
   ## Transmission matrix
   if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
         !is.null(y$stats$transmat)) {
@@ -243,6 +266,41 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     names(z$stats$nwstats) <- newnames
   } else {
     z$stats$nwstats <- NULL
+  }
+
+  ## Run sublists (restart state), cumulative edgelists and recorded histories.
+  ## Each may also be requested through `save.other`, which is handled below
+  ## and has the final say on the elements it manages. These are tested with
+  ## `length() > 0` rather than `!is.null()` because a restart point built by
+  ## `make_restart_point()` carries zero-length history elements, which have no
+  ## per-simulation entry to name.
+  other.elts <- if (keep.other == TRUE) x$control$save.other else NULL
+
+  if (keep.run == TRUE && length(x$run) > 0 && length(y$run) > 0) {
+    z$run <- c(x$run, y$run)
+    names(z$run) <- newnames
+  } else if (!"run" %in% other.elts) {
+    z$run <- NULL
+  }
+
+  if (keep.cumulative.edgelist == TRUE && length(x$cumulative.edgelist) > 0 &&
+        length(y$cumulative.edgelist) > 0) {
+    z$cumulative.edgelist <- c(x$cumulative.edgelist, y$cumulative.edgelist)
+    names(z$cumulative.edgelist) <- newnames
+  } else if (!"cumulative.edgelist" %in% other.elts) {
+    z$cumulative.edgelist <- NULL
+  }
+
+  ## `attr.history` and `raw.records` are the two halves of the same recording
+  ## facility and are saved together by `saveout.net`
+  for (elt in c("attr.history", "raw.records")) {
+    if (keep.attr.history == TRUE && length(x[[elt]]) > 0 &&
+          length(y[[elt]]) > 0) {
+      z[[elt]] <- c(x[[elt]], y[[elt]])
+      names(z[[elt]]) <- newnames
+    } else if (!elt %in% other.elts) {
+      z[[elt]] <- NULL
+    }
   }
 
   ## Other
