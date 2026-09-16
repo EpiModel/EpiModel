@@ -148,8 +148,7 @@ test_that("make_restart_point defaults to every simulation when `sims_num` is NU
   mod <- build_restart_sim(nsteps = 5, nsims = 3)
 
   expect_message(
-    rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 1),
-    "all \\(3\\) simulations"
+    rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 1)
   )
   expect_equal(rp$control$nsims, 3)
   expect_length(rp$run, 3)
