@@ -235,7 +235,7 @@ control.net(
   ordering, `resim_nets.FUN` runs before `infection.FUN`, so the network
   is resimulated before transmission is evaluated at each time step.
   **Important:** when set, `module.order` replaces the entire dispatch
-  order — built-in modules not listed will not run. `control.net()`
+  order: built-in modules not listed will not run. `control.net()`
   validates the entries at construction time: each name must correspond
   to a `.FUN` argument that has been supplied (either as a formal
   argument or through `...`), and `initialize.FUN` / `verbose.FUN` may
@@ -313,9 +313,12 @@ control.net(
 
 - future.use.plan:
 
-  If `FALSE`, `netsim` will use `multisession` is used with
-  `workers = ncores for its parallelization. If `TRUE`, `netsim`will use the user defined plan from`globalEnv`. Finally, it can take the output of a `future::tweak()`call to setup a user defined temporary plan within`netsim\`.
-  Which can be useful for distributed computation (HPC).
+  If `FALSE`, `netsim` uses `multisession` with `workers = ncores` for
+  its parallelization. If `TRUE`, `netsim` uses the user-defined plan
+  from `globalEnv`. It may also be given the output of a
+  [`future::tweak()`](https://future.futureverse.org/reference/plan.html)
+  call, which sets up a user-defined temporary plan within `netsim`;
+  this can be useful for distributed computation (HPC).
 
 - tergmLite.track.duration:
 
@@ -479,8 +482,8 @@ through the `end.horizon` parameter to `control.net`.
 
 This parameter must receive a `list` with fields `at`, the time step at
 which the end horizon occurs, and `modules`, a character vector with the
-names of the modules to remove. (e.g \`list(at = 208, modules =
-c("arrivals.FUN", "infections.FUN")))
+names of the modules to remove. For example,
+`list(at = 208, modules = c("arrivals.FUN", "infections.FUN"))`.
 
 ## See also
 

@@ -163,8 +163,10 @@ duration and dissolution stats in <code>netdx</code>.</p></dd>
 
 
 <dt id="arg-future-use-plan">future.use.plan<a class="anchor" aria-label="anchor" href="#arg-future-use-plan"></a></dt>
-<dd><p>If <code>FALSE</code>, <code>netdx</code> will use <code>multisession</code> is used with <code>workers = ncores for its parallelization. If </code>TRUE<code>, </code>netdx<code>will use the user defined plan from</code>globalEnv<code>. Finally, it can take the output of a </code>future::tweak()<code>call to setup a user defined temporary plan within</code>netdx`.
-Which can be useful for distributed computation (HPC).</p></dd>
+<dd><p>If <code>FALSE</code>, <code>netdx</code> uses <code>multisession</code> with <code>workers = ncores</code> for its
+parallelization. If <code>TRUE</code>, <code>netdx</code> uses the user-defined plan from <code>globalEnv</code>. It may also be
+given the output of a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::tweak()</a></code> call, which sets up a user-defined temporary plan within
+<code>netdx</code>; this can be useful for distributed computation (HPC).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -273,7 +275,6 @@ simulate the epidemic with <code><a href="netsim.html">netsim</a></code>.</p></d
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
 <span class="r-in"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">netdx</span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">1e4</span>, dynamic <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sampling <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% |  ETA:  0s</span>
 <span class="r-in"><span><span class="va">dx</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EpiModel Network Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =======================</span>

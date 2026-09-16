@@ -117,9 +117,12 @@ netdx(
 
 - future.use.plan:
 
-  If `FALSE`, `netdx` will use `multisession` is used with
-  `workers = ncores for its parallelization. If `TRUE`, `netdx`will use the user defined plan from`globalEnv`. Finally, it can take the output of a `future::tweak()`call to setup a user defined temporary plan within`netdx\`.
-  Which can be useful for distributed computation (HPC).
+  If `FALSE`, `netdx` uses `multisession` with `workers = ncores` for
+  its parallelization. If `TRUE`, `netdx` uses the user-defined plan
+  from `globalEnv`. It may also be given the output of a
+  [`future::tweak()`](https://future.futureverse.org/reference/plan.html)
+  call, which sets up a user-defined temporary plan within `netdx`; this
+  can be useful for distributed computation (HPC).
 
 ## Value
 
@@ -246,7 +249,6 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #> Maximizing the pseudolikelihood.
 #> Finished MPLE.
 dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
-#> Sampling ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
 dx
 #> EpiModel Network Diagnostics
 #> =======================

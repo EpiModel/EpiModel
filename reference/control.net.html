@@ -248,7 +248,7 @@ Module ordering is independent of <code>resimulate.network</code>: the specified
 respected regardless of whether network resimulation is enabled. In the default ordering,
 <code>resim_nets.FUN</code> runs before <code>infection.FUN</code>, so the network is resimulated before
 transmission is evaluated at each time step.
-<strong>Important:</strong> when set, <code>module.order</code> replaces the entire dispatch order —
+<strong>Important:</strong> when set, <code>module.order</code> replaces the entire dispatch order:
 built-in modules not listed will not run. <code>control.net()</code> validates the entries
 at construction time: each name must correspond to a <code>.FUN</code> argument that has
 been supplied (either as a formal argument or through <code>...</code>), and
@@ -323,8 +323,10 @@ of a cleaned and formatted <code>netsim</code> object.</p></dd>
 
 
 <dt id="arg-future-use-plan">future.use.plan<a class="anchor" aria-label="anchor" href="#arg-future-use-plan"></a></dt>
-<dd><p>If <code>FALSE</code>, <code>netsim</code> will use <code>multisession</code> is used with <code>workers = ncores for its parallelization. If </code>TRUE<code>, </code>netsim<code>will use the user defined plan from</code>globalEnv<code>. Finally, it can take the output of a </code>future::tweak()<code>call to setup a user defined temporary plan within</code>netsim`.
-Which can be useful for distributed computation (HPC).</p></dd>
+<dd><p>If <code>FALSE</code>, <code>netsim</code> uses <code>multisession</code> with <code>workers = ncores</code> for its
+parallelization. If <code>TRUE</code>, <code>netsim</code> uses the user-defined plan from <code>globalEnv</code>. It may also be
+given the output of a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::tweak()</a></code> call, which sets up a user-defined temporary plan within
+<code>netsim</code>; this can be useful for distributed computation (HPC).</p></dd>
 
 
 <dt id="arg-tergmlite-track-duration">tergmLite.track.duration<a class="anchor" aria-label="anchor" href="#arg-tergmlite-track-duration"></a></dt>
@@ -456,8 +458,7 @@ removed from the simulation at a specific time step. This is enabled through
 the <code>end.horizon</code> parameter to <code>control.net</code>.</p>
 <p>This parameter must receive a <code>list</code> with fields <code>at</code>, the time step at which
 the end horizon occurs, and <code>modules</code>, a character vector with the names of
-the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
-"infections.FUN")))</p>
+the modules to remove. For example, <code>list(at = 208, modules = c("arrivals.FUN", "infections.FUN"))</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

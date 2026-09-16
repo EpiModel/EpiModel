@@ -39,7 +39,7 @@ The main steps in this infection module are as follows:
 3.  Determine the transmission rates (e.g., as a function of group).
 
 4.  Pull the number of acts per partnership in a time step from the
-    act.rate\` parameter.
+    `act.rate` parameter.
 
 5.  Calculate the final transmission probabilities given the
     transmission rates and act rates.
