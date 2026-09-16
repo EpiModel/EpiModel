@@ -389,7 +389,7 @@ test_that("reinitialization a truncated netsim object", {
   restart_point <- make_restart_point(
     sim_obj = sim,
     time_attrs = c("infTime"),
-    sim_num = 1
+    sims_num = 1
   )
 
   # In this case, the `restart_point` contains a single timestap
