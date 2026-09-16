@@ -71,7 +71,7 @@ to existing plot window.}
     The default value, \code{NULL}, indicates that the range of the
     \link{finite} values to be plotted should be used.}
 
-\item{ylim}{the y limits of the plot.}
+\item{ylim}{the y limits of the plot; see \code{xlim} for default and details.}
 
 \item{xlab}{a label for the x axis, defaults to a description of \code{x}.}
 

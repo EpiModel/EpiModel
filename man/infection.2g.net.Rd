@@ -29,7 +29,7 @@ disease status.
 edgelist given step 1.
 \item Determine the transmission rates (e.g., as a function of group).
 \item Pull the number of acts per partnership in a time step from the
-act.rate` parameter.
+\code{act.rate} parameter.
 \item Calculate the final transmission probabilities given the transmission
 rates and act rates.
 \item Randomly transmit on the discordant edgelist.
