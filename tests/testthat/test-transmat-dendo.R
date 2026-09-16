@@ -60,8 +60,8 @@ tm <- structure(list(at = c(2L, 2L, 4L, 6L, 10L, 11L, 11L, 12L, 12L,  13L, 13L,
                                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
                                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
                                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)),
-                .Names = c("at", "sus", "inf", "infDur", "transProb", "actRate",
-                           "finalProb"),
+                names = c("at", "sus", "inf", "infDur", "transProb", "actRate",
+                          "finalProb"),
                 row.names = c(NA, 53L), class = c("transmat", "data.frame"))
 
 
