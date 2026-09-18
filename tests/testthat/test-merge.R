@@ -238,3 +238,128 @@ test_that("merge and print work as expected for save.other", {
   expect_true(is.null(mod3[["run"]]))
   expect_true(is.null(mod3[["el"]]))
 })
+
+test_that("merge.netsim merges run, cumulative edgelist, and coef.form", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  x <- netsim(est, param, init, control)
+  y <- netsim(est, param, init, control)
+
+  simnames <- paste0("sim", 1:4)
+
+  z <- merge(x, y, keep.cumulative.edgelist = TRUE)
+  expect_equal(z$control$nsims, 4)
+  expect_named(z$run, simnames)
+  expect_named(z$cumulative.edgelist, simnames)
+  expect_named(z$coef.form, simnames)
+  expect_equal(z$run[["sim3"]], y$run[["sim1"]])
+  expect_equal(z$cumulative.edgelist[["sim4"]], y$cumulative.edgelist[["sim2"]])
+  expect_equal(z$coef.form[["sim3"]], y$coef.form[["sim1"]])
+
+  # cumulative edgelists are dropped by default
+  expect_null(merge(x, y)$cumulative.edgelist)
+
+  z2 <- merge(x, y, keep.run = FALSE, keep.cumulative.edgelist = FALSE)
+  expect_equal(z2$control$nsims, 4)
+  expect_null(z2$run)
+  expect_null(z2$cumulative.edgelist)
+  # `coef.form` is always kept: it is small and needed by other accessors
+  expect_named(z2$coef.form, simnames)
+})
+
+test_that("merge.netsim merges the recorded histories", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # record one value per time step, plus a raw object
+  test_logger <- function(dat, at) {
+    dat <- record_attr_history(dat, at, "test.attr", get_posit_ids(dat), at)
+    dat <- record_raw_object(dat, at, "test.obj", at)
+    return(dat)
+  }
+
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = NULL, nsteps = 5, nsims = 2, verbose = FALSE,
+                         infection.FUN = infection.net,
+                         logger.FUN = test_logger)
+  x <- netsim(est, param, init, control)
+  y <- netsim(est, param, init, control)
+
+  simnames <- paste0("sim", 1:4)
+
+  z <- merge(x, y)
+  expect_named(z$attr.history, simnames)
+  expect_named(z$raw.records, simnames)
+  expect_length(z$raw.records, 4)
+
+  # `get_attr_history` reads the simulation number off the element names, so
+  # the runs coming from `y` must be reported as sims 3 and 4
+  hist <- get_attr_history(z)
+  expect_equal(sort(unique(hist$test.attr$sim)), c(1, 2, 3, 4))
+
+  z2 <- merge(x, y, keep.attr.history = FALSE)
+  expect_null(z2$attr.history)
+  expect_null(z2$raw.records)
+})
+
+test_that("merge.netsim output can be used as a restart pool", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  x <- netsim(est, param, init, control)
+  y <- netsim(est, param, init, control)
+
+  z <- merge(x, y)
+
+  control.rs <- control.net(type = "SI", start = 6, nsteps = 8, nsims = 4,
+                            tergmLite = TRUE, resimulate.network = TRUE,
+                            save.run = TRUE, verbose = FALSE)
+  rs <- netsim(z, param, init, control.rs)
+
+  expect_is(rs, "netsim")
+  expect_equal(rs$control$nsims, 4)
+  # each output simulation restarts from its own source run in the pool
+  restart_src <- unlist(lapply(rs$run, function(r) r[["_restart_simnum"]]))
+  expect_equal(unname(restart_src), 1:4)
+})
+
+test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.other = "run", verbose = FALSE)
+  x <- netsim(est, param, init, control)
+  y <- netsim(est, param, init, control)
+
+  expect_length(merge(x, y, keep.other = TRUE)$run, 4)
+  expect_null(merge(x, y, keep.other = FALSE)$run)
+  # `keep.run = FALSE` does not corrupt a `run` managed by `save.other`
+  expect_length(merge(x, y, keep.other = TRUE, keep.run = FALSE)$run, 4)
+})

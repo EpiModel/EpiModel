@@ -59,15 +59,33 @@ initialize.net <- function(x, param, init, control, s) {
       )
     }
 
-    # recycle sims in the restart object
-    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
-    s <- (s - 1) %% length(x$run) + 1
+    # `s` is the output simulation number for this restart; below it is
+    # overwritten with the index into `x$run` used as its source. When the
+    # restart's `nsims` differs from `length(x$run)`, source runs must be
+    # either sampled or reused across multiple output simulations.
+    sim_num <- s
+    if (control$randomize.restart) {
+      # pick a random source run for each output simulation
+      s <- sample(length(x$run), 1)
+    } else {
+      # recycle sims in the restart object
+      # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
+      s <- (s - 1) %% length(x$run) + 1
+    }
 
     dat <- create_dat_object(
       param = param,
       control = control,
       run = x$run[[s]]
     )
+
+    # record which source run this restart was initialized from, for
+    # provenance when runs are recycled or randomly sampled above
+    dat$run[["_restart_simnum"]] <- s
+
+    if (isTRUE(control$verbose)) {
+      message("\nSimulation ", sim_num, " - Restarting from source run ", s)
+    }
 
     missing_params <- setdiff(names(x$param), names(param))
     for (mp in missing_params) {

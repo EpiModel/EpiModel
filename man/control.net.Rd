@@ -314,6 +314,20 @@ content are removed before returning the \code{netsim} object. The \code{.checkp
 set to \code{TRUE} to prevent this removal to inspect the raw simulation objects.
 }
 
+\section{Restarting from a Prior Simulation}{
+
+Apart from checkpointing, a simulation can be manually restarted by passing a prior \code{netsim}
+object as \code{x} to \code{\link{netsim}} and setting \code{start} to one greater than the final time step of that
+prior simulation (this requires \code{save.run = TRUE} to have been set on the prior run).
+
+If the new \code{nsims} differs from the number of simulations saved in the prior object, each new
+simulation must be assigned a source simulation to restart from. A \code{randomize.restart} control
+argument governs this assignment: when \code{FALSE} (the default), source simulations are recycled in
+order (e.g., 5 new simulations restarting from a saved set of 3 draw from source simulations 1,
+2, 3, 1, 2); when \code{TRUE}, a source simulation is instead sampled at random, independently, for
+each new simulation.
+}
+
 \section{New Modules}{
 
 Base network models use a set of module functions that specify how the individual nodes in the
