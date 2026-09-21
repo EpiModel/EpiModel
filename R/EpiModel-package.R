@@ -185,7 +185,7 @@
 #' @importFrom grDevices col2rgb colorRampPalette rgb adjustcolor
 #' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
 #' @importFrom stats supsmu terms.formula update dgeom coef na.omit
-#' @importFrom utils head tail packageVersion
+#' @importFrom utils head tail packageVersion combn
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env set.control.class check.control.class NVL paste.and .Deprecate_once

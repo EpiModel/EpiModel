@@ -2,29 +2,41 @@
 % Please edit documentation in R/net.inputs.R
 \name{multilayer}
 \alias{multilayer}
-\title{Specify Controls by Network}
+\title{Specify Controls and Parameters by Network}
 \usage{
 multilayer(...)
 }
 \arguments{
-\item{...}{control arguments to apply to each network, with the index of the
-network corresponding to the index of the control argument}
+\item{...}{control arguments or parameter values to apply to each network,
+with the index of the network corresponding to the index of the
+argument}
 }
 \value{
 an object of class \code{multilayer} containing the specified
-control arguments
+control arguments or parameter values
 }
 \description{
 This utility function allows specification of certain
-\code{\link[=netsim]{netsim()}} controls to vary by network.  The
+\code{\link[=netsim]{netsim()}} controls and parameters to vary by network.  The
 \code{\link[=netsim]{netsim()}} control arguments currently supporting
 \code{multilayer} specifications are \code{nwstats.formula},
 \code{set.control.ergm}, \code{set.control.tergm}, and
-\code{tergmLite.track.duration}.
+\code{tergmLite.track.duration}. The \code{\link[=param.net]{param.net()}} parameters
+supporting them are \code{inf.prob}, \code{inf.prob.g2}, and
+\code{act.rate}, which the built-in infection modules then apply
+per layer.
+}
+\examples{
+\dontrun{
+# A household layer that transmits more per contact than the community layer
+param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
+}
+
 }
 \seealso{
-\code{\link[=netsim]{netsim()}} for passing a list of \code{\link[=netest]{netest()}} fits, one per layer.
-The \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
+\code{\link[=netsim]{netsim()}} for passing a list of \code{\link[=netest]{netest()}} fits and \code{\link[=netstatic]{netstatic()}}
+layers, one per network. The
+\href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
 chapter of the Network Modeling for Epidemics course materials works
 through a two-layer model in full.
 }

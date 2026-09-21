@@ -7,12 +7,12 @@
 #'              and model diagnostics with [`netdx`].
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest` or a list of such objects. If
-#'        `control$start > 1`, an object of class `netsim`. When
-#'        multiple networks are used (multi-layer models), pass a list of
-#'        `netest` objects, one per network layer; the node sets (including
-#'        network size and nodal attributes) are assumed to be the same for
-#'        all networks.
+#'        of class `netest`, a static layer of class [`netstatic`], or a list
+#'        of such objects. If `control$start > 1`, an object of class
+#'        `netsim`. When multiple networks are used (multi-layer models), pass
+#'        a list with one `netest` or `netstatic` object per network layer,
+#'        in any order; the node sets (including network size and nodal
+#'        attributes) are assumed to be the same for all networks.
 #' @param param Model parameters, as an object of class [`param.net`].
 #'        Includes transmission probability (`inf.prob`), act rate
 #'        (`act.rate`), recovery rate (`rec.rate`), and demographic rates
@@ -110,6 +110,17 @@
 #' the [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
 #' chapter of the Network Modeling for Epidemics course materials for a worked
 #' example building from independent to cross-dependent layers.
+#'
+#' A layer whose edges never change, such as households, classrooms, wards,
+#' or an observed contact network, is built with [`netstatic`] rather than
+#' estimated with `netest`, and goes in the same list. A static layer is
+#' skipped by the network resimulation and the edges correction, its edges are
+#' removed with departing nodes, and arriving nodes are placed on it under the
+#' rule chosen in `netstatic`. The built-in infection modules read every layer
+#' alike; to give each layer its own transmission probability or act rate,
+#' pass `inf.prob` and `act.rate` as [`multilayer`] objects in [`param.net`].
+#' The transmission matrix records the layer of every transmission in its
+#' `network` column.
 #'
 #' @section Restarting and Checkpointing:
 #' Simulations can be checkpointed and restarted if interrupted. Set

@@ -8,12 +8,12 @@ netsim(x, param, init, control)
 }
 \arguments{
 \item{x}{If \code{control$start == 1}, either a fitted network model object
-of class \code{netest} or a list of such objects. If
-\code{control$start > 1}, an object of class \code{netsim}. When
-multiple networks are used (multi-layer models), pass a list of
-\code{netest} objects, one per network layer; the node sets (including
-network size and nodal attributes) are assumed to be the same for
-all networks.}
+of class \code{netest}, a static layer of class \code{\link{netstatic}}, or a list
+of such objects. If \code{control$start > 1}, an object of class
+\code{netsim}. When multiple networks are used (multi-layer models), pass
+a list with one \code{netest} or \code{netstatic} object per network layer,
+in any order; the node sets (including network size and nodal
+attributes) are assumed to be the same for all networks.}
 
 \item{param}{Model parameters, as an object of class \code{\link{param.net}}.
 Includes transmission probability (\code{inf.prob}), act rate
@@ -157,6 +157,17 @@ formation/dissolution dynamics but shares the same node set. See the
 the \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
 chapter of the Network Modeling for Epidemics course materials for a worked
 example building from independent to cross-dependent layers.
+
+A layer whose edges never change, such as households, classrooms, wards,
+or an observed contact network, is built with \code{\link{netstatic}} rather than
+estimated with \code{netest}, and goes in the same list. A static layer is
+skipped by the network resimulation and the edges correction, its edges are
+removed with departing nodes, and arriving nodes are placed on it under the
+rule chosen in \code{netstatic}. The built-in infection modules read every layer
+alike; to give each layer its own transmission probability or act rate,
+pass \code{inf.prob} and \code{act.rate} as \code{\link{multilayer}} objects in \code{\link{param.net}}.
+The transmission matrix records the layer of every transmission in its
+\code{network} column.
 }
 
 \section{Restarting and Checkpointing}{

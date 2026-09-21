@@ -194,6 +194,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
                   skip.dissolution = FALSE, future.use.plan = FALSE) {
 
+  if (inherits(x, "netstatic")) {
+    stop("netdx() does not apply to a static layer (class netstatic): its ",
+         "edges are fixed by construction, so there is no model to diagnose. ",
+         "Print the netstatic object for its edge count, mean degree, and ",
+         "group size distribution.")
+  }
   if (!inherits(x, "netest")) {
     stop("x must be an object of class netest")
   }

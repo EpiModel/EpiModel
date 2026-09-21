@@ -5,10 +5,11 @@
 #'              the networks, and simulates disease status and other attributes.
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest` or a list of such objects. If
-#'        `control$start > 1`, an object of class `netsim`. When
-#'        multiple networks are used, the node sets (including network size
-#'        and nodal attributes) are assumed to be the same for all networks.
+#'        of class `netest`, a static layer of class [`netstatic`], or a list
+#'        of such objects. If `control$start > 1`, an object of class
+#'        `netsim`. When multiple networks are used, the node sets (including
+#'        network size and nodal attributes) are assumed to be the same for
+#'        all networks.
 #' @param param An `EpiModel` object of class [param.net()].
 #' @param init An `EpiModel` object of class [init.net()].
 #' @param control An `EpiModel` object of class [control.net()].
@@ -284,8 +285,8 @@ init_status.net <- function(dat) {
 #' @param dat A main data object of class `netsim_dat` obtained from
 #'        [create_dat_object()], including the `control`
 #'        argument.
-#' @param x Either a fitted network model object of class `netest`, or a
-#'        list of such objects.
+#' @param x Either a fitted network model object of class `netest`, a static
+#'        layer of class [`netstatic`], or a list of such objects.
 #'
 #' @return A `netsim_dat` class main data object with network data and
 #'         stats initialized.
@@ -294,13 +295,21 @@ init_status.net <- function(dat) {
 #' @keywords internal
 #'
 init_nets <- function(dat, x) {
-  if (inherits(x, "netest")) {
+  if (inherits(x, c("netest", "netstatic"))) {
     x <- list(x)
   }
 
   ## initialize network data on dat object
   dat$num.nw <- length(x)
-  dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+  dat$nwparam <- lapply(x, function(y) {
+    out <- y[!(names(y) %in% c("fit", "newnetwork"))]
+    # a static layer keeps its class, which is how the per-layer code knows to
+    # skip the network simulation and the edges correction for it
+    if (is_static_layer(y)) {
+      class(out) <- class(y)
+    }
+    out
+  })
   nws <- lapply(x, `[[`, "newnetwork")
   nw <- nws[[1]]
   if (get_control(dat, "tergmLite") == TRUE) {
@@ -324,6 +333,19 @@ init_nets <- function(dat, x) {
 
   ## record names of relevant vertex attributes
   dat$run$nwterms <- get_network_term_attr(nw)
+
+  ## nodal attributes are read from the first layer's network; a static
+  ## layer's grouping attribute may be set on its own network only, so copy
+  ## it from there for the arrival rules to read
+  for (network in seq_len(dat$num.nw)) {
+    group.attr <- dat$nwparam[[network]]$group.attr
+    if (!is.null(group.attr) &&
+          is.null(get_attr(dat, group.attr, override.null.error = TRUE))) {
+      dat <- set_attr(dat, group.attr,
+                      get_vertex_attribute(nws[[network]], group.attr))
+      dat$run$nwterms <- union(dat$run$nwterms, group.attr)
+    }
+  }
 
   ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {
