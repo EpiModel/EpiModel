@@ -49,6 +49,8 @@ sim_nets_t1 <- function(dat) {
         nw %n% "time" <- 0L
         nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 0L)
       }
+    } else if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      ## an observed dynamic network carries its own spells: leave them alone
     } else {
       ## set up vertex and edge activity in networkDynamic case
       nw <- networkDynamic::as.networkDynamic(nw)
@@ -186,38 +188,76 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   return(dat)
 }
 
-# The edges of a clique layer never change, so there is nothing to simulate.
-# This keeps the two pieces of bookkeeping that simulate_dat() would otherwise
-# do for the layer: the tergmLite `time` network attribute when edge durations
-# are tracked, and the network statistics when they are recorded here rather
+# A model-free layer has no model to simulate from. A clique layer's edges
+# never change; a dynamic census layer's edges at time `at` are read from the
+# observed object, which under tergmLite means replacing the layer's edgelist
+# here (without tergmLite the networkDynamic object is read in place). The
+# rest is the bookkeeping that simulate_dat() would otherwise do for the
+# layer: the tergmLite `time` network attribute when edge durations are
+# tracked, and the network statistics when they are recorded here rather
 # than in summary_nets() (that is, when resimulate.network == FALSE).
 simulate_model_free_dat <- function(dat, at, network, nsteps) {
-  if (get_control(dat, "tergmLite") == TRUE &&
-        get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-    dat$run$net_attr[[network]][["time"]] <- at + nsteps - 1L
+  nwparam <- get_nwparam(dat, network = network)
+  if (get_control(dat, "tergmLite") == TRUE) {
+    if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      dat$run$el[[network]] <- census_edgelist_at(
+        nwparam$census.nw, at = at + nsteps - 1L,
+        n = dat$run$net_attr[[network]][["n"]]
+      )
+    }
+    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+      dat$run$net_attr[[network]][["time"]] <- at + nsteps - 1L
+    }
   }
 
   if (get_control(dat, "save.nwstats") == TRUE &&
         get_control(dat, "resimulate.network") == FALSE) {
-    nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
-                       basis = get_network(dat, network = network),
-                       at = at,
-                       dynamic = TRUE,
-                       term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
-    if (is.matrix(nwstats)) {
-      keep <- !duplicated(colnames(nwstats))
-      nms <- colnames(nwstats)[keep]
-      nwstats <- as.vector(nwstats[1, keep])
-      names(nwstats) <- nms
+    times <- at + seq_len(nsteps) - 1L
+    if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      ## the observed edges change over time, so summarize every step
+      rows <- lapply(times, function(t) model_free_nwstats(dat, network, t))
     } else {
-      nwstats <- nwstats[!duplicated(names(nwstats))]
+      rows <- rep(list(model_free_nwstats(dat, network, at)), nsteps)
     }
-    stats <- matrix(rep(nwstats, each = nsteps), nrow = nsteps,
-                    dimnames = list(NULL, names(nwstats)))
+    stats <- do.call(rbind, rows)
     dat$stats$nwstats[[network]] <- list(as_tibble(stats))
   }
 
   return(dat)
+}
+
+# Network statistics of a model-free layer at time `at`, as a named numeric
+# vector with duplicated statistic names removed, as in summary_nets(). A
+# networkDynamic layer is summarized on the dyads active at `at`, the same
+# edges get_edgelist() hands to the infection module: the tergm summary path
+# for networkDynamic objects derives edge toggles from the spells, which fails
+# for an observed census whose dyads have several spells or censored onsets,
+# and network.collapse() drops the edges of vertices whose own activity spells
+# do not cover `at`, which the simulation does not do. Under tergmLite the
+# networkLite basis carries the time and lasttoggle attributes, so the
+# dynamic summary applies as usual.
+model_free_nwstats <- function(dat, network, at) {
+  formula <- get_network_control(dat, network, "nwstats.formula")
+  term.options <- get_network_control(dat, network, "set.control.tergm")$term.options
+  nw <- get_network(dat, network = network)
+  if (networkDynamic::is.networkDynamic(nw)) {
+    attr_list <- raw_get_attr_list(dat)
+    el <- census_edgelist_at(nw, at = at, n = length(attr_list$active))
+    nw <- networkLite(el, attr_list)
+    nwstats <- summary(formula, basis = nw, term.options = term.options)
+  } else {
+    nwstats <- summary(formula, basis = nw, at = at, dynamic = TRUE,
+                       term.options = term.options)
+  }
+  if (is.matrix(nwstats)) {
+    keep <- !duplicated(colnames(nwstats))
+    nms <- colnames(nwstats)[keep]
+    nwstats <- as.vector(nwstats[1, keep])
+    names(nwstats) <- nms
+  } else {
+    nwstats <- nwstats[!duplicated(names(nwstats))]
+  }
+  nwstats
 }
 
 #' @title Resimulate Dynamic Network at Time 2+

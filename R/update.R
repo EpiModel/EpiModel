@@ -178,6 +178,7 @@ delete_edges <- function(el, vid) {
 #'
 depart_nodes <- function(dat, departures) {
   if (length(departures) > 0) {
+    stop_if_census_layer(dat, "depart nodes")
     if (get_control(dat, "tergmLite") == FALSE) {
       for (net_index in seq_len(dat$num.nw)) {
         net <- get_network(dat, network = net_index)
@@ -223,7 +224,9 @@ depart_nodes <- function(dat, departures) {
 #' nodes are activated from the current timestep onward. Attributes for the new
 #' nodes must be set separately. On each clique layer (see [netclique()]), the
 #' new nodes are then placed under the layer's `arrivals` rule, which may set
-#' the layer's grouping attribute for them and add their edges.
+#' the layer's grouping attribute for them and add their edges. A model with
+#' an observed network layer (see [netcensus()]) has a fixed node set, and
+#' both this function and [depart_nodes()] stop if asked to change it.
 #'
 #' Note that this function only supports arriving new nodes; returning to an
 #' active state nodes that were previously active in the network is not
@@ -237,6 +240,7 @@ depart_nodes <- function(dat, departures) {
 #'
 arrive_nodes <- function(dat, nArrivals) {
   if (nArrivals > 0) {
+    stop_if_census_layer(dat, "arrive nodes")
     if (!get_control(dat, "tergmLite")) {
       n_old <- network.size(get_network(dat, network = 1L))
       for (net_index in seq_len(dat$num.nw)) {
