@@ -7,10 +7,10 @@
 #'              and model diagnostics with [`netdx`].
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest`, a static layer of class [`netstatic`], or a list
+#'        of class `netest`, a clique layer of class [`netclique`], or a list
 #'        of such objects. If `control$start > 1`, an object of class
 #'        `netsim`. When multiple networks are used (multi-layer models), pass
-#'        a list with one `netest` or `netstatic` object per network layer,
+#'        a list with one `netest` or `netclique` object per network layer,
 #'        in any order; the node sets (including network size and nodal
 #'        attributes) are assumed to be the same for all networks.
 #' @param param Model parameters, as an object of class [`param.net`].
@@ -111,25 +111,24 @@
 #' chapter of the Network Modeling for Epidemics course materials for a worked
 #' example building from independent to cross-dependent layers.
 #'
-#' A layer whose edges are fixed for the whole simulation may instead be built
-#' with [`netstatic`] and placed in the same list. This is an addition to
-#' `netest`, not a replacement for it. An ERGM remains the natural model for a
-#' static network whose ties depend on nodal and dyadic predictors (degree,
-#' mixing by attribute, clustering), where the model is the compact
-#' description of that structure. `netstatic` is for structures that are
-#' groups by definition, such as households, classrooms, wards, or cabins,
-#' where every pair of members is a contact and there is no tie-formation
-#' process to estimate. An ERGM can reproduce such cliques only through a
-#' `nodematch` term targeted at its maximum, where no finite coefficient
-#' exists, so the fit is unstable and rarely completes every group.
-#' `netstatic` also carries an observed contact network whose exact edges are
-#' to be kept. A static layer is skipped by the network resimulation and the
-#' edges correction, its edges are removed with departing nodes, and arriving
-#' nodes are placed on it under the rule chosen in `netstatic`. The built-in
-#' infection modules read every layer alike; to give each layer its own
-#' transmission probability or act rate, pass `inf.prob` and `act.rate` as
-#' [`multilayer`] objects in [`param.net`]. The transmission matrix records
-#' the layer of every transmission in its `network` column.
+#' A layer made of groups that are cliques by definition, such as households,
+#' classrooms, wards, or cabins, may instead be built with [`netclique`] and
+#' placed in the same list. This is an addition to `netest`, not a replacement
+#' for it. An ERGM remains the natural model for a network whose ties depend on
+#' nodal and dyadic predictors (degree, mixing by attribute, clustering),
+#' whether those ties turn over quickly, slowly, or not at all; the model is
+#' the compact description of that structure. In a clique layer every pair of
+#' group members is a contact and there is no tie-formation process to
+#' estimate. An ERGM can reproduce such cliques only through a `nodematch`
+#' term targeted at its maximum, where no finite coefficient exists, so the
+#' fit is unstable and rarely completes every group. A clique layer is skipped
+#' by the network resimulation and the edges correction, its edges are removed
+#' with departing nodes, and arriving nodes are placed on it under the rule
+#' chosen in `netclique`. The built-in infection modules read every layer
+#' alike; to give each layer its own transmission probability or act rate,
+#' pass `inf.prob` and `act.rate` as [`multilayer`] objects in [`param.net`].
+#' The transmission matrix records the layer of every transmission in its
+#' `network` column.
 #'
 #' @section Restarting and Checkpointing:
 #' Simulations can be checkpointed and restarted if interrupted. Set

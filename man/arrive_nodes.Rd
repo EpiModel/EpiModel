@@ -22,7 +22,7 @@ Arrive New Nodes to the netsim_dat Object
 \code{nArrivals} new nodes are added to the network data stored on
 the \code{netsim_dat} object. If \code{tergmLite} is \code{FALSE}, these
 nodes are activated from the current timestep onward. Attributes for the new
-nodes must be set separately. On each static layer (see \code{\link[=netstatic]{netstatic()}}), the
+nodes must be set separately. On each clique layer (see \code{\link[=netclique]{netclique()}}), the
 new nodes are then placed under the layer's \code{arrivals} rule, which may set
 the layer's grouping attribute for them and add their edges.
 

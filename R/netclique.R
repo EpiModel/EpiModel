@@ -1,33 +1,28 @@
 
-#' @title Static Network Layer for Network Epidemic Models
+#' @title Clique Layer for Network Epidemic Models
 #'
-#' @description Builds a contact layer with fixed edges, for structures that
-#'              are groups by definition (households, classrooms, hospital
-#'              wards, cabins) or for an observed contact network whose exact
-#'              edges are to be kept, that [netsim()] accepts anywhere in its
-#'              layer list alongside the layers estimated with [netest()]. The
-#'              edges of a static layer never form or dissolve: there is no
-#'              formation model, no dissolution model, and no resimulation. It
-#'              is an addition to `netest` for cases where an ERGM is not
-#'              needed, not a substitute for one (see Details).
+#' @description Builds a network layer in which every pair of nodes sharing a
+#'              value of a grouping attribute is connected, so that each group
+#'              (a household, classroom, hospital ward, or cabin) is a clique.
+#'              [netsim()] accepts the layer anywhere in its layer list
+#'              alongside the layers estimated with [netest()]. The edges of a
+#'              clique layer never form or dissolve: there is no formation
+#'              model, no dissolution model, and no resimulation. It is an
+#'              addition to `netest` for structures that are groups by
+#'              definition, not a substitute for an ERGM (see Details).
 #'
 #' @param nw An object of class `network` holding the node set and any vertex
-#'        attributes, as passed to [netest()] for the dynamic layers of the
-#'        same model. The network must be undirected and not bipartite.
+#'        attributes, as passed to [netest()] for the other layers of the same
+#'        model. The network must be undirected and not bipartite. Any edges
+#'        on `nw` are ignored.
 #' @param group.attr Name of a vertex attribute on `nw` whose values partition
 #'        the nodes into groups. Every pair of nodes sharing a non-missing
-#'        value becomes an edge, so each group is a clique. Nodes with a
-#'        missing (`NA`) value are isolates on this layer.
-#' @param edgelist A two-column matrix or `data.frame` of node indices giving
-#'        the edges of the layer directly. Use this to carry a given set of
-#'        edges, such as an observed contact network, into the simulation
-#'        unchanged. It does not model how those edges arise; a network whose
-#'        ties depend on nodal and dyadic predictors is estimated with
-#'        [netest()].
-#' @param arrivals Rule for wiring nodes that arrive during a simulation with
-#'        vital dynamics into the layer: `"isolate"` (the default; the new node
-#'        has no edges on this layer and its group attribute is `NA`), `"new"`
-#'        (each arrival starts a group of size one, with a fresh group id), or
+#'        value becomes an edge. Nodes with a missing (`NA`) value are in no
+#'        group and are isolates on this layer.
+#' @param arrivals Rule for placing nodes that arrive during a simulation with
+#'        vital dynamics: `"isolate"` (the default; the new node has no edges
+#'        on this layer and its group attribute is `NA`), `"new"` (each
+#'        arrival starts a group of size one, with a fresh group id), or
 #'        `"join"` (each arrival joins an existing group and is connected to
 #'        all of its current members). See Details.
 #' @param arrivals.FUN Optional function used with `arrivals = "join"` to
@@ -52,29 +47,27 @@
 #' runs to its iteration limit, the coefficient it stops at is arbitrary, and
 #' a few groups are typically left incomplete. Before this function, the
 #' alternative was to carry the clique edgelist into `netsim` as a parameter
-#' and walk it in a custom infection module. `netstatic` is for these cases.
+#' and walk it in a custom infection module. `netclique` is for these cases.
 #' It builds a layer object that fills a slot in the layer list, is skipped
 #' by the network resimulation and the edges correction, and is read by the
 #' built-in infection modules through [discord_edgelist()] like any other
 #' layer.
 #'
-#' The layer is specified in one of three ways. With `group.attr`, all pairs of
-#' nodes sharing a value of that attribute are connected (the household case).
-#' With `edgelist`, the edges are given directly. With neither, the edges
-#' already on `nw` are used, which is the observed-network case. In the first
-#' two cases, any edges already on `nw` are discarded.
+#' A network whose edges are given rather than generated, such as a fully
+#' observed contact network, is a different case again and is not what this
+#' function is for.
 #'
 #' The group attribute must be an integer, numeric, or character vector; a
 #' factor is refused because arrivals under `"new"` need to create values the
 #' factor does not have. It should also be set on the network passed to
 #' [netest()] for the other layers, since `netsim` reads nodal attributes from
 #' the first layer in its list; when it is not, `netsim` copies it from the
-#' static layer.
+#' clique layer.
 #'
 #' @section Arrivals:
 #' When a model has vital dynamics, each arriving node has to be placed on the
-#' static layer. `netsim` applies the rule chosen with `arrivals` inside
-#' [arrive_nodes()], once per static layer, after the arrivals module has
+#' clique layer. `netsim` applies the rule chosen with `arrivals` inside
+#' [arrive_nodes()], once per clique layer, after the arrivals module has
 #' created the node and set its other attributes:
 #'
 #'  * `"isolate"`: the node gets no edges and its group attribute is `NA`. A
@@ -96,11 +89,8 @@
 #'    group attribute back for `new_ids` lets a custom arrivals module set the
 #'    group itself.
 #'
-#' The rule is applied to every static layer that has a `group.attr`. Layers
-#' built from an `edgelist` or from the edges of `nw` support `"isolate"` only.
-#'
-#' @section Transmission over a static layer:
-#' The built-in infection modules treat every layer alike, so a static layer
+#' @section Transmission over a clique layer:
+#' The built-in infection modules treat every layer alike, so a clique layer
 #' transmits with the model's `inf.prob` and `act.rate` unless those are given
 #' per layer as [multilayer()] objects in [param.net()]:
 #' `param.net(inf.prob = multilayer(0.45, 0.10), act.rate = multilayer(1, 2))`
@@ -108,28 +98,28 @@
 #' transmission matrix records the layer of each transmission in its
 #' `network` column.
 #'
-#' Nodes departing the population are removed from a static layer with their
+#' Nodes departing the population are removed from a clique layer with their
 #' edges, as on every other layer. Network statistics for the layer are
 #' recorded through `nwstats.formula` in [control.net()], with the default
-#' `"formation"` meaning `~edges` for a static layer, and the cumulative
+#' `"formation"` meaning `~edges` for a clique layer, and the cumulative
 #' edgelist records its edges with a start time of 0. [netdx()] refuses a
-#' `netstatic` object, since there is no model to diagnose; the group size
+#' `netclique` object, since there is no model to diagnose; the group size
 #' distribution and mean degree are shown by `print`.
 #'
 #' @return
-#' An object of class `netstatic`, a list with elements:
+#' An object of class `netclique`, a list with elements:
 #'
 #'  * **newnetwork:** a `network` object holding the node set, the vertex
-#'    attributes of `nw`, and the static edges.
-#'  * **group.attr:** the grouping attribute name, or `NULL`.
+#'    attributes of `nw`, and the clique edges.
+#'  * **group.attr:** the grouping attribute name.
 #'  * **arrivals**, **arrivals.FUN:** the arrival rule.
 #'  * **target.stats**, **target.stats.names:** the edge count of the layer,
 #'    named `"edges"`, so that the network statistics table printed by
 #'    [print.netsim()] and plotted by [plot.netsim()] shows the layer's own
 #'    edge count as the target.
 #'  * **edapprox:** `FALSE`.
-#'  * **summary:** a list with the node count, edge count, mean degree,
-#'    number of isolates, and (with `group.attr`) the group size distribution.
+#'  * **summary:** a list with the node count, number of groups, edge count,
+#'    mean degree, number of isolates, and the group size distribution.
 #'
 #' @seealso [sample_groups()] builds a population from a table of group
 #'   types, and [assign_groups()] assigns group ids to an existing population
@@ -149,7 +139,7 @@
 #' nw <- set_vertex_attribute(nw, "age", hh$age)
 #' nw <- set_vertex_attribute(nw, "hh_id", hh$group)
 #'
-#' est_hh <- netstatic(nw, group.attr = "hh_id", arrivals = "join")
+#' est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join")
 #' est_hh
 #' print(est_hh, by = "age")
 #'
@@ -170,7 +160,7 @@
 #' mean(tm$network == 1)
 #'
 #' # Newborns join a household that already has a child
-#' est_hh2 <- netstatic(nw, group.attr = "hh_id", arrivals = "join",
+#' est_hh2 <- netclique(nw, group.attr = "hh_id", arrivals = "join",
 #'   arrivals.FUN = function(dat, at, new_ids, network) {
 #'     hh <- get_attr(dat, "hh_id")
 #'     age <- get_attr(dat, "age")
@@ -179,18 +169,17 @@
 #'   })
 #' }
 #'
-netstatic <- function(nw, group.attr = NULL, edgelist = NULL,
-                      arrivals = c("isolate", "new", "join"),
+netclique <- function(nw, group.attr, arrivals = c("isolate", "new", "join"),
                       arrivals.FUN = NULL) {
 
   if (!inherits(nw, "network")) {
     stop("`nw` must be an object of class `network`.")
   }
   if (is.directed(nw)) {
-    stop("`netstatic` supports undirected networks only.")
+    stop("`netclique` supports undirected networks only.")
   }
   if (is.bipartite(nw)) {
-    stop("`netstatic` does not support bipartite networks.")
+    stop("`netclique` does not support bipartite networks.")
   }
   arrivals <- match.arg(arrivals)
   if (!is.null(arrivals.FUN)) {
@@ -201,51 +190,27 @@ netstatic <- function(nw, group.attr = NULL, edgelist = NULL,
       stop("`arrivals.FUN` applies only with `arrivals = \"join\"`.")
     }
   }
-  if (!is.null(group.attr) && !is.null(edgelist)) {
-    stop("Specify either `group.attr` or `edgelist`, not both.")
+  if (missing(group.attr) || !is.character(group.attr) ||
+        length(group.attr) != 1) {
+    stop("`group.attr` must be a single attribute name.")
+  }
+  if (!group.attr %in% list.vertex.attributes(nw)) {
+    stop("There is no vertex attribute called `", group.attr, "` on `nw`.")
+  }
+  group <- get_vertex_attribute(nw, group.attr)
+  if (is.factor(group)) {
+    stop("The `", group.attr, "` attribute is a factor. Convert it with ",
+         "`as.character()` or `as.integer()` before calling `netclique`.")
+  }
+  if (!is.numeric(group) && !is.character(group)) {
+    stop("The `", group.attr, "` attribute must be numeric or character.")
   }
 
   n <- network.size(nw)
-  group.sizes <- NULL
+  el <- group_edgelist(group)
+  sizes <- tabulate(factor(group[!is.na(group)]))
 
-  if (!is.null(group.attr)) {
-    if (!is.character(group.attr) || length(group.attr) != 1) {
-      stop("`group.attr` must be a single attribute name.")
-    }
-    if (!group.attr %in% list.vertex.attributes(nw)) {
-      stop("There is no vertex attribute called `", group.attr, "` on `nw`.")
-    }
-    group <- get_vertex_attribute(nw, group.attr)
-    if (is.factor(group)) {
-      stop("The `", group.attr, "` attribute is a factor. Convert it with ",
-           "`as.character()` or `as.integer()` before calling `netstatic`.")
-    }
-    if (!is.numeric(group) && !is.character(group)) {
-      stop("The `", group.attr, "` attribute must be numeric or character.")
-    }
-    el <- group_edgelist(group)
-    group.sizes <- table(tabulate(factor(group[!is.na(group)])),
-                         dnn = NULL)
-  } else if (!is.null(edgelist)) {
-    if (arrivals != "isolate") {
-      stop("`arrivals = \"", arrivals, "\"` requires `group.attr`; a layer ",
-           "built from an edgelist supports `arrivals = \"isolate\"` only.")
-    }
-    el <- check_static_edgelist(edgelist, n)
-  } else {
-    if (network.edgecount(nw) == 0) {
-      stop("Specify `group.attr` or `edgelist`, or pass a network that ",
-           "already has edges.")
-    }
-    if (arrivals != "isolate") {
-      stop("`arrivals = \"", arrivals, "\"` requires `group.attr`; a layer ",
-           "built from the edges of `nw` supports `arrivals = \"isolate\"` ",
-           "only.")
-    }
-    el <- check_static_edgelist(as.edgelist(nw)[, 1:2, drop = FALSE], n)
-  }
-
-  ## the layer network: node set and attributes of nw, static edges only
+  ## the layer network: node set and attributes of nw, clique edges only
   newnetwork <- network_initialize(n)
   for (a in setdiff(list.vertex.attributes(nw), c("na", "vertex.names"))) {
     newnetwork <- set_vertex_attribute(newnetwork, a,
@@ -267,49 +232,45 @@ netstatic <- function(nw, group.attr = NULL, edgelist = NULL,
   out$target.stats.names <- "edges"
   out$edapprox <- FALSE
   out$summary <- list(n = n,
+                      groups = length(sizes),
                       edges = nrow(el),
                       mean.degree = mean(deg),
                       isolates = sum(deg == 0),
-                      group.sizes = group.sizes)
+                      group.sizes = table(sizes, dnn = NULL))
 
-  class(out) <- "netstatic"
+  class(out) <- "netclique"
   return(out)
 }
 
 #' @export
-print.netstatic <- function(x, by = NULL, digits = 3, ...) {
+print.netclique <- function(x, by = NULL, digits = 3, ...) {
 
   s <- x$summary
 
-  cat("EpiModel Static Network Layer")
+  cat("EpiModel Clique Network Layer")
   cat("\n=======================")
   cat("\nModel class:", class(x))
-  if (!is.null(x$group.attr)) {
-    cat("\nLayer type: cliques on `", x$group.attr, "`", sep = "")
-  } else {
-    cat("\nLayer type: fixed edgelist")
-  }
+  cat("\nGrouping attribute:", x$group.attr)
 
   cat("\n\nLayer Summary")
   cat("\n-----------------------")
   cat("\nNodes:", s$n)
+  cat("\nGroups:", s$groups)
   cat("\nEdges:", s$edges)
   cat("\nMean degree:", round(s$mean.degree, digits))
   cat("\nIsolates:", s$isolates)
 
-  if (!is.null(s$group.sizes)) {
-    cat("\n\nGroup Size Distribution")
-    cat("\n-----------------------\n")
-    gs <- rbind(size = as.integer(names(s$group.sizes)),
-                groups = as.integer(s$group.sizes))
-    colnames(gs) <- rep("", ncol(gs))
-    print(gs)
-  }
+  cat("\n\nGroup Size Distribution")
+  cat("\n-----------------------\n")
+  gs <- rbind(size = as.integer(names(s$group.sizes)),
+              groups = as.integer(s$group.sizes))
+  colnames(gs) <- rep("", ncol(gs))
+  print(gs)
 
   if (!is.null(by)) {
     if (is.null(x$newnetwork)) {
-      cat("\n\nMean degree by `", by, "` is not available: the layer ",
-          "network is not stored on this object.", sep = "")
+      cat("\nMean degree by `", by, "` is not available: the layer ",
+          "network is not stored on this object.\n", sep = "")
     } else {
       if (!by %in% list.vertex.attributes(x$newnetwork)) {
         stop("There is no vertex attribute called `", by, "` on the layer.")
@@ -317,13 +278,13 @@ print.netstatic <- function(x, by = NULL, digits = 3, ...) {
       el <- as.edgelist(x$newnetwork)
       deg <- tabulate(c(el[, 1], el[, 2]), nbins = network.size(x$newnetwork))
       by.val <- get_vertex_attribute(x$newnetwork, by)
-      cat("\n\nMean Degree by `", by, "`", sep = "")
+      cat("\nMean Degree by `", by, "`", sep = "")
       cat("\n-----------------------\n")
       print(round(tapply(deg, by.val, mean), digits))
     }
   }
 
-  cat("\n\nArrivals:", x$arrivals)
+  cat("\nArrivals:", x$arrivals)
   if (x$arrivals == "join") {
     if (is.null(x$arrivals.FUN)) {
       cat(" (group drawn in proportion to its size)")
@@ -336,11 +297,18 @@ print.netstatic <- function(x, by = NULL, digits = 3, ...) {
   invisible()
 }
 
-# Is a layer object, or its nwparam record on the dat object, a static layer?
-is_static_layer <- function(x) {
-  inherits(x, "netstatic")
+# A layer with no network model behind it, which the network simulation and
+# the edges correction skip. The predicate is applied both to the layer object
+# passed to netsim() and to its nwparam record on the dat object.
+is_model_free_layer <- function(x) {
+  inherits(x, "netclique")
 }
 
+# A clique layer specifically: the only model-free layer with a grouping
+# attribute and arrival rules.
+is_clique_layer <- function(x) {
+  inherits(x, "netclique")
+}
 # All within-group pairs for a grouping vector, as a sorted two-column integer
 # matrix with tail < head. Nodes with NA are in no group. Groups of the same
 # size are processed together, so the cost is one combn() per distinct size.
@@ -379,35 +347,6 @@ group_edgelist <- function(group) {
   el
 }
 
-# Validate a user-supplied edgelist and put it in canonical form: integer,
-# tail < head, no self-loops, no duplicates, sorted.
-check_static_edgelist <- function(edgelist, n) {
-  if (is.data.frame(edgelist)) {
-    edgelist <- as.matrix(edgelist)
-  }
-  if (!is.matrix(edgelist) || ncol(edgelist) != 2 || !is.numeric(edgelist)) {
-    stop("`edgelist` must be a two-column numeric matrix or data.frame of ",
-         "node indices.")
-  }
-  if (nrow(edgelist) == 0) {
-    return(matrix(integer(0), ncol = 2))
-  }
-  if (anyNA(edgelist) || any(edgelist != round(edgelist)) ||
-        any(edgelist < 1) || any(edgelist > n)) {
-    stop("`edgelist` must contain integer node indices between 1 and ", n, ".")
-  }
-  if (any(edgelist[, 1] == edgelist[, 2])) {
-    stop("`edgelist` contains self-loops.")
-  }
-  el <- cbind(pmin(edgelist[, 1], edgelist[, 2]),
-              pmax(edgelist[, 1], edgelist[, 2]))
-  el <- unique(el)
-  el <- el[order(el[, 1], el[, 2]), , drop = FALSE]
-  storage.mode(el) <- "integer"
-  dimnames(el) <- NULL
-  el
-}
-
 # Append rows to a tergmLite edgelist, keeping its attributes (n and the
 # as.edgelist class and metadata) and its sorted order.
 add_edges_to_el <- function(el, new) {
@@ -423,8 +362,8 @@ add_edges_to_el <- function(el, new) {
   out
 }
 
-# Add edges to a static layer in either storage mode.
-add_static_edges <- function(dat, network, el_new) {
+# Add edges to a clique layer in either storage mode.
+add_clique_edges <- function(dat, network, el_new) {
   if (NROW(el_new) == 0) {
     return(dat)
   }
@@ -461,12 +400,12 @@ new_group_ids <- function(group, k) {
   ids[length(ids) - k + seq_len(k)]
 }
 
-# Apply a static layer's arrival rule to the nodes new_ids, which arrive_nodes
+# Apply a clique layer's arrival rule to the nodes new_ids, which arrive_nodes
 # has already added to the layer as isolates. Sets the group attribute for
 # the new nodes and, under "join", connects each of them to every active
 # member of its group, including other nodes joining the same group in this
 # time step.
-static_layer_arrivals <- function(dat, network, new_ids) {
+clique_layer_arrivals <- function(dat, network, new_ids) {
   nwparam <- get_nwparam(dat, network = network)
   group.attr <- nwparam$group.attr
   rule <- nwparam$arrivals
@@ -494,7 +433,7 @@ static_layer_arrivals <- function(dat, network, new_ids) {
     at <- get_current_timestep(dat)
     new_group <- nwparam$arrivals.FUN(dat, at, new_ids, network)
     if (length(new_group) != length(new_ids)) {
-      stop("`arrivals.FUN` for static layer ", network, " returned ",
+      stop("`arrivals.FUN` for clique layer ", network, " returned ",
            length(new_group), " group ids for ", length(new_ids),
            " arriving nodes.")
     }
@@ -527,7 +466,7 @@ static_layer_arrivals <- function(dat, network, new_ids) {
     cbind(pmin(i, m), pmax(i, m))
   })
   el_new <- do.call(rbind, el_new)
-  dat <- add_static_edges(dat, network, el_new)
+  dat <- add_clique_edges(dat, network, el_new)
 
   return(dat)
 }
@@ -538,7 +477,7 @@ static_layer_arrivals <- function(dat, network, new_ids) {
 #' @description Builds a population one group at a time from a table of group
 #'              types, such as household compositions, returning each node's
 #'              group id and the attributes its group type implies. The result
-#'              supplies both the grouping attribute for [netstatic()] and the
+#'              supplies both the grouping attribute for [netclique()] and the
 #'              nodal attributes for the dynamic layers of the same model.
 #'
 #' @param n Number of nodes in the population.
@@ -578,7 +517,7 @@ static_layer_arrivals <- function(dat, network, new_ids) {
 #' named `attr.name` for character templates, or the columns of the
 #' `data.frame`s in `types`).
 #'
-#' @seealso [netstatic()] to turn the `group` column into a static clique
+#' @seealso [netclique()] to turn the `group` column into a clique
 #'   layer, and [assign_groups()] for the reverse problem of assigning group
 #'   ids to a population whose attributes already exist.
 #'
@@ -780,7 +719,7 @@ sample_groups <- function(n, types, prob = NULL, attr.name = "member",
 #' @return An integer vector of group ids, one per node, with ids running from
 #'   `1` to the number of groups.
 #'
-#' @seealso [sample_groups()] and [netstatic()].
+#' @seealso [sample_groups()] and [netclique()].
 #'
 #' @export
 #'
@@ -801,7 +740,7 @@ sample_groups <- function(n, types, prob = NULL, attr.name = "member",
 #' nw <- network_initialize(n)
 #' nw <- set_vertex_attribute(nw, "age", age)
 #' nw <- set_vertex_attribute(nw, "hh_id", hh_id)
-#' est_hh <- netstatic(nw, group.attr = "hh_id")
+#' est_hh <- netclique(nw, group.attr = "hh_id")
 #' print(est_hh, by = "age")
 #'
 assign_groups <- function(size.dist, role = NULL, anchor = NULL,

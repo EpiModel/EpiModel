@@ -86,7 +86,7 @@ reference:
       - get_vertex_attribute
       - set_vertex_attribute
       - netest
-      - netstatic
+      - netclique
       - sample_groups
       - assign_groups
       - netdx

@@ -8,7 +8,7 @@ initialize.net(x, param, init, control, s)
 }
 \arguments{
 \item{x}{If \code{control$start == 1}, either a fitted network model object
-of class \code{netest}, a static layer of class \code{\link{netstatic}}, or a list
+of class \code{netest}, a clique layer of class \code{\link{netclique}}, or a list
 of such objects. If \code{control$start > 1}, an object of class
 \code{netsim}. When multiple networks are used, the node sets (including
 network size and nodal attributes) are assumed to be the same for

@@ -221,7 +221,7 @@ depart_nodes <- function(dat, departures) {
 #' @details `nArrivals` new nodes are added to the network data stored on
 #' the `netsim_dat` object. If `tergmLite` is `FALSE`, these
 #' nodes are activated from the current timestep onward. Attributes for the new
-#' nodes must be set separately. On each static layer (see [netstatic()]), the
+#' nodes must be set separately. On each clique layer (see [netclique()]), the
 #' new nodes are then placed under the layer's `arrivals` rule, which may set
 #' the layer's grouping attribute for them and add their edges.
 #'
@@ -259,11 +259,11 @@ arrive_nodes <- function(dat, nArrivals) {
       }
     }
 
-    ## place the new nodes on each static layer under its arrival rule
+    ## place the new nodes on each clique layer under its arrival rule
     new_ids <- n_old + seq_len(nArrivals)
     for (net_index in seq_len(dat$num.nw)) {
-      if (is_static_layer(dat$nwparam[[net_index]])) {
-        dat <- static_layer_arrivals(dat, net_index, new_ids)
+      if (is_clique_layer(dat$nwparam[[net_index]])) {
+        dat <- clique_layer_arrivals(dat, net_index, new_ids)
       }
     }
   }

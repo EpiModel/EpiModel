@@ -119,9 +119,9 @@ sim_nets_t1 <- function(dat) {
 simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   nwparam <- get_nwparam(dat, network = network)
 
-  ## a static layer has no model to simulate
-  if (is_static_layer(nwparam)) {
-    return(simulate_static_dat(dat, at, network, nsteps))
+  ## a model-free layer (netclique) has nothing to simulate
+  if (is_model_free_layer(nwparam)) {
+    return(simulate_model_free_dat(dat, at, network, nsteps))
   }
 
   ## determine formula and coefficients; set discordance_fraction in ergm case
@@ -186,12 +186,12 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   return(dat)
 }
 
-# The edges of a static layer never change, so there is nothing to simulate.
+# The edges of a clique layer never change, so there is nothing to simulate.
 # This keeps the two pieces of bookkeeping that simulate_dat() would otherwise
 # do for the layer: the tergmLite `time` network attribute when edge durations
 # are tracked, and the network statistics when they are recorded here rather
 # than in summary_nets() (that is, when resimulate.network == FALSE).
-simulate_static_dat <- function(dat, at, network, nsteps) {
+simulate_model_free_dat <- function(dat, at, network, nsteps) {
   if (get_control(dat, "tergmLite") == TRUE &&
         get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
     dat$run$net_attr[[network]][["time"]] <- at + nsteps - 1L
@@ -395,9 +395,9 @@ edges_correct <- function(dat, at) {
     }
 
     for (network in seq_len(dat$num.nw)) {
-      # a static layer has no coefficients, and its edges do not scale with
+      # a model-free layer has no coefficients, and its edges do not scale with
       # the population
-      if (is_static_layer(dat$nwparam[[network]])) {
+      if (is_model_free_layer(dat$nwparam[[network]])) {
         next
       }
       dat$nwparam[[network]]$coef.form[1] <-

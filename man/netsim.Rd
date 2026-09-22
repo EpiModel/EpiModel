@@ -8,10 +8,10 @@ netsim(x, param, init, control)
 }
 \arguments{
 \item{x}{If \code{control$start == 1}, either a fitted network model object
-of class \code{netest}, a static layer of class \code{\link{netstatic}}, or a list
+of class \code{netest}, a clique layer of class \code{\link{netclique}}, or a list
 of such objects. If \code{control$start > 1}, an object of class
 \code{netsim}. When multiple networks are used (multi-layer models), pass
-a list with one \code{netest} or \code{netstatic} object per network layer,
+a list with one \code{netest} or \code{netclique} object per network layer,
 in any order; the node sets (including network size and nodal
 attributes) are assumed to be the same for all networks.}
 
@@ -158,25 +158,24 @@ the \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Mul
 chapter of the Network Modeling for Epidemics course materials for a worked
 example building from independent to cross-dependent layers.
 
-A layer whose edges are fixed for the whole simulation may instead be built
-with \code{\link{netstatic}} and placed in the same list. This is an addition to
-\code{netest}, not a replacement for it. An ERGM remains the natural model for a
-static network whose ties depend on nodal and dyadic predictors (degree,
-mixing by attribute, clustering), where the model is the compact
-description of that structure. \code{netstatic} is for structures that are
-groups by definition, such as households, classrooms, wards, or cabins,
-where every pair of members is a contact and there is no tie-formation
-process to estimate. An ERGM can reproduce such cliques only through a
-\code{nodematch} term targeted at its maximum, where no finite coefficient
-exists, so the fit is unstable and rarely completes every group.
-\code{netstatic} also carries an observed contact network whose exact edges are
-to be kept. A static layer is skipped by the network resimulation and the
-edges correction, its edges are removed with departing nodes, and arriving
-nodes are placed on it under the rule chosen in \code{netstatic}. The built-in
-infection modules read every layer alike; to give each layer its own
-transmission probability or act rate, pass \code{inf.prob} and \code{act.rate} as
-\code{\link{multilayer}} objects in \code{\link{param.net}}. The transmission matrix records
-the layer of every transmission in its \code{network} column.
+A layer made of groups that are cliques by definition, such as households,
+classrooms, wards, or cabins, may instead be built with \code{\link{netclique}} and
+placed in the same list. This is an addition to \code{netest}, not a replacement
+for it. An ERGM remains the natural model for a network whose ties depend on
+nodal and dyadic predictors (degree, mixing by attribute, clustering),
+whether those ties turn over quickly, slowly, or not at all; the model is
+the compact description of that structure. In a clique layer every pair of
+group members is a contact and there is no tie-formation process to
+estimate. An ERGM can reproduce such cliques only through a \code{nodematch}
+term targeted at its maximum, where no finite coefficient exists, so the
+fit is unstable and rarely completes every group. A clique layer is skipped
+by the network resimulation and the edges correction, its edges are removed
+with departing nodes, and arriving nodes are placed on it under the rule
+chosen in \code{netclique}. The built-in infection modules read every layer
+alike; to give each layer its own transmission probability or act rate,
+pass \code{inf.prob} and \code{act.rate} as \code{\link{multilayer}} objects in \code{\link{param.net}}.
+The transmission matrix records the layer of every transmission in its
+\code{network} column.
 }
 
 \section{Restarting and Checkpointing}{

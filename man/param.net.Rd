@@ -156,7 +156,7 @@ further examples, see the
 \section{Multi-Layer Parameters}{
 
 In models with more than one network layer (a list of \code{\link[=netest]{netest()}} and
-\code{\link[=netstatic]{netstatic()}} objects passed to \code{\link[=netsim]{netsim()}}), the \code{inf.prob}, \code{inf.prob.g2},
+\code{\link[=netclique]{netclique()}} objects passed to \code{\link[=netsim]{netsim()}}), the \code{inf.prob}, \code{inf.prob.g2},
 and \code{act.rate} arguments may be given per layer as \code{\link[=multilayer]{multilayer()}} objects
 with one entry per layer, in the order of the layer list:
 \code{inf.prob = multilayer(0.45, 0.10)} sets a per-act transmission probability

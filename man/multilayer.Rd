@@ -34,7 +34,7 @@ param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
 
 }
 \seealso{
-\code{\link[=netsim]{netsim()}} for passing a list of \code{\link[=netest]{netest()}} fits and \code{\link[=netstatic]{netstatic()}}
+\code{\link[=netsim]{netsim()}} for passing a list of \code{\link[=netest]{netest()}} fits and \code{\link[=netclique]{netclique()}}
 layers, one per network. The
 \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
 chapter of the Network Modeling for Epidemics course materials works

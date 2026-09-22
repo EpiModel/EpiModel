@@ -110,7 +110,7 @@
 #'
 #' @section Multi-Layer Parameters:
 #' In models with more than one network layer (a list of [netest()] and
-#' [netstatic()] objects passed to [netsim()]), the `inf.prob`, `inf.prob.g2`,
+#' [netclique()] objects passed to [netsim()]), the `inf.prob`, `inf.prob.g2`,
 #' and `act.rate` arguments may be given per layer as [multilayer()] objects
 #' with one entry per layer, in the order of the layer list:
 #' `inf.prob = multilayer(0.45, 0.10)` sets a per-act transmission probability
@@ -1172,13 +1172,13 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (inherits(x, c("netest", "netstatic"))) {
+      if (inherits(x, c("netest", "netclique"))) {
         x <- list(x)
       }
       if (!inherits(x, "list") || length(x) == 0 ||
-            !all(vapply(x, inherits, logical(1), c("netest", "netstatic")))) {
-        stop("x must be either an object of class netest or netstatic, or a ",
-             "list of objects of class netest or netstatic, when start == 1")
+            !all(vapply(x, inherits, logical(1), c("netest", "netclique")))) {
+        stop("x must be either an object of class netest or netclique, or a ",
+             "list of objects of class netest or netclique, when start == 1")
       }
       if (!inherits(param, "param.net")) {
         stop("param must be an object of class param.net")
@@ -1345,13 +1345,13 @@ crosscheck.net <- function(x, param, init, control) {
          specified.")
   }
 
-  if (inherits(x, c("netest", "netstatic"))) {
+  if (inherits(x, c("netest", "netclique"))) {
     nwparam <- list(x)
   } else if (inherits(x, "netsim")) {
     nwparam <- x$nwparam
   } else if (inherits(x, "networkDynamic")) {
     nwparam <- list(x) # relevant to EpiModel gallery example
-  } else { # must be list of netest and netstatic
+  } else { # must be list of netest and netclique
     nwparam <- x
   }
 
@@ -1359,7 +1359,7 @@ crosscheck.net <- function(x, param, init, control) {
 
   # every layer must be built on the same node set
   if (control[["start"]] == 1 && is.list(nwparam) &&
-        all(vapply(nwparam, inherits, logical(1), c("netest", "netstatic")))) {
+        all(vapply(nwparam, inherits, logical(1), c("netest", "netclique")))) {
     sizes <- vapply(nwparam, function(y) network.size(y$newnetwork), numeric(1))
     if (length(unique(sizes)) > 1) {
       stop("All network layers must have the same number of nodes; the layer ",
@@ -1367,10 +1367,10 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
-  # arriving nodes get NA for the grouping attribute of a static layer unless
+  # arriving nodes get NA for the grouping attribute of a clique layer unless
   # the user set a rule; the layer's arrival rule then places them
   for (network in seq_len(num.nw)) {
-    if (is_static_layer(nwparam[[network]])) {
+    if (is_model_free_layer(nwparam[[network]])) {
       group.attr <- nwparam[[network]]$group.attr
       if (!is.null(group.attr) &&
             is.null(control[["attr.rules"]][[group.attr]])) {
@@ -1401,11 +1401,11 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   # convert nwstats.formula = "formation" to actual formation formula; a
-  # static layer has no formation model, so its edge count is recorded
+  # model-free layer has no formation model, so its edge count is recorded
   for (network in seq_len(num.nw)) {
     if (!is.null(control[["nwstats.formula"]][[network]]) &&
           control[["nwstats.formula"]][[network]] == "formation") {
-      if (is_static_layer(nwparam[[network]])) {
+      if (is_model_free_layer(nwparam[[network]])) {
         control[["nwstats.formula"]][[network]] <- trim_env(~edges)
       } else {
         control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
@@ -1449,7 +1449,7 @@ crosscheck.net <- function(x, param, init, control) {
 #' @return an object of class `multilayer` containing the specified
 #'         control arguments or parameter values
 #'
-#' @seealso [netsim()] for passing a list of [netest()] fits and [netstatic()]
+#' @seealso [netsim()] for passing a list of [netest()] fits and [netclique()]
 #'   layers, one per network. The
 #'   [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
 #'   chapter of the Network Modeling for Epidemics course materials works

@@ -269,7 +269,7 @@ saveout.net <- function(dat, s, out = NULL) {
         !is.null(dat$nwparam)) {
 
     ## for each simulated network, if dissolution model is edges-only, compute
-    ## diss stats; a static layer has no dissolution model
+    ## diss stats; a model-free layer has no dissolution model
     out$diss.stats[s] <- list(lapply(seq_len(dat$num.nw), function(network) {
       if (!is.null(dat$nwparam[[network]]$coef.diss) &&
             dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {

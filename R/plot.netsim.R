@@ -587,7 +587,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
         "Cannot produce duration/dissolution plot from `netsim` object ",
         "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
         "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
-        "merging), the network is not a static layer, and dissolution ",
+        "merging), the network is not a `netclique` layer, and dissolution ",
         "model is edges-only"
       )
     }

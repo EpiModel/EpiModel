@@ -1,4 +1,4 @@
-context("Static Network Layers")
+context("Clique Network Layers")
 
 # Shared fixtures ------------------------------------------------------------
 
@@ -21,14 +21,14 @@ nw <- network_initialize(n = N)
 nw <- set_vertex_attribute(nw, "age", pop$age)
 nw <- set_vertex_attribute(nw, "hh_id", pop$group)
 
-est_hh <- netstatic(nw, group.attr = "hh_id", arrivals = "join")
+est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join")
 est_com <- netest(nw, formation = ~edges + nodematch("age"),
                   target.stats = c(100, 70),
                   coef.diss = dissolution_coefs(~offset(edges), 20),
                   verbose = FALSE)
 init <- init.net(i.num = 10)
 
-# The clique invariant: every static edge joins two members of the same
+# The clique invariant: every clique edge joins two members of the same
 # group, and every pair of active co-members is an edge.
 expect_clique_layer <- function(el, group, active = rep(1, length(group))) {
   in_group <- which(active == 1 & !is.na(group))
@@ -41,8 +41,8 @@ expect_clique_layer <- function(el, group, active = rep(1, length(group))) {
 
 # Constructor ------------------------------------------------------------------
 
-test_that("netstatic builds cliques from a grouping attribute", {
-  expect_s3_class(est_hh, "netstatic")
+test_that("netclique builds cliques from a grouping attribute", {
+  expect_s3_class(est_hh, "netclique")
   sizes <- tabulate(pop$group)
   expect_equal(est_hh$summary$edges, sum(choose(sizes, 2)))
   expect_equal(network.edgecount(est_hh$newnetwork), sum(choose(sizes, 2)))
@@ -64,80 +64,52 @@ test_that("netstatic builds cliques from a grouping attribute", {
   expect_equal(get_vertex_attribute(est_hh$newnetwork, "hh_id"), pop$group)
 })
 
-test_that("netstatic treats NA group values as isolates", {
+test_that("netclique treats NA group values as isolates", {
   g <- pop$group
   g[1:10] <- NA
   nw_na <- set_vertex_attribute(nw, "hh_id", g)
-  es <- netstatic(nw_na, group.attr = "hh_id")
+  es <- netclique(nw_na, group.attr = "hh_id")
   el <- as.edgelist(es$newnetwork)
   expect_false(any(el %in% 1:10))
   expect_clique_layer(el, g)
 })
 
-test_that("netstatic accepts character group ids", {
+test_that("netclique accepts character group ids", {
   nw_chr <- set_vertex_attribute(nw, "hh_id", paste0("hh", pop$group))
-  es <- netstatic(nw_chr, group.attr = "hh_id")
+  es <- netclique(nw_chr, group.attr = "hh_id")
   expect_equal(es$summary$edges, est_hh$summary$edges)
 })
 
-test_that("netstatic accepts an edgelist or the edges of nw", {
-  el_in <- rbind(c(1, 2), c(2, 1), c(3, 4), c(4, 3), c(5, 6))
-  es <- netstatic(nw, edgelist = el_in)
-  expect_equal(es$summary$edges, 3)
-  expect_equal(as.edgelist(es$newnetwork)[, 1:2],
-               rbind(c(1L, 2L), c(3L, 4L), c(5L, 6L)),
-               ignore_attr = TRUE)
-  expect_null(es$group.attr)
-  expect_null(es$summary$group.sizes)
-
-  es_df <- netstatic(nw, edgelist = data.frame(a = c(1, 3), b = c(2, 4)))
-  expect_equal(es_df$summary$edges, 2)
-
-  nw_e <- add.edges(nw, tail = c(1, 3), head = c(2, 4))
-  es2 <- netstatic(nw_e)
-  expect_equal(es2$summary$edges, 2)
-
-  # with group.attr, the edges already on nw are discarded
-  es3 <- netstatic(nw_e, group.attr = "hh_id")
-  expect_equal(es3$summary$edges, est_hh$summary$edges)
-})
-
-test_that("netstatic validates its inputs", {
-  expect_error(netstatic(list()), "class `network`")
-  expect_error(netstatic(network::network.initialize(10, directed = TRUE),
-                         edgelist = cbind(1, 2)), "undirected")
-  expect_error(netstatic(nw), "already has edges")
-  expect_error(netstatic(nw, group.attr = "nope"), "no vertex attribute")
-  expect_error(netstatic(nw, group.attr = "hh_id", edgelist = cbind(1, 2)),
-               "not both")
-  expect_error(netstatic(nw, group.attr = c("a", "b")), "single attribute")
-  expect_error(netstatic(nw, edgelist = cbind(1, 2), arrivals = "join"),
-               "requires `group.attr`")
-  expect_error(netstatic(nw, edgelist = cbind(1, 1)), "self-loops")
-  expect_error(netstatic(nw, edgelist = cbind(1, N + 1)), "between 1 and")
-  expect_error(netstatic(nw, edgelist = cbind(1, 2.5)), "between 1 and")
-  expect_error(netstatic(nw, edgelist = matrix(1:6, ncol = 3)), "two-column")
-  expect_error(netstatic(nw, group.attr = "hh_id", arrivals.FUN = identity),
+test_that("netclique validates its inputs", {
+  expect_error(netclique(list(), group.attr = "hh_id"), "class `network`")
+  expect_error(netclique(network::network.initialize(10, directed = TRUE),
+                         group.attr = "hh_id"), "undirected")
+  expect_error(netclique(nw), "single attribute")
+  expect_error(netclique(nw, group.attr = c("a", "b")), "single attribute")
+  expect_error(netclique(nw, group.attr = "nope"), "no vertex attribute")
+  nw_lgl <- set_vertex_attribute(nw, "hh_id", rep(TRUE, N))
+  expect_error(netclique(nw_lgl, group.attr = "hh_id"), "numeric or character")
+  expect_error(netclique(nw, group.attr = "hh_id", arrivals.FUN = identity),
                "applies only with")
-  expect_error(netstatic(nw, group.attr = "hh_id", arrivals = "join",
+  expect_error(netclique(nw, group.attr = "hh_id", arrivals = "join",
                          arrivals.FUN = 1), "must be a function")
+  # edges already on nw are ignored
+  nw_e <- add.edges(nw, tail = c(1, 3), head = c(2, 4))
+  expect_equal(netclique(nw_e, group.attr = "hh_id")$summary$edges,
+               est_hh$summary$edges)
 })
 
-test_that("print.netstatic reports the layer and mean degree by attribute", {
+test_that("print.netclique reports the layer and mean degree by attribute", {
   out <- capture.output(print(est_hh))
-  expect_true(any(grepl("cliques on `hh_id`", out)))
+  expect_true(any(grepl("Grouping attribute: hh_id", out)))
   expect_true(any(grepl("Group Size Distribution", out)))
   expect_true(any(grepl("Arrivals: join", out)))
   out <- capture.output(print(est_hh, by = "age"))
   expect_true(any(grepl("Mean Degree by `age`", out)))
   expect_error(print(est_hh, by = "nope"), "no vertex attribute")
-
-  es <- netstatic(nw, edgelist = cbind(1, 2))
-  out <- capture.output(print(es))
-  expect_true(any(grepl("fixed edgelist", out)))
 })
 
-test_that("netdx refuses a netstatic object", {
+test_that("netdx refuses a netclique object", {
   expect_error(netdx(est_hh, nsims = 1, nsteps = 5), "does not apply")
 })
 
@@ -257,7 +229,7 @@ test_that("assign_groups validates its inputs", {
                "must not share")
 })
 
-test_that("the two helpers compose into a netstatic layer", {
+test_that("the two helpers compose into a netclique layer", {
   set.seed(7)
   age <- sample(c("child", "adult", "elderly"), 300, replace = TRUE,
                 prob = c(0.25, 0.55, 0.20))
@@ -267,7 +239,7 @@ test_that("the two helpers compose into a netstatic layer", {
   nw2 <- network_initialize(300)
   nw2 <- set_vertex_attribute(nw2, "age", age)
   nw2 <- set_vertex_attribute(nw2, "hh_id", hh)
-  es <- netstatic(nw2, group.attr = "hh_id")
+  es <- netclique(nw2, group.attr = "hh_id")
   expect_clique_layer(as.edgelist(es$newnetwork), hh)
   # a child's household degree is at least one (the anchor)
   deg <- get_degree(as.edgelist(es$newnetwork))
@@ -277,7 +249,7 @@ test_that("the two helpers compose into a netstatic layer", {
 
 # Simulation: closed population -------------------------------------------------
 
-test_that("netsim runs a static plus TERGM model, tergmLite, with layer params", {
+test_that("netsim runs a clique plus TERGM model, tergmLite, with layer params", {
   param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
   control <- control.net(type = "SI", nsteps = 20, nsims = 1, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE,
@@ -287,15 +259,15 @@ test_that("netsim runs a static plus TERGM model, tergmLite, with layer params",
   expect_equal(sim$num.nw, 2)
   test_net(sim)
 
-  # the static layer's edgelist is unchanged after the run
+  # the clique layer's edgelist is unchanged after the run
   expect_equal(unclass(sim$run[[1]]$el[[1]])[, 1:2],
                unclass(as.edgelist(est_hh$newnetwork))[, 1:2],
                ignore_attr = TRUE)
   # the TERGM layer's coefficient is untouched by the edges correction in a
-  # closed population, and the static layer has none
+  # closed population, and the clique layer has none
   expect_equal(sim$nwparam[[2]]$coef.form, est_com$coef.form)
   expect_null(sim$nwparam[[1]]$coef.form)
-  expect_s3_class(sim$nwparam[[1]], "netstatic")
+  expect_s3_class(sim$nwparam[[1]], "netclique")
 
   # network statistics: edges of the static layer are constant at its count
   ns <- get_nwstats(sim, network = 1)
@@ -318,7 +290,7 @@ test_that("netsim runs a static plus TERGM model, tergmLite, with layer params",
   plot(sim, type = "formation", network = 2)
 })
 
-test_that("a static layer may come after the TERGM layer, networkDynamic, SIS", {
+test_that("a clique layer may come after the TERGM layer, networkDynamic, SIS", {
   skip_on_cran()
   param <- param.net(inf.prob = multilayer(0.05, 0.3),
                      act.rate = multilayer(1, 2), rec.rate = 0.05)
@@ -341,12 +313,12 @@ test_that("a static layer may come after the TERGM layer, networkDynamic, SIS", 
 
   # duration and dissolution diagnostics exist for the TERGM layer only
   expect_output(print(sim, network = 1), "Duration Statistics")
-  expect_output(print(sim, network = 2), "static layer")
+  expect_output(print(sim, network = 2), "netclique")
   plot(sim, type = "duration", network = 1)
-  expect_error(plot(sim, type = "duration", network = 2), "static layer")
+  expect_error(plot(sim, type = "duration", network = 2), "netclique")
 })
 
-test_that("a static layer works without network resimulation", {
+test_that("a clique layer works without network resimulation", {
   skip_on_cran()
   param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
   for (tergmLite in c(FALSE, TRUE)) {
@@ -362,7 +334,7 @@ test_that("a static layer works without network resimulation", {
   }
 })
 
-test_that("a model may consist of static layers only", {
+test_that("a model may consist of clique layers only", {
   skip_on_cran()
   param <- param.net(inf.prob = 0.2, act.rate = 1)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2, tergmLite = TRUE,
@@ -385,7 +357,7 @@ test_that("a model may consist of static layers only", {
 test_that("a two-group model accepts multilayer inf.prob and inf.prob.g2", {
   skip_on_cran()
   nw2 <- set_vertex_attribute(nw, "group", rep(1:2, length.out = N))
-  es <- netstatic(nw2, group.attr = "hh_id")
+  es <- netclique(nw2, group.attr = "hh_id")
   ec <- netest(nw2, formation = ~edges, target.stats = 100,
                coef.diss = dissolution_coefs(~offset(edges), 20),
                verbose = FALSE)
@@ -427,12 +399,13 @@ test_that("crosscheck.net rejects mismatched layers and parameters", {
                "multilayer parameter `inf.prob` has length 3")
 
   param <- param.net(inf.prob = 0.3, act.rate = 1)
-  es_small <- netstatic(network_initialize(10), edgelist = cbind(1, 2))
+  nw_small <- set_vertex_attribute(network_initialize(10), "hh_id", rep(1:5, 2))
+  es_small <- netclique(nw_small, group.attr = "hh_id")
   expect_error(netsim(list(es_small, est_com), param, init, control),
                "same number of nodes")
 
   expect_error(netsim(list(est_hh, "not a layer"), param, init, control),
-               "netest or netstatic")
+               "netest or netclique")
 })
 
 test_that("print.param.net shows multilayer parameters", {
@@ -475,7 +448,7 @@ test_that("join: arrivals join a group in proportion to its size, tergmLite", {
   expect_false(anyNA(hh[arrived]))
   expect_true(all(hh[arrived] %in% pop$group))
 
-  # the TERGM layer received the edges correction, the static layer did not
+  # the TERGM layer received the edges correction, the clique layer did not
   expect_equal(sim$nwparam[[2]]$coef.form[1],
                est_com$coef.form[1] + log(N) - log(run$num),
                tolerance = 1e-6)
@@ -487,7 +460,7 @@ test_that("join: arrivals join a group in proportion to its size, tergmLite", {
   expect_true(all(lt[, 3] >= 0 & lt[, 3] <= 25))
   expect_equal(run$net_attr[[1]]$time, 25)
 
-  # cumulative edgelist: the original static edges start at 0
+  # cumulative edgelist: the original clique edges start at 0
   cel <- sim$cumulative.edgelist[[1]]
   cel1 <- cel[cel$network == 1, ]
   expect_true(all(cel1$start >= 0))
@@ -517,7 +490,7 @@ test_that("join: arrivals join a group, networkDynamic", {
 test_that("new: each arrival starts a group of its own", {
   skip_on_cran()
   set.seed(23)
-  es <- netstatic(nw, group.attr = "hh_id", arrivals = "new")
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "new")
   for (tergmLite in c(TRUE, FALSE)) {
     control <- control.net(type = "SI", nsteps = 15, nsims = 1,
                            tergmLite = tergmLite, resimulate.network = TRUE,
@@ -542,7 +515,7 @@ test_that("new: character group ids get unique new values", {
   skip_on_cran()
   set.seed(24)
   nw_chr <- set_vertex_attribute(nw, "hh_id", paste0("hh", pop$group))
-  es <- netstatic(nw_chr, group.attr = "hh_id", arrivals = "new")
+  es <- netclique(nw_chr, group.attr = "hh_id", arrivals = "new")
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE,
                          save.run = TRUE)
@@ -558,7 +531,7 @@ test_that("new: character group ids get unique new values", {
 test_that("isolate: arrivals get no edges and an NA group", {
   skip_on_cran()
   set.seed(25)
-  es <- netstatic(nw, group.attr = "hh_id", arrivals = "isolate")
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "isolate")
   control <- control.net(type = "SI", nsteps = 15, nsims = 1, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE,
                          save.run = TRUE)
@@ -582,7 +555,7 @@ test_that("join with arrivals.FUN: the user function picks the group", {
   skip_on_cran()
   set.seed(26)
   # newborns go to a household that already has a child
-  es <- netstatic(nw, group.attr = "hh_id", arrivals = "join",
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     arrivals.FUN = function(dat, at, new_ids, network) {
       hh <- get_attr(dat, "hh_id")
       age <- get_attr(dat, "age")
@@ -605,7 +578,7 @@ test_that("join with arrivals.FUN: the user function picks the group", {
   expect_true(all(hh[arrived] %in% hh_with_child))
 
   # an NA from the function leaves the node isolated
-  es_na <- netstatic(nw, group.attr = "hh_id", arrivals = "join",
+  es_na <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     arrivals.FUN = function(dat, at, new_ids, network) {
       rep(NA, length(new_ids))
     })
@@ -616,7 +589,7 @@ test_that("join with arrivals.FUN: the user function picks the group", {
   expect_false(any(arrived %in% run$el[[1]]))
 
   # a function returning the wrong length is an error
-  es_bad <- netstatic(nw, group.attr = "hh_id", arrivals = "join",
+  es_bad <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     arrivals.FUN = function(dat, at, new_ids, network) 1)
   expect_error(netsim(list(es_bad, est_com), param_open, init, control),
                "returned 1 group ids")
@@ -625,7 +598,7 @@ test_that("join with arrivals.FUN: the user function picks the group", {
 test_that("two arrivals joining the same group in one step are connected", {
   skip_on_cran()
   # force many arrivals into a single group every step
-  es <- netstatic(nw, group.attr = "hh_id", arrivals = "join",
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     arrivals.FUN = function(dat, at, new_ids, network) {
       rep(1, length(new_ids))
     })
@@ -648,9 +621,9 @@ test_that("two arrivals joining the same group in one step are connected", {
   expect_clique_layer(el, hh)
 })
 
-test_that("the group attribute is copied from the static layer when absent", {
+test_that("the group attribute is copied from the clique layer when absent", {
   skip_on_cran()
-  # the TERGM layer's network lacks hh_id; netsim takes it from the static layer
+  # the TERGM layer's network lacks hh_id; netsim takes it from the clique layer
   nw_no_hh <- network_initialize(N)
   nw_no_hh <- set_vertex_attribute(nw_no_hh, "age", pop$age)
   ec <- netest(nw_no_hh, formation = ~edges, target.stats = 100,
@@ -666,7 +639,7 @@ test_that("the group attribute is copied from the static layer when absent", {
   expect_clique_layer(run$el[[2]], run$attr$hh_id)
 })
 
-test_that("a static layer survives a restart", {
+test_that("a clique layer survives a restart", {
   skip_on_cran()
   set.seed(29)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
@@ -677,7 +650,7 @@ test_that("a static layer survives a restart", {
   control$nsteps <- 20
   sim2 <- netsim(sim, param_open, init, control)
   expect_equal(nrow(sim2$epi$num), 20)
-  expect_s3_class(sim2$nwparam[[1]], "netstatic")
+  expect_s3_class(sim2$nwparam[[1]], "netclique")
   run <- sim2$run[[1]]
   expect_clique_layer(run$el[[1]], run$attr$hh_id)
   test_net(sim2)
@@ -685,10 +658,10 @@ test_that("a static layer survives a restart", {
 
 test_that("multi-layer transmissions are not attributed to the first layer only", {
   skip_on_cran()
-  # two identical static layers with equal transmission probability: a node
+  # two identical clique layers with equal transmission probability: a node
   # exposed on both is credited to either with equal chance, so the recorded
   # shares are close to even rather than all on layer 1
-  es1 <- netstatic(nw, group.attr = "hh_id")
+  es1 <- netclique(nw, group.attr = "hh_id")
   param <- param.net(inf.prob = multilayer(0.4, 0.4), act.rate = 1)
   control <- control.net(type = "SI", nsteps = 30, nsims = 5, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE,
@@ -701,7 +674,7 @@ test_that("multi-layer transmissions are not attributed to the first layer only"
   expect_lt(share, 0.65)
 })
 
-test_that("netsim objects with a static layer merge and truncate", {
+test_that("netsim objects with a clique layer merge and truncate", {
   skip_on_cran()
   param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
@@ -712,7 +685,7 @@ test_that("netsim objects with a static layer merge and truncate", {
   sim_b <- netsim(list(est_hh, est_com), param, init, control)
   sim <- merge(sim_a, sim_b)
   expect_equal(sim$control$nsims, 2)
-  expect_s3_class(sim$nwparam[[1]], "netstatic")
+  expect_s3_class(sim$nwparam[[1]], "netclique")
   expect_equal(ncol(sim$epi$num), 2)
   expect_length(sim$stats$transmat, 2)
   tsim <- truncate_sim(sim, at = 5)
