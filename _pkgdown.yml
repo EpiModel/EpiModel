@@ -86,6 +86,9 @@ reference:
       - get_vertex_attribute
       - set_vertex_attribute
       - netest
+      - netclique
+      - sample_groups
+      - assign_groups
       - netdx
       - get_degree_dist
       - dissolution_coefs

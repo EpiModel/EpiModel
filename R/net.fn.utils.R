@@ -724,7 +724,8 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
       if (is.null(rule)) {
         rule <- "current"
       }
-      if (rule == "current") {
+      # identical() rather than ==, so that a fixed value of NA is a valid rule
+      if (identical(rule, "current")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
@@ -737,7 +738,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = curr.tab[[i]])
         }
-      } else if (rule == "t1") {
+      } else if (identical(rule, "t1")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),

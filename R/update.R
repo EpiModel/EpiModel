@@ -221,7 +221,9 @@ depart_nodes <- function(dat, departures) {
 #' @details `nArrivals` new nodes are added to the network data stored on
 #' the `netsim_dat` object. If `tergmLite` is `FALSE`, these
 #' nodes are activated from the current timestep onward. Attributes for the new
-#' nodes must be set separately.
+#' nodes must be set separately. On each clique layer (see [netclique()]), the
+#' new nodes are then placed under the layer's `arrivals` rule, which may set
+#' the layer's grouping attribute for them and add their edges.
 #'
 #' Note that this function only supports arriving new nodes; returning to an
 #' active state nodes that were previously active in the network is not
@@ -236,6 +238,7 @@ depart_nodes <- function(dat, departures) {
 arrive_nodes <- function(dat, nArrivals) {
   if (nArrivals > 0) {
     if (!get_control(dat, "tergmLite")) {
+      n_old <- network.size(get_network(dat, network = 1L))
       for (net_index in seq_len(dat$num.nw)) {
         net <- get_network(dat, network = net_index)
         net <- add.vertices.active(
@@ -247,11 +250,20 @@ arrive_nodes <- function(dat, nArrivals) {
         dat <- set_network(dat, nw = net, network = net_index)
       }
     } else {
+      n_old <- dat$run$net_attr[[1L]][["n"]]
       for (net_index in seq_len(dat$num.nw)) {
         el <- add_vertices(dat$run$el[[net_index]], nv = nArrivals)
         dat$run$el[[net_index]] <- el
         dat$run$net_attr[[net_index]][["n"]] <-
           dat$run$net_attr[[net_index]][["n"]] + nArrivals
+      }
+    }
+
+    ## place the new nodes on each clique layer under its arrival rule
+    new_ids <- n_old + seq_len(nArrivals)
+    for (net_index in seq_len(dat$num.nw)) {
+      if (is_clique_layer(dat$nwparam[[net_index]])) {
+        dat <- clique_layer_arrivals(dat, net_index, new_ids)
       }
     }
   }

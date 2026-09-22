@@ -562,6 +562,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
     ## duration/dissolution plot
     if (x$control$save.diss.stats && x$control$save.network &&
           !x$control$tergmLite && !is.null(x$diss.stats) &&
+          !is.null(x$nwparam[[network]]$coef.diss) &&
           x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
 
       if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
@@ -586,7 +587,8 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
         "Cannot produce duration/dissolution plot from `netsim` object ",
         "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
         "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
-        "merging), and dissolution model is edges-only"
+        "merging), the network is not a `netclique` layer, and dissolution ",
+        "model is edges-only"
       )
     }
   }

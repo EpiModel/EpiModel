@@ -29,7 +29,9 @@ a susceptible and an infected person. In two-group models, this is the
 probability of infection to the group 1 nodes. This may also be a
 vector of probabilities, with each element corresponding to the
 probability in that time step of infection (see Time-Varying
-Parameters below).}
+Parameters below). In multi-layer models, this may be a
+\code{\link[=multilayer]{multilayer()}} object with one entry (a probability or a vector of
+probabilities) per network layer (see Multi-Layer Parameters below).}
 
 \item{inter.eff}{Efficacy of an intervention which affects the per-act
 probability of infection. Efficacy is defined as 1 - the relative
@@ -43,7 +45,9 @@ the number of time steps specified in the model. This will default to
 \item{act.rate}{Average number of transmissible acts \emph{per partnership}
 per unit time (see \code{act.rate} Parameter below). This may also be
 a vector of rates, with each element corresponding to the rate in
-that time step of infection (see Time-Varying Parameters below).}
+that time step of infection (see Time-Varying Parameters below), or
+a \code{\link[=multilayer]{multilayer()}} object with one entry per network layer (see
+Multi-Layer Parameters below).}
 
 \item{rec.rate}{Average rate of recovery with immunity (in \code{SIR} models)
 or re-susceptibility (in \code{SIS} models). The recovery rate is the
@@ -147,6 +151,20 @@ population by the fourth time step, the third element in the vector will
 carry forward until one of those events occurs or the simulation ends. For
 further examples, see the
 \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics} tutorials.
+}
+
+\section{Multi-Layer Parameters}{
+
+In models with more than one network layer (a list of \code{\link[=netest]{netest()}} and
+\code{\link[=netclique]{netclique()}} objects passed to \code{\link[=netsim]{netsim()}}), the \code{inf.prob}, \code{inf.prob.g2},
+and \code{act.rate} arguments may be given per layer as \code{\link[=multilayer]{multilayer()}} objects
+with one entry per layer, in the order of the layer list:
+\code{inf.prob = multilayer(0.45, 0.10)} sets a per-act transmission probability
+of 0.45 on the first layer and 0.10 on the second. Each entry may itself be
+a time-varying vector. The built-in infection modules look up the entry for
+the layer each discordant edge belongs to; a parameter that is not a
+\code{multilayer} object applies to every layer. The transmission matrix
+records the layer of each transmission in its \code{network} column.
 }
 
 \section{Random Parameters}{
