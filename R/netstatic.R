@@ -1,12 +1,15 @@
 
 #' @title Static Network Layer for Network Epidemic Models
 #'
-#' @description Builds a fixed contact layer, such as households, classrooms,
-#'              hospital wards, cabins, or an observed census edgelist, that
-#'              [netsim()] accepts anywhere in its layer list alongside the
-#'              dynamic layers estimated with [netest()]. The edges of a static
-#'              layer never form or dissolve: there is no formation model, no
-#'              dissolution model, and no resimulation.
+#' @description Builds a contact layer with fixed edges, for structures that
+#'              are groups by definition (households, classrooms, hospital
+#'              wards, cabins) or for an observed contact network whose exact
+#'              edges are to be kept, that [netsim()] accepts anywhere in its
+#'              layer list alongside the layers estimated with [netest()]. The
+#'              edges of a static layer never form or dissolve: there is no
+#'              formation model, no dissolution model, and no resimulation. It
+#'              is an addition to `netest` for cases where an ERGM is not
+#'              needed, not a substitute for one (see Details).
 #'
 #' @param nw An object of class `network` holding the node set and any vertex
 #'        attributes, as passed to [netest()] for the dynamic layers of the
@@ -16,8 +19,11 @@
 #'        value becomes an edge, so each group is a clique. Nodes with a
 #'        missing (`NA`) value are isolates on this layer.
 #' @param edgelist A two-column matrix or `data.frame` of node indices giving
-#'        the edges of the layer directly. Use this for a fixed contact
-#'        structure that is not a set of cliques, such as an observed network.
+#'        the edges of the layer directly. Use this to carry a given set of
+#'        edges, such as an observed contact network, into the simulation
+#'        unchanged. It does not model how those edges arise; a network whose
+#'        ties depend on nodal and dyadic predictors is estimated with
+#'        [netest()].
 #' @param arrivals Rule for wiring nodes that arrive during a simulation with
 #'        vital dynamics into the layer: `"isolate"` (the default; the new node
 #'        has no edges on this layer and its group attribute is `NA`), `"new"`
@@ -29,15 +35,28 @@
 #'
 #' @details
 #' A `netest` object carries a formation model, a dissolution model, and a
-#' starting network; `netsim` resimulates its layer each time step. Many
-#' contact structures are better described as fixed: every pair of
+#' starting network; `netsim` resimulates its layer each time step. That is
+#' the right representation whenever tie existence is something to model: a
+#' network with a degree distribution, mixing by attribute, and clustering to
+#' reproduce is an ERGM's job whether its ties turn over quickly, slowly, or
+#' not at all, and a long partnership duration in [dissolution_coefs()] keeps
+#' a `netest` layer close to fixed.
+#'
+#' Some contact structures are groups by construction instead: every pair of
 #' co-residents is a household contact for the whole simulation, every pair
-#' of pupils in a classroom is a classroom contact, and so on. Before this
-#' function, such a layer had to be carried into `netsim` as a parameter and
-#' walked by a custom infection module. `netstatic` instead builds a layer
-#' object that fills a slot in the layer list, is skipped by the network
-#' resimulation and the edges correction, and is read by the built-in
-#' infection modules through [discord_edgelist()] like any other layer.
+#' of pupils in a classroom is a classroom contact, every pair of cabin-mates
+#' shares a cabin. There is no tie-formation process to estimate, and an ERGM
+#' can reproduce such cliques only through a `nodematch` term on the group
+#' attribute targeted at its maximum, the number of within-group pairs. A
+#' target at the maximum of a statistic has no finite coefficient, so the fit
+#' runs to its iteration limit, the coefficient it stops at is arbitrary, and
+#' a few groups are typically left incomplete. Before this function, the
+#' alternative was to carry the clique edgelist into `netsim` as a parameter
+#' and walk it in a custom infection module. `netstatic` is for these cases.
+#' It builds a layer object that fills a slot in the layer list, is skipped
+#' by the network resimulation and the edges correction, and is read by the
+#' built-in infection modules through [discord_edgelist()] like any other
+#' layer.
 #'
 #' The layer is specified in one of three ways. With `group.attr`, all pairs of
 #' nodes sharing a value of that attribute are connected (the household case).

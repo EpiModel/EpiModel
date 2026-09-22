@@ -111,16 +111,25 @@
 #' chapter of the Network Modeling for Epidemics course materials for a worked
 #' example building from independent to cross-dependent layers.
 #'
-#' A layer whose edges never change, such as households, classrooms, wards,
-#' or an observed contact network, is built with [`netstatic`] rather than
-#' estimated with `netest`, and goes in the same list. A static layer is
-#' skipped by the network resimulation and the edges correction, its edges are
-#' removed with departing nodes, and arriving nodes are placed on it under the
-#' rule chosen in `netstatic`. The built-in infection modules read every layer
-#' alike; to give each layer its own transmission probability or act rate,
-#' pass `inf.prob` and `act.rate` as [`multilayer`] objects in [`param.net`].
-#' The transmission matrix records the layer of every transmission in its
-#' `network` column.
+#' A layer whose edges are fixed for the whole simulation may instead be built
+#' with [`netstatic`] and placed in the same list. This is an addition to
+#' `netest`, not a replacement for it. An ERGM remains the natural model for a
+#' static network whose ties depend on nodal and dyadic predictors (degree,
+#' mixing by attribute, clustering), where the model is the compact
+#' description of that structure. `netstatic` is for structures that are
+#' groups by definition, such as households, classrooms, wards, or cabins,
+#' where every pair of members is a contact and there is no tie-formation
+#' process to estimate. An ERGM can reproduce such cliques only through a
+#' `nodematch` term targeted at its maximum, where no finite coefficient
+#' exists, so the fit is unstable and rarely completes every group.
+#' `netstatic` also carries an observed contact network whose exact edges are
+#' to be kept. A static layer is skipped by the network resimulation and the
+#' edges correction, its edges are removed with departing nodes, and arriving
+#' nodes are placed on it under the rule chosen in `netstatic`. The built-in
+#' infection modules read every layer alike; to give each layer its own
+#' transmission probability or act rate, pass `inf.prob` and `act.rate` as
+#' [`multilayer`] objects in [`param.net`]. The transmission matrix records
+#' the layer of every transmission in its `network` column.
 #'
 #' @section Restarting and Checkpointing:
 #' Simulations can be checkpointed and restarted if interrupted. Set
