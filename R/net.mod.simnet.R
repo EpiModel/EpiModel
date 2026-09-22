@@ -227,13 +227,28 @@ simulate_model_free_dat <- function(dat, at, network, nsteps) {
 }
 
 # Network statistics of a model-free layer at time `at`, as a named numeric
-# vector with duplicated statistic names removed, as in summary_nets().
+# vector with duplicated statistic names removed, as in summary_nets(). A
+# networkDynamic layer is summarized on the dyads active at `at`, the same
+# edges get_edgelist() hands to the infection module: the tergm summary path
+# for networkDynamic objects derives edge toggles from the spells, which fails
+# for an observed census whose dyads have several spells or censored onsets,
+# and network.collapse() drops the edges of vertices whose own activity spells
+# do not cover `at`, which the simulation does not do. Under tergmLite the
+# networkLite basis carries the time and lasttoggle attributes, so the
+# dynamic summary applies as usual.
 model_free_nwstats <- function(dat, network, at) {
-  nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
-                     basis = get_network(dat, network = network),
-                     at = at,
-                     dynamic = TRUE,
-                     term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
+  formula <- get_network_control(dat, network, "nwstats.formula")
+  term.options <- get_network_control(dat, network, "set.control.tergm")$term.options
+  nw <- get_network(dat, network = network)
+  if (networkDynamic::is.networkDynamic(nw)) {
+    attr_list <- raw_get_attr_list(dat)
+    el <- census_edgelist_at(nw, at = at, n = length(attr_list$active))
+    nw <- networkLite(el, attr_list)
+    nwstats <- summary(formula, basis = nw, term.options = term.options)
+  } else {
+    nwstats <- summary(formula, basis = nw, at = at, dynamic = TRUE,
+                       term.options = term.options)
+  }
   if (is.matrix(nwstats)) {
     keep <- !duplicated(colnames(nwstats))
     nms <- colnames(nwstats)[keep]

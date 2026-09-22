@@ -11,9 +11,10 @@ pairs <- t(combn(N, 2))
 pairs <- pairs[sample.int(nrow(pairs), 90), ]
 nw_static <- add.edges(nw_static, tail = pairs[, 1], head = pairs[, 2])
 
-# A dynamic census: edge spells over an observation window of 0 to 30. Each
-# observed dyad is active for one interval; some start before the window
-# (censored onsets) and some are still active at its end.
+# A dynamic census: edge spells over an observation window of 0 to 30. Some
+# dyads start before the window (censored onsets), some are still active at
+# its end, and a third of the dyads have a second, later spell, as recurring
+# contacts in proximity-logger data do.
 make_dynamic_census <- function(n = 60, n.edges = 150, end = 30) {
   pairs <- t(combn(n, 2))
   pairs <- pairs[sample.int(nrow(pairs), n.edges), ]
@@ -21,12 +22,19 @@ make_dynamic_census <- function(n = 60, n.edges = 150, end = 30) {
   terminus <- pmax(ifelse(is.finite(onset), onset, 0), 0) +
     sample(2:12, n.edges, replace = TRUE)
   terminus[terminus >= end] <- Inf
+  spells <- data.frame(onset = onset, terminus = terminus,
+                       tail = pairs[, 1], head = pairs[, 2])
+  again <- which(is.finite(terminus))[seq_len(n.edges %/% 3)]
+  second <- spells[again, ]
+  second$onset <- second$terminus + 2
+  second$terminus <- pmin(second$onset + 3, Inf)
+  second <- second[second$onset < end, ]
+  spells <- rbind(spells, second)
   base <- network::network.initialize(n, directed = FALSE)
   base <- set_vertex_attribute(base, "sex", rep(c("F", "M"), n / 2))
   nd <- networkDynamic::networkDynamic(
     base.net = base,
-    edge.spells = data.frame(onset = onset, terminus = terminus,
-                             tail = pairs[, 1], head = pairs[, 2])
+    edge.spells = spells
   )
   nd %n% "net.obs.period" <- list(observations = list(c(0, end)),
                                   mode = "discrete", time.increment = 1,
@@ -67,6 +75,9 @@ test_that("netcensus wraps a dynamic network and finds its window", {
   expect_true(obs$dynamic)
   expect_equal(obs$window, c(0, 30))
   expect_equal(obs$summary$edges.ever, network.edgecount(nw_dyn))
+  # the fixture has dyads with more than one spell
+  sp <- networkDynamic::get.edge.activity(nw_dyn, as.spellList = TRUE)
+  expect_gt(nrow(sp), network.edgecount(nw_dyn))
   ea <- obs$summary$edges.active
   expect_equal(names(ea), as.character(0:30))
   expect_equal(unname(ea["10"]), nrow(active_at(nw_dyn, 10)))
@@ -281,14 +292,38 @@ test_that("duration tracking and runs past the window are caught", {
   expect_warning(sim <- netsim(obs, param, init, control),
                  "observation window")
   ns <- get_nwstats(sim, network = 1)
-  # past the window the edge set is frozen
-  expect_true(all(ns$edges[31:40] == ns$edges[31]))
+  # once the last finite spell has ended, the edge set is frozen
+  sp <- networkDynamic::get.edge.activity(nw_dyn, as.spellList = TRUE)
+  last <- ceiling(max(sp$terminus[is.finite(sp$terminus)]))
+  expect_lt(last, 40)
+  expect_true(all(ns$edges[last:40] == ns$edges[last]))
+  expect_equal(ns$edges[40], nrow(active_at(nw_dyn, 40)))
 
   # a static census has no window and no warning
   control <- control.net(type = "SI", nsteps = 40, nsims = 1,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          verbose = FALSE)
   expect_silent(sim <- netsim(netcensus(nw_static), param, init, control))
+})
+
+test_that("a census with vertex spells and censored onsets runs without tergmLite", {
+  skip_on_cran()
+  # vertex activity spells that start after 0 and end before the last edge,
+  # as in networkDynamicData::concurrencyComparisonNets; netsim ignores them
+  nd <- nw_dyn
+  nd <- networkDynamic::activate.vertices(nd, onset = 2, terminus = 28)
+  obs <- netcensus(nd)
+  param <- param.net(inf.prob = 0.3)
+  for (resim in c(FALSE, TRUE)) {
+    control <- control.net(type = "SI", nsteps = 25, nsims = 1,
+                           tergmLite = FALSE, resimulate.network = resim,
+                           verbose = FALSE, save.nwstats = TRUE)
+    sim <- netsim(obs, param, init, control)
+    ns <- get_nwstats(sim, network = 1)
+    expect_equal(ns$edges,
+                 vapply(1:25, function(t) nrow(active_at(nd, t)), numeric(1)))
+    test_net(sim)
+  }
 })
 
 test_that("a census layer survives a restart", {
