@@ -54,8 +54,9 @@
 #' layer.
 #'
 #' A network whose edges are given rather than generated, such as a fully
-#' observed contact network, is a different case again and is not what this
-#' function is for.
+#' observed contact network, is a different case again: it may carry its own
+#' edge dynamics and it skips estimation for a different reason. That case is
+#' handled by [netcensus()].
 #'
 #' The group attribute must be an integer, numeric, or character vector; a
 #' factor is refused because arrivals under `"new"` need to create values the
@@ -297,11 +298,12 @@ print.netclique <- function(x, by = NULL, digits = 3, ...) {
   invisible()
 }
 
-# A layer with no network model behind it, which the network simulation and
-# the edges correction skip. The predicate is applied both to the layer object
-# passed to netsim() and to its nwparam record on the dat object.
+# A layer with no network model behind it (a clique layer or an observed
+# census), which the network simulation and the edges correction skip. The
+# predicate is applied both to the layer object passed to netsim() and to its
+# nwparam record on the dat object.
 is_model_free_layer <- function(x) {
-  inherits(x, "netclique")
+  inherits(x, c("netclique", "netcensus"))
 }
 
 # A clique layer specifically: the only model-free layer with a grouping

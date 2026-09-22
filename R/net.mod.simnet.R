@@ -49,6 +49,8 @@ sim_nets_t1 <- function(dat) {
         nw %n% "time" <- 0L
         nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 0L)
       }
+    } else if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      ## an observed dynamic network carries its own spells: leave them alone
     } else {
       ## set up vertex and edge activity in networkDynamic case
       nw <- networkDynamic::as.networkDynamic(nw)
@@ -186,38 +188,61 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   return(dat)
 }
 
-# The edges of a clique layer never change, so there is nothing to simulate.
-# This keeps the two pieces of bookkeeping that simulate_dat() would otherwise
-# do for the layer: the tergmLite `time` network attribute when edge durations
-# are tracked, and the network statistics when they are recorded here rather
+# A model-free layer has no model to simulate from. A clique layer's edges
+# never change; a dynamic census layer's edges at time `at` are read from the
+# observed object, which under tergmLite means replacing the layer's edgelist
+# here (without tergmLite the networkDynamic object is read in place). The
+# rest is the bookkeeping that simulate_dat() would otherwise do for the
+# layer: the tergmLite `time` network attribute when edge durations are
+# tracked, and the network statistics when they are recorded here rather
 # than in summary_nets() (that is, when resimulate.network == FALSE).
 simulate_model_free_dat <- function(dat, at, network, nsteps) {
-  if (get_control(dat, "tergmLite") == TRUE &&
-        get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-    dat$run$net_attr[[network]][["time"]] <- at + nsteps - 1L
+  nwparam <- get_nwparam(dat, network = network)
+  if (get_control(dat, "tergmLite") == TRUE) {
+    if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      dat$run$el[[network]] <- census_edgelist_at(
+        nwparam$census.nw, at = at + nsteps - 1L,
+        n = dat$run$net_attr[[network]][["n"]]
+      )
+    }
+    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+      dat$run$net_attr[[network]][["time"]] <- at + nsteps - 1L
+    }
   }
 
   if (get_control(dat, "save.nwstats") == TRUE &&
         get_control(dat, "resimulate.network") == FALSE) {
-    nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
-                       basis = get_network(dat, network = network),
-                       at = at,
-                       dynamic = TRUE,
-                       term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
-    if (is.matrix(nwstats)) {
-      keep <- !duplicated(colnames(nwstats))
-      nms <- colnames(nwstats)[keep]
-      nwstats <- as.vector(nwstats[1, keep])
-      names(nwstats) <- nms
+    times <- at + seq_len(nsteps) - 1L
+    if (is_census_layer(nwparam) && isTRUE(nwparam$dynamic)) {
+      ## the observed edges change over time, so summarize every step
+      rows <- lapply(times, function(t) model_free_nwstats(dat, network, t))
     } else {
-      nwstats <- nwstats[!duplicated(names(nwstats))]
+      rows <- rep(list(model_free_nwstats(dat, network, at)), nsteps)
     }
-    stats <- matrix(rep(nwstats, each = nsteps), nrow = nsteps,
-                    dimnames = list(NULL, names(nwstats)))
+    stats <- do.call(rbind, rows)
     dat$stats$nwstats[[network]] <- list(as_tibble(stats))
   }
 
   return(dat)
+}
+
+# Network statistics of a model-free layer at time `at`, as a named numeric
+# vector with duplicated statistic names removed, as in summary_nets().
+model_free_nwstats <- function(dat, network, at) {
+  nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
+                     basis = get_network(dat, network = network),
+                     at = at,
+                     dynamic = TRUE,
+                     term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
+  if (is.matrix(nwstats)) {
+    keep <- !duplicated(colnames(nwstats))
+    nms <- colnames(nwstats)[keep]
+    nwstats <- as.vector(nwstats[1, keep])
+    names(nwstats) <- nms
+  } else {
+    nwstats <- nwstats[!duplicated(names(nwstats))]
+  }
+  nwstats
 }
 
 #' @title Resimulate Dynamic Network at Time 2+
