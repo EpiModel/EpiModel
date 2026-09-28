@@ -473,6 +473,198 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
   return(dat)
 }
 
+# Remove every clique-layer edge that has an endpoint in ids, in either
+# storage mode. Under tergmLite the edgelist keeps its attributes and sorted
+# order, and the duration record, when tracked, drops the same dyads.
+remove_clique_edges <- function(dat, network, ids) {
+  if (length(ids) == 0) {
+    return(dat)
+  }
+  at <- get_current_timestep(dat)
+
+  if (get_control(dat, "tergmLite") == TRUE) {
+    el <- dat$run$el[[network]]
+    drop <- el[, 1] %in% ids | el[, 2] %in% ids
+    if (any(drop)) {
+      a <- attributes(el)
+      out <- matrix(el, ncol = 2)[!drop, , drop = FALSE]
+      a$dim <- dim(out)
+      a$dimnames <- NULL
+      attributes(out) <- a
+      dat$run$el[[network]] <- out
+    }
+    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+      lt <- dat$run$net_attr[[network]][["lasttoggle"]]
+      keep <- !(lt[, 1] %in% ids | lt[, 2] %in% ids)
+      dat$run$net_attr[[network]][["lasttoggle"]] <- lt[keep, , drop = FALSE]
+    }
+  } else {
+    nw <- get_network(dat, network = network)
+    eids <- unique(unlist(lapply(ids, function(i) {
+      networkDynamic::get.edgeIDs.active(nw, v = i, at = at)
+    })))
+    if (length(eids) > 0) {
+      nw <- networkDynamic::deactivate.edges(nw, onset = at, terminus = Inf,
+                                             e = eids)
+      dat <- set_network(dat, nw = nw, network = network)
+    }
+  }
+  return(dat)
+}
+
+#' @title Move Nodes to Another Group of a Clique Layer
+#'
+#' @description Changes the group of existing nodes during a simulation and
+#'              rewires a [netclique()] layer to match: each moved node loses
+#'              its edges to the members of its old group and is connected to
+#'              every active member of its new group. Custom modules use it to
+#'              represent people changing groups, such as a young adult leaving
+#'              home, a couple forming a household, or a child moving in with
+#'              relatives.
+#'
+#' @param dat Main `netsim_dat` object passed through [netsim()] calls.
+#' @param ids Positional ids of the nodes to move. Every node must be active.
+#' @param group New group ids: one per element of `ids`, or a single value for
+#'        all of them. An id in use joins that group; an id not in use starts
+#'        a new group, which nodes given the same new id in one call form
+#'        together; `NA` takes the node out of its group and leaves it as an
+#'        isolate on the layer.
+#' @param network Index of the clique layer in the list of layers passed to
+#'        [netsim()]. It may be omitted when the model has exactly one clique
+#'        layer.
+#'
+#' @details
+#' The clique edges are built from the grouping attribute once, when the
+#' simulation starts, and are afterwards changed only by arrivals, departures,
+#' and this function. Setting the grouping attribute with [set_attr()] alone
+#' therefore does not rewire the layer: the old edges remain and the layer no
+#' longer matches the groups. `move_to_group()` sets the attribute and the
+#' edges together, in either network storage mode (`tergmLite = TRUE` or
+#' `FALSE`), so that the layer stays exactly the union of the cliques of the
+#' current groups.
+#'
+#' A node moved to its own current group keeps its edges. When the moves leave
+#' a group without members, the group ceases to exist, as when its last member
+#' departs. For numeric group ids, one more than the largest id in use,
+#' `max(get_attr(dat, group.attr), na.rm = TRUE) + 1`, is an unused id; ids of
+#' groups whose members have all departed are also unused, so reusing one
+#' starts a new group.
+#'
+#' Under `tergmLite = TRUE` with `tergmLite.track.duration = TRUE`, the moved
+#' nodes' new edges are recorded as formed at the current time step. In the
+#' cumulative edgelist (see [control.net()]), a move ends the node's old
+#' edges and starts new ones.
+#'
+#' @return The updated `netsim_dat` object.
+#'
+#' @seealso [netclique()] for the clique layer and its rules for placing
+#'   arriving nodes.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # A module in which people aged 18 to 29 leave home with a monthly
+#' # probability of 0.01, each starting a household of their own
+#' leave_home <- function(dat, at) {
+#'   active <- get_attr(dat, "active")
+#'   age <- get_attr(dat, "age")
+#'   hh_id <- get_attr(dat, "hh_id")
+#'   elig <- which(active == 1 & age >= 18 & age < 30)
+#'   movers <- elig[runif(length(elig)) < 0.01]
+#'   if (length(movers) > 0) {
+#'     new_ids <- max(hh_id, na.rm = TRUE) + seq_along(movers)
+#'     dat <- move_to_group(dat, ids = movers, group = new_ids)
+#'   }
+#'   return(dat)
+#' }
+#' }
+#'
+move_to_group <- function(dat, ids, group, network = NULL) {
+
+  clique <- which(vapply(dat$nwparam, is_clique_layer, logical(1)))
+  if (is.null(network)) {
+    if (length(clique) != 1) {
+      stop("The model has ", length(clique), " clique layers; give the ",
+           "clique layer to change in `network`.")
+    }
+    network <- clique
+  } else if (length(network) != 1 || !network %in% clique) {
+    stop("Layer ", paste(network, collapse = ", "), " is not a clique layer.")
+  }
+  if (length(ids) == 0) {
+    return(dat)
+  }
+  if (anyNA(ids) || anyDuplicated(ids) > 0) {
+    stop("`ids` must not contain missing or duplicated values.")
+  }
+  if (length(group) == 1) {
+    group <- rep(group, length(ids))
+  }
+  if (length(group) != length(ids)) {
+    stop("`group` must have one value per element of `ids`, or a single ",
+         "value.")
+  }
+
+  active <- get_attr(dat, "active")
+  if (any(ids < 1 | ids > length(active)) || any(active[ids] != 1)) {
+    stop("Only active nodes can be moved to another group.")
+  }
+
+  group.attr <- get_nwparam(dat, network = network)$group.attr
+  grp <- get_attr(dat, group.attr)
+  if (!all(is.na(group)) && is.numeric(grp) != is.numeric(group)) {
+    stop("`group` must be of the same type as the `", group.attr,
+         "` attribute (numeric or character).")
+  }
+  stay <- !is.na(group) & !is.na(grp[ids]) & grp[ids] == group
+  ids <- ids[!stay]
+  group <- group[!stay]
+  if (length(ids) == 0) {
+    return(dat)
+  }
+  grp[ids] <- group
+  dat <- set_attr(dat, group.attr, grp)
+
+  ## edges from each moved node to every active member of its new group,
+  ## including other nodes moved into the same group in this call
+  in_group <- which(active == 1 & !is.na(grp))
+  members <- split(in_group, grp[in_group])
+  joining <- ids[!is.na(group)]
+  el_new <- do.call(rbind, lapply(joining, function(i) {
+    m <- members[[as.character(grp[i])]]
+    m <- m[m != i]
+    if (length(m) == 0) {
+      return(NULL)
+    }
+    cbind(pmin(i, m), pmax(i, m))
+  }))
+
+  dat <- remove_clique_edges(dat, network, ids)
+  if (!is.null(el_new)) {
+    el_new <- unique(el_new)
+    if (get_control(dat, "tergmLite") == TRUE) {
+      dat <- add_clique_edges(dat, network, el_new)
+    } else {
+      ## reactivate a dyad's earlier edge rather than add a second one
+      nw <- get_network(dat, network = network)
+      eid <- vapply(seq_len(nrow(el_new)), function(r) {
+        e <- network::get.edgeIDs(nw, v = el_new[r, 1], alter = el_new[r, 2])
+        if (length(e) == 0) NA_integer_ else as.integer(e[1])
+      }, integer(1))
+      if (any(!is.na(eid))) {
+        at <- get_current_timestep(dat)
+        nw <- networkDynamic::activate.edges(nw, onset = at, terminus = Inf,
+                                             e = eid[!is.na(eid)])
+        dat <- set_network(dat, nw = nw, network = network)
+      }
+      dat <- add_clique_edges(dat, network, el_new[is.na(eid), , drop = FALSE])
+    }
+  }
+
+  return(dat)
+}
+
 
 #' @title Sample a Population of Groups from a Table of Group Types
 #'

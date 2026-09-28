@@ -90,6 +90,7 @@ reference:
       - netcensus
       - sample_groups
       - assign_groups
+      - move_to_group
       - netdx
       - get_degree_dist
       - dissolution_coefs
