@@ -11,8 +11,8 @@ init_nets(dat, x)
 \code{\link[=create_dat_object]{create_dat_object()}}, including the \code{control}
 argument.}
 
-\item{x}{Either a fitted network model object of class \code{netest}, or a
-list of such objects.}
+\item{x}{Either a fitted network model object of class \code{netest}, a clique
+layer of class \code{\link{netclique}}, or a list of such objects.}
 }
 \value{
 A \code{netsim_dat} class main data object with network data and

@@ -364,6 +364,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
           x$control$save.network &&
           ! x$control$tergmLite &&
           ! is.null(x$diss.stats) &&
+          ! is.null(x$nwparam[[network]]$coef.diss) &&
           x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
       if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
@@ -394,6 +395,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       cat("\n- `control$save.diss.stats == FALSE`")
       cat("\n- dissolution formula is not `~ offset(edges)`")
       cat("\n- `keep.diss.stats == FALSE` (if merging)")
+      cat("\n- the network is a `netclique` layer")
       cat("\n")
     }
   }
@@ -431,6 +433,12 @@ format_param <- function(param_name, param_value) {
     cat(param_name, "=", param_value[1:10], "...", fill = 80)
   } else if (is.data.frame(param_value)) {
     cat(param_name, "= <data.frame>\n")
+  } else if (inherits(param_value, "multilayer")) {
+    vals <- vapply(param_value,
+                   function(v) paste(deparse(v), collapse = ""),
+                   character(1))
+    cat(paste0(param_name, " = multilayer(", paste(vals, collapse = ", "),
+               ")\n"))
   } else if (is.list(param_value)) {
     cat(param_name, "= <list>\n")
   } else if (inherits(param_value, "lm")) {
