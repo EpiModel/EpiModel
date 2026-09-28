@@ -1172,13 +1172,14 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (inherits(x, c("netest", "netclique"))) {
+      if (inherits(x, c("netest", "netclique", "netcensus"))) {
         x <- list(x)
       }
       if (!inherits(x, "list") || length(x) == 0 ||
-            !all(vapply(x, inherits, logical(1), c("netest", "netclique")))) {
-        stop("x must be either an object of class netest or netclique, or a ",
-             "list of objects of class netest or netclique, when start == 1")
+            !all(vapply(x, inherits, logical(1),
+                        c("netest", "netclique", "netcensus")))) {
+        stop("x must be either an object of class netest, netclique, or ",
+             "netcensus, or a list of such objects, when start == 1")
       }
       if (!inherits(param, "param.net")) {
         stop("param must be an object of class param.net")
@@ -1345,13 +1346,13 @@ crosscheck.net <- function(x, param, init, control) {
          specified.")
   }
 
-  if (inherits(x, c("netest", "netclique"))) {
+  if (inherits(x, c("netest", "netclique", "netcensus"))) {
     nwparam <- list(x)
   } else if (inherits(x, "netsim")) {
     nwparam <- x$nwparam
   } else if (inherits(x, "networkDynamic")) {
     nwparam <- list(x) # relevant to EpiModel gallery example
-  } else { # must be list of netest and netclique
+  } else { # must be list of netest, netclique, and netcensus
     nwparam <- x
   }
 
@@ -1359,11 +1360,42 @@ crosscheck.net <- function(x, param, init, control) {
 
   # every layer must be built on the same node set
   if (control[["start"]] == 1 && is.list(nwparam) &&
-        all(vapply(nwparam, inherits, logical(1), c("netest", "netclique")))) {
+        all(vapply(nwparam, inherits, logical(1),
+                   c("netest", "netclique", "netcensus")))) {
     sizes <- vapply(nwparam, function(y) network.size(y$newnetwork), numeric(1))
     if (length(unique(sizes)) > 1) {
       stop("All network layers must have the same number of nodes; the layer ",
            "sizes are ", paste(sizes, collapse = ", "), ".")
+    }
+  }
+
+  # an observed census has a fixed node set and carries its own edge spells
+  for (network in seq_len(num.nw)) {
+    if (!is_census_layer(nwparam[[network]])) {
+      next
+    }
+    if (isTRUE(param[["vital"]])) {
+      stop("Network ", network, " is a `netcensus` layer with a fixed node ",
+           "set; vital dynamics (a.rate, ds.rate, di.rate, dr.rate) are not ",
+           "supported with it.")
+    }
+    if (isTRUE(nwparam[[network]]$dynamic)) {
+      tld <- control[["tergmLite.track.duration"]]
+      tld <- if (is(tld, "multilayer")) tld[[network]] else tld
+      if (isTRUE(control[["tergmLite"]]) && isTRUE(tld)) {
+        stop("`tergmLite.track.duration` is not supported for network ",
+             network, ", a dynamic `netcensus` layer; its observed spells ",
+             "carry the edge durations.")
+      }
+      window <- nwparam[[network]]$window
+      if (!is.null(window) && is.finite(window[2]) &&
+            control[["nsteps"]] >= window[2]) {
+        warning("`nsteps` (", control[["nsteps"]], ") reaches the end of the ",
+                "observation window (", window[2], ") of network ", network,
+                ", a dynamic `netcensus` layer. Edges active at the last ",
+                "observed time stay active indefinitely, so steps past the ",
+                "window run on a frozen edge set.", call. = FALSE)
+      }
     }
   }
 

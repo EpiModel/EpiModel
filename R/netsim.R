@@ -7,10 +7,11 @@
 #'              and model diagnostics with [`netdx`].
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest`, a clique layer of class [`netclique`], or a list
-#'        of such objects. If `control$start > 1`, an object of class
-#'        `netsim`. When multiple networks are used (multi-layer models), pass
-#'        a list with one `netest` or `netclique` object per network layer,
+#'        of class `netest`, a clique layer of class [`netclique`], an
+#'        observed network layer of class [`netcensus`], or a list of such
+#'        objects. If `control$start > 1`, an object of class `netsim`. When
+#'        multiple networks are used (multi-layer models), pass a list with
+#'        one `netest`, `netclique`, or `netcensus` object per network layer,
 #'        in any order; the node sets (including network size and nodal
 #'        attributes) are assumed to be the same for all networks.
 #' @param param Model parameters, as an object of class [`param.net`].
@@ -124,11 +125,19 @@
 #' fit is unstable and rarely completes every group. A clique layer is skipped
 #' by the network resimulation and the edges correction, its edges are removed
 #' with departing nodes, and arriving nodes are placed on it under the rule
-#' chosen in `netclique`. The built-in infection modules read every layer
-#' alike; to give each layer its own transmission probability or act rate,
-#' pass `inf.prob` and `act.rate` as [`multilayer`] objects in [`param.net`].
-#' The transmission matrix records the layer of every transmission in its
-#' `network` column.
+#' chosen in `netclique`.
+#'
+#' A fully observed network, a static `network` or a `networkDynamic` with
+#' edge spells from sensors, proximity loggers, or contact tracing, may be
+#' placed in the list with [`netcensus`]. Here estimation is skipped because
+#' the whole network is in hand rather than a sample to generalize from; the
+#' simulation reads the edges active at each time step from the observed
+#' object, and the node set is fixed, so vital dynamics are refused.
+#'
+#' The built-in infection modules read every layer alike; to give each layer
+#' its own transmission probability or act rate, pass `inf.prob` and
+#' `act.rate` as [`multilayer`] objects in [`param.net`]. The transmission
+#' matrix records the layer of every transmission in its `network` column.
 #'
 #' @section Restarting and Checkpointing:
 #' Simulations can be checkpointed and restarted if interrupted. Set

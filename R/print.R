@@ -395,7 +395,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       cat("\n- `control$save.diss.stats == FALSE`")
       cat("\n- dissolution formula is not `~ offset(edges)`")
       cat("\n- `keep.diss.stats == FALSE` (if merging)")
-      cat("\n- the network is a `netclique` layer")
+      cat("\n- the network is a `netclique` or `netcensus` layer")
       cat("\n")
     }
   }

@@ -200,6 +200,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
          "netclique object for its edge count, mean degree, and group size ",
          "distribution.")
   }
+  if (inherits(x, "netcensus")) {
+    stop("netdx() does not apply to a `netcensus` layer: its edges are ",
+         "observed rather than simulated, so there is no model to diagnose. ",
+         "Print the netcensus object for its edges over the observation ",
+         "window.")
+  }
   if (!inherits(x, "netest")) {
     stop("x must be an object of class netest")
   }
@@ -456,6 +462,9 @@ make_stats_table <- function(stats, targets) {
     stats.targets <- rep(NA, length.out = length(stats.means))
     matches <- match(names(targets), names(stats.means))
     stats.targets[na.omit(matches)] <- targets[!is.na(matches)]
+  } else if (is.null(targets)) {
+    # a layer with no targets, such as an observed network
+    stats.targets <- rep(NA, length.out = length(stats.means))
   } else {
     stats.targets <- targets
   }

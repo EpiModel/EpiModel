@@ -12,7 +12,8 @@ init_nets(dat, x)
 argument.}
 
 \item{x}{Either a fitted network model object of class \code{netest}, a clique
-layer of class \code{\link{netclique}}, or a list of such objects.}
+layer of class \code{\link{netclique}}, an observed network layer of class
+\code{\link{netcensus}}, or a list of such objects.}
 }
 \value{
 A \code{netsim_dat} class main data object with network data and

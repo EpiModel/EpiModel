@@ -405,7 +405,7 @@ test_that("crosscheck.net rejects mismatched layers and parameters", {
                "same number of nodes")
 
   expect_error(netsim(list(est_hh, "not a layer"), param, init, control),
-               "netest or netclique")
+               "netclique")
 })
 
 test_that("print.param.net shows multilayer parameters", {
