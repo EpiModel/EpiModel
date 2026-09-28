@@ -691,3 +691,135 @@ test_that("netsim objects with a clique layer merge and truncate", {
   tsim <- truncate_sim(sim, at = 5)
   expect_equal(nrow(tsim$epi$num), 6)
 })
+
+
+# Moving nodes between groups ------------------------------------------------
+
+# A netsim_dat object at the start of a simulation, for calling move_to_group
+# directly.
+dat_at_start <- function(x, control) {
+  param <- param.net(inf.prob = 0.1, act.rate = 1)
+  crosscheck.net(x, param, init, control)
+  control <- netsim_validate_control(control)
+  initialize.net(x, param, init, control, s = 1)
+}
+
+test_that("move_to_group rewires the clique layer, tergmLite", {
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         tergmLite.track.duration = TRUE)
+  set.seed(32)
+  dat <- dat_at_start(list(est_hh, est_com), control)
+  hh <- get_attr(dat, "hh_id")
+  el0 <- get_edgelist(dat, network = 1)
+
+  # node a joins the household of node b; nodes c and d start a household
+  # together; node e leaves every household; node f stays where it is
+  big <- as.integer(names(which(table(hh) >= 3)))
+  a <- which(hh == big[1])[1]
+  b <- which(hh == big[2])[1]
+  c_d <- which(hh == big[3])[1:2]
+  e <- which(hh == big[4])[1]
+  f <- which(hh == big[5])[1]
+  new_id <- max(hh) + 1
+  dat <- move_to_group(dat, ids = c(a, c_d, e, f),
+                       group = c(hh[b], new_id, new_id, NA, hh[f]))
+
+  hh1 <- get_attr(dat, "hh_id")
+  el1 <- get_edgelist(dat, network = 1)
+  expect_equal(hh1[a], hh[b])
+  expect_equal(hh1[c_d], rep(new_id, 2))
+  expect_true(is.na(hh1[e]))
+  expect_clique_layer(el1, hh1)
+  expect_equal(attr(el1, "n"), attr(el0, "n"))
+
+  # the new pair is connected to each other and to no one else
+  expect_true(any(el1[, 1] == min(c_d) & el1[, 2] == max(c_d)))
+  expect_equal(sum(el1 == c_d[1]), 1)
+  expect_false(e %in% el1)
+  # the node that stayed kept its edges
+  expect_equal(sum(el1 == f), sum(el0 == f))
+  # durations: one record per edge, with the new edges formed now
+  lt <- dat$run$net_attr[[1]]$lasttoggle
+  expect_equal(nrow(lt), nrow(el1))
+
+  # an attribute change alone does not rewire the layer
+  dat2 <- set_attr(dat, "hh_id", replace(hh1, a, hh[a]))
+  expect_equal(get_edgelist(dat2, network = 1), el1)
+})
+
+test_that("move_to_group rewires the clique layer, networkDynamic", {
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = FALSE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  set.seed(33)
+  dat <- dat_at_start(list(est_hh, est_com), control)
+  dat <- set_current_timestep(dat, 2)
+  hh <- get_attr(dat, "hh_id")
+  big <- as.integer(names(which(table(hh) >= 3)))
+  a <- which(hh == big[1])[1]
+  b <- which(hh == big[2])[1]
+  dat <- move_to_group(dat, ids = a, group = hh[b])
+  # and back again, which reactivates the earlier edges
+  dat <- set_current_timestep(dat, 3)
+  dat <- move_to_group(dat, ids = a, group = hh[a])
+
+  nd <- get_network(dat, network = 1)
+  expect_clique_layer(networkDynamic::get.dyads.active(nd, at = 2),
+                      replace(hh, a, hh[b]))
+  expect_clique_layer(networkDynamic::get.dyads.active(nd, at = 3), hh)
+  expect_equal(network.edgecount(nd), est_hh$summary$edges +
+                 sum(hh == hh[b]))
+})
+
+test_that("move_to_group keeps the layer a union of cliques through a run", {
+  skip_on_cran()
+  # every step, a few people join another household, two start one together,
+  # and one leaves every household, alongside arrivals and departures
+  mover <- function(dat, at) {
+    active <- get_attr(dat, "active")
+    hh <- get_attr(dat, "hh_id")
+    ids <- sample(which(active == 1), 5)
+    target <- hh[sample(which(active == 1 & !is.na(hh)), 2)]
+    new_id <- max(hh, na.rm = TRUE) + 1
+    move_to_group(dat, ids, c(target, new_id, new_id, NA))
+  }
+  for (tl in c(TRUE, FALSE)) {
+    control <- control.net(type = NULL, nsteps = 12, nsims = 1,
+                           tergmLite = tl, resimulate.network = TRUE,
+                           verbose = FALSE, save.run = TRUE,
+                           infection.FUN = infection.net,
+                           departures.FUN = departures.net,
+                           arrivals.FUN = arrivals.net,
+                           move.FUN = mover)
+    set.seed(34)
+    sim <- netsim(list(est_hh, est_com), param_open, init, control)
+    run <- sim$run[[1]]
+    hh <- run$attr$hh_id
+    if (tl) {
+      expect_clique_layer(run$el[[1]], hh)
+    } else {
+      nd <- get_network(sim, network = 1)
+      expect_clique_layer(networkDynamic::get.dyads.active(nd, at = 12), hh,
+                          run$attr$active)
+    }
+    expect_gt(sum(is.na(hh) & run$attr$active == 1), 0)
+  }
+})
+
+test_that("move_to_group validates its inputs", {
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  set.seed(35)
+  dat <- dat_at_start(list(est_hh, est_com), control)
+  expect_identical(move_to_group(dat, integer(0), 1), dat)
+  expect_error(move_to_group(dat, 1:2, 1:3), "one value per element")
+  expect_error(move_to_group(dat, c(1, 1), 2), "duplicated")
+  expect_error(move_to_group(dat, 1, "a"), "same type")
+  expect_error(move_to_group(dat, 1, 2, network = 2), "not a clique layer")
+  dat_off <- set_attr(dat, "active", replace(get_attr(dat, "active"), 1, 0))
+  expect_error(move_to_group(dat_off, 1, 2), "Only active nodes")
+
+  dat2 <- dat_at_start(list(est_hh, est_hh), control)
+  expect_error(move_to_group(dat2, 1, 2), "2 clique layers")
+  expect_silent(move_to_group(dat2, 1, 2, network = 2))
+})
