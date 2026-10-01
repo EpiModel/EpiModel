@@ -35,11 +35,6 @@ test_that("update_params validates its inputs", {
                "new.param.list should be object of class list")
 })
 
-test_that("param_random rejects mis-sized probability vectors", {
-  expect_error(param_random(values = 1:3, prob = c(0.5, 0.5)),
-               "incorrect number of probabilites")
-})
-
 test_that("init.net rejects conflicting initial-condition arguments", {
   expect_error(init.net(i.num = 10, status.vector = rep("s", 10)),
                "i.num OR status.vector")
@@ -97,21 +92,6 @@ test_that("control.net warns and resets resimulate.network under tergmLite", {
                                     resimulate.network = FALSE,
                                     verbose = FALSE))
   expect_false(ctrl$resimulate.network)
-})
-
-test_that("generate_random_params validates random.params structure", {
-  # random.params validation runs at simulation time, inside
-  # generate_random_params(). Calling that function directly lets us hit
-  # the guards without spinning up a full netsim.
-  p_not_list <- param.net(inf.prob = 0.3, random.params = "not a list")
-  expect_error(generate_random_params(p_not_list),
-               "random.params.*must be.*list")
-
-  p_unnamed <- param.net(inf.prob = 0.3,
-                         random.params = list(param_random(1:3),
-                                              foo = param_random(1:3)))
-  expect_error(generate_random_params(p_unnamed),
-               "must be named")
 })
 
 context("crosscheck.net: end-to-end netsim input validation")

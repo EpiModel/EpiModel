@@ -1,3 +1,9 @@
+## EpiModel 2.7.0
+
+### BREAKING CHANGES
+
+-   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Use the scenario API (`create_scenario_list()` / `use_scenario()`) for parameter sweeps and `param.net_to_table()` to tabulate parameters.
+
 ## EpiModel 2.6.2
 
 ### BREAKING CHANGES
