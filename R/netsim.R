@@ -117,10 +117,7 @@
 #' automatic checkpointing. To restart a simulation from a prior `netsim`
 #' output, pass the `netsim` object as `x` and set `control$start` to one
 #' greater than the final time step of the prior simulation. See the
-#' Checkpointing Simulations and Restarting from a Prior Simulation sections
-#' of [`control.net`] for full details, including the `randomize.restart`
-#' control governing how source simulations are chosen when `nsims` changes
-#' across the restart.
+#' Checkpointing Simulations section of [`control.net`] for full details.
 #'
 #' @return
 #' A list of class `netsim` with the following elements:
@@ -280,7 +277,6 @@ netsim_validate_control <- function(control) {
       ".checkpoint.compress"
     ),
     "FALSE" = c(
-      "randomize.restart",
       "resimulate.network",
       "raw.output",
       "verbose",

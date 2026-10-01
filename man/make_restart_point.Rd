@@ -4,7 +4,7 @@
 \alias{make_restart_point}
 \title{Make a Lightweight Restart Point From a \code{netsim} Object with tergmLite}
 \usage{
-make_restart_point(sim_obj, time_attrs, sims_num = NULL, keep_steps = 1)
+make_restart_point(sim_obj, time_attrs, sim_num = 1, keep_steps = 1)
 }
 \arguments{
 \item{sim_obj}{a \code{netsim} object from an ended \code{netsim} call.}
@@ -14,18 +14,16 @@ that are expressed in time-steps. These will be offsetted so the last
 step in the original simulation become the step 1 (default) in the new
 ones. If no such attributes exist, pass \code{c()}.}
 
-\item{sims_num}{a vector of the simulation numbers to extract from the
-\code{netsim} object. Defaults to \code{NULL}, in which case every simulation
-in \code{sim_obj} is used (a message reports how many).}
+\item{sim_num}{the number of the simulation to extract from the \code{netsim}
+object (default = 1).}
 
 \item{keep_steps}{The number of simulation steps to keep from the previous
 run. By default only keep one but more is possible if some
 back-history is wanted.}
 }
 \value{
-a trimmed \code{netsim} object containing one simulation per element of
-\code{sims_num} (or every simulation in \code{sim_obj} when
-\code{sims_num = NULL}), ready to be used as a restart point.
+a trimmed \code{netsim} object with only one simulation that is ready to
+be used as a restart point.
 }
 \description{
 Extract the elements required for re-initializing a \code{netsim} simulation from
@@ -34,10 +32,8 @@ values to reduce the size of the simulation. This function only works for
 simulations where \code{control$tergmLite = TRUE}
 }
 \details{
-The restart point created contains one simulation for each element of
-\code{sims_num} (or every simulation in \code{sim_obj} when \code{sims_num = NULL}) and
-drops the \code{attr.history}, the \code{raw.records} and \code{stats} from the initial
-simulation.
+The restart point created always contains a single simulation and drops the
+\code{attr.history} and the \code{raw.records} from the initial simulation.
 
 The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} are
 truncated to only contain the last \code{keep_steps} entries.
@@ -68,18 +64,12 @@ time_attrs <- c(
   "prep.start.last"
 )
 # Make a restart point from simulation 1, re-run for 10 more timesteps
-x <- make_restart_point(sim, time_attrs, sims_num = 1, keep_steps = 1)
+x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 control <- control_msm(
   start = x$control$nsteps + 1,
   nsteps = x$control$nsteps + 1 + 10
 )
 sim <- netsim(x, param, init, control)
-
-# Make a restart point keeping simulations 1 and 3 only
-x <- make_restart_point(sim, time_attrs, sims_num = c(1, 3), keep_steps = 1)
-
-# Make a restart point with every simulation in `sim`
-x <- make_restart_point(sim, time_attrs, keep_steps = 1)
 }
 
 }

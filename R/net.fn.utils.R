@@ -935,9 +935,8 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #' simulations where `control$tergmLite = TRUE`
 #'
 #' @param sim_obj a `netsim` object from an ended `netsim` call.
-#' @param sims_num a vector of the simulation numbers to extract from the
-#'        `netsim` object. Defaults to `NULL`, in which case every simulation
-#'        in `sim_obj` is used (a message reports how many).
+#' @param sim_num the number of the simulation to extract from the `netsim`
+#'        object (default = 1).
 #' @param keep_steps The number of simulation steps to keep from the previous
 #'        run. By default only keep one but more is possible if some
 #'        back-history is wanted.
@@ -947,10 +946,8 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'        ones. If no such attributes exist, pass `c()`.
 #'
 #' @details
-#' The restart point created contains one simulation for each element of
-#' `sims_num` (or every simulation in `sim_obj` when `sims_num = NULL`) and
-#' drops the `attr.history`, the `raw.records` and `stats` from the initial
-#' simulation.
+#' The restart point created always contains a single simulation and drops the
+#' `attr.history` and the `raw.records` from the initial simulation.
 #'
 #' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
 #' truncated to only contain the last `keep_steps` entries.
@@ -981,29 +978,22 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'   "prep.start.last"
 #' )
 #' # Make a restart point from simulation 1, re-run for 10 more timesteps
-#' x <- make_restart_point(sim, time_attrs, sims_num = 1, keep_steps = 1)
+#' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 #' control <- control_msm(
 #'   start = x$control$nsteps + 1,
 #'   nsteps = x$control$nsteps + 1 + 10
 #' )
 #' sim <- netsim(x, param, init, control)
-#'
-#' # Make a restart point keeping simulations 1 and 3 only
-#' x <- make_restart_point(sim, time_attrs, sims_num = c(1, 3), keep_steps = 1)
-#'
-#' # Make a restart point with every simulation in `sim`
-#' x <- make_restart_point(sim, time_attrs, keep_steps = 1)
 #' }
 #'
-#' @return a trimmed `netsim` object containing one simulation per element of
-#'         `sims_num` (or every simulation in `sim_obj` when
-#'         `sims_num = NULL`), ready to be used as a restart point.
+#' @return a trimmed `netsim` object with only one simulation that is ready to
+#'         be used as a restart point.
 #'
 #' @export
 make_restart_point <- function(
   sim_obj,
   time_attrs,
-  sims_num = NULL,
+  sim_num = 1,
   keep_steps = 1
 ) {
   if (!inherits(sim_obj, c("netsim"))) {
@@ -1028,20 +1018,21 @@ make_restart_point <- function(
   }
 
   nsims <- sim_obj$control$nsims
-  if (is.null(sims_num)) {
-    sims_num <- seq_len(nsims)
-    message("Making a restart object with all simulations (", nsims, ")")
-  } else if (!all(sims_num %in% seq_len(sim_obj$control$nsims))) {
-    stop("All `sims_num` must be >= 1 and <= `control$nsims` (", nsims, ")")
+  if (length(sim_num) != 1 || !sim_num %in% seq_len(nsims)) {
+    stop(
+      "`sim_num` must be a single number >= 1 and <= `control$nsims` (",
+      nsims, ")"
+    )
   }
 
   if (!sim_obj$control$tergmLite) {
     stop("Only `netsim` object with `tergmLite == TRUE` are supported")
   }
 
-  # Select  the simulation of interest
-  x <- get_sims(sim_obj, sims = sims_num)
+  # Select the simulation of interest, that renames the selected sim: `sim1`
+  x <- get_sims(sim_obj, sims = sim_num)
   n_steps <- x$control$nsteps
+  run_ls <- x$run[[1]]
 
   # Keep only the last `keep_steps` rows of each epi
   if (keep_steps < 1 || keep_steps > n_steps) {
@@ -1054,80 +1045,73 @@ make_restart_point <- function(
   time_offset <- n_steps - keep_steps
   x$control$start <- 1
   x$control$nsteps <- keep_steps
+
+  # Time attributes - offset so last step is now `keep_steps`
   time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
-
-  # Per sim --------------------------------------------------------------------
-  for (i_run in seq_along(x$run)) {
-    run_ls <- x$run[[i_run]]
-
-    # Time attributes - offset so last step is now `keep_steps`
-    missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
-    if (length(missing_attrs) > 0) {
-      stop(
-        "Some time attributes are not present in the attributes list:",
-        paste.and(missing_names)
-      )
-    }
-    run_ls$attr[time_attrs] <- lapply(
-      run_ls$attr[time_attrs],
-      function(v) v - time_offset
+  missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
+  if (length(missing_attrs) > 0) {
+    stop(
+      "Some time attributes are not present in the attributes list: ",
+      paste.and(missing_attrs)
     )
+  }
+  run_ls$attr[time_attrs] <- lapply(
+    run_ls$attr[time_attrs],
+    function(v) v - time_offset
+  )
 
-    # Fix UIDs
-    uid_offset <- min(run_ls$attr$unique_id) - 1
-    run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
-    run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
+  # Fix UIDs
+  uid_offset <- min(run_ls$attr$unique_id) - 1
+  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
+  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
 
-    # Cumulative Edgelist - fix time and UIDs
-    run_ls$el_cuml_cur <- lapply(
-      run_ls$el_cuml_cur,
-      function(el) {
-        el$head <- el$head - uid_offset
-        el$tail <- el$tail - uid_offset
-        el$start <- el$start - time_offset
-        el
-      }
-    )
-    # For Historical one - truncate to 1 (only edges in the kept history)
-    run_ls$el_cuml_hist <- lapply(
-      run_ls$el_cuml_hist,
-      function(el) {
-        el$head <- el$head - uid_offset
-        el$tail <- el$tail - uid_offset
-        el$start <- el$start - time_offset
-        el$stop <- el$stop - time_offset
-        el[el$stop >= 1, , drop = FALSE]
-      }
-    )
-
-    # the edgelist stores the name of the vertices. We don't use it with
-    # `tergmLite` and it takes a lot of space
-    run_ls$el <- lapply(run_ls$el, function(x) {
-      attr(x, "vnames") <- NULL
-      x
-    })
-
-    x$run[[i_run]] <- run_ls
-
-    # If transmat was saved, trim it and offset the `at` column
-    if (x$control$save.transmat) {
-      tsmt <- x$stats$transmat[[i_run]]
-      tsmt$at <- tsmt$at - time_offset
-      x$stats$transmat[[i_run]] <- tsmt[tsmt$at > 0, , drop = FALSE]
+  # Cumulative Edgelist - fix time and UIDs
+  run_ls$el_cuml_cur <- lapply(
+    run_ls$el_cuml_cur,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el
     }
-
-    # If `nwstats` are saved, keep only the last rows
-    if (x$control$save.nwstats) {
-      x$stats$nwstats[[i_run]] <- lapply(
-        x$stats$nwstats[[i_run]],
-        function(d) d[keep_rows, , drop = FALSE]
-      )
+  )
+  # For Historical one - truncate to 1 (only edges in the kept history)
+  run_ls$el_cuml_hist <- lapply(
+    run_ls$el_cuml_hist,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el$stop <- el$stop - time_offset
+      el[el$stop >= 1, , drop = FALSE]
     }
+  )
 
+  # the edgelist stores the name of the vertices. We don't use it with
+  # `tergmLite` and it takes a lot of space
+  run_ls$el <- lapply(run_ls$el, function(x) {
+    attr(x, "vnames") <- NULL
+    x
+  })
+
+  x$run[[1]] <- run_ls
+
+  # If transmat was saved, trim it and offset the `at` column
+  if (x$control$save.transmat) {
+    tsmt <- x$stats$transmat[[1]]
+    tsmt$at <- tsmt$at - time_offset
+    x$stats$transmat[[1]] <- tsmt[tsmt$at > 0, , drop = FALSE]
+  }
+
+  # If `nwstats` are saved, keep only the last rows
+  if (x$control$save.nwstats) {
+    x$stats$nwstats[[1]] <- lapply(
+      x$stats$nwstats[[1]],
+      function(d) d[keep_rows, , drop = FALSE]
+    )
   }
 
   # Output ---------------------------------------------------------------------
-
   x$attr.history <- list()
   x$raw.records <- list()
   return(x)

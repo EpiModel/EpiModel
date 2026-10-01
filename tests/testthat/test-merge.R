@@ -316,7 +316,7 @@ test_that("merge.netsim merges the recorded histories", {
   expect_null(z2$raw.records)
 })
 
-test_that("merge.netsim output can be used as a restart pool", {
+test_that("merge.netsim output can be used as a restart point", {
   skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 20,
@@ -339,9 +339,10 @@ test_that("merge.netsim output can be used as a restart pool", {
 
   expect_is(rs, "netsim")
   expect_equal(rs$control$nsims, 4)
-  # each output simulation restarts from its own source run in the pool
-  restart_src <- unlist(lapply(rs$run, function(r) r[["_restart_simnum"]]))
-  expect_equal(unname(restart_src), 1:4)
+  # each output simulation restarts from its own source run in the merged
+  # object, so its history up to the restart is that run's epi
+  expect_equal(nrow(rs$epi$i.num), 8)
+  expect_equal(rs$epi$i.num[1:5, ], z$epi$i.num, check.attributes = FALSE)
 })
 
 test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {
