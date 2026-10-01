@@ -31,8 +31,7 @@ Given a \code{netsim} object, \code{print.netsim} displays the following section
 \strong{Simulation summary}: model class, model type (e.g., SI, SIR, SIS),
 number of simulations, number of time steps, and number of network groups.
 
-\strong{Model parameters}: printed via \code{print.param.net()}, showing fixed and
-(if applicable) random parameters.
+\strong{Model parameters}: printed via \code{print.param.net()}.
 
 \strong{Model functions}: for extension models (\code{type = NULL}), lists the names
 of all custom module functions.
