@@ -200,17 +200,26 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   ## Check params
   check1 <- identical(param_without_random_values(x$param),
                       param_without_random_values(y$param))
-  check2 <- identical(x$control[-which(names(x$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))],
-                      y$control[-which(names(y$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))])
+
+  fmla_controls <- c(
+    "monitors",
+    "nwstats.formula",
+    "set.control.tergm",
+    "set.control.ergm",
+    "dat.updates"
+  )
+  check2 <- identical(
+    x$control[setdiff(names(x$control), c("nsims", fmla_controls))],
+    y$control[setdiff(names(y$control), c("nsims", fmla_controls))]
+  )
 
   ## handle formulas separately due to environments
-  check2 <- check2 &&
-    isTRUE(all.equal(x$control$monitors, y$control$monitors)) &&
-    isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
+  check2 <- Reduce(
+    function(init, elt) {
+      init && isTRUE(all.equal(x$control[[elt]], y$control[[elt]]))
+    },
+    fmla_controls, init = check2
+  )
 
   if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
