@@ -13,6 +13,9 @@
   keep.other = TRUE,
   param.error = TRUE,
   keep.diss.stats = TRUE,
+  keep.run = TRUE,
+  keep.cumulative.edgelist = FALSE,
+  keep.attr.history = TRUE,
   ...
 )
 }
@@ -45,6 +48,21 @@ params (in \code{\link[=param.net]{param.net()}}) or controls (passed in
 
 \item{keep.diss.stats}{If \code{TRUE}, keep \code{diss.stats} from the
 original \code{x} and \code{y} objects.}
+
+\item{keep.run}{If \code{TRUE}, keep the \code{run} sublists (as set by the
+\code{save.run} parameter in \code{control.net}) from the original \code{x} and
+\code{y} elements. These are required to use the merged object as a
+restart point in \code{\link[=netsim]{netsim()}}.}
+
+\item{keep.cumulative.edgelist}{If \code{TRUE}, keep the cumulative edgelists
+(as set by the \code{save.cumulative.edgelist} parameter in
+\code{control.net}) from the original \code{x} and \code{y} elements. \code{FALSE} by
+default, as these grow with the length of the simulation.}
+
+\item{keep.attr.history}{If \code{TRUE}, keep the recorded histories (as set by
+\code{\link[=record_attr_history]{record_attr_history()}} and \code{\link[=record_raw_object]{record_raw_object()}}) from the original
+\code{x} and \code{y} elements. This governs both \code{attr.history} and
+\code{raw.records}.}
 
 \item{...}{Additional merge arguments (not currently used).}
 }

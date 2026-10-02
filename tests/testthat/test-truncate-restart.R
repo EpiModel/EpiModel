@@ -65,14 +65,14 @@ test_that("truncate_sim.netsim delegates to the icm method", {
 
 context("make_restart_point validation and roundtrip")
 
-build_restart_sim <- function(nsteps = 5) {
+build_restart_sim <- function(nsteps = 5, nsims = 1) {
   nw <- network_initialize(n = 30)
   est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
   # Set resimulate.network = TRUE explicitly so control.net() doesn't emit
   # the "tergmLite = TRUE ... resetting resimulate.network" notice.
-  control <- control.net(type = "SI", nsteps = nsteps, nsims = 1,
+  control <- control.net(type = "SI", nsteps = nsteps, nsims = nsims,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
   netsim(est, param.net(inf.prob = 0.3),
@@ -109,6 +109,8 @@ test_that("make_restart_point validates sim_num and keep_steps ranges", {
                "sim_num.*>= 1.*<=")
   expect_error(make_restart_point(mod, time_attrs = c(), sim_num = 99),
                "sim_num.*>= 1.*<=")
+  expect_error(make_restart_point(mod, time_attrs = c(), sim_num = c(1, 2)),
+               "sim_num.*single")
   expect_error(make_restart_point(mod, time_attrs = c(), keep_steps = 0),
                "keep_steps.*>= 1.*<=")
   expect_error(make_restart_point(mod, time_attrs = c(), keep_steps = 99),
@@ -139,4 +141,40 @@ test_that("make_restart_point keeps multiple history steps when requested", {
   rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 3)
   expect_equal(rp$control$nsteps, 3)
   expect_equal(nrow(rp$epi[[1]]), 3)
+})
+
+test_that("make_restart_point reports missing time attributes by name", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 5)
+
+  expect_error(make_restart_point(mod, time_attrs = "not.an.attr"),
+               "not.an.attr")
+})
+
+test_that("make_restart_point extracts and trims the requested simulation", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6, nsims = 3)
+
+  rp <- make_restart_point(mod, time_attrs = c(), sim_num = 2, keep_steps = 2)
+
+  # The restart point always holds a single simulation, renamed `sim1`
+  expect_equal(rp$control$nsims, 1)
+  expect_named(rp$run, "sim1")
+  expect_named(rp$coef.form, "sim1")
+
+  # The kept simulation is the requested one
+  expect_equal(rp$run$sim1$attr$status, mod$run$sim2$attr$status)
+  expect_equal(rp$coef.form$sim1, mod$coef.form$sim2)
+  expect_equal(rp$epi$i.num[, 1], tail(mod$epi$i.num[, 2], 2))
+
+  # UIDs and time are re-based
+  expect_equal(min(rp$run$sim1$attr$unique_id), 1)
+  expect_equal(
+    rp$run$sim1$attr$entrTime,
+    mod$run$sim2$attr$entrTime - (6 - 2)
+  )
+
+  # `nwstats` and `transmat` are trimmed
+  expect_equal(nrow(rp$stats$nwstats$sim1[[1]]), 2)
+  expect_true(all(rp$stats$transmat$sim1$at > 0))
 })

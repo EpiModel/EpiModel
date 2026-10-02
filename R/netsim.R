@@ -308,8 +308,9 @@ netsim_validate_control <- function(control) {
   if (is.null(control$truncate.el.cuml))
     control$truncate.el.cuml <- 0
 
-  if (is.null(control$start))
+  if (is.null(control$start)) {
     control$start <- 1
+  }
 
   if (control$nsims == 1) {
     control$ncores <- 1

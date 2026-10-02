@@ -69,6 +69,7 @@ initialize.net <- function(x, param, init, control, s) {
       run = x$run[[s]]
     )
 
+    # TODO: we should not silently fill params from the restart point
     missing_params <- setdiff(names(x$param), names(param))
     for (mp in missing_params) {
       dat <- set_param(dat, mp, x$param[[mp]])

@@ -10,8 +10,15 @@
 - Add an `edges.correct.attr` control to `control.net()`, naming a binary nodal attribute that marks the nodes eligible to form ties. `edges_correct()` rescales the edges coefficient to preserve mean degree as the population changes, and by default it counts every active node, which is correct whenever every active node can form a tie. It is not correct when a model carries a subpopulation that stays active but is structurally excluded from the network, such as an age band past a sexual-cessation age whose target statistics are all zero, so that `ergm` pins its terms off and no tie incident to those nodes can form. The correction then counts nodes that can never hold an edge, and the whole of the adjustment lands on the nodes that can, thinning mean degree among them by the excluded share. In an HIV model with cessation at 65 and a retired band growing to a fifth of the population, mean degree among the sexually active fell 18% over 25 years and all three bacterial sexually transmitted infections went extinct. None of it appears in `netdx()`, which runs before any node has been excluded. Setting the control counts only the eligible nodes and leaves the default behavior untouched.
 
 - Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
+- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists can be passed to `netsim()` as a restart point, each new simulation restarting from the matching merged one. Only `keep.cumulative.edgelist` defaults to `FALSE`.
 
 ### BUG FIXES
+
+-   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a merged object read the wrong formation coefficients for the simulations coming from `y`.
+
+-   Fix `get_sims()` to subset the per-simulation `coef.form`, `attr.history` and `raw.records` elements, which were returned for every simulation regardless of `sims`.
+
+-   Fix the error raised by `make_restart_point()` when a `time_attrs` element is missing from the attributes, which listed the wrong names.
 
 -   Fix `edges_correct()` to leave the edges coefficients alone, with a warning naming the time step, when the adjustment it computes is not finite. A population count reaching zero made the adjustment infinite, and an infinite or `NaN` value added to an edges coefficient causes every proposed tie to be rejected for the remainder of the run, which presents as a slow collapse of the network rather than as an error.
 

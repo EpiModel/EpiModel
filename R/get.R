@@ -526,31 +526,30 @@ get_sims <- function(x, sims = NULL, var = NULL) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
 
-    if (!is.null(out$run)) {
-      out$run[delsim] <- NULL
-      names(out$run) <- newnames
+    elts_name <- union(
+      c(
+        "run",
+        "network",
+        "diss.stats",
+        "coef.form",
+        "attr.history",
+        "raw.records"
+      ),
+      out$control$save.other
+    )
+
+    for (elt in elts_name) {
+      if (!is.null(out[[elt]])) {
+        out[[elt]][delsim] <- NULL
+        names(out[[elt]]) <- newnames
+      }
     }
-    if (!is.null(out$network)) {
-      out$network[delsim] <- NULL
-      names(out$network) <- newnames
-    }
-    if (!is.null(out$stats$nwstats)) {
-      out$stats$nwstats[delsim] <- NULL
-      names(out$stats$nwstats) <- newnames
-    }
-    if (!is.null(out$stats$transmat)) {
-      out$stats$transmat[delsim] <- NULL
-      names(out$stats$transmat) <- newnames
-    }
-    if (!is.null(out$diss.stats)) {
-      out$diss.stats[delsim] <- NULL
-      names(out$diss.stats) <- newnames
-    }
-    if (!is.null(out$control$save.other)) {
-      oname <- out$control$save.other
-      for (i in seq_along(oname)) {
-        out[[oname[i]]][delsim] <- NULL
-        names(out[[oname[i]]]) <- newnames
+
+    stats_elts_name <- c("nwstats", "transmat")
+    for (elt in stats_elts_name) {
+      if (!is.null(out$stats[[elt]])) {
+        out$stats[[elt]][delsim] <- NULL
+        names(out$stats[[elt]]) <- newnames
       }
     }
   }

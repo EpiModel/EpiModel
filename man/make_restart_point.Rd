@@ -22,8 +22,8 @@ run. By default only keep one but more is possible if some
 back-history is wanted.}
 }
 \value{
-a trimed \code{netsim} object with only one simulation that is ready to be
-used as a restart point.
+a trimmed \code{netsim} object with only one simulation that is ready to
+be used as a restart point.
 }
 \description{
 Extract the elements required for re-initializing a \code{netsim} simulation from
@@ -33,7 +33,7 @@ simulations where \code{control$tergmLite = TRUE}
 }
 \details{
 The restart point created always contains a single simulation and drops the
-\code{attr.history}, the \code{raw.records} and \code{stats} from the initial simulation.
+\code{attr.history} and the \code{raw.records} from the initial simulation.
 
 The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} are
 truncated to only contain the last \code{keep_steps} entries.
@@ -63,7 +63,7 @@ time_attrs <- c(
   "aids.time",
   "prep.start.last"
 )
-# Make a restart point a re-run for 10 more timesteps
+# Make a restart point from simulation 1, re-run for 10 more timesteps
 x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 control <- control_msm(
   start = x$control$nsteps + 1,

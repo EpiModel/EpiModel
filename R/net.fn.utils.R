@@ -947,7 +947,7 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'
 #' @details
 #' The restart point created always contains a single simulation and drops the
-#' `attr.history`, the `raw.records` and `stats` from the initial simulation.
+#' `attr.history` and the `raw.records` from the initial simulation.
 #'
 #' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
 #' truncated to only contain the last `keep_steps` entries.
@@ -977,7 +977,7 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'   "aids.time",
 #'   "prep.start.last"
 #' )
-#' # Make a restart point a re-run for 10 more timesteps
+#' # Make a restart point from simulation 1, re-run for 10 more timesteps
 #' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 #' control <- control_msm(
 #'   start = x$control$nsteps + 1,
@@ -986,36 +986,53 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #' sim <- netsim(x, param, init, control)
 #' }
 #'
-#' @return a trimed `netsim` object with only one simulation that is ready to be
-#'         used as a restart point.
+#' @return a trimmed `netsim` object with only one simulation that is ready to
+#'         be used as a restart point.
 #'
 #' @export
-make_restart_point <- function(sim_obj, time_attrs,
-                               sim_num = 1, keep_steps = 1) {
+make_restart_point <- function(
+  sim_obj,
+  time_attrs,
+  sim_num = 1,
+  keep_steps = 1
+) {
   if (!inherits(sim_obj, c("netsim"))) {
     stop("`sim_obj` must be  an object of class `netsim`")
   }
   required_names <- c(
-    "control", "param", "nwparam", "epi", "run", "coef.form", "num.nw"
+    "control",
+    "param",
+    "nwparam",
+    "epi",
+    "run",
+    "coef.form",
+    "num.nw"
   )
   missing_names <- setdiff(required_names, names(sim_obj))
   if (length(missing_names) > 0) {
     stop(
       "`sim_obj` is missing the following elements required for",
-      " re-initialization: ", paste.and(missing_names)
+      " re-initialization: ",
+      paste.and(missing_names)
     )
   }
-  if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
-    stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
+
+  nsims <- sim_obj$control$nsims
+  if (length(sim_num) != 1 || !sim_num %in% seq_len(nsims)) {
+    stop(
+      "`sim_num` must be a single number >= 1 and <= `control$nsims` (",
+      nsims, ")"
+    )
   }
+
   if (!sim_obj$control$tergmLite) {
     stop("Only `netsim` object with `tergmLite == TRUE` are supported")
   }
 
-  # Select  the simulation of interest, that renames the selected sim: `sim1`
+  # Select the simulation of interest, that renames the selected sim: `sim1`
   x <- get_sims(sim_obj, sims = sim_num)
   n_steps <- x$control$nsteps
-  run_ls <- x$run$sim1
+  run_ls <- x$run[[1]]
 
   # Keep only the last `keep_steps` rows of each epi
   if (keep_steps < 1 || keep_steps > n_steps) {
@@ -1023,19 +1040,6 @@ make_restart_point <- function(sim_obj, time_attrs,
   }
   keep_rows <- (n_steps - keep_steps + 1):n_steps
   x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
-
-  # If `nwstats` are saved, keep only the last rows
-  if (x$control$save.nwstats) {
-    x$stats$nwstats$sim1 <- lapply(
-      x$stats$nwstats$sim1,
-      function(d) d[keep_rows, , drop = FALSE]
-    )
-  }
-
-  # Fix UIDs
-  uid_offset <- min(run_ls$attr$unique_id) - 1
-  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
-  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
 
   # Time correction
   time_offset <- n_steps - keep_steps
@@ -1047,14 +1051,19 @@ make_restart_point <- function(sim_obj, time_attrs,
   missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
   if (length(missing_attrs) > 0) {
     stop(
-      "Some time attributes are not present in the attributes list:",
-      paste.and(missing_names)
+      "Some time attributes are not present in the attributes list: ",
+      paste.and(missing_attrs)
     )
   }
   run_ls$attr[time_attrs] <- lapply(
     run_ls$attr[time_attrs],
     function(v) v - time_offset
   )
+
+  # Fix UIDs
+  uid_offset <- min(run_ls$attr$unique_id) - 1
+  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
+  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
 
   # Cumulative Edgelist - fix time and UIDs
   run_ls$el_cuml_cur <- lapply(
@@ -1085,14 +1094,24 @@ make_restart_point <- function(sim_obj, time_attrs,
     x
   })
 
+  x$run[[1]] <- run_ls
+
   # If transmat was saved, trim it and offset the `at` column
   if (x$control$save.transmat) {
-    tsmt <- x$stats$transmat$sim1
+    tsmt <- x$stats$transmat[[1]]
     tsmt$at <- tsmt$at - time_offset
-    x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
+    x$stats$transmat[[1]] <- tsmt[tsmt$at > 0, , drop = FALSE]
   }
 
-  x$run$sim1 <- run_ls
+  # If `nwstats` are saved, keep only the last rows
+  if (x$control$save.nwstats) {
+    x$stats$nwstats[[1]] <- lapply(
+      x$stats$nwstats[[1]],
+      function(d) d[keep_rows, , drop = FALSE]
+    )
+  }
+
+  # Output ---------------------------------------------------------------------
   x$attr.history <- list()
   x$raw.records <- list()
   return(x)
