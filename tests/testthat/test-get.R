@@ -368,7 +368,17 @@ test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
   expect_equal(s31$run$sim2, mod$run$sim3)
   expect_equal(ncol(s31$epi$i.num), 2)
 
-  # zero-length per-simulation elements are left alone
-  mod$attr.history <- list()
-  expect_error(get_sims(mod, sims = 1), NA)
+  # empty per-simulation elements are left alone
+  mod_empty <- mod
+  mod_empty$attr.history <- list()
+  expect_warning(s23 <- get_sims(mod_empty, sims = 2:3), NA)
+  expect_equal(s23$attr.history, list())
+  expect_named(s23$run, c("sim1", "sim2"))
+
+  # elements not holding one entry per simulation are left alone, with a warning
+  mod_bad <- mod
+  mod_bad$raw.records <- mod_bad$raw.records[1:2]
+  expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), "`raw.records` holds 2 elements for 3")
+  expect_identical(s23$raw.records, mod_bad$raw.records)
+  expect_equal(s23$run$sim1, mod$run$sim2)
 })

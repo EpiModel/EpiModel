@@ -541,8 +541,22 @@ get_sims <- function(x, sims = NULL, var = NULL) {
       out$control$save.other
     )
 
+    # Only the lists holding one element per simulation can be subset. Empty
+    # ones are left alone, other lengths are left alone with a warning.
+    is_per_sim <- function(elt_list, elt_name) {
+      n_elts <- length(elt_list)
+      if (n_elts > 0 && n_elts != nsims) {
+        warning(
+          "`", elt_name, "` holds ", n_elts, " elements for ", nsims,
+          " simulations. It is returned as is, as its elements cannot be ",
+          "matched to the simulations."
+        )
+      }
+      n_elts == nsims
+    }
+
     for (elt in elts_name) {
-      if (length(out[[elt]]) > 0) {
+      if (is_per_sim(out[[elt]], elt)) {
         out[[elt]][delsim] <- NULL
         names(out[[elt]]) <- newnames
       }
@@ -550,7 +564,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
     stats_elts_name <- c("nwstats", "transmat")
     for (elt in stats_elts_name) {
-      if (length(out$stats[[elt]]) > 0) {
+      if (is_per_sim(out$stats[[elt]], paste0("stats$", elt))) {
         out$stats[[elt]][delsim] <- NULL
         names(out$stats[[elt]]) <- newnames
       }
