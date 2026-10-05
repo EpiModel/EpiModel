@@ -685,7 +685,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        other `future` backends.
 #' @param start For models with network resimulation, time point to start up the simulation. For
 #'        restarted simulations, this must be one greater than the final time step in the prior
-#'        simulation and must be less than the value in `nsteps`.
+#'        simulation and must be less than the value in `nsteps`. Simulation `s` restarts from
+#'        simulation `(s - 1) %% n + 1` of the `n` simulations of the prior `netsim` object
+#'        (see the Restarting and Checkpointing section of [`netsim`]).
 #' @param resimulate.network If `TRUE`, resimulate the network at each time step. This is required
 #'        when the epidemic or demographic processes impact the network structure (e.g., vital
 #'        dynamics). This parameter controls whether `resim_nets.FUN` performs actual network
@@ -1291,8 +1293,8 @@ crosscheck.net <- function(x, param, init, control) {
                "restarted simulations")
         }
         if (control[["start"]] > x[["control"]][["nsteps"]] + 1) {
-          stop("control setting start must be 1 greater than the nsteps in
-               the ", "prior simulation")
+          stop("control setting start must be 1 greater than the nsteps in ",
+               "the prior simulation")
         }
       }
     }

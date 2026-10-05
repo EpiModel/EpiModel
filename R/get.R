@@ -514,6 +514,8 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims)
   }
+  # simulations are returned once each, in their original order
+  sims <- sort(unique(sims))
 
   out <- x
   out$control$nsims <- length(sims)
@@ -533,13 +535,14 @@ get_sims <- function(x, sims = NULL, var = NULL) {
         "diss.stats",
         "coef.form",
         "attr.history",
-        "raw.records"
+        "raw.records",
+        "cumulative.edgelist"
       ),
       out$control$save.other
     )
 
     for (elt in elts_name) {
-      if (!is.null(out[[elt]])) {
+      if (length(out[[elt]]) > 0) {
         out[[elt]][delsim] <- NULL
         names(out[[elt]]) <- newnames
       }
@@ -547,7 +550,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
     stats_elts_name <- c("nwstats", "transmat")
     for (elt in stats_elts_name) {
-      if (!is.null(out$stats[[elt]])) {
+      if (length(out$stats[[elt]]) > 0) {
         out$stats[[elt]][delsim] <- NULL
         names(out$stats[[elt]]) <- newnames
       }

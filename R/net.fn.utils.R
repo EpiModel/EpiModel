@@ -941,7 +941,7 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'        run. By default only keep one but more is possible if some
 #'        back-history is wanted.
 #' @param time_attrs a `character` vector containing the names of the attributes
-#'        that are expressed in time-steps. These will be offsetted so the last
+#'        that are expressed in time-steps. These will be offset so the last
 #'        step in the original simulation become the step 1 (default) in the new
 #'        ones. If no such attributes exist, pass `c()`.
 #'
@@ -950,19 +950,20 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #' `attr.history` and the `raw.records` from the initial simulation.
 #'
 #' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
-#' truncated to only contain the last `keep_steps` entries.
+#' truncated to only contain the last `keep_steps` entries. The unique IDs in
+#' the transmission matrix are re-based like the ones of the attributes.
 #'
-#' Warning: the `time_attrs` argument is mandatory. Almost all simulation worth
+#' Warning: the `time_attrs` argument is mandatory. Almost all simulations worth
 #' restarting have such attributes (e.g. time.of.hiv.infection). If no such
 #' argument exists, passing `c()` will allow the function to run while ensuring
 #' that this was done on purpose.
 #'
 #' When restarting from the output of this function, it is suggested to express
-#' the time steps in a relative maner in `control.net`:
+#' the time steps in a relative manner in `control.net`:
 #' ```
 #' control.net(
-#'   start = restart_point$control$nsteps + 1),
-#'   nsteps = restart_point$control$nsteps + 1 + 104)
+#'   start = restart_point$control$nsteps + 1,
+#'   nsteps = restart_point$control$nsteps + 1 + 104
 #' )
 #' ```
 #'
@@ -997,7 +998,7 @@ make_restart_point <- function(
   keep_steps = 1
 ) {
   if (!inherits(sim_obj, c("netsim"))) {
-    stop("`sim_obj` must be  an object of class `netsim`")
+    stop("`sim_obj` must be an object of class `netsim`")
   }
   required_names <- c(
     "control",
@@ -1096,10 +1097,13 @@ make_restart_point <- function(
 
   x$run[[1]] <- run_ls
 
-  # If transmat was saved, trim it and offset the `at` column
+  # If transmat was saved, trim it, offset the `at` column and the UIDs
   if (x$control$save.transmat) {
     tsmt <- x$stats$transmat[[1]]
     tsmt$at <- tsmt$at - time_offset
+    for (uid_col in intersect(c("sus", "inf"), names(tsmt))) {
+      tsmt[[uid_col]] <- tsmt[[uid_col]] - uid_offset
+    }
     x$stats$transmat[[1]] <- tsmt[tsmt$at > 0, , drop = FALSE]
   }
 

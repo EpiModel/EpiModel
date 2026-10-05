@@ -20,6 +20,14 @@
 
 -   Fix the error raised by `make_restart_point()` when a `time_attrs` element is missing from the attributes, which listed the wrong names.
 
+-   Fix `merge.netsim()` to compare the formula-type controls (`monitors`, `nwstats.formula`, `set.control.tergm`, `set.control.ergm` and `dat.updates`) with `all.equal()` rather than `identical()`. These carry an environment, which differs once simulations run with the same controls are serialized and read back (e.g. returned by parallel workers, or saved as the batches of an HPC run), and their merge then failed with "x and y have different controls".
+
+-   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and leaves alone a per-simulation element that is empty (e.g. `attr.history` after `make_restart_point()`), where it errored.
+
+-   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
+
+-   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
+
 -   Fix `edges_correct()` to leave the edges coefficients alone, with a warning naming the time step, when the adjustment it computes is not finite. A population count reaching zero made the adjustment infinite, and an infinite or `NaN` value added to an edges coefficient causes every proposed tie to be rejected for the remainder of the run, which presents as a slow collapse of the network rather than as an error.
 
 -   Fix `set_attr()` and `append_attr()` so that a nodal attribute they create always holds one value per node. `set_attr()` with `posit_ids` on an attribute that did not exist yet wrote into a snapshot of the attribute list taken before the attribute was created, so the result was as long as the highest selected position (length 2 for `posit_ids = c(1, 2)`, length 7 for `c(4, 7)`) rather than one entry per node. `append_attr()` on an attribute that did not exist yet returned the appended values alone, so an arrivals module creating a custom attribute on the first step with any arrival left that attribute covering only the new nodes. Both now fill the nodes they do not write to with `NA`. `check_attr_lengths()` is also fixed: it errored on its first line for every input (`$` on an atomic vector), and reported attribute positions rather than lengths. `netsim()` now calls it at the end of each time step, so an attribute of the wrong length is reported when it appears rather than surfacing later as a recycling error or as silently wrong output. Closes #1058.
@@ -37,6 +45,7 @@
 
 ### OTHER
 
+- Document how restarted simulations recycle the simulations of `x` (simulation `s` restarts from simulation `(s - 1) %% n + 1`) in `?netsim`, `?control.net` and `?initialize.net`.
 - `netsim()` now validates that each per-step module returns the `netsim_dat` object. When a custom module forgets `return(dat)` (or otherwise returns the wrong type), the simulation now stops with a clear error naming the offending module and pointing at the likely cause, instead of failing on the next module with the cryptic `argument "dat" is missing`. Closes #987.
 - Rewrote the `?EpiModel-package` overview. It now describes the current API rather than the v2.4-era one: the three model classes and what distinguishes them, the setup and simulation functions for each, the network-only extension API and its accessor functions, how to work with simulation output, and pointers to the vignettes, the NME course materials, and the EpiModel Gallery. This removes the stale claim that controls accept new modules for ICMs (removed in v2.6.1) and the hand-maintained version/date/license table, which duplicated `DESCRIPTION`, was already out of date, and displaced the package description on the help page.
 - Replaced two dead EpiModel Gallery links in historical NEWS entries with the corresponding Network Modeling for Epidemics course chapters on multi-layer networks and epidemics over observed networks.

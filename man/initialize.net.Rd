@@ -19,7 +19,10 @@ and nodal attributes) are assumed to be the same for all networks.}
 
 \item{control}{An \code{EpiModel} object of class \code{\link[=control.net]{control.net()}}.}
 
-\item{s}{Simulation number, used for restarting dependent simulations.}
+\item{s}{Simulation number, used for restarting dependent simulations.
+When restarting, simulation \code{s} restarts from simulation
+\code{(s - 1) \%\% n + 1} of the \code{n} simulations held by \code{x} (e.g. 1, 2, 3,
+1, 2 for 5 simulations restarting from 3).}
 }
 \value{
 A \code{netsim_dat} class main data object.

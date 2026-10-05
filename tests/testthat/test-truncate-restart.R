@@ -178,3 +178,67 @@ test_that("make_restart_point extracts and trims the requested simulation", {
   expect_equal(nrow(rp$stats$nwstats$sim1[[1]]), 2)
   expect_true(all(rp$stats$transmat$sim1$at > 0))
 })
+
+test_that("make_restart_point re-bases the unique IDs of the transmission matrix", {
+  skip_on_cran()
+  set.seed(12)
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.05),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  # high departure rates so that the lowest unique IDs depart
+  param <- param.net(inf.prob = 0.5, act.rate = 2,
+                     a.rate = 0.3, ds.rate = 0.3, di.rate = 0.3)
+  mod <- netsim(est, param, init.net(i.num = 10), control)
+
+  uid_offset <- min(mod$run$sim1$attr$unique_id) - 1
+  expect_gt(uid_offset, 0)
+
+  rp <- make_restart_point(mod, time_attrs = "infTime", keep_steps = 10)
+  tm <- mod$stats$transmat$sim1
+  expect_equal(rp$stats$transmat$sim1$sus, tm$sus - uid_offset)
+  expect_equal(rp$stats$transmat$sim1$inf, tm$inf - uid_offset)
+})
+
+test_that("make_restart_point trims the nwstats of a restarted simulation", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6)
+  rp <- make_restart_point(mod, time_attrs = "infTime", keep_steps = 3)
+
+  control <- control.net(type = "SI", start = 4, nsteps = 8,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod2 <- netsim(rp, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  # the restarted simulation holds the prior rows and the new ones
+  nwstats2 <- mod2$stats$nwstats$sim1[[1]]
+  expect_equal(nrow(nwstats2), mod2$control$nsteps)
+
+  rp2 <- make_restart_point(mod2, time_attrs = "infTime", keep_steps = 2)
+  expect_equal(
+    as.data.frame(rp2$stats$nwstats$sim1[[1]]),
+    as.data.frame(tail(nwstats2, 2)),
+    ignore_attr = TRUE
+  )
+  expect_false(anyNA(rp2$stats$nwstats$sim1[[1]]))
+})
+
+test_that("restarted simulations recycle the simulations of x in order", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 5, nsims = 2)
+  # tag each simulation of `x` in an extra epi column
+  mod$epi$tag <- data.frame(sim1 = rep(1, 5), sim2 = rep(2, 5))
+
+  control <- control.net(type = "SI", start = 6, nsteps = 7, nsims = 5,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod2 <- netsim(mod, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+
+  expect_equal(unname(unlist(mod2$epi$tag[1, ])), c(1, 2, 1, 2, 1))
+  for (s in 1:5) {
+    src <- (s - 1) %% 2 + 1
+    expect_equal(mod2$epi$i.num[1:5, s], mod$epi$i.num[1:5, src])
+  }
+})

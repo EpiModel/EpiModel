@@ -119,6 +119,13 @@
 #' greater than the final time step of the prior simulation. See the
 #' Checkpointing Simulations section of [`control.net`] for full details.
 #'
+#' When restarting, simulation `s` restarts from simulation
+#' `(s - 1) %% n + 1` of the `n` simulations held by `x`, which are recycled
+#' in order: with `nsims = 5` and an `x` holding 3 simulations, simulations 1
+#' to 5 restart from simulations 1, 2, 3, 1 and 2. [`make_restart_point`]
+#' makes a lightweight `x` holding a single simulation, from which every
+#' simulation then restarts.
+#'
 #' @return
 #' A list of class `netsim` with the following elements:
 #'

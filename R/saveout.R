@@ -297,7 +297,7 @@ saveout.net <- function(dat, s, out = NULL) {
       out$run <- name_saveout_elts(out$run, "run", simnames)
     }
 
-    top_lvl_elts <- c("attr.history", ".records")
+    top_lvl_elts <- c("attr.history", "raw.records")
     for (elt in top_lvl_elts) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
     }

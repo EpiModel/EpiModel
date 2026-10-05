@@ -13,6 +13,9 @@
 #' @param init An `EpiModel` object of class [init.net()].
 #' @param control An `EpiModel` object of class [control.net()].
 #' @param s Simulation number, used for restarting dependent simulations.
+#'        When restarting, simulation `s` restarts from simulation
+#'        `(s - 1) %% n + 1` of the `n` simulations held by `x` (e.g. 1, 2, 3,
+#'        1, 2 for 5 simulations restarting from 3).
 #' @details When re-initializing a simulation, the `netsim` object passed
 #'          to `initialize.net` must contain the elements `param`,
 #'          `nwparam`, `epi`, `coef.form`, and `num.nw`.

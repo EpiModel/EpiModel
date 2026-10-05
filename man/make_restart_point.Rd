@@ -10,7 +10,7 @@ make_restart_point(sim_obj, time_attrs, sim_num = 1, keep_steps = 1)
 \item{sim_obj}{a \code{netsim} object from an ended \code{netsim} call.}
 
 \item{time_attrs}{a \code{character} vector containing the names of the attributes
-that are expressed in time-steps. These will be offsetted so the last
+that are expressed in time-steps. These will be offset so the last
 step in the original simulation become the step 1 (default) in the new
 ones. If no such attributes exist, pass \code{c()}.}
 
@@ -36,19 +36,20 @@ The restart point created always contains a single simulation and drops the
 \code{attr.history} and the \code{raw.records} from the initial simulation.
 
 The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} are
-truncated to only contain the last \code{keep_steps} entries.
+truncated to only contain the last \code{keep_steps} entries. The unique IDs in
+the transmission matrix are re-based like the ones of the attributes.
 
-Warning: the \code{time_attrs} argument is mandatory. Almost all simulation worth
+Warning: the \code{time_attrs} argument is mandatory. Almost all simulations worth
 restarting have such attributes (e.g. time.of.hiv.infection). If no such
 argument exists, passing \code{c()} will allow the function to run while ensuring
 that this was done on purpose.
 
 When restarting from the output of this function, it is suggested to express
-the time steps in a relative maner in \code{control.net}:
+the time steps in a relative manner in \code{control.net}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control.net(
-  start = restart_point$control$nsteps + 1),
-  nsteps = restart_point$control$nsteps + 1 + 104)
+  start = restart_point$control$nsteps + 1,
+  nsteps = restart_point$control$nsteps + 1 + 104
 )
 }\if{html}{\out{</div>}}
 }
