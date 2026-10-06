@@ -382,3 +382,11 @@ test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
   expect_identical(s23$raw.records, mod_bad$raw.records)
   expect_equal(s23$run$sim1, mod$run$sim2)
 })
+
+test_that("is_per_sim accepts lists holding one element per simulation", {
+  expect_true(is_per_sim(list(1, 2), "x", nsims = 2))
+  expect_false(is_per_sim(NULL, "x", nsims = 2))
+  expect_false(is_per_sim(list(), "x", nsims = 2))
+  expect_warning(res <- is_per_sim(list(1), "x", nsims = 2), "`x` holds 1 elements for 2")
+  expect_false(res)
+})

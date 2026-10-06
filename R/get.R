@@ -541,22 +541,8 @@ get_sims <- function(x, sims = NULL, var = NULL) {
       out$control$save.other
     )
 
-    # Only the lists holding one element per simulation can be subset. Empty
-    # ones are left alone, other lengths are left alone with a warning.
-    is_per_sim <- function(elt_list, elt_name) {
-      n_elts <- length(elt_list)
-      if (n_elts > 0 && n_elts != nsims) {
-        warning(
-          "`", elt_name, "` holds ", n_elts, " elements for ", nsims,
-          " simulations. It is returned as is, as its elements cannot be ",
-          "matched to the simulations."
-        )
-      }
-      n_elts == nsims
-    }
-
     for (elt in elts_name) {
-      if (is_per_sim(out[[elt]], elt)) {
+      if (is_per_sim(out[[elt]], elt, nsims)) {
         out[[elt]][delsim] <- NULL
         names(out[[elt]]) <- newnames
       }
@@ -564,7 +550,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
     stats_elts_name <- c("nwstats", "transmat")
     for (elt in stats_elts_name) {
-      if (is_per_sim(out$stats[[elt]], paste0("stats$", elt))) {
+      if (is_per_sim(out$stats[[elt]], paste0("stats$", elt), nsims)) {
         out$stats[[elt]][delsim] <- NULL
         names(out$stats[[elt]]) <- newnames
       }
@@ -607,6 +593,20 @@ random_param_from_draws <- function(draws) {
   }
 
   return(draws)
+}
+
+# Whether `elt_list` holds one element per simulation, so it can be subset by
+# simulation. Empty lists are not, other lengths are not with a warning.
+is_per_sim <- function(elt_list, elt_name, nsims) {
+  n_elts <- length(elt_list)
+  if (n_elts > 0 && n_elts != nsims) {
+    warning(
+      "`", elt_name, "` holds ", n_elts, " elements for ", nsims,
+      " simulations. It is returned as is, as its elements cannot be ",
+      "matched to the simulations."
+    )
+  }
+  n_elts == nsims
 }
 
 normalize_random_params_values <- function(values, nsims) {
