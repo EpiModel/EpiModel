@@ -4,18 +4,8 @@
 
 -   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Use the scenario API (`create_scenario_list()` / `use_scenario()`) for parameter sweeps and `param.net_to_table()` to tabulate parameters.
 
-## EpiModel 2.6.2
-
-### BREAKING CHANGES
-
--   The `sims` argument of `plot.icm()` and of `plot.netsim(type = "epi")` now selects the simulations the whole plot describes, rather than only the individual lines. Its documented meaning is "a vector of simulation numbers to plot", but it was applied only to the simulation-line loop: `draw_means()` and `draw_qnts()` took no `sims` argument and always computed over every simulation. A four-simulation model with `i.num` of 34, 47, 47, and 51 at a time step drew a mean line at 44.75 under `sims = 1:2`, where the two plotted lines average 40.5. The mean line and the quantile band are now calculated over the selected simulations, so they describe the same runs as the lines drawn beside them. Plots that pass `sims` will change; plots that do not are unaffected. Closes #1064.
-
 ### NEW FEATURES
 
-- Add a cumulative degree distribution plot to `plot.netdx()`, via `type = "cumldeg"`, along with the `get_degree_dist()` function that calculates it. Both work off the timed edgelist, so they require a `netdx()` run with `keep.tedgelist = TRUE`. The cumulative distribution counts the partners each node accumulates over the simulation, rather than the partners held at one moment in time; `momentary = TRUE` overlays the momentary distribution over the same window for comparison, and `window` restricts both to a period of interest. Two models with the same mean degree and mean partnership duration accumulate the same number of partners per node even when their momentary degree distributions differ, which the `?plot.netdx` example shows for models with high and low concurrency. Closes #1050.
-- Add an `edges.correct.attr` control to `control.net()`, naming a binary nodal attribute that marks the nodes eligible to form ties. `edges_correct()` rescales the edges coefficient to preserve mean degree as the population changes, and by default it counts every active node, which is correct whenever every active node can form a tie. It is not correct when a model carries a subpopulation that stays active but is structurally excluded from the network, such as an age band past a sexual-cessation age whose target statistics are all zero, so that `ergm` pins its terms off and no tie incident to those nodes can form. The correction then counts nodes that can never hold an edge, and the whole of the adjustment lands on the nodes that can, thinning mean degree among them by the excluded share. In an HIV model with cessation at 65 and a retired band growing to a fifth of the population, mean degree among the sexually active fell 18% over 25 years and all three bacterial sexually transmitted infections went extinct. None of it appears in `netdx()`, which runs before any node has been excluded. Setting the control counts only the eligible nodes and leaves the default behavior untouched.
-
-- Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
 - `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists can be passed to `netsim()` as a restart point, each new simulation restarting from the matching merged one. Only `keep.cumulative.edgelist` defaults to `FALSE`.
 
 ### BUG FIXES
@@ -36,6 +26,25 @@
 
 -   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
 
+### OTHER
+
+- Document how restarted simulations recycle the simulations of `x` (simulation `s` restarts from simulation `(s - 1) %% n + 1`) in `?netsim`, `?control.net` and `?initialize.net`.
+
+## EpiModel 2.6.2
+
+### BREAKING CHANGES
+
+-   The `sims` argument of `plot.icm()` and of `plot.netsim(type = "epi")` now selects the simulations the whole plot describes, rather than only the individual lines. Its documented meaning is "a vector of simulation numbers to plot", but it was applied only to the simulation-line loop: `draw_means()` and `draw_qnts()` took no `sims` argument and always computed over every simulation. A four-simulation model with `i.num` of 34, 47, 47, and 51 at a time step drew a mean line at 44.75 under `sims = 1:2`, where the two plotted lines average 40.5. The mean line and the quantile band are now calculated over the selected simulations, so they describe the same runs as the lines drawn beside them. Plots that pass `sims` will change; plots that do not are unaffected. Closes #1064.
+
+### NEW FEATURES
+
+- Add a cumulative degree distribution plot to `plot.netdx()`, via `type = "cumldeg"`, along with the `get_degree_dist()` function that calculates it. Both work off the timed edgelist, so they require a `netdx()` run with `keep.tedgelist = TRUE`. The cumulative distribution counts the partners each node accumulates over the simulation, rather than the partners held at one moment in time; `momentary = TRUE` overlays the momentary distribution over the same window for comparison, and `window` restricts both to a period of interest. Two models with the same mean degree and mean partnership duration accumulate the same number of partners per node even when their momentary degree distributions differ, which the `?plot.netdx` example shows for models with high and low concurrency. Closes #1050.
+- Add an `edges.correct.attr` control to `control.net()`, naming a binary nodal attribute that marks the nodes eligible to form ties. `edges_correct()` rescales the edges coefficient to preserve mean degree as the population changes, and by default it counts every active node, which is correct whenever every active node can form a tie. It is not correct when a model carries a subpopulation that stays active but is structurally excluded from the network, such as an age band past a sexual-cessation age whose target statistics are all zero, so that `ergm` pins its terms off and no tie incident to those nodes can form. The correction then counts nodes that can never hold an edge, and the whole of the adjustment lands on the nodes that can, thinning mean degree among them by the excluded share. In an HIV model with cessation at 65 and a retired band growing to a fifth of the population, mean degree among the sexually active fell 18% over 25 years and all three bacterial sexually transmitted infections went extinct. None of it appears in `netdx()`, which runs before any node has been excluded. Setting the control counts only the eligible nodes and leaves the default behavior untouched.
+
+- Add an `ergm.ego.popsize` argument to `netest()` exposing the `popsize` parameter of `ergm.ego::ergm.ego()`. Defaults to `0` (preserves prior behavior); set to `1` for per-capita scaling of the edges coefficient, which lets the fitted model be applied to networks of arbitrary size. Closes #936.
+
+### BUG FIXES
+
 -   Fix `edges_correct()` to leave the edges coefficients alone, with a warning naming the time step, when the adjustment it computes is not finite. A population count reaching zero made the adjustment infinite, and an infinite or `NaN` value added to an edges coefficient causes every proposed tie to be rejected for the remainder of the run, which presents as a slow collapse of the network rather than as an error.
 
 -   Fix `set_attr()` and `append_attr()` so that a nodal attribute they create always holds one value per node. `set_attr()` with `posit_ids` on an attribute that did not exist yet wrote into a snapshot of the attribute list taken before the attribute was created, so the result was as long as the highest selected position (length 2 for `posit_ids = c(1, 2)`, length 7 for `c(4, 7)`) rather than one entry per node. `append_attr()` on an attribute that did not exist yet returned the appended values alone, so an arrivals module creating a custom attribute on the first step with any arrival left that attribute covering only the new nodes. Both now fill the nodes they do not write to with `NA`. `check_attr_lengths()` is also fixed: it errored on its first line for every input (`$` on an atomic vector), and reported attribute positions rather than lengths. `netsim()` now calls it at the end of each time step, so an attribute of the wrong length is reported when it appears rather than surfacing later as a recycling error or as silently wrong output. Closes #1058.
@@ -53,7 +62,6 @@
 
 ### OTHER
 
-- Document how restarted simulations recycle the simulations of `x` (simulation `s` restarts from simulation `(s - 1) %% n + 1`) in `?netsim`, `?control.net` and `?initialize.net`.
 - `netsim()` now validates that each per-step module returns the `netsim_dat` object. When a custom module forgets `return(dat)` (or otherwise returns the wrong type), the simulation now stops with a clear error naming the offending module and pointing at the likely cause, instead of failing on the next module with the cryptic `argument "dat" is missing`. Closes #987.
 - Rewrote the `?EpiModel-package` overview. It now describes the current API rather than the v2.4-era one: the three model classes and what distinguishes them, the setup and simulation functions for each, the network-only extension API and its accessor functions, how to work with simulation output, and pointers to the vignettes, the NME course materials, and the EpiModel Gallery. This removes the stale claim that controls accept new modules for ICMs (removed in v2.6.1) and the hand-maintained version/date/license table, which duplicated `DESCRIPTION`, was already out of date, and displaced the package description on the help page.
 - Replaced two dead EpiModel Gallery links in historical NEWS entries with the corresponding Network Modeling for Epidemics course chapters on multi-layer networks and epidemics over observed networks.
