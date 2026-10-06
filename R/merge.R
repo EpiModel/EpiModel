@@ -207,8 +207,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
 
   ## Check params
-  check1 <- identical(param_without_random_values(x$param),
-                      param_without_random_values(y$param))
+  check1 <- identical(x$param, y$param)
 
   fmla_controls <- c(
     "monitors",
@@ -240,10 +239,6 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   z <- x
   z$control$nsims <- x$control$nsims + y$control$nsims
   newnames <- paste0("sim", seq_len(z$control$nsims))
-  z$param$random.params.values <- merge_random_params_values(
-    x$param$random.params.values, y$param$random.params.values,
-    x$control$nsims, y$control$nsims
-  )
 
   # Merge epi data
   for (i in seq_along(x$epi)) {

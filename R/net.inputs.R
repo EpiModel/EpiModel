@@ -104,18 +104,6 @@
 #' further examples, see the
 #' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
 #'
-#' @section Random Parameters:
-#' In addition to deterministic parameters in either fixed or time-varying
-#' varieties above, one may also include a generator for random parameters.
-#' These might include a vector of potential parameter values or a statistical
-#' distribution definition; in either case, one draw from the generator would
-#' be completed per individual simulation. This is possible by passing a list
-#' named `random.params` into `param.net`, with each element of
-#' `random.params` a named generator function. See the help page and
-#' examples in [generate_random_params()]. A simple factory function
-#' for sampling is provided with [param_random()] but any function
-#' will do.
-#'
 #' @section Using a Parameter data.frame:
 #' It is possible to set input parameters using a specifically formatted
 #' `data.frame` object. The first 3 columns of this `data.frame` must
@@ -166,7 +154,7 @@
 #'
 #' @examples
 #' \donttest{
-#' ## Example SIR model parameterization with fixed and random parameters
+#' ## Example SIR model parameterization
 #' # Network model estimation
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -174,32 +162,16 @@
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
-#' # Random epidemic parameter list (here act.rate values are sampled uniformly
-#' # with helper function param_random, and inf.prob follows a general Beta
-#' # distribution with the parameters shown below)
-#' my_randoms <- list(
-#'   act.rate = param_random(1:3),
-#'   inf.prob = function() rbeta(1, 1, 2)
-#' )
-#'
 #' # Parameters, initial conditions, and control settings
-#' param <- param.net(rec.rate = 0.02, random.params = my_randoms)
-#'
-#' # Printing parameters shows both fixed and and random parameter functions
+#' param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.02)
 #' param
 #'
-#' # Set initial conditions and controls
 #' init <- init.net(i.num = 10, r.num = 0)
 #' control <- control.net(type = "SIR", nsteps = 10, nsims = 3, verbose = FALSE)
 #'
 #' # Simulate the model
 #' sim <- netsim(est, param, init, control)
-#'
-#' # Printing the sim object shows the randomly drawn values for each simulation
 #' sim
-#'
-#' # Parameter sets can be extracted with:
-#' get_param_set(sim)
 #' }
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
@@ -239,19 +211,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if (length(dot.args) > 0) {
     for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
-  ## random.params checks
-  if ("random.params" %in% names.dot.args) {
-    for (nm in names(p[["random.params"]])) {
-      if (nm %in% names(p)) {
-        warning(
-          "The parameter `", nm, "` is defined twice, once as fixed",
-          " and once as a random parameter.\n Only the random parameter",
-          " definition will be used."
-        )
-      }
     }
   }
 
@@ -346,225 +305,6 @@ update_params <- function(param, new.param.list) {
 
   for (ii in seq_along(new.param.list)) {
     param[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
-  }
-
-  return(param)
-}
-
-
-#' @title Create a Value Sampler for Random Parameters
-#'
-#' @description This function returns a 0 argument function that can be used as
-#'   a generator function in the `random.params` argument of the
-#'   [param.net()] function.
-#'
-#' @param values A vector of values to sample from.
-#' @param prob A vector of weights to use during sampling. If `NULL`,
-#'        all values have the same probability of being picked
-#'        (default = `NULL`).
-#'
-#' @return A 0 argument generator function to sample one of the values from the
-#' `values` vector.
-#'
-#' @seealso [param.net()] and [generate_random_params()]
-#' @export
-#'
-#' @examples
-#' # Define function with equal sampling probability
-#' a <- param_random(1:5)
-#' a()
-#'
-#' # Define function with unequal sampling probability
-#' b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
-#' b()
-#'
-param_random <- function(values, prob = NULL) {
-  if (!is.null(prob) && length(prob) != length(values)) {
-    stop("incorrect number of probabilites")
-  }
-
-  f <- function() {
-    return(sample(x = values, size = 1, prob = prob, replace = TRUE))
-  }
-
-  return(f)
-}
-
-
-#' @title Generate Values for Random Parameters
-#'
-#' @description This function uses the generative functions in the
-#'              `random.params` list to create values for the parameters.
-#'
-#' @param param The `param` argument received by the `netsim`
-#'              functions.
-#' @param verbose Should the function output the generated values
-#'                (default = FALSE)?
-#'
-#' @return A fully instantiated `param` list.
-#'
-
-#' @section `random.params`:
-#' The `random.params` argument to the [param.net()] function
-#' must be a named list of functions that each return a value that can be used
-#' as the argument with the same name. In the example below, `param_random`
-#' is a function factory provided by EpiModel for `act.rate` and
-#' for `tx.halt.part.prob` we provide bespoke functions. A function factory
-#' is a function that returns a new function
-#' (see https://adv-r.hadley.nz/function-factories.html).
-#'
-#' @section Generator Functions:
-#' The functions used inside `random_params` must be 0 argument functions
-#' returning a valid value for the parameter with the same name.
-#'
-#' @section `param_random_set`:
-#' The `random_params` list can optionally contain a
-#' `param_random_set` element. It must be a `data.frame` of possible
-#' values to be used as parameters.
-#'
-#' The column names must correspond either to:
-#' the name of one parameter, if this parameter is of size 1; or the name of one
-#' parameter with "_1", "_2", etc. appended, with the number representing the
-#' position of the value, if this parameter is of size > 1. This means that the
-#' parameter names cannot contain any underscores "_" if you intend to use
-#' `param_random_set`.
-#'
-#' The point of the `param.random.set` `data.frame` is to allow the
-#' random parameters to be correlated. To achieve this, a whole row of the
-#' `data.frame` is selected for each simulation.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'
-#' ## Example with only the generator function
-#'
-#' # Define random parameter list
-#' my_randoms <- list(
-#'   act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'   tx.prob = function() rbeta(1, 1, 2),
-#'   stratified.test.rate = function() c(
-#'     rnorm(1, 0.05, 0.01),
-#'     rnorm(1, 0.15, 0.03),
-#'     rnorm(1, 0.25, 0.05)
-#'   )
-#' )
-#'
-#' # Parameter model with fixed and random parameters
-#' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
-#'
-#' # Below, `tx.prob` is set first to 0.3 then assigned a random value using
-#' # the function from `my_randoms`. A warning notifying of this overwrite is
-#' # therefore produced.
-#' param <- param.net(tx.prob = 0.3, random.params = my_randoms)
-#'
-#'
-#' # Parameters are drawn automatically in netsim by calling the function
-#' # within netsim_loop. Demonstrating draws here but this is not used by
-#' # end user.
-#' paramDraw <- generate_random_params(param, verbose = TRUE)
-#' paramDraw
-#'
-#'
-#' ## Addition of the `param.random.set` `data.frame`
-#'
-#' # This function will generate sets of correlated parameters
-#'  generate_correlated_params <- function() {
-#'    param.unique <- runif(1)
-#'    param.set.1 <- param.unique + runif(2)
-#'    param.set.2 <- param.unique * rnorm(3)
-#'
-#'    return(list(param.unique, param.set.1, param.set.2))
-#'  }
-#'
-#'  # Data.frame set of random parameters :
-#'  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-#'  correlated_params <- as.data.frame(correlated_params)
-#'  colnames(correlated_params) <- c(
-#'    "param.unique",
-#'    "param.set.1_1", "param.set.1_2",
-#'    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-#'  )
-#'
-#' # Define random parameter list with the `param.random.set` element
-#' my_randoms <- list(
-#'   act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'   param.random.set = correlated_params
-#' )
-#'
-#' # Parameter model with fixed and random parameters
-#' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
-#'
-#' # Parameters are drawn automatically in netsim by calling the function
-#' # within netsim_loop. Demonstrating draws here but this is not used by
-#' # end user.
-#' paramDraw <- generate_random_params(param, verbose = TRUE)
-#' paramDraw
-#'
-#' }
-generate_random_params <- function(param, verbose = FALSE) {
-  if (is.null(param[["random.params"]]) ||
-        length(param[["random.params"]]) == 0) {
-    return(param)
-  } else {
-    random.params <- param[["random.params"]]
-  }
-
-  if (!is.list(random.params)) {
-    stop("`random.params` must be named list of functions")
-  }
-
-  rng_names <- names(random.params)
-  if (any(rng_names == "")) {
-    stop("all elements of `random.params` must be named")
-  }
-
-  rng_values <- list()
-
-  if ("param.random.set" %in% rng_names) {
-    # Take `param.random.set` out of the `random.params` list
-    param.random.set <- random.params[["param.random.set"]]
-    random.params[["param.random.set"]] <- NULL
-    rng_names <- names(random.params)
-
-    if (!is.data.frame(param.random.set)) {
-      stop("`param.random.set` must be a data.frame")
-    }
-
-    # Pick one row of the `data.frame`
-    sampled.row <- sample.int(nrow(param.random.set), 1)
-
-    # Convert to `param` format (`drop = FALSE` keeps the names when
-    # `param.random.set` has a single parameter column)
-    sampled.set <- unflatten_params(param.random.set[sampled.row, , drop = FALSE])
-
-    # Update `rng_values`
-    rng_values <- update_list(rng_values, sampled.set)
-  }
-
-  if (!all(vapply(random.params, is.function, TRUE))) {
-    stop("all elements of `random.params` must be functions \n",
-         "(Except 'param.random.set')")
-  }
-
-  duplicated.rng <- names(rng_values) %in% rng_names
-  if (any(duplicated.rng)) {
-    warning("Some parameters are set to be randomly assigned twice: \n",
-            paste0(rng_names[duplicated.rng], collapse = ", "), "\n\n",
-            "The version from a generator function will be used")
-  }
-
-  rng_values[rng_names] <- lapply(random.params, do.call, args = list())
-  param <- update_list(param, rng_values)
-
-  param[["random.params.values"]] <- rng_values
-
-  if (verbose == TRUE) {
-    msg <-
-      "The following values were randomly generated for the given parameters: \n"
-    msg <- c(msg, paste0("`", names(rng_values), "`: ", rng_values, "\n"))
-    message(msg)
   }
 
   return(param)
