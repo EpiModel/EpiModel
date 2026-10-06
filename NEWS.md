@@ -14,6 +14,8 @@
 
 ### BUG FIXES
 
+-   Fix `merge.netsim()` on objects coming from a previous merge that dropped elements. A merge removes the per-simulation elements it does not keep (`network`, `run`, `cumulative.edgelist`, `attr.history`, `raw.records`, `diss.stats`, the `save.other` elements), but required both objects to hold the same elements, so merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) failed from the third one with "x and y have different structure" whenever one was dropped. As `keep.cumulative.edgelist` is `FALSE` by default, this was the case with the default arguments for any model saving its cumulative edgelists. These elements may now be missing from one side, and are then dropped. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
+
 -   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a merged object read the wrong formation coefficients for the simulations coming from `y`.
 
 -   Fix `get_sims()` to subset the per-simulation `coef.form`, `attr.history` and `raw.records` elements, which were returned for every simulation regardless of `sims`.

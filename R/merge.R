@@ -185,15 +185,24 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          keep.run = TRUE, keep.cumulative.edgelist = FALSE,
                          keep.attr.history = TRUE, ...) {
 
-  ## Check structure
-  if (length(x) != length(y) || !identical(names(x), names(y))) {
+  ## Check structure. The per-simulation elements that are dropped when not
+  ## kept (see below) may be missing from one side, e.g. when `x` is the
+  ## result of a previous merge that dropped them: they are then dropped.
+  droppable <- c(
+    "coef.form", "network", "run", "cumulative.edgelist", "attr.history",
+    "raw.records", "diss.stats", x$control$save.other, y$control$save.other
+  )
+  if (!identical(setdiff(names(x), droppable), setdiff(names(y), droppable))) {
     stop("x and y have different structure")
   }
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
+  common <- intersect(names(x), names(y))
+  elt_classes <- function(obj) {
+    vapply(obj[common], function(i) class(i)[1], character(1))
+  }
   if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !all(sapply(x, function(i) class(i)[1]) ==
-               sapply(y, function(i) class(i)[1]))) {
+        !identical(elt_classes(x), elt_classes(y))) {
     stop("x and y have different structure")
   }
 
@@ -320,13 +329,12 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
       if (!identical(other.x, other.y)) {
         stop("Elements in save.other differ between x and y")
       }
-      new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
-      for (j in seq_along(other.x)) {
-        for (i in new.range) {
-          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
-        }
-        if (!is.null(z[[other.x[j]]])) {
-          names(z[[other.x[j]]]) <- newnames
+      for (elt in other.x) {
+        if (length(x[[elt]]) > 0 && length(y[[elt]]) > 0) {
+          z[[elt]] <- c(x[[elt]], y[[elt]])
+          names(z[[elt]]) <- newnames
+        } else {
+          z[[elt]] <- NULL
         }
       }
     } else {

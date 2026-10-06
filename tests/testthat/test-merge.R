@@ -364,3 +364,63 @@ test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {
   # `keep.run = FALSE` does not corrupt a `run` managed by `save.other`
   expect_length(merge(x, y, keep.other = TRUE, keep.run = FALSE)$run, 4)
 })
+
+test_that("merge.netsim chains merges that drop elements", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 3, nsims = 6,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  parts <- lapply(list(1:2, 3:4, 5:6), function(s) get_sims(mod, sims = s))
+
+  # cumulative edgelists are dropped by default, from the first merge on
+  z <- Reduce(merge, parts)
+  expect_equal(z$control$nsims, 6)
+  expect_null(z$cumulative.edgelist)
+  expect_length(z$run, 6)
+  expect_equal(z$epi$i.num, mod$epi$i.num, check.attributes = FALSE)
+
+  z <- Reduce(function(a, b) merge(a, b, keep.run = FALSE, keep.attr.history = FALSE), parts)
+  expect_equal(z$control$nsims, 6)
+  expect_null(z$run)
+  expect_null(z$attr.history)
+  expect_null(z$raw.records)
+
+  # an element missing from one side is dropped, even when kept
+  no_run <- merge(parts[[1]], parts[[2]], keep.run = FALSE)
+  z <- merge(no_run, parts[[3]], keep.run = TRUE)
+  expect_equal(z$control$nsims, 6)
+  expect_null(z$run)
+  expect_length(z$coef.form, 6)
+
+  # other differences in structure are still errors
+  odd <- parts[[2]]
+  odd$not_an_element <- 1
+  expect_error(merge(parts[[1]], odd), "different structure")
+})
+
+test_that("merge.netsim chains merges of save.other elements", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 3, nsims = 6,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.other = "el", verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  parts <- lapply(list(1:2, 3:4, 5:6), function(s) get_sims(mod, sims = s))
+
+  z <- Reduce(merge, parts)
+  expect_named(z$el, paste0("sim", 1:6))
+  expect_equal(unname(z$el), unname(mod$el))
+
+  z <- Reduce(function(a, b) merge(a, b, keep.other = FALSE), parts)
+  expect_equal(z$control$nsims, 6)
+  expect_null(z$el)
+})
