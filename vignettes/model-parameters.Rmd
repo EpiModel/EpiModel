@@ -28,12 +28,13 @@ This vignette assumes familiarity with setting up and running network models in 
 
 For working with nodal attributes and epidemic summary statistics, see the companion vignette *Working with Custom Attributes and Summary Statistics in EpiModel*. For network objects and edgelists, see *Working with Network Objects in EpiModel*.
 
-In a model, *parameters* are the input variables that define aspects of system behavior. In a basic SIS (Susceptible-Infected-Susceptible) model, these might include an **infection probability**, an **act rate**, and a **recovery rate**. In simple models, each parameter is a single fixed value that remains constant throughout a simulation. Real-world applications, however, often require more flexibility: parameters that change over time (e.g., to represent an intervention rollout or behavioral change during an epidemic) or large parameter sets managed via spreadsheets.
+In a model, *parameters* are the input variables that define aspects of system behavior. In a basic SIS (Susceptible-Infected-Susceptible) model, these might include an **infection probability**, an **act rate**, and a **recovery rate**. In simple models, each parameter is a single fixed value that remains constant throughout a simulation. Real-world applications, however, often require more flexibility: parameters that change over time (e.g., to represent an intervention rollout or behavioral change during an epidemic), parameters drawn from distributions (for sensitivity analysis or calibration), or large parameter sets managed via spreadsheets.
 
 This vignette demonstrates how to implement:
 
 - **Scenarios:** Named sets of parameter changes applied at the start of a simulation or at specific time steps---the primary mechanism for time-varying parameters, counterfactual analysis, and intervention modeling.
 - **Parameter input via tables:** Passing many parameters at once through a `data.frame`, enabling spreadsheet-based parameter management.
+- **Parameter uncertainty:** Drawing parameter values from distributions or from joint parameter sets and running each draw as a scenario, for uncertainty and sensitivity analysis.
 - **Parameter and control updaters (advanced):** The low-level mechanism underlying scenarios, exposed directly for cases where the scenario API is not flexible enough.
 
 ## Scenarios
@@ -204,6 +205,131 @@ param <- param.net(data.frame.params = df_params,
                    other.param = c(5, 10), act.rate = 1)
 param
 ```
+
+
+## Parameter Uncertainty
+
+Fixed parameters assume that each input value is known with certainty. In practice, many inputs are estimated with error, and an analysis may need to show how that uncertainty propagates to the epidemic outcomes. In EpiModel this is done with scenarios: the parameter values are drawn before any simulation runs and stored in a `data.frame` with one row per draw, and each row is run as a scenario that replaces the base parameter values at `.at = 0`. Because the draws exist as a table before the simulations start, they can be inspected and saved, they can be joined back onto the simulation output, and parameters that were sampled together stay together.
+
+### Drawing Parameter Values
+
+We draw eight sets of values for the act rate and the per-act infection probability of the SIS model from the setup section. Each parameter is drawn independently with base R sampling functions: `sample()` selects from a discrete set of values (with unequal weights given through its `prob` argument), and `rbeta()` draws from a continuous distribution.
+
+```{r uncertainty_draws}
+set.seed(12)
+n.draws <- 8
+
+draws <- data.frame(
+  .scenario.id = paste0("draw", seq_len(n.draws)),
+  .at = 0,
+  act.rate = sample(c(1, 2, 3), n.draws, replace = TRUE),
+  inf.prob = rbeta(n.draws, 2, 6)
+)
+knitr::kable(draws, digits = 3)
+```
+
+The `.scenario.id` and `.at` columns follow the scenario format described above. Each draw is its own scenario, and the remaining columns hold the drawn values.
+
+### Correlated Draws
+
+Independent draws are appropriate only when the parameters are independent. Parameter sets from a calibration, posterior samples, and sampling designs with an imposed correlation structure must instead be drawn as whole rows. Drawing each column separately from such a table would discard the correlation between parameters.
+
+As an example, suppose that a calibration produced 500 accepted parameter sets in which the act rate and the infection probability are negatively correlated, as happens when the calibration targets inform their combined effect on transmission but not each parameter separately.
+
+```{r uncertainty_posterior}
+posterior <- data.frame(act.rate = runif(500, 1, 3))
+posterior$inf.prob <- 0.5 / posterior$act.rate * exp(rnorm(500, 0, 0.1))
+cor(posterior$act.rate, posterior$inf.prob)
+```
+
+To keep each set together, we sample rows of the table rather than values from each column:
+
+```{r uncertainty_joint}
+draws.joint <- data.frame(
+  .scenario.id = paste0("draw", seq_len(n.draws)),
+  .at = 0,
+  posterior[sample(nrow(posterior), n.draws), ],
+  row.names = NULL
+)
+knitr::kable(draws.joint, digits = 3)
+```
+
+This table is run in the same way as the independent draws below. If every accepted parameter set can be simulated, the rows of `posterior` can be used directly without sampling.
+
+### Vector Parameters
+
+Vector parameters use the `paramname_N` columns described in *Scenarios with Parameter Vectors*, with one column per element. Each element can be drawn from its own distribution, as in this example of a testing rate stratified into two groups (which a custom testing module would use), or the elements can be drawn jointly as rows. As with any scenario, the parameter must already be defined in the base parameter object.
+
+```{r uncertainty_vector}
+draws.vec <- data.frame(
+  .scenario.id = paste0("draw", 1:3),
+  .at = 0,
+  test.rate_1 = rnorm(3, 0.05, 0.01),
+  test.rate_2 = rnorm(3, 0.15, 0.03)
+)
+
+param.vec <- param.net(inf.prob = 0.3, test.rate = c(0.05, 0.15))
+sc.vec <- create_scenario_list(draws.vec)
+use_scenario(param.vec, sc.vec$draw2)$test.rate
+```
+
+### Running the Draws
+
+We convert the independent draws to a scenario list and run each one as in *Running Scenarios* above, with two simulations per draw.
+
+```{r uncertainty_run}
+param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.05)
+control <- control.net(type = "SIS", nsims = 2, nsteps = 100, verbose = FALSE)
+
+draws.list <- create_scenario_list(draws)
+
+d_list <- lapply(draws.list, function(scenario) {
+  sc.param <- use_scenario(param, scenario)
+  sim <- netsim(est, sc.param, init, control)
+  d_sim <- as.data.frame(sim)
+  d_sim[["scenario"]] <- scenario$id
+  d_sim
+})
+d_unc <- bind_rows(d_list)
+```
+
+The values of `inf.prob` and `act.rate` in `param` are placeholders, since every scenario replaces them before its simulations start. The parameters a simulation actually used are stored in its output: `sim$param` holds the base parameters with the scenario values applied, along with the scenario ID in `.scenario.id`.
+
+The two simulations within a draw differ only by stochastic variation, while differences between draws also reflect the parameter uncertainty. Setting `nsims = 1` with a larger number of draws gives one simulation per draw. For large numbers of draws, the [EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package runs a scenario list locally with `netsim_scenarios()` or as an array job on a SLURM cluster with `step_tmpl_netsim_scenarios()`.
+
+### Linking Draws to Outcomes
+
+The scenario ID links each simulation to its row of the draws table, so the drawn values can be joined onto the epidemic output. Here we also compute the probability of transmission within a discordant partnership per time step, `1 - (1 - inf.prob)^act.rate`, and compare it with prevalence at the final time step.
+
+```{r uncertainty_join}
+d_unc <- left_join(d_unc, select(draws, -.at), by = c("scenario" = ".scenario.id"))
+d_unc$trans.prob <- 1 - (1 - d_unc$inf.prob)^d_unc$act.rate
+
+d_final <- filter(d_unc, time == max(time))
+```
+
+```{r uncertainty_plot, fig.width = 8}
+plot(d_final$trans.prob, d_final$i.num / d_final$num,
+     pch = 19, col = d_final$act.rate, ylim = c(0, 1),
+     xlab = "Transmission probability per partnership per time step",
+     ylab = "Prevalence at time step 100")
+legend("topleft", legend = paste("act.rate =", 1:3),
+       col = 1:3, pch = 19, bty = "n")
+```
+
+Each point is one simulation. In this model, prevalence at the final time step increases with the per-partnership transmission probability, and the two simulations for each draw show the stochastic variation around that relationship.
+
+### Migrating from `random.params`
+
+Through EpiModel v2.6.2, random parameters were specified with the `random.params` argument of `param.net()`, and `netsim()` drew one set of values at the start of each simulation. That interface has been removed, and passing `random.params` to `param.net()` now produces an error. Each part of it has a counterpart in the approach above, where `n` is the number of draws:
+
+| Removed interface | Replacement |
+|:--|:--|
+| `param_random(values, prob)` | `sample(values, n, replace = TRUE, prob = prob)` |
+| A generator function such as `function() rbeta(1, 1, 2)` | The vectorized draw `rbeta(n, 1, 2)` |
+| A generator function returning a vector | One `paramname_N` column per element |
+| `param.random.set` | Sampling whole rows of the table, as in *Correlated Draws* |
+| `get_param_set(sim)` | The table of draws, joined to the output by scenario ID |
 
 
 ## Time-Varying Parameters and Control Settings (Advanced)

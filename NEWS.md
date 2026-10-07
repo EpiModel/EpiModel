@@ -2,7 +2,7 @@
 
 ### BREAKING CHANGES
 
--   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Use the scenario API (`create_scenario_list()` / `use_scenario()`) for parameter sweeps and `param.net_to_table()` to tabulate parameters.
+-   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Passing `random.params` to `param.net()` now produces an error; without it, the list would be stored as an ordinary parameter and the model would run on the fixed values without any draws. To vary parameters across simulations, draw the values in advance into a table with one row per draw and run each row as a scenario with `create_scenario_list()` and `use_scenario()`. The new Parameter Uncertainty section of the "Working with Model Parameters" vignette shows this approach, including correlated draws and a mapping from each part of the removed interface. Use `param.net_to_table()` to tabulate parameters.
 
 ## EpiModel 2.6.2
 
