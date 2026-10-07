@@ -947,11 +947,13 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'
 #' @details
 #' The restart point created always contains a single simulation and drops the
-#' `attr.history` and the `raw.records` from the initial simulation.
+#' `attr.history`, the `raw.records`, the transmission matrix and the network
+#' statistics (`nwstats`) from the initial simulation. A simulation restarted
+#' from it with `save.transmat` or `save.nwstats` only records the transmissions
+#' and network statistics of its new time steps.
 #'
-#' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
-#' truncated to only contain the last `keep_steps` entries. The unique IDs in
-#' the transmission matrix are re-based like the ones of the attributes.
+#' The epi trackers and cumulative edgelists are truncated to only contain the
+#' last `keep_steps` entries.
 #'
 #' Warning: the `time_attrs` argument is mandatory. Almost all simulations worth
 #' restarting have such attributes (e.g. time.of.hiv.infection). If no such
@@ -1097,27 +1099,11 @@ make_restart_point <- function(
 
   x$run[[1]] <- run_ls
 
-  # If transmat was saved, trim it, offset the `at` column and the UIDs
-  if (x$control$save.transmat) {
-    tsmt <- x$stats$transmat[[1]]
-    tsmt$at <- tsmt$at - time_offset
-    for (uid_col in intersect(c("sus", "inf"), names(tsmt))) {
-      tsmt[[uid_col]] <- tsmt[[uid_col]] - uid_offset
-    }
-    x$stats$transmat[[1]] <- tsmt[tsmt$at > 0, , drop = FALSE]
-  }
-
-  # If `nwstats` are saved, keep only the last rows
-  if (x$control$save.nwstats) {
-    x$stats$nwstats[[1]] <- lapply(
-      x$stats$nwstats[[1]],
-      function(d) d[keep_rows, , drop = FALSE]
-    )
-  }
-
   # Output ---------------------------------------------------------------------
   x$attr.history <- list()
   x$raw.records <- list()
+  x$stats$transmat <- NULL
+  x$stats$nwstats <- NULL
   return(x)
 }
 

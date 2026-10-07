@@ -4,6 +4,8 @@
 
 -   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Use the scenario API (`create_scenario_list()` / `use_scenario()`) for parameter sweeps and `param.net_to_table()` to tabulate parameters.
 
+-   `make_restart_point()` no longer keeps the transmission matrix (`stats$transmat`) and the network statistics (`stats$nwstats`) of the prior simulation, which it trimmed to the last `keep_steps` time steps, to keep the restart points lightweight. A simulation restarted from it with `save.transmat` or `save.nwstats` now only records the transmissions and network statistics of its new time steps. Restarting from a full `netsim` object still carries them over.
+
 ### NEW FEATURES
 
 - `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists can be passed to `netsim()` as a restart point, each new simulation restarting from the matching merged one. Only `keep.cumulative.edgelist` defaults to `FALSE`.
@@ -22,7 +24,7 @@
 
 -   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is left as is with a warning, as its entries cannot be matched to the simulations; it was subset by position before.
 
--   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
+-   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the new time steps are then recorded on their own.
 
 -   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
 

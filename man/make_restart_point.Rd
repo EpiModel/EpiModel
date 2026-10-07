@@ -33,11 +33,13 @@ simulations where \code{control$tergmLite = TRUE}
 }
 \details{
 The restart point created always contains a single simulation and drops the
-\code{attr.history} and the \code{raw.records} from the initial simulation.
+\code{attr.history}, the \code{raw.records}, the transmission matrix and the network
+statistics (\code{nwstats}) from the initial simulation. A simulation restarted
+from it with \code{save.transmat} or \code{save.nwstats} only records the transmissions
+and network statistics of its new time steps.
 
-The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} are
-truncated to only contain the last \code{keep_steps} entries. The unique IDs in
-the transmission matrix are re-based like the ones of the attributes.
+The epi trackers and cumulative edgelists are truncated to only contain the
+last \code{keep_steps} entries.
 
 Warning: the \code{time_attrs} argument is mandatory. Almost all simulations worth
 restarting have such attributes (e.g. time.of.hiv.infection). If no such
