@@ -1,6 +1,33 @@
 # Changelog
 
+## EpiModel 2.7.0
+
+### BREAKING CHANGES
+
+- Removed the random parameter interface: the `random.params` argument
+  of
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  (including `param.random.set`), `param_random()`,
+  `generate_random_params()`, and `get_param_set()`. Passing
+  `random.params` to
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  now produces an error, rather than storing the list as an ordinary
+  parameter and running the model on the fixed values without any draws.
+  To vary parameters across simulations, draw the values in advance into
+  a table with one row per draw and run each row as a scenario with
+  [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
+  and
+  [`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md).
+  The new Parameter Uncertainty section of the “Working with Model
+  Parameters in EpiModel” vignette shows this approach, including
+  correlated draws and a mapping from each part of the removed
+  interface. To tabulate the parameters of a single `param.net` object,
+  use
+  [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md).
+
 ## EpiModel 2.6.2
+
+CRAN release: 2026-09-16
 
 ### BREAKING CHANGES
 
@@ -360,13 +387,12 @@ CRAN release: 2026-05-13
 - Fix
   [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md),
   [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md),
-  and
-  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
-  to preserve and report per-simulation `random.params` draw metadata
-  correctly. Subsetting now subsets `param$random.params.values`;
-  merging compatible `netsim` objects now appends those values instead
-  of retaining only the first object’s; one-simulation outputs with
-  vector-valued random parameters are now reported correctly.
+  and `get_param_set()` to preserve and report per-simulation
+  `random.params` draw metadata correctly. Subsetting now subsets
+  `param$random.params.values`; merging compatible `netsim` objects now
+  appends those values instead of retaining only the first object’s;
+  one-simulation outputs with vector-valued random parameters are now
+  reported correctly.
 - Fix
   [`mutate_epi()`](https://epimodel.github.io/EpiModel/reference/mutate_epi.md)
   to replicate scalar constants across all simulations/runs and use
@@ -863,8 +889,7 @@ CRAN release: 2021-11-09
   although that is still allowed.
 - Addition of the `get_param_set` function that extracts from a `netsim`
   object the set of parameters used by each simulation. See the help
-  page:
-  [`help("get_param_set")`](https://epimodel.github.io/EpiModel/reference/get_param_set.md).
+  page: `help("get_param_set")`.
 - Developed a mechanism to store nodal attribute history over the course
   of a `netsim` simulation. See the vignette, “Working with attributes
   and summary statistics.”

@@ -319,8 +319,8 @@ interested in stochastic network models, the primary focus of EpiModel.
   specific topics for users building custom network models with the
   extension API:
   - *Working with Model Parameters:* Scenarios for time-varying
-    parameters, parameter input via tables, and random parameter
-    distributions for sensitivity analysis.
+    parameters, parameter input via tables, and parameter draws for
+    uncertainty and sensitivity analysis.
   - *Working with Custom Attributes and Summary Statistics:* Nodal
     attributes, attribute histories, epidemic trackers, and custom
     summary statistics.

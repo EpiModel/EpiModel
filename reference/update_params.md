@@ -73,7 +73,7 @@ x <- param.net(inf.prob = 0.5, act.rate = 2)
 y <- list(inf.prob = 0.75, dx.rate = 0.2)
 z <- update_params(x, y)
 print(z)
-#> Fixed Parameters
+#> Model Parameters
 #> ---------------------------
 #> inf.prob = 0.75
 #> act.rate = 2

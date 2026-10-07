@@ -45,8 +45,7 @@ Given a `netsim` object, `print.netsim` displays the following sections:
 number of simulations, number of time steps, and number of network
 groups.
 
-**Model parameters**: printed via `print.param.net()`, showing fixed and
-(if applicable) random parameters.
+**Model parameters**: printed via `print.param.net()`.
 
 **Model functions**: for extension models (`type = NULL`), lists the
 names of all custom module functions.

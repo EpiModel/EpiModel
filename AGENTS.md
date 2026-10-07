@@ -372,6 +372,14 @@ when writing examples, docs, or tests:
   (`control.net`)
 - `depend` → `resimulate.network` (`control.net`)
 
+v2.7.0 (#1086) removed the random parameter interface: the
+`random.params` argument of
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+`param_random()`, `generate_random_params()`, and `get_param_set()`.
+`param.net(random.params = )` hard-errors. To vary parameters across
+simulations, run a table of draws as scenarios (see the Parameter
+Uncertainty section of the `model-parameters` vignette).
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography
@@ -405,11 +413,9 @@ Other exported accessors and helpers worth knowing:
 
 - **Simulation slicing**:
   [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
-  (subset by index),
-  [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
-  and
+  (subset by index) and
   [`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
-  (recorded parameter and attribute trajectories).
+  (recorded attribute trajectories).
 - **Transmission / reachability**:
   [`get_discordant_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.md)
   (S–I pairs — generic form, supply the discordance attribute

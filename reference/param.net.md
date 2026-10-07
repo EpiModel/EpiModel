@@ -181,21 +181,6 @@ third element in the vector will carry forward until one of those events
 occurs or the simulation ends. For further examples, see the [Network
 Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
 
-## Random Parameters
-
-In addition to deterministic parameters in either fixed or time-varying
-varieties above, one may also include a generator for random parameters.
-These might include a vector of potential parameter values or a
-statistical distribution definition; in either case, one draw from the
-generator would be completed per individual simulation. This is possible
-by passing a list named `random.params` into `param.net`, with each
-element of `random.params` a named generator function. See the help page
-and examples in
-[`generate_random_params()`](https://epimodel.github.io/EpiModel/reference/generate_random_params.md).
-A simple factory function for sampling is provided with
-[`param_random()`](https://epimodel.github.io/EpiModel/reference/param_random.md)
-but any function will do.
-
 ## Using a Parameter data.frame
 
 It is possible to set input parameters using a specifically formatted
@@ -223,6 +208,18 @@ releases through v2.6.1 documented this argument as
 `data.frame.parameters`, which was never an accepted name; passing it
 now produces an error pointing to `data.frame.params`.
 
+## Parameter Uncertainty
+
+To vary parameter values across simulations for uncertainty or
+sensitivity analysis, draw the values in advance into a `data.frame`
+with one row per draw, convert it with
+[`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md),
+and apply each resulting scenario to the base parameters with
+[`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md).
+The "Working with Model Parameters in EpiModel" vignette works through
+an example. The `random.params` argument that served this purpose
+through v2.6.2 has been removed; passing it now produces an error.
+
 ## Parameters with New Modules
 
 To build original models outside of the base models, new process modules
@@ -249,7 +246,7 @@ to specify the control settings. Run the parameterized model with
 
 ``` r
 # \donttest{
-## Example SIR model parameterization with fixed and random parameters
+## Example SIR model parameterization
 # Network model estimation
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -265,37 +262,20 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #> Maximizing the pseudolikelihood.
 #> Finished MPLE.
 
-# Random epidemic parameter list (here act.rate values are sampled uniformly
-# with helper function param_random, and inf.prob follows a general Beta
-# distribution with the parameters shown below)
-my_randoms <- list(
-  act.rate = param_random(1:3),
-  inf.prob = function() rbeta(1, 1, 2)
-)
-
 # Parameters, initial conditions, and control settings
-param <- param.net(rec.rate = 0.02, random.params = my_randoms)
-
-# Printing parameters shows both fixed and and random parameter functions
+param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.02)
 param
-#> Fixed Parameters
+#> Model Parameters
 #> ---------------------------
+#> inf.prob = 0.3
+#> act.rate = 2
 #> rec.rate = 0.02
-#> 
-#> Random Parameters
-#> (Not drawn yet)
-#> ---------------------------
-#> act.rate = <function>
-#> inf.prob = <function>
 
-# Set initial conditions and controls
 init <- init.net(i.num = 10, r.num = 0)
 control <- control.net(type = "SIR", nsteps = 10, nsims = 3, verbose = FALSE)
 
 # Simulate the model
 sim <- netsim(est, param, init, control)
-
-# Printing the sim object shows the randomly drawn values for each simulation
 sim
 #> EpiModel Simulation
 #> =======================
@@ -308,15 +288,12 @@ sim
 #> No. time steps: 10
 #> No. NW groups: 1
 #> 
-#> Fixed Parameters
+#> Model Parameters
 #> ---------------------------
+#> inf.prob = 0.3
+#> act.rate = 2
 #> rec.rate = 0.02
 #> groups = 1
-#> 
-#> Random Parameters
-#> ---------------------------
-#> act.rate = 3 3 3
-#> inf.prob = 0.2075029 0.2819335 0.7256071
 #> 
 #> Model Output
 #> -----------------------
@@ -327,25 +304,18 @@ sim
 #> Formation Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50     57.2     14.4  1.684   4.276         7.326         6.451
+#> edges     50       48       -4  0.826   -2.42         4.927         4.526
 #> 
 #> 
 #> Duration Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     20   19.562   -2.189   0.47  -0.931         3.007         2.576
+#> edges     20   19.299   -3.504  0.181  -3.867         0.426         0.991
 #> 
 #> Dissolution Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges   0.05     0.05    0.556  0.004    0.07         0.004         0.022
+#> edges   0.05    0.055     9.38  0.005   1.022         0.012         0.032
 #> 
-
-# Parameter sets can be extracted with:
-get_param_set(sim)
-#>   sim rec.rate vital groups act.rate  inf.prob
-#> 1   1     0.02 FALSE      1        3 0.2075029
-#> 2   2     0.02 FALSE      1        3 0.2819335
-#> 3   3     0.02 FALSE      1        3 0.7256071
 # }
 ```

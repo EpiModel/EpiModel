@@ -319,8 +319,8 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Warning: ‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0929.
-#> Convergence test p-value: 0.0001. 
+#> The log-likelihood improved by 0.0034.
+#> Convergence test p-value: 0.0004. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
@@ -335,7 +335,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55d634c8ad60>
+#> <environment: 0x5568d1b8c990>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
@@ -352,8 +352,8 @@ summary(est)
 #> Monte Carlo Maximum Likelihood Results:
 #> 
 #>            Estimate Std. Error MCMC % z value Pr(>|z|)    
-#> edges       -4.4110     0.3170      0  -13.92   <1e-04 ***
-#> concurrent  -0.2492     0.4084      0   -0.61    0.542    
+#> edges       -4.4465     0.3211      0 -13.847   <1e-04 ***
+#> concurrent  -0.1964     0.4062      0  -0.483    0.629    
 #> ---
 #> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #> 

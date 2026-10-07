@@ -254,7 +254,8 @@
 <code>births.FUN</code> / <code>deaths.FUN</code> → <code>arrivals.FUN</code> / <code>departures.FUN</code> (<code>control.net</code>)</li>
 <li>
 <code>depend</code> → <code>resimulate.network</code> (<code>control.net</code>)</li>
-</ul></div>
+</ul><p>v2.7.0 (#1086) removed the random parameter interface: the <code>random.params</code> argument of <code><a href="reference/param.net.html">param.net()</a></code>, <code>param_random()</code>, <code>generate_random_params()</code>, and <code>get_param_set()</code>. <code>param.net(random.params = )</code> hard-errors. To vary parameters across simulations, run a table of draws as scenarios (see the Parameter Uncertainty section of the <code>model-parameters</code> vignette).</p>
+</div>
 <div class="section level3">
 <h3 id="feedback-mechanisms">Feedback Mechanisms<a class="anchor" aria-label="anchor" href="#feedback-mechanisms"></a></h3>
 <p>Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using <code>status</code> as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (<code>inter.eff</code>, <code>inter.start</code>).</p>
@@ -272,7 +273,7 @@
 <p><code>as.data.frame.icm</code> / <code>as.data.frame.netsim</code> return objects that carry the <code>epi.data.frame</code> class alongside <code>data.frame</code>; <code>plot.epi.data.frame</code> plots them like <code>plot.netsim(type = "epi")</code>. Build them manually with <code>as.epi.data.frame(df)</code> or <code>df2epi(x)</code>.</p>
 <p>Other exported accessors and helpers worth knowing:</p>
 <ul><li>
-<strong>Simulation slicing</strong>: <code><a href="reference/get_sims.html">get_sims()</a></code> (subset by index), <code><a href="reference/get_param_set.html">get_param_set()</a></code> and <code><a href="reference/get_attr_history.html">get_attr_history()</a></code> (recorded parameter and attribute trajectories).</li>
+<strong>Simulation slicing</strong>: <code><a href="reference/get_sims.html">get_sims()</a></code> (subset by index) and <code><a href="reference/get_attr_history.html">get_attr_history()</a></code> (recorded attribute trajectories).</li>
 <li>
 <strong>Transmission / reachability</strong>: <code><a href="reference/get_discordant_edgelist.html">get_discordant_edgelist()</a></code> (S–I pairs — generic form, supply the discordance attribute explicitly), <code><a href="reference/reachable-nodes.html">get_forward_reachable()</a></code> / <code><a href="reference/reachable-nodes.html">get_backward_reachable()</a></code> over cumulative edgelists (set <code>control.net(save.cumulative.edgelist = TRUE)</code> to capture them).</li>
 <li>

@@ -33,9 +33,9 @@ This vignette demonstrates how to implement:
 - **Parameter input via tables:** Passing many parameters at once
   through a `data.frame`, enabling spreadsheet-based parameter
   management.
-- **Random parameters:** Distributions of parameter values rather than
-  single fixed values, for uncertainty quantification and sensitivity
-  analysis.
+- **Parameter uncertainty:** Drawing parameter values from distributions
+  or from joint parameter sets and running each draw as a scenario, for
+  uncertainty and sensitivity analysis.
 - **Parameter and control updaters (advanced):** The low-level mechanism
   underlying scenarios, exposed directly for cases where the scenario
   API is not flexible enough.
@@ -331,7 +331,7 @@ named parameters take priority over those in the `data.frame`:
 param <- param.net(data.frame.params = df_params,
                    other.param = c(5, 10), act.rate = 1)
 param
-#> Fixed Parameters
+#> Model Parameters
 #> ---------------------------
 #> hiv.test.rate = 0.003 0.102 0.492
 #> prep.require.lnt = TRUE
@@ -340,405 +340,237 @@ param
 #> other.param = 5 10
 ```
 
-## Random Parameters
+## Parameter Uncertainty
 
 Fixed parameters assume that each input value is known with certainty.
-In practice, we may want to explore how uncertainty in parameter values
-propagates to uncertainty in epidemic outcomes. EpiModel supports
-drawing parameter values from distributions, so that each simulation
-uses a different realization.
+In practice, many inputs are estimated with error, and an analysis may
+need to show how that uncertainty propagates to the epidemic outcomes.
+In EpiModel this is done with scenarios: the parameter values are drawn
+before any simulation runs and stored in a `data.frame` with one row per
+draw, and each row is run as a scenario that replaces the base parameter
+values at `.at = 0`. Because the draws exist as a table before the
+simulations start, they can be inspected and saved, they can be joined
+back onto the simulation output, and parameters that were sampled
+together stay together.
 
-### The Model
+### Drawing Parameter Values
 
-We demonstrate with a simple SI model.
+We draw eight sets of values for the act rate and the per-act infection
+probability of an SIS model that uses the network model and initial
+conditions from *Setup*. Each parameter is drawn independently with base
+R sampling functions: [`sample()`](https://rdrr.io/r/base/sample.html)
+selects from a discrete set of values (optionally weighted through its
+`prob` argument), and [`rbeta()`](https://rdrr.io/r/stats/Beta.html)
+draws from a continuous distribution.
 
 ``` r
 
-nw <- network_initialize(n = 50)
+set.seed(12)
+n.draws <- 8
 
-est <- netest(
-  nw, formation = ~edges,
-  target.stats = 25,
-  coef.diss = dissolution_coefs(~offset(edges), 10, 0),  # duration = 10, closed population
-  verbose = FALSE
+draws <- data.frame(
+  .scenario.id = paste0("draw", seq_len(n.draws)),
+  .at = 0,
+  act.rate = sample(c(1, 2, 3), n.draws, replace = TRUE),
+  inf.prob = rbeta(n.draws, 2, 6)
 )
-#> Starting simulated annealing (SAN)
-#> Iteration 1 of at most 4
-#> Finished simulated annealing
-#> Starting maximum pseudolikelihood estimation (MPLE):
-#> Obtaining the responsible dyads.
-#> Evaluating the predictor and response matrix.
-#> Maximizing the pseudolikelihood.
-#> Finished MPLE.
+knitr::kable(draws, digits = 3)
+```
 
-param <- param.net(
-  inf.prob = 0.3,
-  act.rate = 0.5,
-  dummy.param = 4,
-  dummy.strat.param = c(0, 1)
+| .scenario.id | .at | act.rate | inf.prob |
+|:-------------|----:|---------:|---------:|
+| draw1        |   0 |        2 |    0.203 |
+| draw2        |   0 |        2 |    0.197 |
+| draw3        |   0 |        3 |    0.151 |
+| draw4        |   0 |        3 |    0.231 |
+| draw5        |   0 |        2 |    0.337 |
+| draw6        |   0 |        1 |    0.132 |
+| draw7        |   0 |        1 |    0.079 |
+| draw8        |   0 |        2 |    0.132 |
+
+The `.scenario.id` and `.at` columns follow the scenario format
+described in *Scenario Definitions*. Each draw is its own scenario, and
+the remaining columns hold the drawn values.
+
+### Correlated Draws
+
+Drawing each parameter separately assumes that the parameters are
+independent. When they are not, as with accepted parameter sets from a
+calibration or samples from a joint posterior distribution, each set
+must be drawn as a whole row. Sampling each column separately from such
+a table would discard the correlation between parameters.
+
+As an example, suppose that a calibration produced 500 accepted
+parameter sets in which the act rate and the infection probability are
+negatively correlated, as happens when the calibration targets inform
+their combined effect on transmission but not each parameter separately.
+
+``` r
+
+posterior <- data.frame(act.rate = runif(500, 1, 3))
+posterior$inf.prob <- 0.5 / posterior$act.rate * exp(rnorm(500, 0, 0.1))
+cor(posterior$act.rate, posterior$inf.prob)
+#> [1] -0.9203932
+```
+
+To keep each set together, we sample rows of the table rather than
+values from each column:
+
+``` r
+
+draws.joint <- data.frame(
+  .scenario.id = paste0("draw", seq_len(n.draws)),
+  .at = 0,
+  posterior[sample(nrow(posterior), n.draws), ],
+  row.names = NULL
 )
-
-init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
-mod <- netsim(est, param, init, control)
-mod
-#> EpiModel Simulation
-#> =======================
-#> Model class: netsim
-#> 
-#> Simulation Summary
-#> -----------------------
-#> Model type: SI
-#> No. simulations: 1
-#> No. time steps: 5
-#> No. NW groups: 1
-#> 
-#> Fixed Parameters
-#> ---------------------------
-#> inf.prob = 0.3
-#> act.rate = 0.5
-#> dummy.param = 4
-#> dummy.strat.param = 0 1
-#> groups = 1
-#> 
-#> Model Output
-#> -----------------------
-#> Variables: s.num i.num num si.flow
-#> Networks: sim1
-#> Transmissions: sim1
-#> 
-#> Formation Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     25     16.8    -32.8  1.114  -7.364            NA          2.49
-#> 
-#> 
-#> Duration Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     10    8.697  -13.032   0.27  -4.819            NA         0.605
-#> 
-#> Dissolution Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges    0.1    0.065  -34.615  0.022  -1.608            NA         0.048
+knitr::kable(draws.joint, digits = 3)
 ```
 
-Here we define four parameters: `inf.prob` (which will remain fixed),
-`act.rate`, `dummy.param`, and `dummy.strat.param` (which we will make
-random below). The `dummy.strat.param` parameter is a vector of length
-2, which could represent a parameter stratified by subpopulation.
+| .scenario.id | .at | act.rate | inf.prob |
+|:-------------|----:|---------:|---------:|
+| draw1        |   0 |    2.032 |    0.206 |
+| draw2        |   0 |    1.442 |    0.331 |
+| draw3        |   0 |    1.360 |    0.341 |
+| draw4        |   0 |    1.758 |    0.274 |
+| draw5        |   0 |    2.748 |    0.185 |
+| draw6        |   0 |    2.323 |    0.211 |
+| draw7        |   0 |    2.309 |    0.211 |
+| draw8        |   0 |    2.768 |    0.163 |
 
-### Adding Random Parameters
+This table is run in the same way as the independent draws in *Running
+the Draws*. When it is feasible to simulate every accepted parameter
+set, the full table can be used without sampling, after adding the
+`.scenario.id` and `.at` columns.
 
-To draw parameters from distributions, use the `random.params` argument
-to `param.net`. There are two approaches.
+### Vector Parameters
 
-#### Generator Functions
-
-Define a generator function for each random parameter:
+Vector parameters use the `paramname_N` columns described in *Scenarios
+with Parameter Vectors*, with one column per element. Each element can
+be drawn from its own distribution, or the elements can be drawn jointly
+as rows. In this example, `test.rate` is a testing rate stratified into
+two groups, of the kind a custom testing module would use. As with any
+scenario, the parameter must already be defined in the base parameter
+object.
 
 ``` r
 
-my.randoms <- list(
-  act.rate = param_random(c(0.25, 0.5, 0.75)),
-  dummy.param = function() rbeta(1, 1, 2),
-  dummy.strat.param = function() {
-    c(rnorm(1, 0.05, 0.01),
-      rnorm(1, 0.15, 0.03))
-  }
+draws.vec <- data.frame(
+  .scenario.id = paste0("draw", 1:3),
+  .at = 0,
+  test.rate_1 = rnorm(3, 0.05, 0.01),
+  test.rate_2 = rnorm(3, 0.15, 0.03)
 )
-
-param <- param.net(
-  inf.prob = 0.3,
-  random.params = my.randoms
-)
-
-param
-#> Fixed Parameters
-#> ---------------------------
-#> inf.prob = 0.3
-#> 
-#> Random Parameters
-#> (Not drawn yet)
-#> ---------------------------
-#> act.rate = <function>
-#> dummy.param = <function>
-#> dummy.strat.param = <function>
+knitr::kable(draws.vec, digits = 3)
 ```
 
-The `my.randoms` list contains three elements:
-
-- `act.rate` uses the `param_random` [function
-  factory](https://adv-r.hadley.nz/function-factories.html) provided by
-  EpiModel (see
-  [`?param_random`](https://epimodel.github.io/EpiModel/reference/param_random.md)).
-  Each simulation samples one of the three values with equal
-  probability.
-- `dummy.param` is a zero-argument function that returns a single draw
-  from a Beta(1, 2) distribution.
-- `dummy.strat.param` is a zero-argument function that returns a vector
-  of length 2, each element drawn from a normal distribution with
-  different mean and standard deviation.
-
-Each element must be named after the parameter it fills and must be a
-function taking no arguments, returning a vector of the correct length
-for that parameter. When we print the parameter list before running the
-model, random parameters appear as function definitions since their
-values have not yet been realized.
+| .scenario.id | .at | test.rate_1 | test.rate_2 |
+|:-------------|----:|------------:|------------:|
+| draw1        |   0 |       0.049 |       0.126 |
+| draw2        |   0 |       0.061 |       0.111 |
+| draw3        |   0 |       0.055 |       0.087 |
 
 ``` r
 
-control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
-mod <- netsim(est, param, init, control)
 
-mod
-#> EpiModel Simulation
-#> =======================
-#> Model class: netsim
-#> 
-#> Simulation Summary
-#> -----------------------
-#> Model type: SI
-#> No. simulations: 3
-#> No. time steps: 5
-#> No. NW groups: 1
-#> 
-#> Fixed Parameters
-#> ---------------------------
-#> inf.prob = 0.3
-#> groups = 1
-#> 
-#> Random Parameters
-#> ---------------------------
-#> act.rate = 0.5 0.75 0.25
-#> dummy.param = 0.5293276 0.2734432 0.11582
-#> dummy.strat.param = <list>
-#> 
-#> Model Output
-#> -----------------------
-#> Variables: s.num i.num num si.flow
-#> Networks: sim1 ... sim3
-#> Transmissions: sim1 ... sim3
-#> 
-#> Formation Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     25   21.667  -13.333  1.022  -3.262          4.46         3.958
-#> 
-#> 
-#> Duration Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     10    8.977  -10.226  0.387  -2.642         1.593         1.499
-#> 
-#> Dissolution Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges    0.1    0.114   13.774  0.015   0.938         0.029         0.057
+param.vec <- param.net(inf.prob = 0.3, test.rate = c(0.05, 0.15))
+sc.vec <- create_scenario_list(draws.vec)
+use_scenario(param.vec, sc.vec$draw2)$test.rate
+#> [1] 0.06070304 0.11126790
 ```
 
-After running 3 simulations, `inf.prob` remains under “Fixed Parameters”
-while the random parameters each have 3 realized values (one per
-simulation). The vector parameter `dummy.strat.param` shows `<list>`
-because each realization is itself a vector of length 2.
+### Running the Draws
 
-To inspect the realized values:
+We convert the independent draws to a scenario list and run each one as
+in *Running Scenarios* above, with two simulations per draw.
 
 ``` r
 
-all.params <- get_param_set(mod)
-all.params
-#>   sim inf.prob vital groups act.rate dummy.param dummy.strat.param_1
-#> 1   1      0.3 FALSE      1     0.50   0.5293276          0.05392462
-#> 2   2      0.3 FALSE      1     0.75   0.2734432          0.04759042
-#> 3   3      0.3 FALSE      1     0.25   0.1158200          0.05619374
-#>   dummy.strat.param_2
-#> 1           0.1511654
-#> 2           0.1293028
-#> 3           0.1918158
+param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.05)
+control <- control.net(type = "SIS", nsims = 2, nsteps = 100, verbose = FALSE)
+
+draws.list <- create_scenario_list(draws)
+
+d_list <- lapply(draws.list, function(scenario) {
+  sc.param <- use_scenario(param, scenario)
+  sim <- netsim(est, sc.param, init, control)
+  d_sim <- as.data.frame(sim)
+  d_sim[["scenario"]] <- scenario$id
+  d_sim
+})
+d_unc <- bind_rows(d_list)
 ```
 
-These can be merged with epidemic output for analysis of
-parameter-outcome relationships:
+The values of `inf.prob` and `act.rate` in `param` are placeholders,
+since every scenario replaces them before its simulations start. Each
+`netsim` object also records the parameters it used: `sim$param` holds
+the base parameters with the scenario values applied, along with the
+scenario ID in `.scenario.id`.
+
+The two simulations within a draw differ only by stochastic variation,
+while differences between draws also reflect the parameter uncertainty.
+Setting `nsims = 1` with a larger number of draws gives one simulation
+per draw. For large numbers of draws, the
+[EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package runs a
+scenario list locally with `netsim_scenarios()` or as an array job on a
+SLURM cluster with `step_tmpl_netsim_scenarios()`.
+
+### Linking Draws to Outcomes
+
+The scenario ID links each simulation to its row of the draws table, so
+the drawn values can be joined onto the epidemic output. Here we also
+compute the probability of transmission within a discordant partnership
+per time step, `1 - (1 - inf.prob)^act.rate`, and compare it with
+prevalence at the final time step.
 
 ``` r
 
-epi <- as.data.frame(mod)
-left_join(epi, all.params)
-#> Joining with `by = join_by(sim)`
-#>    sim time s.num i.num num si.flow inf.prob vital groups act.rate dummy.param
-#> 1    1    1    40    10  50      NA      0.3 FALSE      1     0.50   0.5293276
-#> 2    1    2    40    10  50       0      0.3 FALSE      1     0.50   0.5293276
-#> 3    1    3    36    14  50       4      0.3 FALSE      1     0.50   0.5293276
-#> 4    1    4    34    16  50       2      0.3 FALSE      1     0.50   0.5293276
-#> 5    1    5    34    16  50       0      0.3 FALSE      1     0.50   0.5293276
-#> 6    2    1    40    10  50      NA      0.3 FALSE      1     0.75   0.2734432
-#> 7    2    2    39    11  50       1      0.3 FALSE      1     0.75   0.2734432
-#> 8    2    3    38    12  50       1      0.3 FALSE      1     0.75   0.2734432
-#> 9    2    4    36    14  50       2      0.3 FALSE      1     0.75   0.2734432
-#> 10   2    5    36    14  50       0      0.3 FALSE      1     0.75   0.2734432
-#> 11   3    1    40    10  50      NA      0.3 FALSE      1     0.25   0.1158200
-#> 12   3    2    40    10  50       0      0.3 FALSE      1     0.25   0.1158200
-#> 13   3    3    40    10  50       0      0.3 FALSE      1     0.25   0.1158200
-#> 14   3    4    40    10  50       0      0.3 FALSE      1     0.25   0.1158200
-#> 15   3    5    39    11  50       1      0.3 FALSE      1     0.25   0.1158200
-#>    dummy.strat.param_1 dummy.strat.param_2
-#> 1           0.05392462           0.1511654
-#> 2           0.05392462           0.1511654
-#> 3           0.05392462           0.1511654
-#> 4           0.05392462           0.1511654
-#> 5           0.05392462           0.1511654
-#> 6           0.04759042           0.1293028
-#> 7           0.04759042           0.1293028
-#> 8           0.04759042           0.1293028
-#> 9           0.04759042           0.1293028
-#> 10          0.04759042           0.1293028
-#> 11          0.05619374           0.1918158
-#> 12          0.05619374           0.1918158
-#> 13          0.05619374           0.1918158
-#> 14          0.05619374           0.1918158
-#> 15          0.05619374           0.1918158
+d_unc <- left_join(d_unc, select(draws, -.at), by = c("scenario" = ".scenario.id"))
+d_unc$trans.prob <- 1 - (1 - d_unc$inf.prob)^d_unc$act.rate
+
+d_final <- filter(d_unc, time == max(time))
 ```
-
-#### Parameter Sets
-
-Generator functions draw each parameter independently. When parameters
-need to be correlated—for example, when using Latin hypercube sampling
-or when one parameter is derived from another—use pre-defined parameter
-sets instead.
-
-Define a `data.frame` where each row is a complete set of correlated
-parameter values:
 
 ``` r
 
-n <- 5
-
-related.param <- data.frame(
-  dummy.param = rbeta(n, 1, 2)
-)
-
-related.param$dummy.strat.param_1 <- related.param$dummy.param + rnorm(n)
-related.param$dummy.strat.param_2 <- related.param$dummy.param * 2 + rnorm(n)
-
-related.param
-#>   dummy.param dummy.strat.param_1 dummy.strat.param_2
-#> 1  0.40042189           1.6831189           1.0748786
-#> 2  0.73021770           2.3839536           1.3420617
-#> 3  0.05306671           0.6405278          -0.7281755
-#> 4  0.90490846          -1.3179645          -0.4500947
-#> 5  0.48049243           0.7020599           2.3109663
+plot(d_final$trans.prob, d_final$i.num / d_final$num,
+     pch = 19, col = d_final$act.rate, ylim = c(0, 1),
+     xlab = "Transmission probability per partnership per time step",
+     ylab = "Prevalence at time step 100")
+legend("topleft", legend = paste("act.rate =", 1:3),
+       col = 1:3, pch = 19, bty = "n")
 ```
 
-Each row contains parameter values that will be used together in a
-single simulation. Vector parameters use the same `paramname_N` suffix
-convention as scenarios. This means underscores are reserved and cannot
-appear in parameter names themselves.
+![](model-parameters_files/figure-html/uncertainty_plot-1.png)
 
-Save the parameter set in the `my.randoms` list under the reserved name
-`param.random.set`:
+Each point is one simulation. In this model, prevalence at the final
+time step increases with the per-partnership transmission probability,
+and the two simulations for each draw show the stochastic variation
+around that relationship. Draws with different act rates but similar
+transmission probabilities reach similar prevalence, which is why
+calibration targets may inform the combined effect of the two parameters
+without identifying each one.
 
-``` r
+### Migrating from `random.params`
 
-my.randoms <- list(
-  act.rate = param_random(c(0.25, 0.5, 0.75)),
-  param.random.set = related.param
-)
+Through EpiModel v2.6.2, random parameters were specified with the
+`random.params` argument of
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+and
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+drew one set of values at the start of each simulation. That interface
+has been removed, and passing `random.params` to
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+now produces an error. Each part of that interface has a counterpart in
+the approach above, where `n` is the number of draws:
 
-param <- param.net(
-  inf.prob = 0.3,
-  random.params = my.randoms
-)
-
-param
-#> Fixed Parameters
-#> ---------------------------
-#> inf.prob = 0.3
-#> 
-#> Random Parameters
-#> (Not drawn yet)
-#> ---------------------------
-#> act.rate = <function>
-#> param.random.set = <data.frame> ( dimensions: 5 3 )
-```
-
-The `inf.prob` parameter remains fixed, `act.rate` remains independently
-random, and the two remaining parameters are drawn as correlated sets
-from the `data.frame`.
-
-``` r
-
-control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
-mod <- netsim(est, param, init, control)
-
-mod
-#> EpiModel Simulation
-#> =======================
-#> Model class: netsim
-#> 
-#> Simulation Summary
-#> -----------------------
-#> Model type: SI
-#> No. simulations: 3
-#> No. time steps: 5
-#> No. NW groups: 1
-#> 
-#> Fixed Parameters
-#> ---------------------------
-#> inf.prob = 0.3
-#> groups = 1
-#> 
-#> Random Parameters
-#> ---------------------------
-#> dummy.param = 0.9049085 0.4804924 0.4004219
-#> dummy.strat.param = <list>
-#> act.rate = 0.75 0.75 0.75
-#> 
-#> Model Output
-#> -----------------------
-#> Variables: s.num i.num num si.flow
-#> Networks: sim1 ... sim3
-#> Transmissions: sim1 ... sim3
-#> 
-#> Formation Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     25   25.933    3.733  0.502   1.859         0.757         1.944
-#> 
-#> 
-#> Duration Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     10    9.584   -4.158  0.183  -2.275          0.68         0.708
-#> 
-#> Dissolution Statistics
-#> ----------------------- 
-#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges    0.1    0.114    14.49  0.011    1.27         0.022         0.044
-```
-
-Verify that correlated sets are sampled together:
-
-``` r
-
-related.param
-#>   dummy.param dummy.strat.param_1 dummy.strat.param_2
-#> 1  0.40042189           1.6831189           1.0748786
-#> 2  0.73021770           2.3839536           1.3420617
-#> 3  0.05306671           0.6405278          -0.7281755
-#> 4  0.90490846          -1.3179645          -0.4500947
-#> 5  0.48049243           0.7020599           2.3109663
-get_param_set(mod)
-#>   sim inf.prob vital groups dummy.param dummy.strat.param_1 dummy.strat.param_2
-#> 1   1      0.3 FALSE      1   0.9049085          -1.3179645          -0.4500947
-#> 2   2      0.3 FALSE      1   0.4804924           0.7020599           2.3109663
-#> 3   3      0.3 FALSE      1   0.4004219           1.6831189           1.0748786
-#>   act.rate
-#> 1     0.75
-#> 2     0.75
-#> 3     0.75
-```
+| Removed interface | Replacement |
+|:---|:---|
+| `param_random(values, prob)` | `sample(values, n, replace = TRUE, prob = prob)` |
+| A generator function such as `function() rbeta(1, 1, 2)` | The vectorized draw `rbeta(n, 1, 2)` |
+| A generator function returning a vector | One `paramname_N` column per element |
+| `param.random.set` | Sampling whole rows of the table, as in *Correlated Draws* |
+| `get_param_set(sim)` | The table of draws, joined to the output by scenario ID |
 
 ## Time-Varying Parameters and Control Settings (Advanced)
 
@@ -860,7 +692,7 @@ plot(mod, mean.smooth = FALSE)
 abline(v = c(100, 125), lty = 2, col = "grey50")
 ```
 
-![](model-parameters_files/figure-html/unnamed-chunk-6-1.png)
+![](model-parameters_files/figure-html/unnamed-chunk-4-1.png)
 
 #### Verbosity
 

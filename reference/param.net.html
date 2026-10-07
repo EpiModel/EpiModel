@@ -224,21 +224,6 @@ further examples, see the
 <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a> tutorials.</p>
     </div>
     <div class="section level2">
-    <h2 id="random-parameters">Random Parameters<a class="anchor" aria-label="anchor" href="#random-parameters"></a></h2>
-
-
-<p>In addition to deterministic parameters in either fixed or time-varying
-varieties above, one may also include a generator for random parameters.
-These might include a vector of potential parameter values or a statistical
-distribution definition; in either case, one draw from the generator would
-be completed per individual simulation. This is possible by passing a list
-named <code>random.params</code> into <code>param.net</code>, with each element of
-<code>random.params</code> a named generator function. See the help page and
-examples in <code><a href="generate_random_params.html">generate_random_params()</a></code>. A simple factory function
-for sampling is provided with <code><a href="param_random.html">param_random()</a></code> but any function
-will do.</p>
-    </div>
-    <div class="section level2">
     <h2 id="using-a-parameter-data-frame">Using a Parameter data.frame<a class="anchor" aria-label="anchor" href="#using-a-parameter-data-frame"></a></h2>
 
 
@@ -264,6 +249,18 @@ was never an accepted name; passing it now produces an error pointing to
 <code>data.frame.params</code>.</p>
     </div>
     <div class="section level2">
+    <h2 id="parameter-uncertainty">Parameter Uncertainty<a class="anchor" aria-label="anchor" href="#parameter-uncertainty"></a></h2>
+
+
+<p>To vary parameter values across simulations for uncertainty or sensitivity
+analysis, draw the values in advance into a <code>data.frame</code> with one row per
+draw, convert it with <code><a href="create_scenario_list.html">create_scenario_list()</a></code>, and apply each resulting
+scenario to the base parameters with <code><a href="use_scenario.html">use_scenario()</a></code>. The "Working with
+Model Parameters in EpiModel" vignette works through an example. The
+<code>random.params</code> argument that served this purpose through v2.6.2 has been
+removed; passing it now produces an error.</p>
+    </div>
+    <div class="section level2">
     <h2 id="parameters-with-new-modules">Parameters with New Modules<a class="anchor" aria-label="anchor" href="#parameters-with-new-modules"></a></h2>
 
 
@@ -287,7 +284,7 @@ parameterized model with <code><a href="netsim.html">netsim()</a></code>.</p></d
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co">## Example SIR model parameterization with fixed and random parameters</span></span></span>
+<span class="r-in"><span><span class="co">## Example SIR model parameterization</span></span></span>
 <span class="r-in"><span><span class="co"># Network model estimation</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formation</span> <span class="op">&lt;-</span> <span class="op">~</span><span class="va">edges</span></span></span>
@@ -303,37 +300,20 @@ parameterized model with <code><a href="netsim.html">netsim()</a></code>.</p></d
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Random epidemic parameter list (here act.rate values are sampled uniformly</span></span></span>
-<span class="r-in"><span><span class="co"># with helper function param_random, and inf.prob follows a general Beta</span></span></span>
-<span class="r-in"><span><span class="co"># distribution with the parameters shown below)</span></span></span>
-<span class="r-in"><span><span class="va">my_randoms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  act.rate <span class="op">=</span> <span class="fu"><a href="param_random.html">param_random</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  inf.prob <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Parameters, initial conditions, and control settings</span></span></span>
-<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">param.net</span><span class="op">(</span>rec.rate <span class="op">=</span> <span class="fl">0.02</span>, random.params <span class="op">=</span> <span class="va">my_randoms</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Printing parameters shows both fixed and and random parameter functions</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">param.net</span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">param</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fixed Parameters</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model Parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> inf.prob = 0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> act.rate = 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> rec.rate = 0.02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Random Parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Not drawn yet)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> act.rate = &lt;function&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> inf.prob = &lt;function&gt;</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Set initial conditions and controls</span></span></span>
 <span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span>, r.num <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIR"</span>, nsteps <span class="op">=</span> <span class="fl">10</span>, nsims <span class="op">=</span> <span class="fl">3</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Simulate the model</span></span></span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Printing the sim object shows the randomly drawn values for each simulation</span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EpiModel Simulation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =======================</span>
@@ -346,15 +326,12 @@ parameterized model with <code><a href="netsim.html">netsim()</a></code>.</p></d
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. time steps: 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. NW groups: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fixed Parameters</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model Parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> inf.prob = 0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> act.rate = 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> rec.rate = 0.02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> groups = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Random Parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> act.rate = 3 3 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> inf.prob = 0.2075029 0.2819335 0.7256071</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Output</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
@@ -365,26 +342,19 @@ parameterized model with <code><a href="netsim.html">netsim()</a></code>.</p></d
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation Statistics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges     50     57.2     14.4  1.684   4.276         7.326         6.451</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges     50       48       -4  0.826   -2.42         4.927         4.526</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Duration Statistics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges     20   19.562   -2.189   0.47  -0.931         3.007         2.576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges     20   19.299   -3.504  0.181  -3.867         0.426         0.991</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dissolution Statistics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges   0.05     0.05    0.556  0.004    0.07         0.004         0.022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges   0.05    0.055     9.38  0.005   1.022         0.012         0.032</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Parameter sets can be extracted with:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_param_set.html">get_param_set</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sim rec.rate vital groups act.rate  inf.prob</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1     0.02 FALSE      1        3 0.2075029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   2     0.02 FALSE      1        3 0.2819335</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   3     0.02 FALSE      1        3 0.7256071</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

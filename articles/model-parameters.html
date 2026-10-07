@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.2</h4>
             
-            <h4 data-toc-skip class="date">2026-09-16</h4>
+            <h4 data-toc-skip class="date">2026-10-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/model-parameters.Rmd" class="external-link"><code>vignettes/model-parameters.Rmd</code></a></small>
       <div class="d-none name"><code>model-parameters.Rmd</code></div>
@@ -101,9 +101,9 @@ intervention modeling.</li>
 at once through a <code>data.frame</code>, enabling spreadsheet-based
 parameter management.</li>
 <li>
-<strong>Random parameters:</strong> Distributions of parameter
-values rather than single fixed values, for uncertainty quantification
-and sensitivity analysis.</li>
+<strong>Parameter uncertainty:</strong> Drawing parameter values
+from distributions or from joint parameter sets and running each draw as
+a scenario, for uncertainty and sensitivity analysis.</li>
 <li>
 <strong>Parameter and control updaters (advanced):</strong> The
 low-level mechanism underlying scenarios, exposed directly for cases
@@ -492,7 +492,7 @@ of conflict, named parameters take priority over those in the
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>data.frame.params <span class="op">=</span> <span class="va">df_params</span>,</span>
 <span>                   other.param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">param</span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
+<span><span class="co">#&gt; Model Parameters</span></span>
 <span><span class="co">#&gt; ---------------------------</span></span>
 <span><span class="co">#&gt; hiv.test.rate = 0.003 0.102 0.492</span></span>
 <span><span class="co">#&gt; prep.require.lnt = TRUE</span></span>
@@ -501,376 +501,358 @@ of conflict, named parameters take priority over those in the
 <span><span class="co">#&gt; other.param = 5 10</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="random-parameters">Random Parameters<a class="anchor" aria-label="anchor" href="#random-parameters"></a>
+<h2 id="parameter-uncertainty">Parameter Uncertainty<a class="anchor" aria-label="anchor" href="#parameter-uncertainty"></a>
 </h2>
 <p>Fixed parameters assume that each input value is known with
-certainty. In practice, we may want to explore how uncertainty in
-parameter values propagates to uncertainty in epidemic outcomes.
-EpiModel supports drawing parameter values from distributions, so that
-each simulation uses a different realization.</p>
+certainty. In practice, many inputs are estimated with error, and an
+analysis may need to show how that uncertainty propagates to the
+epidemic outcomes. In EpiModel this is done with scenarios: the
+parameter values are drawn before any simulation runs and stored in a
+<code>data.frame</code> with one row per draw, and each row is run as a
+scenario that replaces the base parameter values at
+<code>.at = 0</code>. Because the draws exist as a table before the
+simulations start, they can be inspected and saved, they can be joined
+back onto the simulation output, and parameters that were sampled
+together stay together.</p>
 <div class="section level3">
-<h3 id="the-model">The Model<a class="anchor" aria-label="anchor" href="#the-model"></a>
+<h3 id="drawing-parameter-values">Drawing Parameter Values<a class="anchor" aria-label="anchor" href="#drawing-parameter-values"></a>
 </h3>
-<p>We demonstrate with a simple SI model.</p>
+<p>We draw eight sets of values for the act rate and the per-act
+infection probability of an SIS model that uses the network model and
+initial conditions from <em>Setup</em>. Each parameter is drawn
+independently with base R sampling functions: <code><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample()</a></code>
+selects from a discrete set of values (optionally weighted through its
+<code>prob</code> argument), and <code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta()</a></code> draws from a
+continuous distribution.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
+<span><span class="va">n.draws</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
 <span></span>
-<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
-<span>  <span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>,</span>
-<span>  target.stats <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span>,  <span class="co"># duration = 10, closed population</span></span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  .scenario.id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"draw"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n.draws</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  .at <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  act.rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">n.draws</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  inf.prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n.draws</span>, <span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Starting simulated annealing (SAN)</span></span>
-<span><span class="co">#&gt; Iteration 1 of at most 4</span></span>
-<span><span class="co">#&gt; Finished simulated annealing</span></span>
-<span><span class="co">#&gt; Starting maximum pseudolikelihood estimation (MPLE):</span></span>
-<span><span class="co">#&gt; Obtaining the responsible dyads.</span></span>
-<span><span class="co">#&gt; Evaluating the predictor and response matrix.</span></span>
-<span><span class="co">#&gt; Maximizing the pseudolikelihood.</span></span>
-<span><span class="co">#&gt; Finished MPLE.</span></span>
-<span></span>
-<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
-<span>  inf.prob <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  act.rate <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  dummy.param <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  dummy.strat.param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">1</span>, nsteps <span class="op">=</span> <span class="fl">5</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span><span class="va">mod</span></span>
-<span><span class="co">#&gt; EpiModel Simulation</span></span>
-<span><span class="co">#&gt; =======================</span></span>
-<span><span class="co">#&gt; Model class: netsim</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Simulation Summary</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Model type: SI</span></span>
-<span><span class="co">#&gt; No. simulations: 1</span></span>
-<span><span class="co">#&gt; No. time steps: 5</span></span>
-<span><span class="co">#&gt; No. NW groups: 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; inf.prob = 0.3</span></span>
-<span><span class="co">#&gt; act.rate = 0.5</span></span>
-<span><span class="co">#&gt; dummy.param = 4</span></span>
-<span><span class="co">#&gt; dummy.strat.param = 0 1</span></span>
-<span><span class="co">#&gt; groups = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model Output</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Variables: s.num i.num num si.flow</span></span>
-<span><span class="co">#&gt; Networks: sim1</span></span>
-<span><span class="co">#&gt; Transmissions: sim1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Formation Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     25     16.8    -32.8  1.114  -7.364            NA          2.49</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Duration Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     10    8.697  -13.032   0.27  -4.819            NA         0.605</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Dissolution Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges    0.1    0.065  -34.615  0.022  -1.608            NA         0.048</span></span></code></pre></div>
-<p>Here we define four parameters: <code>inf.prob</code> (which will
-remain fixed), <code>act.rate</code>, <code>dummy.param</code>, and
-<code>dummy.strat.param</code> (which we will make random below). The
-<code>dummy.strat.param</code> parameter is a vector of length 2, which
-could represent a parameter stratified by subpopulation.</p>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">draws</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">.scenario.id</th>
+<th align="right">.at</th>
+<th align="right">act.rate</th>
+<th align="right">inf.prob</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">draw1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0.203</td>
+</tr>
+<tr class="even">
+<td align="left">draw2</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0.197</td>
+</tr>
+<tr class="odd">
+<td align="left">draw3</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0.151</td>
+</tr>
+<tr class="even">
+<td align="left">draw4</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0.231</td>
+</tr>
+<tr class="odd">
+<td align="left">draw5</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0.337</td>
+</tr>
+<tr class="even">
+<td align="left">draw6</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.132</td>
+</tr>
+<tr class="odd">
+<td align="left">draw7</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.079</td>
+</tr>
+<tr class="even">
+<td align="left">draw8</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0.132</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>.scenario.id</code> and <code>.at</code> columns follow the
+scenario format described in <em>Scenario Definitions</em>. Each draw is
+its own scenario, and the remaining columns hold the drawn values.</p>
 </div>
 <div class="section level3">
-<h3 id="adding-random-parameters">Adding Random Parameters<a class="anchor" aria-label="anchor" href="#adding-random-parameters"></a>
+<h3 id="correlated-draws">Correlated Draws<a class="anchor" aria-label="anchor" href="#correlated-draws"></a>
 </h3>
-<p>To draw parameters from distributions, use the
-<code>random.params</code> argument to <code>param.net</code>. There are
-two approaches.</p>
-<div class="section level4">
-<h4 id="generator-functions">Generator Functions<a class="anchor" aria-label="anchor" href="#generator-functions"></a>
-</h4>
-<p>Define a generator function for each random parameter:</p>
+<p>Drawing each parameter separately assumes that the parameters are
+independent. When they are not, as with accepted parameter sets from a
+calibration or samples from a joint posterior distribution, each set
+must be drawn as a whole row. Sampling each column separately from such
+a table would discard the correlation between parameters.</p>
+<p>As an example, suppose that a calibration produced 500 accepted
+parameter sets in which the act rate and the infection probability are
+negatively correlated, as happens when the calibration targets inform
+their combined effect on transmission but not each parameter
+separately.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my.randoms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  act.rate <span class="op">=</span> <span class="fu"><a href="../reference/param_random.html">param_random</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  dummy.param <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  dummy.strat.param <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.15</span>, <span class="fl">0.03</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
-<span>  inf.prob <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  random.params <span class="op">=</span> <span class="va">my.randoms</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">param</span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; inf.prob = 0.3</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Random Parameters</span></span>
-<span><span class="co">#&gt; (Not drawn yet)</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; act.rate = &lt;function&gt;</span></span>
-<span><span class="co">#&gt; dummy.param = &lt;function&gt;</span></span>
-<span><span class="co">#&gt; dummy.strat.param = &lt;function&gt;</span></span></code></pre></div>
-<p>The <code>my.randoms</code> list contains three elements:</p>
-<ul>
-<li>
-<code>act.rate</code> uses the <code>param_random</code> <a href="https://adv-r.hadley.nz/function-factories.html" class="external-link">function
-factory</a> provided by EpiModel (see <code><a href="../reference/param_random.html">?param_random</a></code>). Each
-simulation samples one of the three values with equal probability.</li>
-<li>
-<code>dummy.param</code> is a zero-argument function that returns a
-single draw from a Beta(1, 2) distribution.</li>
-<li>
-<code>dummy.strat.param</code> is a zero-argument function that
-returns a vector of length 2, each element drawn from a normal
-distribution with different mean and standard deviation.</li>
-</ul>
-<p>Each element must be named after the parameter it fills and must be a
-function taking no arguments, returning a vector of the correct length
-for that parameter. When we print the parameter list before running the
-model, random parameters appear as function definitions since their
-values have not yet been realized.</p>
+<code class="sourceCode R"><span><span class="va">posterior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>act.rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">posterior</span><span class="op">$</span><span class="va">inf.prob</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="va">posterior</span><span class="op">$</span><span class="va">act.rate</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">posterior</span><span class="op">$</span><span class="va">act.rate</span>, <span class="va">posterior</span><span class="op">$</span><span class="va">inf.prob</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -0.9203932</span></span></code></pre></div>
+<p>To keep each set together, we sample rows of the table rather than
+values from each column:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">5</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">mod</span></span>
-<span><span class="co">#&gt; EpiModel Simulation</span></span>
-<span><span class="co">#&gt; =======================</span></span>
-<span><span class="co">#&gt; Model class: netsim</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Simulation Summary</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Model type: SI</span></span>
-<span><span class="co">#&gt; No. simulations: 3</span></span>
-<span><span class="co">#&gt; No. time steps: 5</span></span>
-<span><span class="co">#&gt; No. NW groups: 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; inf.prob = 0.3</span></span>
-<span><span class="co">#&gt; groups = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Random Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; act.rate = 0.5 0.75 0.25</span></span>
-<span><span class="co">#&gt; dummy.param = 0.5293276 0.2734432 0.11582</span></span>
-<span><span class="co">#&gt; dummy.strat.param = &lt;list&gt;</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model Output</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Variables: s.num i.num num si.flow</span></span>
-<span><span class="co">#&gt; Networks: sim1 ... sim3</span></span>
-<span><span class="co">#&gt; Transmissions: sim1 ... sim3</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Formation Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     25   21.667  -13.333  1.022  -3.262          4.46         3.958</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Duration Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     10    8.977  -10.226  0.387  -2.642         1.593         1.499</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Dissolution Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges    0.1    0.114   13.774  0.015   0.938         0.029         0.057</span></span></code></pre></div>
-<p>After running 3 simulations, <code>inf.prob</code> remains under
-“Fixed Parameters” while the random parameters each have 3 realized
-values (one per simulation). The vector parameter
-<code>dummy.strat.param</code> shows <code>&lt;list&gt;</code> because
-each realization is itself a vector of length 2.</p>
-<p>To inspect the realized values:</p>
+<code class="sourceCode R"><span><span class="va">draws.joint</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  .scenario.id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"draw"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n.draws</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  .at <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">posterior</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">posterior</span><span class="op">)</span>, <span class="va">n.draws</span><span class="op">)</span>, <span class="op">]</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">draws.joint</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">.scenario.id</th>
+<th align="right">.at</th>
+<th align="right">act.rate</th>
+<th align="right">inf.prob</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">draw1</td>
+<td align="right">0</td>
+<td align="right">2.032</td>
+<td align="right">0.206</td>
+</tr>
+<tr class="even">
+<td align="left">draw2</td>
+<td align="right">0</td>
+<td align="right">1.442</td>
+<td align="right">0.331</td>
+</tr>
+<tr class="odd">
+<td align="left">draw3</td>
+<td align="right">0</td>
+<td align="right">1.360</td>
+<td align="right">0.341</td>
+</tr>
+<tr class="even">
+<td align="left">draw4</td>
+<td align="right">0</td>
+<td align="right">1.758</td>
+<td align="right">0.274</td>
+</tr>
+<tr class="odd">
+<td align="left">draw5</td>
+<td align="right">0</td>
+<td align="right">2.748</td>
+<td align="right">0.185</td>
+</tr>
+<tr class="even">
+<td align="left">draw6</td>
+<td align="right">0</td>
+<td align="right">2.323</td>
+<td align="right">0.211</td>
+</tr>
+<tr class="odd">
+<td align="left">draw7</td>
+<td align="right">0</td>
+<td align="right">2.309</td>
+<td align="right">0.211</td>
+</tr>
+<tr class="even">
+<td align="left">draw8</td>
+<td align="right">0</td>
+<td align="right">2.768</td>
+<td align="right">0.163</td>
+</tr>
+</tbody>
+</table>
+<p>This table is run in the same way as the independent draws in
+<em>Running the Draws</em>. When it is feasible to simulate every
+accepted parameter set, the full table can be used without sampling,
+after adding the <code>.scenario.id</code> and <code>.at</code>
+columns.</p>
+</div>
+<div class="section level3">
+<h3 id="vector-parameters">Vector Parameters<a class="anchor" aria-label="anchor" href="#vector-parameters"></a>
+</h3>
+<p>Vector parameters use the <code>paramname_N</code> columns described
+in <em>Scenarios with Parameter Vectors</em>, with one column per
+element. Each element can be drawn from its own distribution, or the
+elements can be drawn jointly as rows. In this example,
+<code>test.rate</code> is a testing rate stratified into two groups, of
+the kind a custom testing module would use. As with any scenario, the
+parameter must already be defined in the base parameter object.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">all.params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param_set.html">get_param_set</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="va">all.params</span></span>
-<span><span class="co">#&gt;   sim inf.prob vital groups act.rate dummy.param dummy.strat.param_1</span></span>
-<span><span class="co">#&gt; 1   1      0.3 FALSE      1     0.50   0.5293276          0.05392462</span></span>
-<span><span class="co">#&gt; 2   2      0.3 FALSE      1     0.75   0.2734432          0.04759042</span></span>
-<span><span class="co">#&gt; 3   3      0.3 FALSE      1     0.25   0.1158200          0.05619374</span></span>
-<span><span class="co">#&gt;   dummy.strat.param_2</span></span>
-<span><span class="co">#&gt; 1           0.1511654</span></span>
-<span><span class="co">#&gt; 2           0.1293028</span></span>
-<span><span class="co">#&gt; 3           0.1918158</span></span></code></pre></div>
-<p>These can be merged with epidemic output for analysis of
-parameter-outcome relationships:</p>
+<code class="sourceCode R"><span><span class="va">draws.vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  .scenario.id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"draw"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span>
+<span>  .at <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  test.rate_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  test.rate_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">0.15</span>, <span class="fl">0.03</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">draws.vec</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">.scenario.id</th>
+<th align="right">.at</th>
+<th align="right">test.rate_1</th>
+<th align="right">test.rate_2</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">draw1</td>
+<td align="right">0</td>
+<td align="right">0.049</td>
+<td align="right">0.126</td>
+</tr>
+<tr class="even">
+<td align="left">draw2</td>
+<td align="right">0</td>
+<td align="right">0.061</td>
+<td align="right">0.111</td>
+</tr>
+<tr class="odd">
+<td align="left">draw3</td>
+<td align="right">0</td>
+<td align="right">0.055</td>
+<td align="right">0.087</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">epi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">epi</span>, <span class="va">all.params</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(sim)`</span></span>
-<span><span class="co">#&gt;    sim time s.num i.num num si.flow inf.prob vital groups act.rate dummy.param</span></span>
-<span><span class="co">#&gt; 1    1    1    40    10  50      NA      0.3 FALSE      1     0.50   0.5293276</span></span>
-<span><span class="co">#&gt; 2    1    2    40    10  50       0      0.3 FALSE      1     0.50   0.5293276</span></span>
-<span><span class="co">#&gt; 3    1    3    36    14  50       4      0.3 FALSE      1     0.50   0.5293276</span></span>
-<span><span class="co">#&gt; 4    1    4    34    16  50       2      0.3 FALSE      1     0.50   0.5293276</span></span>
-<span><span class="co">#&gt; 5    1    5    34    16  50       0      0.3 FALSE      1     0.50   0.5293276</span></span>
-<span><span class="co">#&gt; 6    2    1    40    10  50      NA      0.3 FALSE      1     0.75   0.2734432</span></span>
-<span><span class="co">#&gt; 7    2    2    39    11  50       1      0.3 FALSE      1     0.75   0.2734432</span></span>
-<span><span class="co">#&gt; 8    2    3    38    12  50       1      0.3 FALSE      1     0.75   0.2734432</span></span>
-<span><span class="co">#&gt; 9    2    4    36    14  50       2      0.3 FALSE      1     0.75   0.2734432</span></span>
-<span><span class="co">#&gt; 10   2    5    36    14  50       0      0.3 FALSE      1     0.75   0.2734432</span></span>
-<span><span class="co">#&gt; 11   3    1    40    10  50      NA      0.3 FALSE      1     0.25   0.1158200</span></span>
-<span><span class="co">#&gt; 12   3    2    40    10  50       0      0.3 FALSE      1     0.25   0.1158200</span></span>
-<span><span class="co">#&gt; 13   3    3    40    10  50       0      0.3 FALSE      1     0.25   0.1158200</span></span>
-<span><span class="co">#&gt; 14   3    4    40    10  50       0      0.3 FALSE      1     0.25   0.1158200</span></span>
-<span><span class="co">#&gt; 15   3    5    39    11  50       1      0.3 FALSE      1     0.25   0.1158200</span></span>
-<span><span class="co">#&gt;    dummy.strat.param_1 dummy.strat.param_2</span></span>
-<span><span class="co">#&gt; 1           0.05392462           0.1511654</span></span>
-<span><span class="co">#&gt; 2           0.05392462           0.1511654</span></span>
-<span><span class="co">#&gt; 3           0.05392462           0.1511654</span></span>
-<span><span class="co">#&gt; 4           0.05392462           0.1511654</span></span>
-<span><span class="co">#&gt; 5           0.05392462           0.1511654</span></span>
-<span><span class="co">#&gt; 6           0.04759042           0.1293028</span></span>
-<span><span class="co">#&gt; 7           0.04759042           0.1293028</span></span>
-<span><span class="co">#&gt; 8           0.04759042           0.1293028</span></span>
-<span><span class="co">#&gt; 9           0.04759042           0.1293028</span></span>
-<span><span class="co">#&gt; 10          0.04759042           0.1293028</span></span>
-<span><span class="co">#&gt; 11          0.05619374           0.1918158</span></span>
-<span><span class="co">#&gt; 12          0.05619374           0.1918158</span></span>
-<span><span class="co">#&gt; 13          0.05619374           0.1918158</span></span>
-<span><span class="co">#&gt; 14          0.05619374           0.1918158</span></span>
-<span><span class="co">#&gt; 15          0.05619374           0.1918158</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">param.vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, test.rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.15</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sc.vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scenario_list.html">create_scenario_list</a></span><span class="op">(</span><span class="va">draws.vec</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/use_scenario.html">use_scenario</a></span><span class="op">(</span><span class="va">param.vec</span>, <span class="va">sc.vec</span><span class="op">$</span><span class="va">draw2</span><span class="op">)</span><span class="op">$</span><span class="va">test.rate</span></span>
+<span><span class="co">#&gt; [1] 0.06070304 0.11126790</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="parameter-sets">Parameter Sets<a class="anchor" aria-label="anchor" href="#parameter-sets"></a>
-</h4>
-<p>Generator functions draw each parameter independently. When
-parameters need to be correlated—for example, when using Latin hypercube
-sampling or when one parameter is derived from another—use pre-defined
-parameter sets instead.</p>
-<p>Define a <code>data.frame</code> where each row is a complete set of
-correlated parameter values:</p>
+<div class="section level3">
+<h3 id="running-the-draws">Running the Draws<a class="anchor" aria-label="anchor" href="#running-the-draws"></a>
+</h3>
+<p>We convert the independent draws to a scenario list and run each one
+as in <em>Running Scenarios</em> above, with two simulations per
+draw.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">2</span>, nsteps <span class="op">=</span> <span class="fl">100</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">related.param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  dummy.param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">draws.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scenario_list.html">create_scenario_list</a></span><span class="op">(</span><span class="va">draws</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">related.param</span><span class="op">$</span><span class="va">dummy.strat.param_1</span> <span class="op">&lt;-</span> <span class="va">related.param</span><span class="op">$</span><span class="va">dummy.param</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span><span class="va">related.param</span><span class="op">$</span><span class="va">dummy.strat.param_2</span> <span class="op">&lt;-</span> <span class="va">related.param</span><span class="op">$</span><span class="va">dummy.param</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">related.param</span></span>
-<span><span class="co">#&gt;   dummy.param dummy.strat.param_1 dummy.strat.param_2</span></span>
-<span><span class="co">#&gt; 1  0.40042189           1.6831189           1.0748786</span></span>
-<span><span class="co">#&gt; 2  0.73021770           2.3839536           1.3420617</span></span>
-<span><span class="co">#&gt; 3  0.05306671           0.6405278          -0.7281755</span></span>
-<span><span class="co">#&gt; 4  0.90490846          -1.3179645          -0.4500947</span></span>
-<span><span class="co">#&gt; 5  0.48049243           0.7020599           2.3109663</span></span></code></pre></div>
-<p>Each row contains parameter values that will be used together in a
-single simulation. Vector parameters use the same
-<code>paramname_N</code> suffix convention as scenarios. This means
-underscores are reserved and cannot appear in parameter names
-themselves.</p>
-<p>Save the parameter set in the <code>my.randoms</code> list under the
-reserved name <code>param.random.set</code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my.randoms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  act.rate <span class="op">=</span> <span class="fu"><a href="../reference/param_random.html">param_random</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  param.random.set <span class="op">=</span> <span class="va">related.param</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
-<span>  inf.prob <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  random.params <span class="op">=</span> <span class="va">my.randoms</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">param</span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; inf.prob = 0.3</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Random Parameters</span></span>
-<span><span class="co">#&gt; (Not drawn yet)</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; act.rate = &lt;function&gt;</span></span>
-<span><span class="co">#&gt; param.random.set = &lt;data.frame&gt; ( dimensions: 5 3 )</span></span></code></pre></div>
-<p>The <code>inf.prob</code> parameter remains fixed,
-<code>act.rate</code> remains independently random, and the two
-remaining parameters are drawn as correlated sets from the
-<code>data.frame</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">5</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">mod</span></span>
-<span><span class="co">#&gt; EpiModel Simulation</span></span>
-<span><span class="co">#&gt; =======================</span></span>
-<span><span class="co">#&gt; Model class: netsim</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Simulation Summary</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Model type: SI</span></span>
-<span><span class="co">#&gt; No. simulations: 3</span></span>
-<span><span class="co">#&gt; No. time steps: 5</span></span>
-<span><span class="co">#&gt; No. NW groups: 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Fixed Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; inf.prob = 0.3</span></span>
-<span><span class="co">#&gt; groups = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Random Parameters</span></span>
-<span><span class="co">#&gt; ---------------------------</span></span>
-<span><span class="co">#&gt; dummy.param = 0.9049085 0.4804924 0.4004219</span></span>
-<span><span class="co">#&gt; dummy.strat.param = &lt;list&gt;</span></span>
-<span><span class="co">#&gt; act.rate = 0.75 0.75 0.75</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model Output</span></span>
-<span><span class="co">#&gt; -----------------------</span></span>
-<span><span class="co">#&gt; Variables: s.num i.num num si.flow</span></span>
-<span><span class="co">#&gt; Networks: sim1 ... sim3</span></span>
-<span><span class="co">#&gt; Transmissions: sim1 ... sim3</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Formation Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     25   25.933    3.733  0.502   1.859         0.757         1.944</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Duration Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges     10    9.584   -4.158  0.183  -2.275          0.68         0.708</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Dissolution Statistics</span></span>
-<span><span class="co">#&gt; ----------------------- </span></span>
-<span><span class="co">#&gt;       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span></span>
-<span><span class="co">#&gt; edges    0.1    0.114    14.49  0.011    1.27         0.022         0.044</span></span></code></pre></div>
-<p>Verify that correlated sets are sampled together:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">related.param</span></span>
-<span><span class="co">#&gt;   dummy.param dummy.strat.param_1 dummy.strat.param_2</span></span>
-<span><span class="co">#&gt; 1  0.40042189           1.6831189           1.0748786</span></span>
-<span><span class="co">#&gt; 2  0.73021770           2.3839536           1.3420617</span></span>
-<span><span class="co">#&gt; 3  0.05306671           0.6405278          -0.7281755</span></span>
-<span><span class="co">#&gt; 4  0.90490846          -1.3179645          -0.4500947</span></span>
-<span><span class="co">#&gt; 5  0.48049243           0.7020599           2.3109663</span></span>
-<span><span class="fu"><a href="../reference/get_param_set.html">get_param_set</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sim inf.prob vital groups dummy.param dummy.strat.param_1 dummy.strat.param_2</span></span>
-<span><span class="co">#&gt; 1   1      0.3 FALSE      1   0.9049085          -1.3179645          -0.4500947</span></span>
-<span><span class="co">#&gt; 2   2      0.3 FALSE      1   0.4804924           0.7020599           2.3109663</span></span>
-<span><span class="co">#&gt; 3   3      0.3 FALSE      1   0.4004219           1.6831189           1.0748786</span></span>
-<span><span class="co">#&gt;   act.rate</span></span>
-<span><span class="co">#&gt; 1     0.75</span></span>
-<span><span class="co">#&gt; 2     0.75</span></span>
-<span><span class="co">#&gt; 3     0.75</span></span></code></pre></div>
+<span><span class="va">d_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">draws.list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">scenario</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">sc.param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/use_scenario.html">use_scenario</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">scenario</span><span class="op">)</span></span>
+<span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">sc.param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span>  <span class="va">d_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span>  <span class="va">d_sim</span><span class="op">[[</span><span class="st">"scenario"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">scenario</span><span class="op">$</span><span class="va">id</span></span>
+<span>  <span class="va">d_sim</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">d_unc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">)</span></span></code></pre></div>
+<p>The values of <code>inf.prob</code> and <code>act.rate</code> in
+<code>param</code> are placeholders, since every scenario replaces them
+before its simulations start. Each <code>netsim</code> object also
+records the parameters it used: <code>sim$param</code> holds the base
+parameters with the scenario values applied, along with the scenario ID
+in <code>.scenario.id</code>.</p>
+<p>The two simulations within a draw differ only by stochastic
+variation, while differences between draws also reflect the parameter
+uncertainty. Setting <code>nsims = 1</code> with a larger number of
+draws gives one simulation per draw. For large numbers of draws, the <a href="https://github.com/EpiModel/EpiModelHPC" class="external-link">EpiModelHPC</a> package
+runs a scenario list locally with <code>netsim_scenarios()</code> or as
+an array job on a SLURM cluster with
+<code>step_tmpl_netsim_scenarios()</code>.</p>
 </div>
+<div class="section level3">
+<h3 id="linking-draws-to-outcomes">Linking Draws to Outcomes<a class="anchor" aria-label="anchor" href="#linking-draws-to-outcomes"></a>
+</h3>
+<p>The scenario ID links each simulation to its row of the draws table,
+so the drawn values can be joined onto the epidemic output. Here we also
+compute the probability of transmission within a discordant partnership
+per time step, <code>1 - (1 - inf.prob)^act.rate</code>, and compare it
+with prevalence at the final time step.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d_unc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">d_unc</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">draws</span>, <span class="op">-</span><span class="va">.at</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scenario"</span> <span class="op">=</span> <span class="st">".scenario.id"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">d_unc</span><span class="op">$</span><span class="va">trans.prob</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">d_unc</span><span class="op">$</span><span class="va">inf.prob</span><span class="op">)</span><span class="op">^</span><span class="va">d_unc</span><span class="op">$</span><span class="va">act.rate</span></span>
+<span></span>
+<span><span class="va">d_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">d_unc</span>, <span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">d_final</span><span class="op">$</span><span class="va">trans.prob</span>, <span class="va">d_final</span><span class="op">$</span><span class="va">i.num</span> <span class="op">/</span> <span class="va">d_final</span><span class="op">$</span><span class="va">num</span>,</span>
+<span>     pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="va">d_final</span><span class="op">$</span><span class="va">act.rate</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Transmission probability per partnership per time step"</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Prevalence at time step 100"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"act.rate ="</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span>
+<span>       col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, pch <span class="op">=</span> <span class="fl">19</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="model-parameters_files/figure-html/uncertainty_plot-1.png" class="r-plt" alt="" width="768"></p>
+<p>Each point is one simulation. In this model, prevalence at the final
+time step increases with the per-partnership transmission probability,
+and the two simulations for each draw show the stochastic variation
+around that relationship. Draws with different act rates but similar
+transmission probabilities reach similar prevalence, which is why
+calibration targets may inform the combined effect of the two parameters
+without identifying each one.</p>
+</div>
+<div class="section level3">
+<h3 id="migrating-from-random-params">Migrating from <code>random.params</code><a class="anchor" aria-label="anchor" href="#migrating-from-random-params"></a>
+</h3>
+<p>Through EpiModel v2.6.2, random parameters were specified with the
+<code>random.params</code> argument of <code><a href="../reference/param.net.html">param.net()</a></code>, and
+<code><a href="../reference/netsim.html">netsim()</a></code> drew one set of values at the start of each
+simulation. That interface has been removed, and passing
+<code>random.params</code> to <code><a href="../reference/param.net.html">param.net()</a></code> now produces an
+error. Each part of that interface has a counterpart in the approach
+above, where <code>n</code> is the number of draws:</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Removed interface</th>
+<th align="left">Replacement</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>param_random(values, prob)</code></td>
+<td align="left"><code>sample(values, n, replace = TRUE, prob = prob)</code></td>
+</tr>
+<tr class="even">
+<td align="left">A generator function such as
+<code>function() rbeta(1, 1, 2)</code>
+</td>
+<td align="left">The vectorized draw <code>rbeta(n, 1, 2)</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">A generator function returning a vector</td>
+<td align="left">One <code>paramname_N</code> column per element</td>
+</tr>
+<tr class="even">
+<td align="left"><code>param.random.set</code></td>
+<td align="left">Sampling whole rows of the table, as in <em>Correlated
+Draws</em>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>get_param_set(sim)</code></td>
+<td align="left">The table of draws, joined to the output by scenario
+ID</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section level2">
@@ -888,7 +870,7 @@ need relative (function-based) parameter changes or time-varying
 <p>An updater is a <code>list</code> with two required elements:
 <code>at</code> (the time step for the change) and <code>param</code> (a
 named list of new parameter values):</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -908,7 +890,7 @@ named list of new parameter values):</p>
 <p>This updater sets <code>inf.prob</code> to 0.3 and
 <code>act.rate</code> to 0.5 at time step 10. Multiple updaters are
 combined in a list:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -930,7 +912,7 @@ combined in a list:</p>
 </h3>
 <p>Pass the updater list to <code>param.net</code> via the
 <code>.param.updater.list</code> argument:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span></span>
 <span> inf.prob <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span> act.rate <span class="op">=</span> <span class="fl">0.1</span>,</span>
@@ -943,7 +925,7 @@ combined in a list:</p>
 <span> nsteps <span class="op">=</span> <span class="fl">200</span>,</span>
 <span> verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span></span>
 <span>  <span class="va">nw</span>,</span>
@@ -977,17 +959,17 @@ combined in a list:</p>
 At step 100, both <code>inf.prob</code> and <code>act.rate</code>
 increase from 0.1 to 0.3, accelerating transmission. At step 125,
 <code>inf.prob</code> drops to 0.01, slowing the epidemic.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, mean.smooth <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">125</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="model-parameters_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="model-parameters_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 <div class="section level4">
 <h4 id="verbosity">Verbosity<a class="anchor" aria-label="anchor" href="#verbosity"></a>
 </h4>
 <p>Each updater can include an optional <code>verbose</code> element.
 When <code>TRUE</code> (the default), EpiModel prints a message
 describing the changes:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1016,7 +998,7 @@ describing the changes:</p>
 <p>Instead of setting a parameter to a fixed new value, you can define a
 <em>function</em> that transforms the current value. This is useful for
 multiplicative changes or logit-scale adjustments.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  at <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1050,7 +1032,7 @@ probability scale.</p>
 <p>Control settings can also be changed during a simulation using the
 same updater mechanism. Each control updater uses a <code>control</code>
 element (instead of <code>param</code>):</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    at <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -1071,7 +1053,7 @@ model verbosity at step 125.</p>
 <code>.control.updater.list</code>, paralleling how parameter updaters
 are passed to <code>param.net</code> via
 <code>.param.updater.list</code>:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
 <span> type <span class="op">=</span> <span class="st">"SI"</span>,</span>
 <span> nsims <span class="op">=</span> <span class="fl">1</span>,</span>

@@ -67,7 +67,6 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/epi_trackers.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/epiweb.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/format_param.html</loc></url>
-<url><loc>https://epimodel.github.io/EpiModel/reference/generate_random_params.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/geom_bands.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_adj_list.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_args.html</loc></url>
@@ -90,7 +89,6 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_network_term_attr.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_nwparam.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_nwstats.html</loc></url>
-<url><loc>https://epimodel.github.io/EpiModel/reference/get_param_set.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_partners.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_sims.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.html</loc></url>
@@ -139,7 +137,6 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/param.net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/param.net_from_table.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/param.net_to_table.html</loc></url>
-<url><loc>https://epimodel.github.io/EpiModel/reference/param_random.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/plot.dcm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/plot.epi.data.frame.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/plot.icm.html</loc></url>

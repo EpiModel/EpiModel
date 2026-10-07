@@ -243,9 +243,6 @@ restart checkpoints.
 - [`get_nwparam()`](https://epimodel.github.io/EpiModel/reference/get_nwparam.md)
   : Extract Network Model Parameters
 
-- [`get_param_set()`](https://epimodel.github.io/EpiModel/reference/get_param_set.md)
-  : Extract the Parameter Set from Network Simulations
-
 - [`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
   : Extract the Attributes History from Network Simulations
 
@@ -346,9 +343,8 @@ Shiny-based explorer.
 
 ## Scenarios & Sensitivity Analysis
 
-Build parameter scenarios for batch sensitivity analyses, convert
-between list and tabular parameter formats, and generate random
-parameter draws.
+Build parameter scenarios for batch sensitivity analyses and convert
+between list and tabular parameter formats.
 
 - [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
   : Make a list of EpiModel scenarios from a data.frame of scenarios
@@ -367,12 +363,6 @@ parameter draws.
   :
 
   Coerce a list of parameters to a `long.param.df`
-
-- [`param_random()`](https://epimodel.github.io/EpiModel/reference/param_random.md)
-  : Create a Value Sampler for Random Parameters
-
-- [`generate_random_params()`](https://epimodel.github.io/EpiModel/reference/generate_random_params.md)
-  : Generate Values for Random Parameters
 
 - [`format_param()`](https://epimodel.github.io/EpiModel/reference/format_param.md)
   :
