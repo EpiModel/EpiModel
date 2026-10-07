@@ -145,6 +145,11 @@ merge.icm <- function(x, y, ...) {
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
 #'
+#' Only the per-simulation elements not kept (see the `keep.*` arguments) may
+#' be missing from one of `x` and `y`, e.g. from the result of a previous merge
+#' that dropped them. The transmission matrices and network statistics are an
+#' exception: they are dropped when missing from one of them.
+#'
 #' @return An `EpiModel` object of class [netsim()] containing
 #'         the data from both `x` and `y`.
 #'
@@ -200,26 +205,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     attr.history = keep.attr.history,
     raw.records = keep.attr.history
   )
-  keep_elts[x$control$save.other] <- keep.other
+  keep_elts[union(x$control$save.other, y$control$save.other)] <- keep.other
   keep_stats_elts <- c(nwstats = keep.nwstats, transmat = keep.transmat)
-
-  ## Check structure. The per-simulation elements may be missing from one
-  ## side, e.g. when `x` is the result of a previous merge that dropped them:
-  ## they are then dropped.
-  droppable <- union(names(keep_elts), y$control$save.other)
-  if (!identical(setdiff(names(x), droppable), setdiff(names(y), droppable))) {
-    stop("x and y have different structure")
-  }
-  x$control$nsims <- as.integer(x$control$nsims)
-  y$control$nsims <- as.integer(y$control$nsims)
-  common <- intersect(names(x), names(y))
-  elt_classes <- function(obj) {
-    vapply(obj[common], function(i) class(i)[1], character(1))
-  }
-  if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !identical(elt_classes(x), elt_classes(y))) {
-    stop("x and y have different structure")
-  }
 
   ## Check params
   check1 <- identical(x$param, y$param)
@@ -255,6 +242,24 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     stop("Elements in save.other differ between x and y")
   }
 
+  ## Check structure. Only the per-simulation elements not kept may differ,
+  ## e.g. when `x` is the result of a previous merge that dropped them.
+  dropped_elts <- names(keep_elts)[!keep_elts]
+  if (!identical(setdiff(names(x), dropped_elts),
+                 setdiff(names(y), dropped_elts))) {
+    stop("x and y have different structure")
+  }
+  x$control$nsims <- as.integer(x$control$nsims)
+  y$control$nsims <- as.integer(y$control$nsims)
+  common <- intersect(names(x), names(y))
+  elt_classes <- function(obj) {
+    vapply(obj[common], function(i) class(i)[1], character(1))
+  }
+  if (x$control$nsims > 1 && y$control$nsims > 1 &&
+        !identical(elt_classes(x), elt_classes(y))) {
+    stop("x and y have different structure")
+  }
+
   z <- x
   z$control$nsims <- x$control$nsims + y$control$nsims
   newnames <- paste0("sim", seq_len(z$control$nsims))
@@ -265,17 +270,16 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     names(z$epi[[i]]) <- newnames
   }
 
-  ## Per-simulation elements: each kept element present on both sides is
-  ## bound, the others are dropped. They are tested with `length() > 0` rather
-  ## than `!is.null()` because a restart point built by `make_restart_point()`
-  ## carries zero-length history elements, which have no per-simulation entry
-  ## to name.
+  ## Per-simulation elements: the kept ones are bound, the others dropped. A
+  ## kept element held by neither side, or empty on both (e.g. the
+  ## `attr.history` of restart points built by `make_restart_point()`), is
+  ## left as is.
   for (elt in names(keep_elts)) {
-    if (keep_elts[[elt]] && length(x[[elt]]) > 0 && length(y[[elt]]) > 0) {
+    if (!keep_elts[[elt]]) {
+      z[[elt]] <- NULL
+    } else if (length(x[[elt]]) > 0 || length(y[[elt]]) > 0) {
       z[[elt]] <- c(x[[elt]], y[[elt]])
       names(z[[elt]]) <- newnames
-    } else {
-      z[[elt]] <- NULL
     }
   }
 

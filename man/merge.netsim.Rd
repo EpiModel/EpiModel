@@ -86,6 +86,11 @@ for a combined object where the structure differs between the input elements.
 Instead, the function checks that objects are identical in model
 parameterization in every respect (except number of simulations) and binds
 the results.
+
+Only the per-simulation elements not kept (see the \verb{keep.*} arguments) may
+be missing from one of \code{x} and \code{y}, e.g. from the result of a previous merge
+that dropped them. The transmission matrices and network statistics are an
+exception: they are dropped when missing from one of them.
 }
 \examples{
 \donttest{

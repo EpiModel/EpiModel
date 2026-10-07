@@ -335,9 +335,10 @@ test_that("merge.netsim chains merges that drop elements", {
   expect_null(z$attr.history)
   expect_null(z$raw.records)
 
-  # an element missing from one side is dropped, even when kept
+  # an element missing from one side can be dropped, but not kept
   no_run <- merge(parts[[1]], parts[[2]], keep.run = FALSE)
-  z <- merge(no_run, parts[[3]], keep.run = TRUE)
+  expect_error(merge(no_run, parts[[3]], keep.run = TRUE), "different structure")
+  z <- merge(no_run, parts[[3]], keep.run = FALSE)
   expect_equal(z$control$nsims, 6)
   expect_null(z$run)
   expect_length(z$coef.form, 6)
@@ -367,4 +368,35 @@ test_that("merge.netsim chains merges of save.other elements", {
   z <- Reduce(function(a, b) merge(a, b, keep.other = FALSE), parts)
   expect_equal(z$control$nsims, 6)
   expect_null(z$el)
+})
+
+test_that("merge.netsim chains merges of restart points", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 3,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+
+  # the empty histories of the restart points are left empty
+  rps <- lapply(1:3, function(s) {
+    make_restart_point(mod, time_attrs = "infTime", sim_num = s)
+  })
+  pool <- Reduce(merge, rps)
+  expect_equal(pool$control$nsims, 3)
+  expect_named(pool$run, paste0("sim", 1:3))
+  expect_named(pool$coef.form, paste0("sim", 1:3))
+  expect_length(pool$attr.history, 0)
+  expect_length(pool$raw.records, 0)
+
+  # any simulation of the pool can be restarted from
+  control.rs <- control.net(type = "SI", start = 2, nsteps = 4,
+                            tergmLite = TRUE, resimulate.network = TRUE,
+                            save.run = TRUE, verbose = FALSE)
+  rs <- netsim(get_sims(pool, sims = 2), param.net(inf.prob = 0.3),
+               init.net(i.num = 5), control.rs)
+  expect_equal(rs$epi$i.num[1, 1], pool$epi$i.num[1, 2])
 })
