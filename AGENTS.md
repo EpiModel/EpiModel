@@ -238,6 +238,8 @@ v2.6.1 (#992) completed removal of long-deprecated argument names — they now h
 - `births.FUN` / `deaths.FUN` → `arrivals.FUN` / `departures.FUN` (`control.net`)
 - `depend` → `resimulate.network` (`control.net`)
 
+v2.7.0 (#1086) removed the random parameter interface: the `random.params` argument of `param.net()`, `param_random()`, `generate_random_params()`, and `get_param_set()`. `param.net(random.params = )` hard-errors. To vary parameters across simulations, run a table of draws as scenarios (see the Parameter Uncertainty section of the `model-parameters` vignette).
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using `status` as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (`inter.eff`, `inter.start`).

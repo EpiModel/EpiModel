@@ -134,11 +134,11 @@
 #' @section Parameter Uncertainty:
 #' To vary parameter values across simulations for uncertainty or sensitivity
 #' analysis, draw the values in advance into a `data.frame` with one row per
-#' draw, convert it with [create_scenario_list()], and apply each row to the
-#' base parameters with [use_scenario()]. The "Working with Model Parameters in
-#' EpiModel" vignette works through an example. The `random.params` argument
-#' that served this purpose through v2.6.2 has been removed; passing it now
-#' produces an error.
+#' draw, convert it with [create_scenario_list()], and apply each resulting
+#' scenario to the base parameters with [use_scenario()]. The "Working with
+#' Model Parameters in EpiModel" vignette works through an example. The
+#' `random.params` argument that served this purpose through v2.6.2 has been
+#' removed; passing it now produces an error.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
@@ -201,7 +201,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
          "Use data.frame.params instead.")
   }
 
-  # The random parameters interface was removed in v2.7.0. Without this check,
+  # The random parameter interface was removed in v2.7.0. Without this check,
   # `random.params` would also fall through to `...` and be stored as a
   # parameter, so old code would run without the draws and without an error
   if ("random.params" %in% names.dot.args) {
