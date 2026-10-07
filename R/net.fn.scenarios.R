@@ -165,19 +165,11 @@ flatten_params <- function(params) {
   return(params.flat)
 }
 
-#' list the "special parameters" from a param list. They include some EpiModel
-#' internals as well as all parameters starting with "."
+#' list the "special parameters" from a param list: all parameters starting
+#' with "."
 #' @noRd
 list_special_params <- function(params.names) {
-  builtin.special.params <- c(
-    "random.params",
-    "random.params.values"
-  )
-
-  builtin.special.params <- intersect(builtin.special.params, params.names)
-  dot.special.params <- params.names[grep("^\\.", params.names)]
-
-  return(unique(c(builtin.special.params, dot.special.params)))
+  return(params.names[grep("^\\.", params.names)])
 }
 
 #' helper function to remove the "special parameters" from a param list.
@@ -239,18 +231,6 @@ check_params_names <- function(params.names) {
       "you can check the names with ",
       '`grepl("', params.pattern, '", your.names)` \n',
       "Example: 'unique.param', 'param.set_1', 'param.set_2'"
-    )
-  }
-
-  # Reserved names must be rejected when they carry a position suffix as well as
-  # when they are scalar. `unflatten_params` strips the suffix, so a table with
-  # `random.params_1` and `random.params_2` would otherwise rebuild a forbidden
-  # `random.params` element.
-  base.names <- sub("_[0-9]+$", "", params.names)
-  is.special <- base.names %in% list_special_params(base.names)
-  if (any(is.special)) {
-    stop("The following special parameter names are not allowed: \n`",
-      paste0(params.names[is.special], collapse = "`, `"), "`\n\n"
     )
   }
 

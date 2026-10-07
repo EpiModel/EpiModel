@@ -149,20 +149,6 @@ further examples, see the
 \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics} tutorials.
 }
 
-\section{Random Parameters}{
-
-In addition to deterministic parameters in either fixed or time-varying
-varieties above, one may also include a generator for random parameters.
-These might include a vector of potential parameter values or a statistical
-distribution definition; in either case, one draw from the generator would
-be completed per individual simulation. This is possible by passing a list
-named \code{random.params} into \code{param.net}, with each element of
-\code{random.params} a named generator function. See the help page and
-examples in \code{\link[=generate_random_params]{generate_random_params()}}. A simple factory function
-for sampling is provided with \code{\link[=param_random]{param_random()}} but any function
-will do.
-}
-
 \section{Using a Parameter data.frame}{
 
 It is possible to set input parameters using a specifically formatted
@@ -192,6 +178,17 @@ was never an accepted name; passing it now produces an error pointing to
 \code{data.frame.params}.
 }
 
+\section{Parameter Uncertainty}{
+
+To vary parameter values across simulations for uncertainty or sensitivity
+analysis, draw the values in advance into a \code{data.frame} with one row per
+draw, convert it with \code{\link[=create_scenario_list]{create_scenario_list()}}, and apply each resulting
+scenario to the base parameters with \code{\link[=use_scenario]{use_scenario()}}. The "Working with
+Model Parameters in EpiModel" vignette works through an example. The
+\code{random.params} argument that served this purpose through v2.6.2 has been
+removed; passing it now produces an error.
+}
+
 \section{Parameters with New Modules}{
 
 To build original models outside of the base models, new process modules
@@ -207,7 +204,7 @@ responsibility when using new modules.
 
 \examples{
 \donttest{
-## Example SIR model parameterization with fixed and random parameters
+## Example SIR model parameterization
 # Network model estimation
 nw <- network_initialize(n = 100)
 formation <- ~edges
@@ -215,32 +212,16 @@ target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-# Random epidemic parameter list (here act.rate values are sampled uniformly
-# with helper function param_random, and inf.prob follows a general Beta
-# distribution with the parameters shown below)
-my_randoms <- list(
-  act.rate = param_random(1:3),
-  inf.prob = function() rbeta(1, 1, 2)
-)
-
 # Parameters, initial conditions, and control settings
-param <- param.net(rec.rate = 0.02, random.params = my_randoms)
-
-# Printing parameters shows both fixed and and random parameter functions
+param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.02)
 param
 
-# Set initial conditions and controls
 init <- init.net(i.num = 10, r.num = 0)
 control <- control.net(type = "SIR", nsteps = 10, nsims = 3, verbose = FALSE)
 
 # Simulate the model
 sim <- netsim(est, param, init, control)
-
-# Printing the sim object shows the randomly drawn values for each simulation
 sim
-
-# Parameter sets can be extracted with:
-get_param_set(sim)
 }
 
 }
