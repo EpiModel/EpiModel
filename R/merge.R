@@ -185,13 +185,28 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          keep.run = TRUE, keep.cumulative.edgelist = FALSE,
                          keep.attr.history = TRUE, ...) {
 
-  ## Check structure. The per-simulation elements that are dropped when not
-  ## kept (see below) may be missing from one side, e.g. when `x` is the
-  ## result of a previous merge that dropped them: they are then dropped.
-  droppable <- c(
-    "coef.form", "network", "run", "cumulative.edgelist", "attr.history",
-    "raw.records", "diss.stats", x$control$save.other, y$control$save.other
+  ## Per-simulation elements, and whether each one is kept. The formation
+  ## coefficients are always kept, as they are required along with `run` to
+  ## restart from the merged object. `attr.history` and `raw.records` are the
+  ## two halves of the same recording facility and are saved together by
+  ## `saveout.net`. `keep.other` has the final say on the elements requested
+  ## through `save.other`, including the ones above (e.g. `run`).
+  keep_elts <- c(
+    coef.form = TRUE,
+    network = keep.network,
+    diss.stats = keep.diss.stats,
+    run = keep.run,
+    cumulative.edgelist = keep.cumulative.edgelist,
+    attr.history = keep.attr.history,
+    raw.records = keep.attr.history
   )
+  keep_elts[x$control$save.other] <- keep.other
+  keep_stats_elts <- c(nwstats = keep.nwstats, transmat = keep.transmat)
+
+  ## Check structure. The per-simulation elements may be missing from one
+  ## side, e.g. when `x` is the result of a previous merge that dropped them:
+  ## they are then dropped.
+  droppable <- union(names(keep_elts), y$control$save.other)
   if (!identical(setdiff(names(x), droppable), setdiff(names(y), droppable))) {
     stop("x and y have different structure")
   }
@@ -235,6 +250,10 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   if (check2 == FALSE && param.error == TRUE) {
     stop("x and y have different controls")
   }
+  if (keep.other == TRUE &&
+        !identical(x$control$save.other, y$control$save.other)) {
+    stop("Elements in save.other differ between x and y")
+  }
 
   z <- x
   z$control$nsims <- x$control$nsims + y$control$nsims
@@ -246,105 +265,28 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     names(z$epi[[i]]) <- newnames
   }
 
-  ## Formation coefficients (always saved, one element per simulation, and
-  ## required along with `run` to restart from the merged object)
-  if (!is.null(x$coef.form) && !is.null(y$coef.form)) {
-    z$coef.form <- c(x$coef.form, y$coef.form)
-    names(z$coef.form) <- newnames
-  } else {
-    z$coef.form <- NULL
-  }
-
-  ## Transmission matrix
-  if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
-        !is.null(y$stats$transmat)) {
-    z$stats$transmat <- c(x$stats$transmat, y$stats$transmat)
-    names(z$stats$transmat) <- newnames
-  } else {
-    z$stats$transmat <- NULL
-  }
-
-  ## Network objects
-  if (keep.network == TRUE && !is.null(x$network) && !is.null(y$network)) {
-    z$network <- c(x$network, y$network)
-    names(z$network) <- newnames
-
-  } else {
-    z$network <- NULL
-  }
-
-  ## Network statistics
-  if (keep.nwstats == TRUE && !is.null(x$stats$nwstats) && !is.null(y$stats$nwstats)) {
-    z$stats$nwstats <- c(x$stats$nwstats, y$stats$nwstats)
-    names(z$stats$nwstats) <- newnames
-  } else {
-    z$stats$nwstats <- NULL
-  }
-
-  ## Run sublists (restart state), cumulative edgelists and recorded histories.
-  ## Each may also be requested through `save.other`, which is handled below
-  ## and has the final say on the elements it manages. These are tested with
-  ## `length() > 0` rather than `!is.null()` because a restart point built by
-  ## `make_restart_point()` carries zero-length history elements, which have no
-  ## per-simulation entry to name.
-  other.elts <- if (keep.other == TRUE) x$control$save.other else NULL
-
-  if (keep.run == TRUE && length(x$run) > 0 && length(y$run) > 0) {
-    z$run <- c(x$run, y$run)
-    names(z$run) <- newnames
-  } else if (!"run" %in% other.elts) {
-    z$run <- NULL
-  }
-
-  if (keep.cumulative.edgelist == TRUE && length(x$cumulative.edgelist) > 0 &&
-        length(y$cumulative.edgelist) > 0) {
-    z$cumulative.edgelist <- c(x$cumulative.edgelist, y$cumulative.edgelist)
-    names(z$cumulative.edgelist) <- newnames
-  } else if (!"cumulative.edgelist" %in% other.elts) {
-    z$cumulative.edgelist <- NULL
-  }
-
-  ## `attr.history` and `raw.records` are the two halves of the same recording
-  ## facility and are saved together by `saveout.net`
-  for (elt in c("attr.history", "raw.records")) {
-    if (keep.attr.history == TRUE && length(x[[elt]]) > 0 &&
-          length(y[[elt]]) > 0) {
+  ## Per-simulation elements: each kept element present on both sides is
+  ## bound, the others are dropped. They are tested with `length() > 0` rather
+  ## than `!is.null()` because a restart point built by `make_restart_point()`
+  ## carries zero-length history elements, which have no per-simulation entry
+  ## to name.
+  for (elt in names(keep_elts)) {
+    if (keep_elts[[elt]] && length(x[[elt]]) > 0 && length(y[[elt]]) > 0) {
       z[[elt]] <- c(x[[elt]], y[[elt]])
       names(z[[elt]]) <- newnames
-    } else if (!elt %in% other.elts) {
+    } else {
       z[[elt]] <- NULL
     }
   }
 
-  ## Other
-  if (!is.null(x$control$save.other) && !is.null(y$control$save.other)) {
-    other.x <- x$control$save.other
-    other.y <- y$control$save.other
-    if (keep.other == TRUE) {
-      if (!identical(other.x, other.y)) {
-        stop("Elements in save.other differ between x and y")
-      }
-      for (elt in other.x) {
-        if (length(x[[elt]]) > 0 && length(y[[elt]]) > 0) {
-          z[[elt]] <- c(x[[elt]], y[[elt]])
-          names(z[[elt]]) <- newnames
-        } else {
-          z[[elt]] <- NULL
-        }
-      }
+  for (elt in names(keep_stats_elts)) {
+    if (keep_stats_elts[[elt]] && length(x$stats[[elt]]) > 0 &&
+          length(y$stats[[elt]]) > 0) {
+      z$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
+      names(z$stats[[elt]]) <- newnames
     } else {
-      for (j in seq_along(other.x)) {
-        z[[other.x[j]]] <- NULL
-      }
+      z$stats[[elt]] <- NULL
     }
-  }
-
-  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) &&
-        !is.null(y$diss.stats)) {
-    z$diss.stats <- c(x$diss.stats, y$diss.stats)
-    names(z$diss.stats) <- newnames
-  } else {
-    z$diss.stats <- NULL
   }
 
   return(z)
