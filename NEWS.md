@@ -6,15 +6,19 @@
 
 -   `make_restart_point()` no longer keeps the transmission matrix (`stats$transmat`) and the network statistics (`stats$nwstats`) of the prior simulation, which it trimmed to the last `keep_steps` time steps, to keep the restart points lightweight. A simulation restarted from it with `save.transmat` or `save.nwstats` now only records the transmissions and network statistics of its new time steps. Restarting from a full `netsim` object still carries them over.
 
+-   `netsim()` restarts every simulation from the first simulation of `x`, with a warning when `x` holds more than one. Simulation `s` restarted from simulation `(s - 1) %% n + 1` of the `n` simulations of `x` before. Use `get_sims()` or `make_restart_point()` to select the simulation to restart from.
+
+-   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored.
+
 ### NEW FEATURES
 
-- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists can be passed to `netsim()` as a restart point, each new simulation restarting from the matching merged one. Only `keep.cumulative.edgelist` defaults to `FALSE`.
+- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists holds the state needed to restart from any of its simulations, selected with `get_sims()`. Only `keep.cumulative.edgelist` defaults to `FALSE`.
 
 ### BUG FIXES
 
 -   Fix `merge.netsim()` on objects coming from a previous merge that dropped elements. A merge removes the per-simulation elements it does not keep (`network`, `run`, `cumulative.edgelist`, `attr.history`, `raw.records`, `diss.stats`, the `save.other` elements), but required both objects to hold the same elements, so merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) failed from the third one with "x and y have different structure" whenever one was dropped. As `keep.cumulative.edgelist` is `FALSE` by default, this was the case with the default arguments for any model saving its cumulative edgelists. The elements not kept may now be missing from one side. A kept element missing from one side is still an error. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
 
--   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a merged object read the wrong formation coefficients for the simulations coming from `y`.
+-   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a simulation of the merged object coming from `y` read the wrong formation coefficients.
 
 -   Fix `get_sims()` to subset the per-simulation `coef.form`, `attr.history` and `raw.records` elements, which were returned for every simulation regardless of `sims`.
 
@@ -27,10 +31,6 @@
 -   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the new time steps are then recorded on their own.
 
 -   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
-
-### OTHER
-
-- Document how restarted simulations recycle the simulations of `x` (simulation `s` restarts from simulation `(s - 1) %% n + 1`) in `?netsim`, `?control.net` and `?initialize.net`.
 
 ## EpiModel 2.6.2
 

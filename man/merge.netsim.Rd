@@ -51,8 +51,8 @@ original \code{x} and \code{y} objects.}
 
 \item{keep.run}{If \code{TRUE}, keep the \code{run} sublists (as set by the
 \code{save.run} parameter in \code{control.net}) from the original \code{x} and
-\code{y} elements. These are required to use the merged object as a
-restart point in \code{\link[=netsim]{netsim()}}.}
+\code{y} elements. These are required to restart from a simulation of the
+merged object in \code{\link[=netsim]{netsim()}}, selected with \code{\link[=get_sims]{get_sims()}}.}
 
 \item{keep.cumulative.edgelist}{If \code{TRUE}, keep the cumulative edgelists
 (as set by the \code{save.cumulative.edgelist} parameter in

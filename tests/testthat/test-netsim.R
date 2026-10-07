@@ -346,7 +346,7 @@ test_that("edges correction behaves as expected", {
           control$start <- nsteps + 1
           nsteps <- 9
           control$nsteps <- nsteps
-          sim2 <- netsim(sim, param, init, control)
+          sim2 <- netsim(get_sims(sim, sims = 1), param, init, control)
 
           for (simno in seq_len(nsims)) {
             if (ngroups == 1) {

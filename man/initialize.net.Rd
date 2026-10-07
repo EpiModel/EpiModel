@@ -19,10 +19,9 @@ and nodal attributes) are assumed to be the same for all networks.}
 
 \item{control}{An \code{EpiModel} object of class \code{\link[=control.net]{control.net()}}.}
 
-\item{s}{Simulation number, used for restarting dependent simulations.
-When restarting, simulation \code{s} restarts from simulation
-\code{(s - 1) \%\% n + 1} of the \code{n} simulations held by \code{x} (e.g. 1, 2, 3,
-1, 2 for 5 simulations restarting from 3).}
+\item{s}{Simulation number. When restarting, every simulation restarts from
+the first simulation of \code{x}, and a warning is raised (for \code{s = 1})
+if \code{x} holds more than one.}
 }
 \value{
 A \code{netsim_dat} class main data object.
@@ -34,7 +33,10 @@ the networks, and simulates disease status and other attributes.
 }
 \details{
 When re-initializing a simulation, the \code{netsim} object passed
-to \code{initialize.net} must contain the elements \code{param},
-\code{nwparam}, \code{epi}, \code{coef.form}, and \code{num.nw}.
+to \code{initialize.net} must contain the elements \code{nwparam}, \code{epi},
+\code{run}, \code{coef.form}, and \code{num.nw}. The parameters are taken from
+\code{param} alone, which must hold all the parameters of the model:
+the ones of \code{x} are not used. The internal \code{groups} parameter is
+restored from the \code{run} sublist of \code{x}.
 }
 \keyword{internal}

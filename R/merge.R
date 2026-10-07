@@ -120,8 +120,8 @@ merge.icm <- function(x, y, ...) {
 #'        original `x` and `y` objects.
 #' @param keep.run If `TRUE`, keep the `run` sublists (as set by the
 #'        `save.run` parameter in `control.net`) from the original `x` and
-#'        `y` elements. These are required to use the merged object as a
-#'        restart point in [netsim()].
+#'        `y` elements. These are required to restart from a simulation of the
+#'        merged object in [netsim()], selected with [get_sims()].
 #' @param keep.cumulative.edgelist If `TRUE`, keep the cumulative edgelists
 #'        (as set by the `save.cumulative.edgelist` parameter in
 #'        `control.net`) from the original `x` and `y` elements. `FALSE` by

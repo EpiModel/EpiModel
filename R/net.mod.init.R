@@ -12,13 +12,15 @@
 #' @param param An `EpiModel` object of class [param.net()].
 #' @param init An `EpiModel` object of class [init.net()].
 #' @param control An `EpiModel` object of class [control.net()].
-#' @param s Simulation number, used for restarting dependent simulations.
-#'        When restarting, simulation `s` restarts from simulation
-#'        `(s - 1) %% n + 1` of the `n` simulations held by `x` (e.g. 1, 2, 3,
-#'        1, 2 for 5 simulations restarting from 3).
+#' @param s Simulation number. When restarting, every simulation restarts from
+#'        the first simulation of `x`, and a warning is raised (for `s = 1`)
+#'        if `x` holds more than one.
 #' @details When re-initializing a simulation, the `netsim` object passed
-#'          to `initialize.net` must contain the elements `param`,
-#'          `nwparam`, `epi`, `coef.form`, and `num.nw`.
+#'          to `initialize.net` must contain the elements `nwparam`, `epi`,
+#'          `run`, `coef.form`, and `num.nw`. The parameters are taken from
+#'          `param` alone, which must hold all the parameters of the model:
+#'          the ones of `x` are not used. The internal `groups` parameter is
+#'          restored from the `run` sublist of `x`.
 #'
 #' @return A `netsim_dat` class main data object.
 #'
@@ -53,7 +55,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     ## check that required names are present
-    required_names <- c("param", "nwparam", "epi", "run", "coef.form", "num.nw")
+    required_names <- c("nwparam", "epi", "run", "coef.form", "num.nw")
     missing_names <- setdiff(required_names, names(x))
     if (length(missing_names) > 0) {
       stop(
@@ -62,43 +64,42 @@ initialize.net <- function(x, param, init, control, s) {
       )
     }
 
-    # recycle sims in the restart object
-    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
-    s <- (s - 1) %% length(x$run) + 1
+    # every simulation restarts from the first simulation of `x`
+    if (length(x$run) > 1 && s == 1) {
+      warning(
+        "`x` holds ", length(x$run), " simulations: every simulation ",
+        "restarts from the first one. Use `get_sims()` or ",
+        "`make_restart_point()` to select the simulation to restart from."
+      )
+    }
 
     dat <- create_dat_object(
       param = param,
       control = control,
-      run = x$run[[s]]
+      run = x$run[[1]]
     )
 
-    # TODO: we should not silently fill params from the restart point
-    missing_params <- setdiff(names(x$param), names(param))
-    for (mp in missing_params) {
-      dat <- set_param(dat, mp, x$param[[mp]])
-    }
+    # `groups` is stored in `run` by `init_nets()`
+    dat <- set_param(dat, "groups", dat$run$groups)
 
     dat$num.nw <- x$num.nw
 
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
-      dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
+      dat$nwparam[[network]]$coef.form <- x$coef.form[[1]][[network]]
     }
-    dat$epi <- sapply(x$epi, function(var) var[s])
+    dat$epi <- sapply(x$epi, function(var) var[1])
     names(dat$epi) <- names(x$epi)
 
-    dat$stats <- lapply(x$stats, function(var) var[[s]])
+    dat$stats <- lapply(x$stats, function(var) var[[1]])
     if (get_control(dat, "save.nwstats") == TRUE) {
       nsteps <- get_control(dat, "nsteps")
       start <- get_control(dat, "start")
-      # `x` may hold no prior network statistics (e.g. a restart point made by
-      # `make_restart_point()`): the new ones are then recorded on their own
-      if (is.null(dat$stats$nwstats)) {
-        dat$stats$nwstats <- vector(mode = "list", length = dat$num.nw)
-      }
-      dat$stats$nwstats <- lapply(dat$stats$nwstats,
-        function(oldstats) padded_vector(list(oldstats), nsteps - start + 2L)
-      )
+      # the prior statistics of each network, if any (a restart point made by
+      # `make_restart_point()` holds none), fill the first slot
+      dat$stats$nwstats <- lapply(seq_len(dat$num.nw), function(network) {
+        padded_vector(list(dat$stats$nwstats[[network]]), nsteps - start + 2L)
+      })
     }
     if (is.data.frame(dat$stats$transmat)) {
       nsteps <- get_control(dat, "nsteps")
@@ -325,8 +326,9 @@ init_nets <- function(dat, x) {
   num <- network.size(nw)
   dat <- append_core_attr(dat, 1, num)
 
-  groups <- length(unique(get_vertex_attribute(nw, "group")))
-  dat <- set_param(dat, "groups", groups)
+  # `groups` is stored in `run` to restore it when restarting
+  dat$run$groups <- length(unique(get_vertex_attribute(nw, "group")))
+  dat <- set_param(dat, "groups", dat$run$groups)
 
   ## Pull attr on nw to dat$attr
   dat <- copy_nwattr_to_datattr(dat, nw)

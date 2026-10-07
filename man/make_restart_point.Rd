@@ -33,10 +33,15 @@ simulations where \code{control$tergmLite = TRUE}
 }
 \details{
 The restart point created always contains a single simulation and drops the
-\code{attr.history}, the \code{raw.records}, the transmission matrix and the network
-statistics (\code{nwstats}) from the initial simulation. A simulation restarted
-from it with \code{save.transmat} or \code{save.nwstats} only records the transmissions
-and network statistics of its new time steps.
+\code{attr.history}, the \code{raw.records} and the content of the \code{stats} list (the
+transmission matrix and the network statistics, \code{nwstats}) from the initial
+simulation. A simulation restarted from it with \code{save.transmat} or
+\code{save.nwstats} only records the transmissions and network statistics of its
+new time steps.
+
+\code{sim_obj} does not need to hold the parameters: when restarting, \code{\link[=netsim]{netsim()}}
+takes them from its \code{param} argument alone, which must hold all the
+parameters of the model.
 
 The epi trackers and cumulative edgelists are truncated to only contain the
 last \code{keep_steps} entries.

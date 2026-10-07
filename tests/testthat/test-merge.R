@@ -276,17 +276,19 @@ test_that("merge.netsim output can be used as a restart point", {
 
   z <- merge(x, y)
 
-  control.rs <- control.net(type = "SI", start = 6, nsteps = 8, nsims = 4,
+  # restart from a simulation coming from `y`, whose run and formation
+  # coefficients are bound after the ones of `x`
+  control.rs <- control.net(type = "SI", start = 6, nsteps = 8, nsims = 2,
                             tergmLite = TRUE, resimulate.network = TRUE,
                             save.run = TRUE, verbose = FALSE)
-  rs <- netsim(z, param, init, control.rs)
+  rs <- netsim(get_sims(z, sims = 3), param, init, control.rs)
 
   expect_is(rs, "netsim")
-  expect_equal(rs$control$nsims, 4)
-  # each output simulation restarts from its own source run in the merged
-  # object, so its history up to the restart is that run's epi
+  expect_equal(rs$control$nsims, 2)
   expect_equal(nrow(rs$epi$i.num), 8)
-  expect_equal(rs$epi$i.num[1:5, ], z$epi$i.num, check.attributes = FALSE)
+  for (s in 1:2) {
+    expect_equal(rs$epi$i.num[1:5, s], z$epi$i.num[, 3])
+  }
 })
 
 test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {

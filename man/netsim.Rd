@@ -168,12 +168,12 @@ output, pass the \code{netsim} object as \code{x} and set \code{control$start} t
 greater than the final time step of the prior simulation. See the
 Checkpointing Simulations section of \code{\link{control.net}} for full details.
 
-When restarting, simulation \code{s} restarts from simulation
-\code{(s - 1) \%\% n + 1} of the \code{n} simulations held by \code{x}, which are recycled
-in order: with \code{nsims = 5} and an \code{x} holding 3 simulations, simulations 1
-to 5 restart from simulations 1, 2, 3, 1 and 2. \code{\link{make_restart_point}}
-makes a lightweight \code{x} holding a single simulation, from which every
-simulation then restarts.
+When restarting, every simulation restarts from the first simulation of \code{x},
+with a warning if \code{x} holds more than one. \code{\link{make_restart_point}} makes a
+lightweight \code{x} holding the single simulation to restart from (\code{\link{get_sims}}
+selects one from a \code{netsim} object). The parameters are taken from \code{param}
+alone, which must hold all the parameters of the model: the ones saved in
+\code{x} are not used.
 }
 
 \examples{

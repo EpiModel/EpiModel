@@ -204,20 +204,54 @@ test_that("simulations restarted from make_restart_point record only their new s
   expect_null(rp2$stats$transmat)
 })
 
-test_that("restarted simulations recycle the simulations of x in order", {
+test_that("restarted simulations all restart from the first simulation of x", {
   skip_on_cran()
   mod <- build_restart_sim(nsteps = 5, nsims = 2)
   # tag each simulation of `x` in an extra epi column
   mod$epi$tag <- data.frame(sim1 = rep(1, 5), sim2 = rep(2, 5))
 
-  control <- control.net(type = "SI", start = 6, nsteps = 7, nsims = 5,
+  control <- control.net(type = "SI", start = 6, nsteps = 7, nsims = 3,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
-  mod2 <- netsim(mod, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  expect_warning(
+    mod2 <- netsim(mod, param.net(inf.prob = 0.3), init.net(i.num = 5), control),
+    "holds 2 simulations: every simulation restarts from the first one"
+  )
 
-  expect_equal(unname(unlist(mod2$epi$tag[1, ])), c(1, 2, 1, 2, 1))
-  for (s in 1:5) {
-    src <- (s - 1) %% 2 + 1
-    expect_equal(mod2$epi$i.num[1:5, s], mod$epi$i.num[1:5, src])
+  expect_equal(unname(unlist(mod2$epi$tag[1, ])), c(1, 1, 1))
+  for (s in 1:3) {
+    expect_equal(mod2$epi$i.num[1:5, s], mod$epi$i.num[1:5, 1])
   }
+
+  # a single simulation selected with `get_sims()` restarts without warning
+  expect_silent(
+    mod3 <- netsim(get_sims(mod, sims = 2), param.net(inf.prob = 0.3),
+                   init.net(i.num = 5), control)
+  )
+  expect_equal(unname(unlist(mod3$epi$tag[1, ])), c(2, 2, 2))
+})
+
+test_that("restarted simulations restore the groups parameter from run", {
+  skip_on_cran()
+  nw <- network_initialize(n = 30)
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 15))
+  est <- netest(nw, formation = ~edges, target.stats = 10,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.3)
+  init <- init.net(i.num = 3, i.num.g2 = 3)
+  control <- control.net(type = "SI", nsteps = 5, tergmLite = TRUE,
+                         resimulate.network = TRUE, save.run = TRUE,
+                         verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_equal(mod$run$sim1$groups, 2)
+
+  # `groups` comes from `run`, as neither `x` nor `param` provide it
+  rp <- make_restart_point(mod, time_attrs = "infTime")
+  rp$param <- NULL
+  control$start <- 2
+  control$nsteps <- 4
+  mod2 <- netsim(rp, param, init, control)
+  expect_equal(mod2$param$groups, 2)
+  expect_false(anyNA(mod2$epi$num.g2))
 })

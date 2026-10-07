@@ -947,10 +947,15 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'
 #' @details
 #' The restart point created always contains a single simulation and drops the
-#' `attr.history`, the `raw.records`, the `stats` list,the transmission matrix
-#' and the network statistics (`nwstats`) from the initial simulation. A
-#' simulation restarted from it with `save.transmat` or `save.nwstats` only
-#' records the transmissions and network statistics of its new time steps.
+#' `attr.history`, the `raw.records` and the content of the `stats` list (the
+#' transmission matrix and the network statistics, `nwstats`) from the initial
+#' simulation. A simulation restarted from it with `save.transmat` or
+#' `save.nwstats` only records the transmissions and network statistics of its
+#' new time steps.
+#'
+#' `sim_obj` does not need to hold the parameters: when restarting, [netsim()]
+#' takes them from its `param` argument alone, which must hold all the
+#' parameters of the model.
 #'
 #' The epi trackers and cumulative edgelists are truncated to only contain the
 #' last `keep_steps` entries.
@@ -1004,7 +1009,6 @@ make_restart_point <- function(
   }
   required_names <- c(
     "control",
-    "param",
     "nwparam",
     "epi",
     "run",
@@ -1102,7 +1106,7 @@ make_restart_point <- function(
   # Output ---------------------------------------------------------------------
   x$attr.history <- list()
   x$raw.records <- list()
-  x$stats <- NULL
+  x$stats <- list()
   return(x)
 }
 
