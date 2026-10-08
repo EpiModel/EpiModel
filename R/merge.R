@@ -1,4 +1,3 @@
-
 #' @title Merge Data across Stochastic Individual Contact Model Simulations
 #'
 #' @description Merges epidemiological data from two independent simulations of
@@ -32,12 +31,16 @@
 #' @examples
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.8)
 #' init <- init.icm(s.num = 1000, i.num = 100)
-#' control <- control.icm(type = "SI", nsteps = 10,
-#'                        nsims = 3, verbose = FALSE)
+#' control <- control.icm(
+#'   type = "SI", nsteps = 10,
+#'   nsims = 3, verbose = FALSE
+#' )
 #' x <- icm(param, init, control)
 #'
-#' control <- control.icm(type = "SI", nsteps = 10,
-#'                        nsims = 1, verbose = FALSE)
+#' control <- control.icm(
+#'   type = "SI", nsteps = 10,
+#'   nsims = 1, verbose = FALSE
+#' )
 #' y <- icm(param, init, control)
 #'
 #' z <- merge(x, y)
@@ -48,28 +51,30 @@
 #' as.data.frame(z)
 #'
 merge.icm <- function(x, y, ...) {
-
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
-  if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !identical(sapply(x, class), sapply(y, class))) {
+  if (
+    x$control$nsims > 1 &&
+      y$control$nsims > 1 &&
+      !identical(sapply(x, class), sapply(y, class))
+  ) {
     stop("x and y have different structure")
   }
 
   ## Check params
-  check1 <- identical(x$param, y$param)
-  check2 <- identical(x$control[-which(names(x$control) == "nsims")],
-                      y$control[-which(names(y$control) == "nsims")])
-
-  if (check1 == FALSE) {
+  if (!identical(x$param, y$param)) {
     stop("x and y have different parameters")
   }
-  if (check2 == FALSE) {
+
+  check_controls <- identical(
+    x$control[-which(names(x$control) == "nsims")],
+    y$control[-which(names(y$control) == "nsims")]
+  )
+  if (!check_controls) {
     stop("x and y have different controls")
   }
-
 
   z <- x
   new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
@@ -161,17 +166,21 @@ merge.icm <- function(x, y, ...) {
 #' \donttest{
 #' # Network model
 #' nw <- network_initialize(n = 100)
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-#' est <- netest(nw, formation = ~edges, target.stats = 25,
-#'               coef.diss = coef.diss, verbose = FALSE)
+#' coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 10)
+#' est <- netest(nw,
+#'   formation = ~edges, target.stats = 25,
+#'   coef.diss = coef.diss, verbose = FALSE
+#' )
 #'
 #' # Epidemic models
 #' param <- param.net(inf.prob = 1)
 #' init <- init.net(i.num = 1)
-#' control <- control.net(type = "SI", nsteps = 20, nsims = 2,
-#'                        save.nwstats = TRUE,
-#'                        nwstats.formula = ~edges + degree(0),
-#'                        verbose = FALSE)
+#' control <- control.net(
+#'   type = "SI", nsteps = 20, nsims = 2,
+#'   save.nwstats = TRUE,
+#'   nwstats.formula = ~ edges + degree(0),
+#'   verbose = FALSE
+#' )
 #' x <- netsim(est, param, init, control)
 #' y <- netsim(est, param, init, control)
 #'
@@ -184,90 +193,120 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(z)
 #' }
 #'
-merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.other = TRUE,
-                         param.error = TRUE, keep.diss.stats = TRUE,
-                         keep.run = TRUE, keep.cumulative.edgelist = FALSE,
-                         keep.attr.history = TRUE, ...) {
+merge.netsim <- function(
+  x,
+  y,
+  keep.transmat = TRUE,
+  keep.network = TRUE,
+  keep.nwstats = TRUE,
+  keep.other = TRUE,
+  param.error = TRUE,
+  keep.diss.stats = TRUE,
+  keep.run = TRUE,
+  keep.cumulative.edgelist = FALSE,
+  keep.attr.history = TRUE,
+  ...
+) {
+  # Check that `param` and `control` are identical if `param.error == TRUE`
+  if (param.error) {
+    if (!identical(x$param, y$param)) {
+      stop("x and y have different parameters")
+    }
+    fmla_controls <- c(
+      "monitors",
+      "nwstats.formula",
+      "set.control.tergm",
+      "set.control.ergm",
+      "dat.updates"
+    )
+    check_controls  <- identical(
+      x$control[setdiff(names(x$control), c("nsims", fmla_controls))],
+      y$control[setdiff(names(y$control), c("nsims", fmla_controls))]
+    )
 
-  ## Per-simulation elements, and whether each one is kept. The formation
+    ## handle formulas separately due to environments
+    check_controls <- Reduce(
+      function(init, elt) {
+        init && isTRUE(all.equal(x$control[[elt]], y$control[[elt]]))
+      },
+      fmla_controls,
+      init = check_controls
+    )
+
+    if (!check_controls) {
+      stop("x and y have different controls")
+    }
+  }
+
+  ## Per-simulation elements, and the argument keeping each one. The formation
   ## coefficients are always kept, as they are required along with `run` to
   ## restart from the merged object. `attr.history` and `raw.records` are the
   ## two halves of the same recording facility and are saved together by
   ## `saveout.net`. `keep.other` has the final say on the elements requested
   ## through `save.other`, including the ones above (e.g. `run`).
+  keep_args <- c(
+    network = "keep.network",
+    diss.stats = "keep.diss.stats",
+    run = "keep.run",
+    cumulative.edgelist = "keep.cumulative.edgelist",
+    attr.history = "keep.attr.history",
+    raw.records = "keep.attr.history"
+  )
+  keep_args[union(x$control$save.other, y$control$save.other)] <- "keep.other"
   keep_elts <- c(
     coef.form = TRUE,
-    network = keep.network,
-    diss.stats = keep.diss.stats,
-    run = keep.run,
-    cumulative.edgelist = keep.cumulative.edgelist,
-    attr.history = keep.attr.history,
-    raw.records = keep.attr.history
+    vapply(keep_args, get, logical(1), envir = environment())
   )
-  keep_elts[union(x$control$save.other, y$control$save.other)] <- keep.other
   keep_stats_elts <- c(nwstats = keep.nwstats, transmat = keep.transmat)
-
-  ## Check params
-  check1 <- identical(x$param, y$param)
-
-  fmla_controls <- c(
-    "monitors",
-    "nwstats.formula",
-    "set.control.tergm",
-    "set.control.ergm",
-    "dat.updates"
-  )
-  check2 <- identical(
-    x$control[setdiff(names(x$control), c("nsims", fmla_controls))],
-    y$control[setdiff(names(y$control), c("nsims", fmla_controls))]
-  )
-
-  ## handle formulas separately due to environments
-  check2 <- Reduce(
-    function(init, elt) {
-      init && isTRUE(all.equal(x$control[[elt]], y$control[[elt]]))
-    },
-    fmla_controls, init = check2
-  )
-
-  if (check1 == FALSE && param.error == TRUE) {
-    stop("x and y have different parameters")
-  }
-  if (check2 == FALSE && param.error == TRUE) {
-    stop("x and y have different controls")
-  }
-  if (keep.other == TRUE &&
-        !identical(x$control$save.other, y$control$save.other)) {
-    stop("Elements in save.other differ between x and y")
-  }
 
   ## Check structure. Only the per-simulation elements not kept may differ,
   ## e.g. when `x` is the result of a previous merge that dropped them.
-  dropped_elts <- names(keep_elts)[!keep_elts]
-  if (!identical(setdiff(names(x), dropped_elts),
-                 setdiff(names(y), dropped_elts))) {
-    stop("x and y have different structure")
+  kept_elts <- setdiff(union(names(x), names(y)), names(keep_elts)[!keep_elts])
+  in_x <- kept_elts %in% names(x)
+  in_y <- kept_elts %in% names(y)
+  if (!all(in_x & in_y)) {
+    missing_elts <- kept_elts[!(in_x & in_y)]
+    drop_hints <- ifelse(
+      missing_elts %in% names(keep_args),
+      paste0(" (set `", keep_args[missing_elts], " = FALSE` to drop it)"),
+      ""
+    )
+    stop(
+      "x and y have different structure, the elements kept in the merge ",
+      "must be in both:\n",
+      paste0(
+        "  - `", missing_elts, "` is missing from ",
+        ifelse(in_x[!(in_x & in_y)], "y", "x"), drop_hints, "\n",
+        collapse = ""
+      )
+    )
   }
-  x$control$nsims <- as.integer(x$control$nsims)
-  y$control$nsims <- as.integer(y$control$nsims)
-  common <- intersect(names(x), names(y))
-  elt_classes <- function(obj) {
-    vapply(obj[common], function(i) class(i)[1], character(1))
-  }
-  if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !identical(elt_classes(x), elt_classes(y))) {
-    stop("x and y have different structure")
+  if (x$control$nsims > 1 && y$control$nsims > 1) {
+    x_classes <- vapply(x[kept_elts], function(i) class(i)[1], character(1))
+    y_classes <- vapply(y[kept_elts], function(i) class(i)[1], character(1))
+    diff_classes <- x_classes != y_classes
+    if (any(diff_classes)) {
+      stop(
+        "x and y have different structure, the elements kept in the merge ",
+        "must be of the same class in both:\n",
+        paste0(
+          "  - `", kept_elts[diff_classes], "`: `", x_classes[diff_classes],
+          "` in x, `", y_classes[diff_classes], "` in y\n",
+          collapse = ""
+        )
+      )
+    }
   }
 
-  z <- x
-  z$control$nsims <- x$control$nsims + y$control$nsims
-  newnames <- paste0("sim", seq_len(z$control$nsims))
+  # Perform the merging
+  out <- x
+  out$control$nsims <- as.integer(x$control$nsims + y$control$nsims)
+  newnames <- paste0("sim", seq_len(out$control$nsims))
 
   # Merge epi data
   for (i in seq_along(x$epi)) {
-    z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
-    names(z$epi[[i]]) <- newnames
+    out$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
+    names(out$epi[[i]]) <- newnames
   }
 
   ## Per-simulation elements: the kept ones are bound, the others dropped. A
@@ -276,22 +315,25 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   ## left as is.
   for (elt in names(keep_elts)) {
     if (!keep_elts[[elt]]) {
-      z[[elt]] <- NULL
+      out[[elt]] <- NULL
     } else if (length(x[[elt]]) > 0 || length(y[[elt]]) > 0) {
-      z[[elt]] <- c(x[[elt]], y[[elt]])
-      names(z[[elt]]) <- newnames
+      out[[elt]] <- c(x[[elt]], y[[elt]])
+      names(out[[elt]]) <- newnames
     }
   }
 
   for (elt in names(keep_stats_elts)) {
-    if (keep_stats_elts[[elt]] && length(x$stats[[elt]]) > 0 &&
-          length(y$stats[[elt]]) > 0) {
-      z$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
-      names(z$stats[[elt]]) <- newnames
+    if (
+      keep_stats_elts[[elt]] &&
+        length(x$stats[[elt]]) > 0 &&
+        length(y$stats[[elt]]) > 0
+    ) {
+      out$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
+      names(out$stats[[elt]]) <- newnames
     } else {
-      z$stats[[elt]] <- NULL
+      out$stats[[elt]] <- NULL
     }
   }
 
-  return(z)
+  return(out)
 }

@@ -339,7 +339,11 @@ test_that("merge.netsim chains merges that drop elements", {
 
   # an element missing from one side can be dropped, but not kept
   no_run <- merge(parts[[1]], parts[[2]], keep.run = FALSE)
-  expect_error(merge(no_run, parts[[3]], keep.run = TRUE), "different structure")
+  expect_error(
+    merge(no_run, parts[[3]], keep.run = TRUE),
+    "`run` is missing from x (set `keep.run = FALSE` to drop it)",
+    fixed = TRUE
+  )
   z <- merge(no_run, parts[[3]], keep.run = FALSE)
   expect_equal(z$control$nsims, 6)
   expect_null(z$run)
@@ -348,7 +352,16 @@ test_that("merge.netsim chains merges that drop elements", {
   # other differences in structure are still errors
   odd <- parts[[2]]
   odd$not_an_element <- 1
-  expect_error(merge(parts[[1]], odd), "different structure")
+  expect_error(merge(parts[[1]], odd), "`not_an_element` is missing from x\n",
+               fixed = TRUE)
+  odd <- parts[[2]]
+  odd$coef.form <- NULL
+  expect_error(merge(parts[[1]], odd), "`coef.form` is missing from y\n",
+               fixed = TRUE)
+  odd <- parts[[2]]
+  odd$epi <- as.data.frame(odd$epi)
+  expect_error(merge(parts[[1]], odd), "`epi`: `list` in x, `data.frame` in y",
+               fixed = TRUE)
 })
 
 test_that("merge.netsim chains merges of save.other elements", {
@@ -369,6 +382,18 @@ test_that("merge.netsim chains merges of save.other elements", {
 
   z <- Reduce(function(a, b) merge(a, b, keep.other = FALSE), parts)
   expect_equal(z$control$nsims, 6)
+  expect_null(z$el)
+
+  # a save.other element of only one side is kept by `keep.other`
+  no_el <- parts[[2]]
+  no_el$control$save.other <- character(0)
+  no_el$el <- NULL
+  expect_error(
+    merge(parts[[1]], no_el, param.error = FALSE),
+    "`el` is missing from y (set `keep.other = FALSE` to drop it)",
+    fixed = TRUE
+  )
+  z <- merge(parts[[1]], no_el, param.error = FALSE, keep.other = FALSE)
   expect_null(z$el)
 })
 
