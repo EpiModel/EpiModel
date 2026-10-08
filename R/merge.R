@@ -217,7 +217,8 @@ merge.netsim <- function(
       "nwstats.formula",
       "set.control.tergm",
       "set.control.ergm",
-      "dat.updates"
+      "dat.updates",
+      "future.use.plan"
     )
     check_controls  <- identical(
       x$control[setdiff(names(x$control), c("nsims", fmla_controls))],

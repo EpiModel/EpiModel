@@ -95,8 +95,8 @@ initialize.net <- function(x, param, init, control, s) {
     if (get_control(dat, "save.nwstats") == TRUE) {
       nsteps <- get_control(dat, "nsteps")
       start <- get_control(dat, "start")
-      # the prior statistics of each network, if any (a restart point made by
-      # `make_restart_point()` holds none), fill the first slot
+      # the prior statistics of each network, if any (`x` run with
+      # `save.nwstats = FALSE` holds none), fill the first slot
       dat$stats$nwstats <- lapply(seq_len(dat$num.nw), function(network) {
         padded_vector(list(dat$stats$nwstats[[network]]), nsteps - start + 2L)
       })

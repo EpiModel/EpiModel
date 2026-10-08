@@ -153,6 +153,8 @@ test_that("make_restart_point reports missing time attributes by name", {
 
 test_that("make_restart_point extracts and trims the requested simulation", {
   skip_on_cran()
+  # seed with transmissions before and within the kept steps of `sim2`
+  set.seed(4)
   mod <- build_restart_sim(nsteps = 6, nsims = 3)
 
   rp <- make_restart_point(mod, time_attrs = c(), sim_num = 2, keep_steps = 2)
@@ -174,34 +176,99 @@ test_that("make_restart_point extracts and trims the requested simulation", {
     mod$run$sim2$attr$entrTime - (6 - 2)
   )
 
-  # `nwstats` and `transmat` are not kept
-  expect_false(is.null(mod$stats$nwstats))
-  expect_false(is.null(mod$stats$transmat))
-  expect_null(rp$stats$nwstats)
-  expect_null(rp$stats$transmat)
+  # `nwstats` and `transmat` are trimmed
+  expect_equal(
+    as.data.frame(rp$stats$nwstats$sim1[[1]]),
+    as.data.frame(tail(mod$stats$nwstats$sim2[[1]], 2)),
+    ignore_attr = TRUE
+  )
+  tm <- mod$stats$transmat$sim2
+  kept <- tm$at > 6 - 2
+  expect_true(any(kept) && !all(kept))
+  expect_equal(rp$stats$transmat$sim1$at, tm$at[kept] - (6 - 2))
 })
 
-test_that("simulations restarted from make_restart_point record only their new steps", {
+test_that("make_restart_point re-bases the unique IDs of the transmission matrix", {
   skip_on_cran()
+  set.seed(12)
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.05),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  # high departure rates so that the lowest unique IDs depart
+  param <- param.net(inf.prob = 0.5, act.rate = 2,
+                     a.rate = 0.3, ds.rate = 0.3, di.rate = 0.3)
+  mod <- netsim(est, param, init.net(i.num = 10), control)
+
+  uid_offset <- min(mod$run$sim1$attr$unique_id) - 1
+  expect_gt(uid_offset, 0)
+
+  rp <- make_restart_point(mod, time_attrs = "infTime", keep_steps = 10)
+  tm <- mod$stats$transmat$sim1
+  expect_equal(rp$stats$transmat$sim1$sus, tm$sus - uid_offset)
+  expect_equal(rp$stats$transmat$sim1$inf, tm$inf - uid_offset)
+})
+
+test_that("make_restart_point keeps the empty transmission matrix of a simulation without transmissions", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 4)
+  # what `netsim` saves for a simulation without transmissions
+  mod$stats$transmat$sim1 <- dplyr::tibble()
+  expect_silent(
+    rp <- make_restart_point(mod, time_attrs = "infTime", keep_steps = 2)
+  )
+  expect_equal(rp$stats$transmat$sim1, dplyr::tibble())
+})
+
+test_that("simulations restarted from make_restart_point keep nwstats and transmat in line with epi", {
+  skip_on_cran()
+  # seed with transmissions before and within the kept steps
+  set.seed(4)
   mod <- build_restart_sim(nsteps = 6)
   rp <- make_restart_point(mod, time_attrs = "infTime", keep_steps = 3)
+  rp_tm <- rp$stats$transmat$sim1
+  expect_gt(nrow(rp_tm), 0)
 
-  control <- control.net(type = "SI", start = 4, nsteps = 8,
+  control <- control.net(type = "SI", start = 4, nsteps = 8, nsims = 2,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
   mod2 <- netsim(rp, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
 
-  # the epi trackers hold the steps kept in the restart point and the new ones,
-  # the network statistics and the transmission matrix only the new ones
+  # the epi trackers, the network statistics and the transmission matrix hold
+  # the steps kept in the restart point and the new ones
   expect_equal(nrow(mod2$epi$i.num), 8)
-  nwstats2 <- mod2$stats$nwstats$sim1[[1]]
-  expect_equal(nrow(nwstats2), 8 - 4 + 1)
-  expect_false(anyNA(nwstats2))
-  expect_true(all(mod2$stats$transmat$sim1$at >= 4))
+  for (s in 1:2) {
+    nwstats2 <- mod2$stats$nwstats[[s]][[1]]
+    expect_equal(nrow(nwstats2), 8)
+    expect_false(anyNA(nwstats2))
+    expect_equal(
+      as.matrix(nwstats2[1:3, , drop = FALSE]),
+      as.matrix(rp$stats$nwstats$sim1[[1]])
+    )
+
+    tm2 <- mod2$stats$transmat[[s]]
+    expect_equal(
+      unname(as.matrix(tm2[seq_len(nrow(rp_tm)), names(rp_tm), drop = FALSE])),
+      unname(as.matrix(rp_tm))
+    )
+    expect_true(all(tm2$at[-seq_len(nrow(rp_tm))] >= 4))
+  }
+
+  nws <- get_nwstats(mod2)
+  expect_equal(nws$time, rep(1:8, 2))
+  expect_equal(nws$sim, rep(1:2, each = 8))
 
   rp2 <- make_restart_point(mod2, time_attrs = "infTime", keep_steps = 2)
-  expect_null(rp2$stats$nwstats)
-  expect_null(rp2$stats$transmat)
+  expect_equal(
+    as.data.frame(rp2$stats$nwstats$sim1[[1]]),
+    as.data.frame(tail(mod2$stats$nwstats$sim1[[1]], 2)),
+    ignore_attr = TRUE
+  )
+  tm2 <- mod2$stats$transmat$sim1
+  expect_equal(rp2$stats$transmat$sim1$at, tm2$at[tm2$at > 8 - 2] - (8 - 2))
 })
 
 test_that("restarted simulations all restart from the first simulation of x", {
