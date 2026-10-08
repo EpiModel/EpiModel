@@ -1,3 +1,7 @@
+# TODO:
+#   - document change and update documentation
+#   - update EpiModelHIV
+
 #' @title Get an Edgelist From the Specified Network
 #'
 #' @description This function outputs an edgelist from the specified network,
@@ -13,7 +17,6 @@
 #'
 #' @export
 get_edgelist <- function(dat, network) {
-
   if (get_control(dat, "tergmLite")) {
     if (!network %in% seq_len(dat$num.nw)) {
       stop("There is no network '", network, "' to get an edgelist from")
@@ -67,10 +70,17 @@ get_edgelist <- function(dat, network) {
 #' @export
 #' @keywords netMod internal
 #'
-get_discordant_edgelist <- function(dat, status.attr, head.status,
-                                    tail.status, networks = NULL) {
-  if (get_current_timestep(dat) == get_control(dat, "start") + 1 &&
-        length(intersect(head.status, tail.status)) > 0) {
+get_discordant_edgelist <- function(
+  dat,
+  status.attr,
+  head.status,
+  tail.status,
+  networks = NULL
+) {
+  if (
+    get_current_timestep(dat) == get_control(dat, "start") + 1 &&
+      length(intersect(head.status, tail.status)) > 0
+  ) {
     warning("The head.status and tail.status arguments should be discordant.")
   }
 
@@ -80,14 +90,12 @@ get_discordant_edgelist <- function(dat, status.attr, head.status,
 
   d_el_ordered <- dplyr::filter(
     d_el,
-    status[d_el$head] %in% head.status &
-      status[d_el$tail] %in% tail.status
+    status[d_el$head] %in% head.status & status[d_el$tail] %in% tail.status
   )
 
   d_el_rev <- dplyr::filter(
     d_el,
-    status[d_el$tail] %in% head.status &
-      status[d_el$head] %in% tail.status
+    status[d_el$tail] %in% head.status & status[d_el$head] %in% tail.status
   ) |>
     dplyr::select(head = "tail", tail = "head", "network")
 
@@ -97,11 +105,14 @@ get_discordant_edgelist <- function(dat, status.attr, head.status,
       tail_status = status[.data$tail]
     ) |>
     dplyr::select(
-      "head", "tail", "head_status", "tail_status", "network"
+      "head",
+      "tail",
+      "head_status",
+      "tail_status",
+      "network"
     )
 
   return(d_el)
-
 }
 
 #' @title Get the Edgelist(s) from the Specified Network(s)
@@ -116,13 +127,12 @@ get_discordant_edgelist <- function(dat, status.attr, head.status,
 #'
 #' @export
 get_edgelists_df <- function(dat, networks = NULL) {
-
   networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
   el_list <- lapply(networks, get_edgelist, dat = dat)
   el_tibble <- lapply(el_list, as_tibble_edgelist)
   d_el <- dplyr::bind_rows(el_tibble)
 
-  el_sizes <- vapply(el_list, nrow, numeric(1))
+  el_sizes <- vapply(el_list, nrow, integer(1))
   d_el[["network"]] <- rep(networks, el_sizes)
 
   return(d_el)
@@ -137,9 +147,11 @@ get_edgelists_df <- function(dat, networks = NULL) {
 #'
 #' @export
 as_tibble_edgelist <- function(el) {
-
   if (nrow(el) > 0) {
-    t_el <- tibble::tibble(head = el[, 1], tail = el[, 2])
+    t_el <- tibble::tibble(
+      head = as.integer(el[, 1]),
+      tail = as.integer(el[, 2])
+    )
   } else {
     t_el <- tibble::tibble(head = integer(0), tail = integer(0))
   }
@@ -204,21 +216,29 @@ as_tibble_edgelist <- function(el) {
 #' }
 #'
 #' @export
-get_cumulative_edgelist <- function(dat, network) {
+get_cumulative_edgelist <- function(dat, network, current.only = FALSE) {
   if (!network %in% seq_len(dat$num.nw)) {
-    stop("There is no network '", network,
-         "' from which to get the cumulative edgelist.")
+    stop(
+      "There is no network '",
+      network,
+      "' from which to get the cumulative edgelist."
+    )
   }
 
   if (!get_control(dat, "cumulative.edgelist")) {
-    stop("Failed to get the cumulative edgelist. It is likely not stored because the
-         `cumulative.edgelist` control setting is set to `FALSE`.")
+    stop(
+      "Failed to get the cumulative edgelist. It is likely not stored because the
+         `cumulative.edgelist` control setting is set to `FALSE`."
+    )
   }
 
-  el_cuml <- dplyr::bind_rows(
-    get_raw_elcuml(dat, network, active = FALSE),
-    get_raw_elcuml(dat, network, active = TRUE)
-  )
+  el_cuml <- get_raw_elcuml(dat, network, current = TRUE)
+  if (!current.only) {
+    dplyr::bind_rows(
+      el_cuml[, -c("head_pid", "tail_pid"), ],
+      get_raw_elcuml(dat, network, current = FALSE)
+    )
+  }
 
   return(el_cuml)
 }
@@ -268,7 +288,8 @@ get_cumulative_edgelist <- function(dat, network) {
 #' # Inside a custom module, after editing the network outside the TERGM:
 #' for (n in seq_len(dat$num.nw)) {
 #'   dat <- update_cumulative_edgelist(dat, n,
-#'     truncate = get_control(dat, "truncate.el.cuml"))
+#'     truncate = get_control(dat, "truncate.el.cuml")
+#'   )
 #' }
 #' }
 #'
@@ -279,8 +300,8 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   }
 
   el <- get_edgelist(dat, network)
-  el_cuml_cur <- get_raw_elcuml(dat, network, active = TRUE)
-  el_cuml_hist <- get_raw_elcuml(dat, network, active = FALSE)
+  el_cuml_cur <- get_raw_elcuml(dat, network, current = TRUE)
+  el_cuml_hist <- get_raw_elcuml(dat, network, current = FALSE)
 
   at <- get_current_timestep(dat)
 
@@ -291,6 +312,8 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   }
 
   el <- tibble::tibble(
+    head_pid = as.integer(el[, 2]),
+    tail_pid = as.integer(el[, 1]),
     head = get_unique_ids(dat, el[, 2]),
     tail = get_unique_ids(dat, el[, 1]),
     current = TRUE
@@ -313,7 +336,9 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 
     # with truncate == 0, don't save any historic edges
     if (truncate != 0) {
-      el_cuml_term$stop <- at - 1
+      el_cuml_term$stop <- at - 1L
+      el_cuml_term$head_pid <- NULL
+      el_cuml_term$tail_pid <- NULL
       el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, el_cuml_term)
     }
 
@@ -381,32 +406,37 @@ seed_cumulative_edgelist_t1 <- function(dat) {
     }
 
     persistent_idx <- which(keys_t1 %in% keys_t0)
-    new_idx        <- which(!keys_t1 %in% keys_t0)
-    dropped_idx    <- which(!keys_t0 %in% keys_t1)
+    new_idx <- which(!keys_t1 %in% keys_t0)
+    dropped_idx <- which(!keys_t0 %in% keys_t1)
 
     seed_cur_pieces <- list()
     if (length(persistent_idx) > 0) {
       el_p <- el_t1[persistent_idx, , drop = FALSE]
       seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
-        head  = get_unique_ids(dat, el_p[, 2]),
-        tail  = get_unique_ids(dat, el_p[, 1]),
-        start = 0,
-        stop  = NA_real_
+        head_pid = as.integer(el_p[, 2]),
+        tail_pid = as.integer(el_p[, 1]),
+        head = get_unique_ids(dat, el_p[, 2]),
+        tail = get_unique_ids(dat, el_p[, 1]),
+        start = 0L,
+        stop = NA_integer_
       )
     }
     if (length(new_idx) > 0) {
       el_n <- el_t1[new_idx, , drop = FALSE]
       seed_cur_pieces[[length(seed_cur_pieces) + 1]] <- tibble::tibble(
-        head  = get_unique_ids(dat, el_n[, 2]),
-        tail  = get_unique_ids(dat, el_n[, 1]),
-        start = 1,
-        stop  = NA_real_
+        head_pid = as.integer(el_n[, 2]),
+        tail_pid = as.integer(el_n[, 1]),
+        head = get_unique_ids(dat, el_n[, 2]),
+        tail = get_unique_ids(dat, el_n[, 1]),
+        start = 1L,
+        stop = NA_integer_
       )
     }
     if (length(seed_cur_pieces) > 0) {
-      el_cuml_cur <- get_raw_elcuml(dat, network, active = TRUE)
+      el_cuml_cur <- get_raw_elcuml(dat, network, current = TRUE)
       dat <- set_raw_elcuml(
-        dat, network,
+        dat,
+        network,
         dplyr::bind_rows(c(list(el_cuml_cur), seed_cur_pieces)),
         active = TRUE
       )
@@ -415,14 +445,15 @@ seed_cumulative_edgelist_t1 <- function(dat) {
     if (truncate != 0 && length(dropped_idx) > 0) {
       el_d <- el_t0[dropped_idx, , drop = FALSE]
       seed_hist <- tibble::tibble(
-        head  = get_unique_ids(dat, el_d[, 2]),
-        tail  = get_unique_ids(dat, el_d[, 1]),
-        start = 0,
-        stop  = 0
+        head = get_unique_ids(dat, el_d[, 2]),
+        tail = get_unique_ids(dat, el_d[, 1]),
+        start = 0L,
+        stop = 0L
       )
-      el_cuml_hist <- get_raw_elcuml(dat, network, active = FALSE)
+      el_cuml_hist <- get_raw_elcuml(dat, network, current = FALSE)
       dat <- set_raw_elcuml(
-        dat, network,
+        dat,
+        network,
         dplyr::bind_rows(el_cuml_hist, seed_hist),
         active = FALSE
       )
@@ -468,13 +499,22 @@ seed_cumulative_edgelist_t1 <- function(dat) {
 #'   full lifecycle.
 #'
 #' @export
-get_cumulative_edgelists_df <- function(dat, networks = NULL) {
+get_cumulative_edgelists_df <- function(
+  dat,
+  networks = NULL,
+  current.only = FALSE
+) {
   networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
 
-  el_cuml_list <- lapply(networks, get_cumulative_edgelist, dat = dat)
+  el_cuml_list <- lapply(
+    networks,
+    get_cumulative_edgelist,
+    dat = dat,
+    current.only = current.only
+  )
   el_cuml_df <- dplyr::bind_rows(el_cuml_list)
 
-  el_sizes <- vapply(el_cuml_list, nrow, numeric(1))
+  el_sizes <- vapply(el_cuml_list, nrow, integer(1))
   el_cuml_df[["network"]] <- rep(networks, el_sizes)
 
   return(el_cuml_df)
@@ -527,16 +567,21 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #' # Contacts of nodes 1..10 across all networks within the last 30 steps,
 #' # excluding partners who have since departed:
 #' get_partners(dat,
-#'              index_posit_ids = 1:10,
-#'              truncate = 30,
-#'              only.active.nodes = TRUE)
+#'   index_posit_ids = 1:10,
+#'   truncate = 30,
+#'   only.active.nodes = TRUE
+#' )
 #' }
 #'
 #' @export
 #'
-get_partners <- function(dat, index_posit_ids, networks = NULL,
-                         truncate = Inf, only.active.nodes = FALSE) {
-
+get_partners <- function(
+  dat,
+  index_posit_ids,
+  networks = NULL,
+  truncate = Inf,
+  only.active.nodes = FALSE
+) {
   el_cuml_df <- get_cumulative_edgelists_df(dat, networks)
   index_unique_ids <- get_unique_ids(dat, index_posit_ids)
 
@@ -559,7 +604,7 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
   if (truncate != Inf) {
     at <- get_current_timestep(dat)
     rel.age <- at - partner_df[["stop"]]
-    rel.age <- ifelse(is.na(rel.age), 0, rel.age)
+    rel.age <- ifelse(is.na(rel.age), 0L, rel.age)
     partner_df <- partner_df[rel.age <= truncate, ]
   }
 
@@ -597,11 +642,19 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 #' }
 #'
 #' @export
-get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
-                                  truncate = Inf, only.active.nodes = FALSE) {
+get_cumulative_degree <- function(
+  dat,
+  index_posit_ids,
+  networks = NULL,
+  truncate = Inf,
+  only.active.nodes = FALSE
+) {
   get_partners(
-    dat, index_posit_ids, networks,
-    truncate, only.active.nodes
+    dat,
+    index_posit_ids,
+    networks,
+    truncate,
+    only.active.nodes
   ) |>
     dplyr::summarize(degree = dplyr::n(), .by = "index") |>
     dplyr::mutate(index = get_posit_ids(dat, .data$index)) |>
@@ -614,8 +667,8 @@ get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
 #   - el_cuml_cur: for the edges not yet disolved
 #   - el_cuml_hist: for the edges where the start and stop time are known
 #   (dissolved edges)
-get_raw_elcuml <- function(dat, network, active) {
-  loc <- if (active) "el_cuml_cur" else "el_cuml_hist"
+get_raw_elcuml <- function(dat, network, current) {
+  loc <- if (current) "el_cuml_cur" else "el_cuml_hist"
 
   if (length(dat$run[[loc]]) >= network) {
     el_cuml <- dat$run[[loc]][[network]]
@@ -624,7 +677,7 @@ get_raw_elcuml <- function(dat, network, active) {
   }
 
   if (is.null(el_cuml)) {
-    el_cuml <- empty_el_cuml()
+    el_cuml <- empty_el_cuml(current)
   }
 
   return(el_cuml)
@@ -637,11 +690,15 @@ set_raw_elcuml <- function(dat, network, el_cuml, active) {
 }
 
 # template for the cumulative edgelists
-empty_el_cuml <- function() {
-  tibble::tibble(
-    head  = numeric(0),
-    tail  = numeric(0),
-    start = numeric(0),
-    stop  = numeric(0)
+empty_el_cuml <- function(current) {
+  out <- list(
+    head = integer(0),
+    tail = integer(0),
+    start = integer(0),
+    stop = integer(0)
   )
+  if (current) {
+    out <- c(out, list(head_pid = integer(0), tail_pid = integer(0)))
+  }
+  tibble::as_tibble(out)
 }
