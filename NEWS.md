@@ -6,7 +6,11 @@
 
 -   `netsim()` restarts every simulation from the first simulation of `x`, with a warning when `x` holds more than one. Simulation `s` restarted from simulation `(s - 1) %% n + 1` of the `n` simulations of `x` before. Use `get_sims()` or `make_restart_point()` to select the simulation to restart from.
 
--   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored.
+-   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, `initialize_msm()` in EpiModelHIV-p sets `time.unit`, and its re-initialization function `reinit_msm` is `initialize.net()`, so a restart fails with "There is no parameter called `time.unit`"; EpiModelCOVID does the same. Such parameters now need to be passed in `param`, or set by the re-initialization function.
+
+-   Objects saved with EpiModel 2.6.x or earlier, whether `netsim()` or `make_restart_point()` output, can no longer be restarted. They hold no `groups` element in their `run` sublist, and `groups` is no longer taken from their parameters, so the restart fails at its first time step with "argument is of length zero" in `resim_nets()`. They need to be regenerated with 2.7.0.
+
+-   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is with a warning, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one, with only that warning. Merge the original objects again with 2.7.0 instead.
 
 ### NEW FEATURES
 
@@ -14,7 +18,7 @@
 
 ### BUG FIXES
 
--   Fix `merge.netsim()` on objects coming from a previous merge that dropped elements. A merge removes the per-simulation elements it does not keep (`network`, `run`, `cumulative.edgelist`, `attr.history`, `raw.records`, `diss.stats`, the `save.other` elements), but required both objects to hold the same elements, so merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) failed from the third one with "x and y have different structure" whenever one was dropped. As `keep.cumulative.edgelist` is `FALSE` by default, this was the case with the default arguments for any model saving its cumulative edgelists. The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it, as well as the kept elements whose classes differ between `x` and `y`. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
+-   Fix `merge.netsim()` when merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`. The dropped elements made the merged object differ in structure from the next one, which failed with "x and y have different structure". The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it, as well as the kept elements whose classes differ between `x` and `y`. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
 
 -   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a simulation of the merged object coming from `y` read the wrong formation coefficients.
 
