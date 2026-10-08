@@ -9,7 +9,10 @@
 \arguments{
 \item{object}{An \code{EpiModel} object of class \code{dcm}.}
 
-\item{at}{Time step for model statistics.}
+\item{at}{Time step for model statistics. Must be one of the times the model
+was solved over, held in \code{control$timesteps}, which for a model with
+a non-integer \code{dt} or an explicit vector of times in \code{nsteps} need be
+neither integer nor evenly spaced.}
 
 \item{run}{Model run number, for \code{dcm} class models with multiple runs
 (sensitivity analyses).}

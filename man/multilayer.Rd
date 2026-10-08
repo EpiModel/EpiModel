@@ -22,3 +22,9 @@ This utility function allows specification of certain
 \code{set.control.ergm}, \code{set.control.tergm}, and
 \code{tergmLite.track.duration}.
 }
+\seealso{
+\code{\link[=netsim]{netsim()}} for passing a list of \code{\link[=netest]{netest()}} fits, one per layer.
+The \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
+chapter of the Network Modeling for Epidemics course materials works
+through a two-layer model in full.
+}

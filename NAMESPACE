@@ -91,7 +91,6 @@ export(dissolution_coefs)
 export(edgelist_censor)
 export(edges_correct)
 export(epiweb)
-export(generate_random_params)
 export(geom_bands)
 export(get_args)
 export(get_attr)
@@ -108,6 +107,7 @@ export(get_cumulative_edgelist)
 export(get_cumulative_edgelists_df)
 export(get_current_timestep)
 export(get_degree)
+export(get_degree_dist)
 export(get_discordant_edgelist)
 export(get_edgelist)
 export(get_edgelists_df)
@@ -125,7 +125,6 @@ export(get_nwparam)
 export(get_nwstats)
 export(get_param)
 export(get_param_list)
-export(get_param_set)
 export(get_partners)
 export(get_posit_ids)
 export(get_sims)
@@ -179,7 +178,6 @@ export(param.icm)
 export(param.net)
 export(param.net_from_table)
 export(param.net_to_table)
-export(param_random)
 export(prevalence.icm)
 export(prevalence.icm.bip)
 export(prevalence.net)
@@ -225,55 +223,79 @@ import(network)
 import(networkDynamic)
 import(networkLite)
 import(tergm)
-importFrom(RColorBrewer,brewer.pal)
-importFrom(RColorBrewer,brewer.pal.info)
-importFrom(ape,as.phylo)
-importFrom(ape,collapse.singles)
+importFrom(RColorBrewer,
+  brewer.pal,
+  brewer.pal.info
+)
+importFrom(ape,
+  as.phylo,
+  collapse.singles
+)
 importFrom(coda,effectiveSize)
-importFrom(deSolve,dede)
-importFrom(deSolve,ode)
-importFrom(grDevices,adjustcolor)
-importFrom(grDevices,col2rgb)
-importFrom(grDevices,colorRampPalette)
-importFrom(grDevices,rgb)
-importFrom(graphics,abline)
-importFrom(graphics,arrows)
-importFrom(graphics,boxplot)
-importFrom(graphics,legend)
-importFrom(graphics,lines)
-importFrom(graphics,mtext)
-importFrom(graphics,par)
-importFrom(graphics,plot)
-importFrom(graphics,points)
-importFrom(graphics,polygon)
-importFrom(graphics,text)
-importFrom(graphics,title)
-importFrom(lazyeval,lazy_dots)
-importFrom(lazyeval,lazy_eval)
+importFrom(deSolve,
+  dede,
+  ode
+)
+importFrom(grDevices,
+  adjustcolor,
+  col2rgb,
+  colorRampPalette,
+  rgb
+)
+importFrom(graphics,
+  abline,
+  arrows,
+  axis,
+  barplot,
+  boxplot,
+  grid,
+  legend,
+  lines,
+  mtext,
+  par,
+  plot,
+  points,
+  polygon,
+  segments,
+  text,
+  title
+)
+importFrom(lazyeval,
+  lazy_dots,
+  lazy_eval
+)
 importFrom(methods,is)
 importFrom(rlang,.data)
-importFrom(statnet.common,.Deprecate_once)
-importFrom(statnet.common,NVL)
-importFrom(statnet.common,check.control.class)
-importFrom(statnet.common,paste.and)
-importFrom(statnet.common,set.control.class)
-importFrom(statnet.common,trim_env)
-importFrom(stats,coef)
-importFrom(stats,complete.cases)
-importFrom(stats,dgeom)
-importFrom(stats,na.omit)
-importFrom(stats,quantile)
-importFrom(stats,rbinom)
-importFrom(stats,rgeom)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(stats,simulate)
-importFrom(stats,supsmu)
-importFrom(stats,terms.formula)
-importFrom(stats,update)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tibble)
-importFrom(utils,head)
-importFrom(utils,packageVersion)
-importFrom(utils,tail)
+importFrom(statnet.common,
+  .Deprecate_once,
+  NVL,
+  check.control.class,
+  paste.and,
+  set.control.class,
+  trim_env
+)
+importFrom(stats,
+  coef,
+  complete.cases,
+  dgeom,
+  na.omit,
+  quantile,
+  rbinom,
+  rgeom,
+  sd,
+  setNames,
+  simulate,
+  supsmu,
+  terms.formula,
+  update
+)
+importFrom(tibble,
+  as_tibble,
+  tibble
+)
+importFrom(utils,
+  head,
+  packageVersion,
+  tail
+)
 useDynLib(EpiModel, .registration = TRUE)

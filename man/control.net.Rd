@@ -12,6 +12,7 @@ control.net(
   ncores = 1,
   resimulate.network = FALSE,
   tergmLite = FALSE,
+  edges.correct.attr = NULL,
   cumulative.edgelist = FALSE,
   truncate.el.cuml = 0,
   tracked.attributes = NULL,
@@ -80,12 +81,40 @@ warning.}
 (\code{tergmLite = TRUE}). Default of \code{FALSE}. When \code{TRUE}, \code{resimulate.network} is
 automatically set to \code{TRUE} (with a warning if the user explicitly set it to \code{FALSE}).}
 
-\item{cumulative.edgelist}{If \code{TRUE}, calculates a cumulative edgelist within the network
-simulation module. This is used when tergmLite is used and the entire networkDynamic
-object is not used.}
+\item{edges.correct.attr}{Name of a binary nodal attribute marking the nodes
+eligible to form ties, used by \code{\link{edges_correct}} when it rescales the
+edges coefficient to preserve mean degree as the population changes.
+\code{NULL} by default, which counts every active node and is correct
+whenever every active node can form a tie. Set it when the model
+carries a subpopulation that stays active but is structurally
+excluded from the network, such as an age band past a sexual-cessation
+age whose target statistics are all zero. Without it the correction
+counts nodes that can never hold an edge, and the whole of the
+adjustment lands on the nodes that can, thinning mean degree among
+them by the excluded share. Nodes with a value of \code{1} are eligible;
+\code{NA} is treated as ineligible.}
 
-\item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to retain. See help for
-\code{\link{update_cumulative_edgelist}} for options.}
+\item{cumulative.edgelist}{If \code{TRUE}, EpiModel maintains a running record
+of every edge across the simulation (the \emph{cumulative edgelist}) by
+calling \code{\link{update_cumulative_edgelist}} once per network from the
+built-in network-resimulation module (\code{\link{resim_nets}}) at every
+time step. Off by default. Enabling it is the canonical way to
+query partnership histories under \code{tergmLite = TRUE}, where the
+full \code{networkDynamic} history is not retained. Inside a custom
+module the live data is read via \code{\link{get_cumulative_edgelist}} or
+\code{\link{get_cumulative_edgelists_df}}, and derived helpers
+\code{\link{get_partners}}, \code{\link{get_cumulative_degree}}, \code{\link{get_forward_reachable}},
+and \code{\link{get_backward_reachable}}. See the
+\code{vignette("network-objects", package = "EpiModel")} for a worked
+example.}
+
+\item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to
+retain, passed as the \code{truncate} argument to each automatic
+\code{\link{update_cumulative_edgelist}} call. Default is \code{0}, which keeps
+only currently active edges; use \code{Inf} to retain the full history
+(memory permitting) or a positive integer to keep dissolved edges
+for that many steps after they ended. Only relevant when
+\code{cumulative.edgelist = TRUE}.}
 
 \item{tracked.attributes}{A character vector of nodal attribute names whose
 changes should be automatically recorded at each time step. The
@@ -150,7 +179,7 @@ Module ordering is independent of \code{resimulate.network}: the specified order
 respected regardless of whether network resimulation is enabled. In the default ordering,
 \code{resim_nets.FUN} runs before \code{infection.FUN}, so the network is resimulated before
 transmission is evaluated at each time step.
-\strong{Important:} when set, \code{module.order} replaces the entire dispatch order —
+\strong{Important:} when set, \code{module.order} replaces the entire dispatch order:
 built-in modules not listed will not run. \code{control.net()} validates the entries
 at construction time: each name must correspond to a \code{.FUN} argument that has
 been supplied (either as a formal argument or through \code{...}), and
@@ -176,7 +205,12 @@ specification.}
 \item{save.run}{If \code{TRUE}, the \code{run} sublist of \code{dat} is saved, allowing a
 simulation to restart from this output.}
 
-\item{save.cumulative.edgelist}{If \code{TRUE}, the \code{cumulative.edgelist} is saved at simulation end.}
+\item{save.cumulative.edgelist}{If \code{TRUE}, the cumulative edgelist is
+attached to the returned \code{netsim} object as
+\code{sim$cumulative.edgelist}, a list with one element per simulation
+(the same \code{data.frame} shape produced by
+\code{\link{get_cumulative_edgelists_df}}). Requires \code{cumulative.edgelist = TRUE}; without it, no history is collected to save. Off by default
+to keep output objects small.}
 
 \item{save.other}{A character vector of elements on the \code{netsim_dat} main data list to save out
 after each simulation. One example for base models is the attribute list, \code{"attr"}, at
@@ -196,8 +230,10 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of raw data (one per simulation) instead
 of a cleaned and formatted \code{netsim} object.}
 
-\item{future.use.plan}{If \code{FALSE}, \code{netsim} will use \code{multisession} is used with \verb{workers = ncores for its parallelization. If }TRUE\verb{, }netsim\verb{will use the user defined plan from}globalEnv\verb{. Finally, it can take the output of a }future::tweak()\verb{call to setup a user defined temporary plan within}netsim`.
-Which can be useful for distributed computation (HPC).}
+\item{future.use.plan}{If \code{FALSE}, \code{netsim} uses \code{multisession} with \code{workers = ncores} for its
+parallelization. If \code{TRUE}, \code{netsim} uses the user-defined plan from \code{globalEnv}. It may also be
+given the output of a \code{future::tweak()} call, which sets up a user-defined temporary plan within
+\code{netsim}; this can be useful for distributed computation (HPC).}
 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
 simulations. Supports \code{\link{multilayer}} specification.}
@@ -322,8 +358,7 @@ the \code{end.horizon} parameter to \code{control.net}.
 
 This parameter must receive a \code{list} with fields \code{at}, the time step at which
 the end horizon occurs, and \code{modules}, a character vector with the names of
-the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
-"infections.FUN")))
+the modules to remove. For example, \code{list(at = 208, modules = c("arrivals.FUN", "infections.FUN"))}.
 }
 
 \seealso{

@@ -6,7 +6,8 @@
 #'
 #' @param x An `EpiModel` object of class `dcm`, `icm`, or
 #'        `netsim`.
-#' @param at Time step for model statistics.
+#' @param at Time step for model statistics. For `dcm` models, must be one of
+#'        the times the model was solved over, held in `control$timesteps`.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional arguments passed to plot (not currently used).
 #'
@@ -162,7 +163,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
 
   ## Variables
-  nsteps <- x$control$nsteps
+  timesteps <- x$control$timesteps
   dis.type <- x$control$type
   groups <- x$param$groups
   vital <- x$param$vital
@@ -172,12 +173,10 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
     stop("Only 1-group dcm models currently supported")
   }
 
-  ## Time
-  if (at > nsteps || at < 1) {
-    stop("Specify a time step between 1 and ", nsteps)
-  }
-  intime <- at
-  at <- which(x$control$timesteps == intime)
+  ## Time: `at` is matched against the times the model was solved over, which
+  ## need be neither integer nor evenly spaced
+  at <- match_dcm_time(at, timesteps)
+  intime <- timesteps[at]
 
   ## Dataframe subsets
   df <- as.data.frame(x, run = run)

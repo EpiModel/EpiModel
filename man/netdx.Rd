@@ -78,8 +78,10 @@ on, using the \code{future} framework.}
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in \code{netdx}.}
 
-\item{future.use.plan}{If \code{FALSE}, \code{netdx} will use \code{multisession} is used with \verb{workers = ncores for its parallelization. If }TRUE\verb{, }netdx\verb{will use the user defined plan from}globalEnv\verb{. Finally, it can take the output of a }future::tweak()\verb{call to setup a user defined temporary plan within}netdx`.
-Which can be useful for distributed computation (HPC).}
+\item{future.use.plan}{If \code{FALSE}, \code{netdx} uses \code{multisession} with \code{workers = ncores} for its
+parallelization. If \code{TRUE}, \code{netdx} uses the user-defined plan from \code{globalEnv}. It may also be
+given the output of a \code{future::tweak()} call, which sets up a user-defined temporary plan within
+\code{netdx}; this can be useful for distributed computation (HPC).}
 }
 \value{
 A list of class \code{netdx}. Use \code{print()} to view summary tables of
@@ -116,7 +118,7 @@ Models fit with the full STERGM method in \code{netest} (setting the
 simulations may be set using \code{set.control.tergm} in \code{netdx}.
 The parameters should be input through the \code{control.simulate.formula.tergm}
 function, with the available parameters listed in the
-\code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}} help page in the \code{tergm}
+\code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm}} help page in the \code{tergm}
 package.
 
 Models fit with the ERGM method with the edges dissolution approximation
@@ -127,10 +129,10 @@ simulating that static network forward through time. Control parameters may
 be set for both processes in \code{netdx}. For the first, the parameters
 should be input through the \code{control.simulate.formula()} function, with
 the available parameters listed in the
-\code{\link[ergm:control.simulate.ergm]{ergm::control.simulate.formula}} help
+\code{\link[ergm:control.simulate.formula]{ergm::control.simulate.formula}} help
 page in the \code{ergm} package. For the second, parameters should be input
 through the \code{control.simulate.formula.tergm()} function, with the
-available parameters listed in the \code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}}
+available parameters listed in the \code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm}}
 help page in the \code{tergm} package. An example is shown below.
 }
 
@@ -222,6 +224,8 @@ plot(dx3, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 \seealso{
 Estimate the network model with \code{\link{netest}} before running diagnostics.
 Plot diagnostics with \code{\link{plot.netdx}} and print summary tables with
-\code{\link{print.netdx}}. After diagnostics confirm a good fit, simulate the
-epidemic with \code{\link{netsim}}.
+\code{\link{print.netdx}}. With \code{keep.tedgelist = TRUE}, extract the timed edgelist
+with \code{\link[=as.data.frame.netdx]{as.data.frame.netdx()}} and the cumulative or momentary degree
+distribution with \code{\link{get_degree_dist}}. After diagnostics confirm a good fit,
+simulate the epidemic with \code{\link{netsim}}.
 }

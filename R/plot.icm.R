@@ -5,7 +5,9 @@
 #'
 #' @param x An `EpiModel` model object of class `icm`.
 #' @param y Output compartments or flows from `icm` object to plot. -------
-#' @param sims A vector of simulation numbers to plot.
+#' @param sims A vector of simulation numbers to plot. The plot then describes
+#'        those simulations alone: the mean line and quantile bands are
+#'        calculated over them, not over the full set.
 #' @inheritParams plot.netsim
 #' @inheritParams graphics::plot
 #'
@@ -85,9 +87,16 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   if (is.null(sims)) {
     sims <- seq_len(nsims)
   }
-  if (max(sims) > nsims) {
+  if (max(sims) > nsims || min(sims) < 1) {
     stop("Set sim to between 1 and ", nsims)
   }
+
+  ## `sims` selects the simulations the plot describes, so the data is
+  ## restricted to them here and every summary drawn below is calculated over
+  ## the same set
+  x <- subset_epi_sims(x, sims)
+  nsims <- x$control$nsims
+  sims <- seq_len(nsims)
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
     x$param$groups <- 1
   }

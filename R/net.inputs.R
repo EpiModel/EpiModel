@@ -104,18 +104,6 @@
 #' further examples, see the
 #' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
 #'
-#' @section Random Parameters:
-#' In addition to deterministic parameters in either fixed or time-varying
-#' varieties above, one may also include a generator for random parameters.
-#' These might include a vector of potential parameter values or a statistical
-#' distribution definition; in either case, one draw from the generator would
-#' be completed per individual simulation. This is possible by passing a list
-#' named `random.params` into `param.net`, with each element of
-#' `random.params` a named generator function. See the help page and
-#' examples in [generate_random_params()]. A simple factory function
-#' for sampling is provided with [param_random()] but any function
-#' will do.
-#'
 #' @section Using a Parameter data.frame:
 #' It is possible to set input parameters using a specifically formatted
 #' `data.frame` object. The first 3 columns of this `data.frame` must
@@ -137,8 +125,20 @@
 #' EpiModel.
 #'
 #' This data.frame is then passed in to `param.net` under a
-#' `data.frame.parameters` argument. Further details and examples are
-#' provided in the "Working with Model Parameters in EpiModel" vignette.
+#' `data.frame.params` argument. Further details and examples are provided in
+#' the "Working with Model Parameters in EpiModel" vignette. Note that releases
+#' through v2.6.1 documented this argument as `data.frame.parameters`, which
+#' was never an accepted name; passing it now produces an error pointing to
+#' `data.frame.params`.
+#'
+#' @section Parameter Uncertainty:
+#' To vary parameter values across simulations for uncertainty or sensitivity
+#' analysis, draw the values in advance into a `data.frame` with one row per
+#' draw, convert it with [create_scenario_list()], and apply each resulting
+#' scenario to the base parameters with [use_scenario()]. The "Working with
+#' Model Parameters in EpiModel" vignette works through an example. The
+#' `random.params` argument that served this purpose through v2.6.2 has been
+#' removed; passing it now produces an error.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
@@ -163,7 +163,7 @@
 #'
 #' @examples
 #' \donttest{
-#' ## Example SIR model parameterization with fixed and random parameters
+#' ## Example SIR model parameterization
 #' # Network model estimation
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
@@ -171,32 +171,16 @@
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
-#' # Random epidemic parameter list (here act.rate values are sampled uniformly
-#' # with helper function param_random, and inf.prob follows a general Beta
-#' # distribution with the parameters shown below)
-#' my_randoms <- list(
-#'   act.rate = param_random(1:3),
-#'   inf.prob = function() rbeta(1, 1, 2)
-#' )
-#'
 #' # Parameters, initial conditions, and control settings
-#' param <- param.net(rec.rate = 0.02, random.params = my_randoms)
-#'
-#' # Printing parameters shows both fixed and and random parameter functions
+#' param <- param.net(inf.prob = 0.3, act.rate = 2, rec.rate = 0.02)
 #' param
 #'
-#' # Set initial conditions and controls
 #' init <- init.net(i.num = 10, r.num = 0)
 #' control <- control.net(type = "SIR", nsteps = 10, nsims = 3, verbose = FALSE)
 #'
 #' # Simulate the model
 #' sim <- netsim(est, param, init, control)
-#'
-#' # Printing the sim object shows the randomly drawn values for each simulation
 #' sim
-#'
-#' # Parameter sets can be extracted with:
-#' get_param_set(sim)
 #' }
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
@@ -208,6 +192,23 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   # Get arguments
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
+
+  # "data.frame.parameters" was documented in error through v2.6.1; it was
+  # never an accepted argument name, and would otherwise be silently stored
+  # as a parameter of that name without unpacking the table
+  if ("data.frame.parameters" %in% names.dot.args) {
+    stop("The data.frame.parameters argument is not accepted. ",
+         "Use data.frame.params instead.")
+  }
+
+  # The random parameter interface was removed in v2.7.0. Without this check,
+  # `random.params` would also fall through to `...` and be stored as a
+  # parameter, so old code would run without the draws and without an error
+  if ("random.params" %in% names.dot.args) {
+    stop("The random.params argument has been removed. Use scenarios to vary ",
+         "parameters across simulations; see the Parameter Uncertainty section ",
+         "of vignette(\"model-parameters\", package = \"EpiModel\").")
+  }
 
   # Use "data.frame.params" as default if available
   if ("data.frame.params" %in% names.dot.args) {
@@ -231,19 +232,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ## random.params checks
-  if ("random.params" %in% names.dot.args) {
-    for (nm in names(p[["random.params"]])) {
-      if (nm %in% names(p)) {
-        warning(
-          "The parameter `", nm, "` is defined twice, once as fixed",
-          " and once as a random parameter.\n Only the random parameter",
-          " definition will be used."
-        )
-      }
-    }
-  }
-
   ## Defaults and Checks
   # Check for old .m2 parameter suffix
   m2.flag <- grep(".m2", names(p))
@@ -251,11 +239,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     stop("Parameters using the .m2 suffix have been removed. ",
          "Use the .g2 suffix instead (e.g., inf.prob.g2).")
   }
-  if (missing(act.rate)) {
+  if (missing(act.rate) && is.null(p[["act.rate"]])) {
     p[["act.rate"]] <- 1
   }
-  p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                           !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+
+  p[["vital"]] <- !missing(a.rate) | !is.null(p[["a.rate"]]) |
+    !missing(ds.rate) | !is.null(p[["ds.rate"]]) |
+    !missing(di.rate) | !is.null(p[["di.rate"]]) |
+    !missing(dr.rate) | !is.null(p[["dr.rate"]])
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.")
@@ -336,224 +327,6 @@ update_params <- function(param, new.param.list) {
 
   for (ii in seq_along(new.param.list)) {
     param[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
-  }
-
-  return(param)
-}
-
-
-#' @title Create a Value Sampler for Random Parameters
-#'
-#' @description This function returns a 0 argument function that can be used as
-#'   a generator function in the `random.params` argument of the
-#'   [param.net()] function.
-#'
-#' @param values A vector of values to sample from.
-#' @param prob A vector of weights to use during sampling. If `NULL`,
-#'        all values have the same probability of being picked
-#'        (default = `NULL`).
-#'
-#' @return A 0 argument generator function to sample one of the values from the
-#' `values` vector.
-#'
-#' @seealso [param.net()] and [generate_random_params()]
-#' @export
-#'
-#' @examples
-#' # Define function with equal sampling probability
-#' a <- param_random(1:5)
-#' a()
-#'
-#' # Define function with unequal sampling probability
-#' b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
-#' b()
-#'
-param_random <- function(values, prob = NULL) {
-  if (!is.null(prob) && length(prob) != length(values)) {
-    stop("incorrect number of probabilites")
-  }
-
-  f <- function() {
-    return(sample(x = values, size = 1, prob = prob, replace = TRUE))
-  }
-
-  return(f)
-}
-
-
-#' @title Generate Values for Random Parameters
-#'
-#' @description This function uses the generative functions in the
-#'              `random.params` list to create values for the parameters.
-#'
-#' @param param The `param` argument received by the `netsim`
-#'              functions.
-#' @param verbose Should the function output the generated values
-#'                (default = FALSE)?
-#'
-#' @return A fully instantiated `param` list.
-#'
-
-#' @section `random.params`:
-#' The `random.params` argument to the [param.net()] function
-#' must be a named list of functions that each return a value that can be used
-#' as the argument with the same name. In the example below, `param_random`
-#' is a function factory provided by EpiModel for `act.rate` and
-#' for `tx.halt.part.prob` we provide bespoke functions. A function factory
-#' is a function that returns a new function
-#' (see https://adv-r.hadley.nz/function-factories.html).
-#'
-#' @section Generator Functions:
-#' The functions used inside `random_params` must be 0 argument functions
-#' returning a valid value for the parameter with the same name.
-#'
-#' @section `param_random_set`:
-#' The `random_params` list can optionally contain a
-#' `param_random_set` element. It must be a `data.frame` of possible
-#' values to be used as parameters.
-#'
-#' The column names must correspond either to:
-#' the name of one parameter, if this parameter is of size 1; or the name of one
-#' parameter with "_1", "_2", etc. appended, with the number representing the
-#' position of the value, if this parameter is of size > 1. This means that the
-#' parameter names cannot contain any underscores "_" if you intend to use
-#' `param_random_set`.
-#'
-#' The point of the `param.random.set` `data.frame` is to allow the
-#' random parameters to be correlated. To achieve this, a whole row of the
-#' `data.frame` is selected for each simulation.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'
-#' ## Example with only the generator function
-#'
-#' # Define random parameter list
-#' my_randoms <- list(
-#'   act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'   tx.prob = function() rbeta(1, 1, 2),
-#'   stratified.test.rate = function() c(
-#'     rnorm(1, 0.05, 0.01),
-#'     rnorm(1, 0.15, 0.03),
-#'     rnorm(1, 0.25, 0.05)
-#'   )
-#' )
-#'
-#' # Parameter model with fixed and random parameters
-#' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
-#'
-#' # Below, `tx.prob` is set first to 0.3 then assigned a random value using
-#' # the function from `my_randoms`. A warning notifying of this overwrite is
-#' # therefore produced.
-#' param <- param.net(tx.prob = 0.3, random.params = my_randoms)
-#'
-#'
-#' # Parameters are drawn automatically in netsim by calling the function
-#' # within netsim_loop. Demonstrating draws here but this is not used by
-#' # end user.
-#' paramDraw <- generate_random_params(param, verbose = TRUE)
-#' paramDraw
-#'
-#'
-#' ## Addition of the `param.random.set` `data.frame`
-#'
-#' # This function will generate sets of correlated parameters
-#'  generate_correlated_params <- function() {
-#'    param.unique <- runif(1)
-#'    param.set.1 <- param.unique + runif(2)
-#'    param.set.2 <- param.unique * rnorm(3)
-#'
-#'    return(list(param.unique, param.set.1, param.set.2))
-#'  }
-#'
-#'  # Data.frame set of random parameters :
-#'  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-#'  correlated_params <- as.data.frame(correlated_params)
-#'  colnames(correlated_params) <- c(
-#'    "param.unique",
-#'    "param.set.1_1", "param.set.1_2",
-#'    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-#'  )
-#'
-#' # Define random parameter list with the `param.random.set` element
-#' my_randoms <- list(
-#'   act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'   param.random.set = correlated_params
-#' )
-#'
-#' # Parameter model with fixed and random parameters
-#' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
-#'
-#' # Parameters are drawn automatically in netsim by calling the function
-#' # within netsim_loop. Demonstrating draws here but this is not used by
-#' # end user.
-#' paramDraw <- generate_random_params(param, verbose = TRUE)
-#' paramDraw
-#'
-#' }
-generate_random_params <- function(param, verbose = FALSE) {
-  if (is.null(param[["random.params"]]) ||
-        length(param[["random.params"]]) == 0) {
-    return(param)
-  } else {
-    random.params <- param[["random.params"]]
-  }
-
-  if (!is.list(random.params)) {
-    stop("`random.params` must be named list of functions")
-  }
-
-  rng_names <- names(random.params)
-  if (any(rng_names == "")) {
-    stop("all elements of `random.params` must be named")
-  }
-
-  rng_values <- list()
-
-  if ("param.random.set" %in% rng_names) {
-    # Take `param.random.set` out of the `random.params` list
-    param.random.set <- random.params[["param.random.set"]]
-    random.params[["param.random.set"]] <- NULL
-    rng_names <- names(random.params)
-
-    if (!is.data.frame(param.random.set)) {
-      stop("`param.random.set` must be a data.frame")
-    }
-
-    # Pick one row of the `data.frame`
-    sampled.row <- sample.int(nrow(param.random.set), 1)
-
-    # Convert to `param` format
-    sampled.set <- unflatten_params(param.random.set[sampled.row, ])
-
-    # Update `rng_values`
-    rng_values <- update_list(rng_values, sampled.set)
-  }
-
-  if (!all(vapply(random.params, is.function, TRUE))) {
-    stop("all elements of `random.params` must be functions \n",
-         "(Except 'param.random.set')")
-  }
-
-  duplicated.rng <- names(rng_values) %in% rng_names
-  if (any(duplicated.rng)) {
-    warning("Some parameters are set to be randomly assigned twice: \n",
-            paste0(rng_names[duplicated.rng], collapse = ", "), "\n\n",
-            "The version from a generator function will be used")
-  }
-
-  rng_values[rng_names] <- lapply(random.params, do.call, args = list())
-  param <- update_list(param, rng_values)
-
-  param[["random.params.values"]] <- rng_values
-
-  if (verbose == TRUE) {
-    msg <-
-      "The following values were randomly generated for the given parameters: \n"
-    msg <- c(msg, paste0("`", names(rng_values), "`: ", rng_values, "\n"))
-    message(msg)
   }
 
   return(param)
@@ -684,11 +457,38 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite Logical indicating usage of either `tergm` (`tergmLite = FALSE`), or `tergmLite`
 #'        (`tergmLite = TRUE`). Default of `FALSE`. When `TRUE`, `resimulate.network` is
 #'        automatically set to `TRUE` (with a warning if the user explicitly set it to `FALSE`).
-#' @param cumulative.edgelist If `TRUE`, calculates a cumulative edgelist within the network
-#'        simulation module. This is used when tergmLite is used and the entire networkDynamic
-#'        object is not used.
-#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to retain. See help for
-#'        [`update_cumulative_edgelist`] for options.
+#' @param edges.correct.attr Name of a binary nodal attribute marking the nodes
+#'        eligible to form ties, used by [`edges_correct`] when it rescales the
+#'        edges coefficient to preserve mean degree as the population changes.
+#'        `NULL` by default, which counts every active node and is correct
+#'        whenever every active node can form a tie. Set it when the model
+#'        carries a subpopulation that stays active but is structurally
+#'        excluded from the network, such as an age band past a sexual-cessation
+#'        age whose target statistics are all zero. Without it the correction
+#'        counts nodes that can never hold an edge, and the whole of the
+#'        adjustment lands on the nodes that can, thinning mean degree among
+#'        them by the excluded share. Nodes with a value of `1` are eligible;
+#'        `NA` is treated as ineligible.
+#' @param cumulative.edgelist If `TRUE`, EpiModel maintains a running record
+#'        of every edge across the simulation (the *cumulative edgelist*) by
+#'        calling [`update_cumulative_edgelist`] once per network from the
+#'        built-in network-resimulation module ([`resim_nets`]) at every
+#'        time step. Off by default. Enabling it is the canonical way to
+#'        query partnership histories under `tergmLite = TRUE`, where the
+#'        full `networkDynamic` history is not retained. Inside a custom
+#'        module the live data is read via [`get_cumulative_edgelist`] or
+#'        [`get_cumulative_edgelists_df`], and derived helpers
+#'        [`get_partners`], [`get_cumulative_degree`], [`get_forward_reachable`],
+#'        and [`get_backward_reachable`]. See the
+#'        `vignette("network-objects", package = "EpiModel")` for a worked
+#'        example.
+#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to
+#'        retain, passed as the `truncate` argument to each automatic
+#'        [`update_cumulative_edgelist`] call. Default is `0`, which keeps
+#'        only currently active edges; use `Inf` to retain the full history
+#'        (memory permitting) or a positive integer to keep dissolved edges
+#'        for that many steps after they ended. Only relevant when
+#'        `cumulative.edgelist = TRUE`.
 #' @param attr.rules A list containing the  rules for setting the attributes of incoming nodes, with
 #'        one list element per attribute to be set (see details below).
 #' @param epi.by A character vector of length 1 containing a nodal attribute for which subgroup
@@ -723,6 +523,17 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        respected regardless of whether network resimulation is enabled. In the default ordering,
 #'        `resim_nets.FUN` runs before `infection.FUN`, so the network is resimulated before
 #'        transmission is evaluated at each time step.
+#'        **Important:** when set, `module.order` replaces the entire dispatch order:
+#'        built-in modules not listed will not run. `control.net()` validates the entries
+#'        at construction time: each name must correspond to a `.FUN` argument that has
+#'        been supplied (either as a formal argument or through `...`), and
+#'        `initialize.FUN` / `verbose.FUN` may not appear because they run outside the
+#'        per-step module loop. Omitting `resim_nets.FUN`, `summary_nets.FUN`, or
+#'        `nwupdate.FUN` produces a warning, since these built-ins are typically required
+#'        for correct semantics: `resim_nets.FUN` advances the TERGM each step,
+#'        `summary_nets.FUN` records network statistics, and `nwupdate.FUN` applies
+#'        vertex (de)activation from `active`/`exitTime`/`entrTime` and copies nodal
+#'        attributes to the network.
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
@@ -732,7 +543,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
 #' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
 #'   simulation to restart from this output.
-#' @param save.cumulative.edgelist If `TRUE`, the `cumulative.edgelist` is saved at simulation end.
+#' @param save.cumulative.edgelist If `TRUE`, the cumulative edgelist is
+#'        attached to the returned `netsim` object as
+#'        `sim$cumulative.edgelist`, a list with one element per simulation
+#'        (the same `data.frame` shape produced by
+#'        [`get_cumulative_edgelists_df`]). Requires `cumulative.edgelist =
+#'        TRUE`; without it, no history is collected to save. Off by default
+#'        to keep output objects small.
 #' @param tracked.attributes A character vector of nodal attribute names whose
 #'        changes should be automatically recorded at each time step. The
 #'        `active` attribute is always tracked when this is non-empty. At each
@@ -761,10 +578,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If `TRUE`, `netsim` will output a list of raw data (one per simulation) instead
 #'        of a cleaned and formatted `netsim` object.
-#' @param future.use.plan If `FALSE`, `netsim` will use `multisession` is used with `workers = ncores for its
-#'        parallelization. If `TRUE`, `netsim` will use the user defined plan from `globalEnv`. Finally, it can
-#'        take the output of a `future::tweak()` call to setup a user defined temporary plan within `netsim`.
-#'        Which can be useful for distributed computation (HPC).
+#' @param future.use.plan If `FALSE`, `netsim` uses `multisession` with `workers = ncores` for its
+#'        parallelization. If `TRUE`, `netsim` uses the user-defined plan from `globalEnv`. It may also be
+#'        given the output of a `future::tweak()` call, which sets up a user-defined temporary plan within
+#'        `netsim`; this can be useful for distributed computation (HPC).
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
 #'        simulations. Supports [`multilayer`] specification.
 #' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`. In `netsim`,
@@ -867,8 +684,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'
 #' This parameter must receive a `list` with fields `at`, the time step at which
 #' the end horizon occurs, and `modules`, a character vector with the names of
-#' the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
-#' "infections.FUN")))
+#' the modules to remove. For example, `list(at = 208, modules = c("arrivals.FUN", "infections.FUN"))`.
 #'
 #' @return
 #' An EpiModel object of class `control.net`.
@@ -888,6 +704,7 @@ control.net <- function(type,
                         ncores = 1,
                         resimulate.network = FALSE,
                         tergmLite = FALSE,
+                        edges.correct.attr = NULL,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
                         tracked.attributes = NULL,
@@ -968,6 +785,69 @@ control.net <- function(type,
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
   p[["f.names"]] <- c(p[["bi.mods"]], p[["user.mods"]])
+
+  ## `module.order` validation
+  if (!is.null(p[["module.order"]])) {
+
+    # `initialize.FUN` and `verbose.FUN` are invoked outside the per-step
+    # module loop in `netsim_run_modules()`. Placing them in `module.order`
+    # would cause double execution and is almost certainly a mistake.
+    bad_special <- intersect(p[["module.order"]],
+                             c("initialize.FUN", "verbose.FUN"))
+    if (length(bad_special) > 0) {
+      stop(
+        "`module.order` cannot contain ",
+        paste0("`", bad_special, "`", collapse = ", "),
+        ". `initialize.FUN` runs once at simulation start and `verbose.FUN` ",
+        "runs outside the per-step module loop; including them in ",
+        "`module.order` would cause double execution. Remove them from ",
+        "`module.order`.",
+        call. = FALSE
+      )
+    }
+
+    # Every other entry must resolve to a `.FUN` argument that was supplied
+    # to `control.net()` (either as a formal argument with a non-NULL value
+    # or via `...`).
+    valid_mods <- setdiff(p[["f.names"]],
+                          c("initialize.FUN", "verbose.FUN"))
+    unknown <- setdiff(p[["module.order"]], valid_mods)
+    if (length(unknown) > 0) {
+      stop(
+        "`module.order` contains entries with no matching `.FUN` argument: ",
+        paste0("`", unknown, "`", collapse = ", "), ". ",
+        "Either remove them from `module.order`, fix the typo, or pass the ",
+        "corresponding `.FUN` argument to `control.net()`.",
+        call. = FALSE
+      )
+    }
+
+    # Warn (don't error) when a custom order omits built-ins that are
+    # available (non-NULL) and almost always required for correct semantics.
+    # We check `p[[mod]]` directly rather than `p[["bi.mods"]]` because the
+    # latter is unfiltered when `type` is non-NULL, and we want to respect
+    # explicit user disables (`nwupdate.FUN = NULL`, etc.) in either mode.
+    critical <- c("resim_nets.FUN", "summary_nets.FUN", "nwupdate.FUN")
+    critical_available <- critical[
+      vapply(critical, function(m) !is.null(p[[m]]), logical(1))
+    ]
+    missing_critical <- setdiff(critical_available, p[["module.order"]])
+    if (length(missing_critical) > 0) {
+      warning(
+        "`module.order` is set but omits built-in module(s): ",
+        paste0("`", missing_critical, "`", collapse = ", "), ".\n",
+        "  - `resim_nets.FUN`: advances the TERGM each step\n",
+        "  - `summary_nets.FUN`: records network statistics (`nwstats`)\n",
+        "  - `nwupdate.FUN`: applies vertex (de)activation from ",
+        "`active` / `exitTime` / `entrTime` and copies nodal attributes ",
+        "to the network\n",
+        "Without these the simulation usually still runs but produces ",
+        "silently incorrect results. Add them to `module.order` unless you ",
+        "intentionally want to skip them.",
+        call. = FALSE
+      )
+    }
+  }
 
   ## Defaults and checks
 
@@ -1098,11 +978,16 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Check that prevalence in NW attr status and initial conditions match
       if (statOnNw == TRUE) {
-        nw1 <- sum(get_vertex_attribute(nw, "status") == 1)
+        # Network status values are the character codes "s", "i", and "r", as
+        # required by statOnNw above. Comparing against 1 never matched, so this
+        # counted 0 infected nodes regardless of the network and warned on every
+        # model that set both a status attribute and i.num, including ones where
+        # the two agreed.
+        nw1 <- sum(get_vertex_attribute(nw, "status") == "i")
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
-          warning("Overriding init infected settings with network
-                  status attribute", immediate. = TRUE)
+          warning("Overriding init infected settings with network status ",
+                  "attribute", immediate. = TRUE)
         }
       }
 
@@ -1286,6 +1171,11 @@ crosscheck.net <- function(x, param, init, control) {
 #'
 #' @return an object of class `multilayer` containing the specified
 #'         control arguments
+#'
+#' @seealso [netsim()] for passing a list of [netest()] fits, one per layer.
+#'   The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+#'   chapter of the Network Modeling for Epidemics course materials works
+#'   through a two-layer model in full.
 #'
 #' @export
 #'

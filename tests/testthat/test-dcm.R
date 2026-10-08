@@ -613,3 +613,68 @@ test_that("DCM init sensitivity: print method shows init", {
   expect_true(any(grepl("Initial Conditions", out)))
   expect_true(any(grepl("i.num", out)))
 })
+
+test_that("DCM methods work with a nonuniform time vector", {
+  param <- param.dcm(inf.prob = c(0.2, 0.4), act.rate = 1)
+  init <- init.dcm(s.num = 500, i.num = 1)
+  control <- control.dcm(type = "SI", nsteps = c(0, 0.25, 1, 3),
+                         verbose = FALSE)
+  mod <- dcm(param, init, control)
+  expect_equal(mod$control$timesteps, c(0, 0.25, 1, 3))
+
+  ## the time column follows the solved times, for every run
+  df <- as.data.frame(mod)
+  expect_equal(nrow(df), 8)
+  expect_equal(df$time, rep(c(0, 0.25, 1, 3), 2))
+  expect_equal(as.data.frame(mod, run = 2)$time, c(0, 0.25, 1, 3))
+
+  ## plots take their x limits from the solved times
+  expect_silent(plot(mod))
+  expect_silent(comp_plot(mod, at = 0.25))
+
+  ## summaries are keyed on the solved times, not on a step count
+  expect_output(summary(mod, at = 3), "EpiModel Summary")
+  expect_error(summary(mod, at = 2), "Specify at as one of the time steps")
+  expect_error(comp_plot(mod, at = 2), "Specify at as one of the time steps")
+  expect_error(summary(mod, at = c(1, 3)), "single numeric time step")
+
+  ## the number of time steps is reported with its range
+  expect_output(print(mod), "No. time steps: 4 \\(0 to 3\\)")
+  expect_output(summary(mod, at = 1), "No. time steps: 4 \\(0 to 3\\)")
+})
+
+test_that("DCM methods work with a non-integer dt", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 1)
+  init <- init.dcm(s.num = 500, i.num = 1)
+  control <- control.dcm(type = "SI", nsteps = 3, dt = 0.1, verbose = FALSE)
+  mod <- dcm(param, init, control)
+
+  ## a requested time is matched despite the floating point error of the
+  ## sequence, and a time between two solved times is rejected
+  expect_output(summary(mod, at = 1.3), "EpiModel Summary")
+  expect_silent(comp_plot(mod, at = 1.3))
+  expect_error(summary(mod, at = 1.35), "Specify at as one of the time steps")
+  expect_error(summary(mod, at = 99), "Specify at as one of the time steps")
+
+  expect_equal(as.data.frame(mod)$time, mod$control$timesteps)
+  expect_output(print(mod), "No. time steps: 21 \\(1 to 3\\)")
+})
+
+test_that("as.data.frame.dcm returns runs in the order requested", {
+  param <- param.dcm(inf.prob = c(0.2, 0.4, 0.6), act.rate = 1)
+  init <- init.dcm(s.num = 500, i.num = 1)
+  control <- control.dcm(type = "SI", nsteps = 4, verbose = FALSE)
+  mod <- dcm(param, init, control)
+
+  expect_equal(unique(as.data.frame(mod, run = c(1, 3))$run), c(1, 3))
+  expect_equal(unique(as.data.frame(mod, run = c(3, 1))$run), c(3, 1))
+  expect_equal(nrow(as.data.frame(mod, run = c(3, 1))), 8)
+  ## a repeated run is returned once per request rather than collapsed
+  expect_equal(nrow(as.data.frame(mod, run = c(2, 2))), 8)
+  expect_error(as.data.frame(mod, run = 9), "Maximum run is 3")
+
+  ## the same values come back whichever order they are asked for
+  d13 <- as.data.frame(mod, run = c(1, 3))
+  d31 <- as.data.frame(mod, run = c(3, 1))
+  expect_equal(d13[d13$run == 3, "i.num"], d31[d31$run == 3, "i.num"])
+})

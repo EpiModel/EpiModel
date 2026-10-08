@@ -87,6 +87,7 @@ reference:
       - set_vertex_attribute
       - netest
       - netdx
+      - get_degree_dist
       - dissolution_coefs
       - update_dissolution
       - trim_netest
@@ -110,7 +111,6 @@ reference:
       - get_network
       - get_nwstats
       - get_nwparam
-      - get_param_set
       - get_attr_history
       - make_restart_point
 
@@ -163,17 +163,14 @@ reference:
 
   - title: "Scenarios & Sensitivity Analysis"
     desc: >
-      Build parameter scenarios for batch sensitivity analyses, convert
-      between list and tabular parameter formats, and generate random
-      parameter draws.
+      Build parameter scenarios for batch sensitivity analyses and convert
+      between list and tabular parameter formats.
     contents:
       - create_scenario_list
       - use_scenario
       - update_params
       - param.net_from_table
       - param.net_to_table
-      - param_random
-      - generate_random_params
       - format_param
 
   - title: "Extension API: Module Framework"

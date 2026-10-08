@@ -109,9 +109,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infection.net,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = FALSE, resimulate.network = TRUE, verbose = FALSE)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
@@ -133,9 +134,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infection.net,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")
@@ -146,9 +148,10 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infect,
-                         module.order = c("resim_nets.FUN", "infection.FUN",
-                                          "aging.FUN", "arrivals.FUN",
-                                          "departures.FUN", "prevalence.FUN"),
+                         module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                          "infection.FUN", "aging.FUN",
+                                          "arrivals.FUN", "departures.FUN",
+                                          "nwupdate.FUN", "prevalence.FUN"),
                          tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod5 <- netsim(est, param, init, control)
   expect_is(mod5, "netsim")
@@ -171,7 +174,7 @@ test_that("module.order is independent of resimulate.network", {
   param <- param.net(inf.prob = 0.3)
   init <- init.net(i.num = 5)
 
-  custom_order <- c("resim_nets.FUN", "infection.FUN",
+  custom_order <- c("resim_nets.FUN", "summary_nets.FUN", "infection.FUN",
                      "nwupdate.FUN", "prevalence.FUN")
 
   # module.order preserved with resimulate.network = TRUE
@@ -348,6 +351,56 @@ test_that("SIS with scenarios", {
   expect_error(sc.param <- use_scenario(param, scenarios.list[[1]]))
 })
 
+test_that("create_scenario_list handles a single parameter column (#1045)", {
+  # Selecting a row of a one-parameter table dropped it to an unnamed scalar,
+  # so `unflatten_params` was handed NULL names and `strsplit` failed with
+  # "non-character argument". No netsim here, so this runs on CRAN too.
+  sc.df <- data.frame(
+    .scenario.id = c("a", "b"),
+    .at          = 0,
+    inf.prob     = c(0.2, 0.3),
+    stringsAsFactors = FALSE
+  )
+
+  sc <- create_scenario_list(sc.df)
+  expect_length(sc, 2)
+  expect_equal(names(sc), c("a", "b"))
+  expect_equal(sc[["a"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.2))
+  expect_equal(sc[["b"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.3))
+
+  # The value reaches `param` through `use_scenario` as well.
+  param <- param.net(inf.prob = 0.9, act.rate = 2)
+  expect_equal(use_scenario(param, sc[["b"]])$inf.prob, 0.3)
+
+  # Several `.at` rows for one scenario, still one parameter column.
+  sc.df2 <- data.frame(
+    .scenario.id = "ramp",
+    .at          = c(0, 10, 20),
+    inf.prob     = c(0.1, 0.2, 0.3),
+    stringsAsFactors = FALSE
+  )
+  updaters <- create_scenario_list(sc.df2)[["ramp"]][[".param.updater.list"]]
+  expect_length(updaters, 3)
+  expect_equal(vapply(updaters, function(u) u$param$inf.prob, numeric(1)),
+               c(0.1, 0.2, 0.3))
+
+  # A lone column carrying a position suffix rebuilds a length-1 vector.
+  sc.df3 <- data.frame(.scenario.id = "s", .at = 0, d.rate_1 = 0.5,
+                       check.names = FALSE, stringsAsFactors = FALSE)
+  expect_equal(
+    create_scenario_list(sc.df3)[["s"]][[".param.updater.list"]][[1]]$param,
+    list(d.rate = 0.5)
+  )
+
+  # Two parameter columns were never affected; kept as the contrast case.
+  sc.df4 <- data.frame(.scenario.id = "a", .at = 0, inf.prob = 0.2,
+                       act.rate = 1, stringsAsFactors = FALSE)
+  expect_equal(create_scenario_list(sc.df4)[["a"]][[".param.updater.list"]][[1]]$param,
+               list(inf.prob = 0.2, act.rate = 1))
+})
+
 context("Records: attr_history and Raw Objects")
 
 test_that("Time varying elements", {
@@ -504,9 +557,14 @@ test_that("Load parameters from data.frame", {
   expect_s3_class(param, "param.net")
   expect_type(param, "list")
 
-  expect_silent(param <- param.net(data.frame.parameters = params.df))
+  expect_silent(param <- param.net(data.frame.params = params.df))
   expect_s3_class(param, "param.net")
   expect_type(param, "list")
+  # Verify the table was actually unpacked (not just stored as a dot arg)
+  expect_equal(param$p1, 10)
+  expect_true(param$p2)
+  expect_equal(param$p3, c(1, 3))
+  expect_equal(param$p4, "tsa")
 
   # convert back to a `long.param.df`
   param.df_back <- param.net_from_table(params.df) |> param.net_to_table()
@@ -543,111 +601,298 @@ test_that("Load parameters from data.frame", {
   expect_error(param <- param.net_from_table(params.df))
 })
 
-context("Random Parameter Generators")
-
-test_that("Random parameters generators", {
+test_that("parameter vectors with ten or more elements round trip", {
   skip_on_cran()
 
-  my_randoms <- list(
-    act.rate = param_random(c(0.25, 0.5, 0.75)),
-    tx.halt.part.prob = function() rbeta(1, 1, 2),
-    hiv.test.rate = function() c(
-      rnorm(1, 0.015, 0.01),
-      rnorm(1, 0.010, 0.01),
-      rnorm(1, 0.020, 0.01)
-    )
-  )
+  # The position suffix pattern was `(_[1-9]+)?`, which rejected any position
+  # containing a zero. `x_10` failed while `x_11` passed.
+  p <- param.net(inf.prob = 0.3, x = 1:10)
+  tbl <- param.net_to_table(p)
+  expect_true(all(paste0("x_", 1:10) %in% tbl$param))
 
-  expect_warning(param <- param.net(
-      inf.prob = 0.3,
-      act.rate = 0.3,
-      random.params = my_randoms)
-  )
-  expect_message(generate_random_params(param, verbose = TRUE))
-  expect_silent(generate_random_params(param, verbose = FALSE))
+  back <- param.net_from_table(tbl)
+  expect_equal(back$x, as.numeric(1:10))
+  expect_equal(back$inf.prob, 0.3)
 
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1)
-  expect_equal(generate_random_params(param), param)
+  # Three-digit positions, and positions that are multiples of ten.
+  p100 <- param.net(y = seq_len(100) / 10)
+  expect_equal(param.net_from_table(param.net_to_table(p100))$y,
+               seq_len(100) / 10)
 
-  param <- param.net(inf.prob = 0.3, random.params = list())
-  expect_equal(generate_random_params(param), param)
+  # Non-numeric vectors longer than nine elements.
+  p.chr <- param.net(z = letters[1:12])
+  expect_equal(param.net_from_table(param.net_to_table(p.chr))$z, letters[1:12])
 
-  param <- param.net(inf.prob = 0.3, random.params = 4)
-  expect_error(generate_random_params(param))
-
-  param <- param.net(inf.prob = 0.3, random.params = list(1))
-  expect_error(generate_random_params(param))
-
-
-  generate_correlated_params <- function() {
-    param.unique <- runif(1)
-    param.set.1 <- param.unique + runif(2)
-    param.set.2 <- param.unique * rnorm(3)
-
-    return(list(param.unique, param.set.1, param.set.2))
+  # Zero and leading-zero positions are still malformed.
+  for (nm in c("x_0", "x_01", "x_007")) {
+    bad <- data.frame(param = nm, value = "1", type = "numeric",
+                      stringsAsFactors = FALSE)
+    expect_error(param.net_from_table(bad), "malformed")
   }
 
-  # Data.frame set of random parameters :
-  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-  correlated_params <- as.data.frame(correlated_params)
-  colnames(correlated_params) <- c(
-    "param.unique",
-    "param.set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
+  # Names that merely end in digits are unaffected.
+  ok <- data.frame(param = c("beta2", "paramSet10"), value = c("1", "2"),
+                   type = rep("numeric", 2), stringsAsFactors = FALSE)
+  expect_silent(ok.param <- param.net_from_table(ok))
+  expect_equal(ok.param$beta2, 1)
+  expect_equal(ok.param$paramSet10, 2)
 
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_silent(generate_random_params(param))
-
-  # duplicated `act.rate` random definition
-  colnames(correlated_params) <- c(
-    "act.rate",
-    "param.set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  expect_warning(
-    param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
-  )
-  expect_warning(generate_random_params(param))
-
-  # malformed name "param_set.1_1"
-  colnames(correlated_params) <- c(
-    "act.rate",
-    "param_set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_error(generate_random_params(param))
-
-  # param.random.set not a data.frame
-  randoms <- c(my_randoms, list(param.random.set = list()))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_error(generate_random_params(param))
+  # The scenario path shares `unflatten_params`.
+  sc.df <- data.frame(.scenario.id = "s1", .at = 1, inf.prob = 0.3,
+                      stringsAsFactors = FALSE)
+  for (i in 1:12) sc.df[[paste0("v_", i)]] <- i
+  sc <- create_scenario_list(sc.df)
+  expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
 })
 
-test_that("netsim errors when a module does not return the `dat` object", {
+test_that("dot-prefixed parameter names are rejected as malformed", {
   skip_on_cran()
 
-  nw <- network.initialize(30, directed = FALSE)
-  est <- netest(nw, formation = ~edges, target.stats = 8,
-                coef.diss = dissolution_coefs(~offset(edges), 20),
+  # Dot-prefixed internals cannot come in through a parameter table, since a
+  # flat parameter name must begin with a letter.
+  for (nm in c(".param.updater.list", ".param.updater.list_1")) {
+    df <- data.frame(param = c("inf.prob", nm), value = c("0.3", "1"),
+                     type = rep("numeric", 2), stringsAsFactors = FALSE)
+    expect_error(param.net_from_table(df), "malformed")
+  }
+})
+
+test_that("param.net preserves data.frame.params values against constructor defaults", {
+  skip_on_cran()
+
+  # Regression for #1029: vector `act.rate` from a long.param.df must not be
+  # silently overwritten by the scalar default of 1.
+  params.df <- data.frame(
+    param = c("act.rate_1", "act.rate_2", "act.rate_3", "act.rate_4",
+              "inf.prob"),
+    value = c("5", "1", "1", "1", "0.3"),
+    type  = rep("numeric", 5),
+    stringsAsFactors = FALSE
+  )
+  p <- param.net(data.frame.params = params.df)
+  expect_equal(p$act.rate, c(5, 1, 1, 1))
+  expect_equal(p$inf.prob, 0.3)
+
+  # Scalar default still applies when neither formal arg nor table provides it.
+  p_default <- param.net(inf.prob = 0.3)
+  expect_equal(p_default$act.rate, 1)
+
+  # Regression for #1031: `vital` must reflect table-supplied vital parameters
+  # after a round trip through `param.net_to_table` -> `param.net`.
+  p1 <- param.net(inf.prob = 0.3, a.rate = 0.1, ds.rate = 0.1, di.rate = 0.1)
+  expect_true(p1$vital)
+  p2 <- param.net(data.frame.params = param.net_to_table(p1))
+  expect_true(p2$vital)
+
+  # `vital` is FALSE when no vital params are supplied via either path.
+  p_no_vital <- param.net(
+    data.frame.params = data.frame(
+      param = "inf.prob", value = "0.3", type = "numeric",
+      stringsAsFactors = FALSE
+    )
+  )
+  expect_false(p_no_vital$vital)
+})
+
+test_that("param.net rejects the misdocumented data.frame.parameters name", {
+  skip_on_cran()
+
+  # Regression for #1031: releases through v2.6.1 documented the table argument
+  # as `data.frame.parameters`, which the constructor never accepted. It used to
+  # fall through to `...` and be stored as a parameter of that name, leaving the
+  # table unpacked and the model silently misparameterized.
+  params.df <- data.frame(
+    param = c("inf.prob", "act.rate"),
+    value = c("0.3", "2"),
+    type  = rep("numeric", 2),
+    stringsAsFactors = FALSE
+  )
+  expect_error(
+    param.net(data.frame.parameters = params.df),
+    "Use data.frame.params instead"
+  )
+
+  # The correct name still works.
+  p <- param.net(data.frame.params = params.df)
+  expect_equal(p$inf.prob, 0.3)
+  expect_equal(p$act.rate, 2)
+})
+
+# `module.order` validation (run at control.net() construction time) -----------
+
+test_that("module.order with an entry that has no matching .FUN errors", {
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infction.FUN", "nwupdate.FUN")),
+    "no matching `\\.FUN` argument"
+  )
+})
+
+test_that("module.order containing initialize.FUN or verbose.FUN errors", {
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("initialize.FUN", "resim_nets.FUN",
+                                 "summary_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "`initialize\\.FUN` runs once at simulation start"
+  )
+
+  expect_error(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "nwupdate.FUN",
+                                 "prevalence.FUN", "verbose.FUN")),
+    "outside the per-step module loop"
+  )
+})
+
+test_that("module.order omitting a critical built-in warns", {
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "prevalence.FUN")),
+    "nwupdate\\.FUN"
+  )
+
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("summary_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "resim_nets\\.FUN"
+  )
+
+  expect_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "infection.FUN",
+                                 "nwupdate.FUN", "prevalence.FUN")),
+    "summary_nets\\.FUN"
+  )
+})
+
+test_that("module.order with the recommended full ordering emits no warning", {
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "nwupdate.FUN",
+                                 "prevalence.FUN"))
+  )
+})
+
+test_that("module.order is not required (NULL skips validation)", {
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10)
+  )
+})
+
+test_that("module.order does not warn for built-ins explicitly set to NULL", {
+  # When a user disables a critical built-in by passing NULL, that module
+  # leaves `bi.mods` and so should not trigger the missing-critical warning
+  # if it is also absent from `module.order`.
+  expect_no_warning(
+    control.net(type = "SI", nsteps = 10,
+                nwupdate.FUN = NULL,
+                module.order = c("resim_nets.FUN", "summary_nets.FUN",
+                                 "infection.FUN", "prevalence.FUN"))
+  )
+})
+
+context("Custom Module Return Value Validation")
+
+test_that("netsim errors clearly when a custom module omits return(dat)", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
 
+  # Custom module that forgets to return dat (returns NULL implicitly)
   bad_module <- function(dat, at) {
-    # Forgot to return(dat)
-    NULL
+    status <- get_attr(dat, "status")
+    invisible(NULL)
   }
 
-  param <- param.net(inf.prob = 0.3, act.rate = 1)
-  init <- init.net(i.num = 5)
-  control <- control.net(type = NULL, nsims = 1, nsteps = 2,
-                         aging.FUN = bad_module,
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_bad.FUN = bad_module,
                          verbose = FALSE)
+
   expect_error(
     suppressMessages(netsim(est, param, init, control)),
-    "Module 'aging.FUN' must return the `dat` object"
+    "Module 'my_bad.FUN' did not return"
   )
+})
+
+test_that("netsim errors when a custom module returns a plain list", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # Returns dat with its netsim_dat class stripped, mimicking a user who
+  # rebuilds the object via list() rather than returning the input.
+  unclass_module <- function(dat, at) {
+    unclass(dat)
+  }
+
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_unclass.FUN = unclass_module,
+                         verbose = FALSE)
+
+  expect_error(
+    suppressMessages(netsim(est, param, init, control)),
+    "Module 'my_unclass.FUN' did not return"
+  )
+})
+
+test_that("an attribute first appended mid-simulation covers every node", {
+  skip_on_cran()
+
+  ## Arrivals module creating a custom attribute that does not exist at
+  ## initialization, so the first arrivals are the first nodes to hold it
+  afunc <- function(dat, at) {
+    n.new <- 2
+    dat <- append_core_attr(dat, at, n.new)
+    dat <- append_attr(dat, "status", "s", n.new)
+    dat <- append_attr(dat, "infTime", NA, n.new)
+    dat <- append_attr(dat, "arrival.step", at, n.new)
+    dat <- set_epi(dat, "a.flow", n.new)
+    return(dat)
+  }
+
+  nw <- network_initialize(n = 20)
+  est <- netest(nw, formation = ~edges, target.stats = 5,
+                coef.diss = dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 2)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 3,
+                         arrivals.FUN = afunc, infection.FUN = infection.net,
+                         resimulate.network = TRUE, tergmLite = FALSE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+
+  ## the modules run from the second time step, so 2 arrival steps of 2 nodes
+  attrs <- mod$run[[1]]$attr
+  n.nodes <- length(attrs$active)
+  expect_equal(n.nodes, 20 + 2 * 2)
+  expect_true(all(vapply(attrs, length, integer(1)) == n.nodes))
+  ## the 20 initial nodes have no arrival step, the 4 arrivals do
+  expect_equal(attrs$arrival.step, c(rep(NA, 20), rep(2:3, each = 2)))
 })

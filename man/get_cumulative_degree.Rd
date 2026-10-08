@@ -23,7 +23,8 @@ object and other initialization information passed from
 for models with multi-layer networks.) If \code{NULL}, extract from all networks.}
 
 \item{truncate}{After how many time steps a partnership that is no longer
-active should be removed from the output.}
+active should be removed from the output. See the
+Truncation section.}
 
 \item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased) partners will be removed from
 the output.}
@@ -31,18 +32,40 @@ the output.}
 \value{
 A \code{data.frame} with 2 columns:
 \itemize{
-\item \code{index_pid}: the positional ID (see \code{get_posit_ids}) of the
-indexes.
+\item \code{index_pid}: the positional ID (see \code{\link[=get_posit_ids]{get_posit_ids()}}) of the indexes.
 \item \code{degree}: the cumulative degree of the index.
 }
 }
 \description{
-Return the Cumulative Degree of a Set of Index Nodes
+Counts the number of distinct partners each of a set of index nodes has
+accumulated over the tracked history. A thin wrapper around
+\code{\link[=get_partners]{get_partners()}} that collapses the partner list to a count per index.
 }
 \section{Cumulative Degree}{
 
-The cumulative degree of a node is the number of edges connected to this
-node at during the time window. The time window is by default all the steps
-stored in the \code{cumulative_edgelist} or set by the \code{truncate} parameter.
+The cumulative degree of a node is the number of distinct partners
+connected to it during the tracked time window. The window is whatever
+history the cumulative edgelist currently contains (controlled at
+simulation time by \code{control$truncate.el.cuml} and at call time by the
+\code{truncate} argument).
 }
 
+\examples{
+\dontrun{
+get_cumulative_degree(dat, index_posit_ids = 1:50, truncate = 52)
+}
+
+}
+\seealso{
+\code{\link[=get_partners]{get_partners()}} for the full partner list backing this count.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

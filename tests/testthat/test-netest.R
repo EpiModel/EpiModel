@@ -63,6 +63,40 @@ test_that("netest diss_check flags bad models", {
                "Term options for one or more terms in dissolution model")
 })
 
+test_that("diss_check does not apply to direct STERGM fits", {
+  skip_on_cran()
+  set.seed(1)
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rep(0:1, each = 25))
+  coef.diss <- dissolution_coefs(~offset(edges) + offset(nodematch("race")),
+                                 duration = c(10, 20))
+
+  ## the dissolution terms are in the formation model but not as an initial
+  ## segment of it: rejected by the edges dissolution approximation, but a
+  ## legitimate model for a joint fit, where term order carries no meaning
+  formation <- ~edges + nodefactor("race") + nodematch("race")
+  target.stats <- c(20, 20, 12)
+
+  expect_error(netest(nw, formation, target.stats, coef.diss, verbose = FALSE),
+               "Order of terms in the dissolution model")
+
+  est <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE,
+                verbose = FALSE)
+  expect_is(est, "netest")
+  expect_false(est$edapprox)
+  expect_equal(est$target.stats.names,
+               c("edges", "nodefactor.race.1", "nodematch.race"))
+
+  ## a dissolution term with no formation analog also gets past netest. tergm
+  ## cannot derive starting values for it, but that is its own error, raised
+  ## after the model is passed on rather than before it is fit
+  msg <- tryCatch(
+    netest(nw, ~edges, 20, coef.diss, edapprox = FALSE, verbose = FALSE),
+    error = conditionMessage
+  )
+  expect_false(grepl("Dissolution model is not a subset", msg))
+})
+
 
 # Other tests ---------------------------------------------------------------
 

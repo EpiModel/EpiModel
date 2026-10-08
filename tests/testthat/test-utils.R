@@ -70,6 +70,33 @@ test_that("ssample", {
 
 })
 
+test_that("apportion_lr happy path returns a vector of the requested length", {
+  out <- apportion_lr(20, c("a", "b", "c", "d"), c(0.5, 0.25, 0.125, 0.125))
+  expect_length(out, 20)
+  expect_setequal(unique(out), c("a", "b", "c", "d"))
+
+  # Length-(k-1) proportions: missing entry fills to sum to 1.
+  out2 <- apportion_lr(8, c("a", "b", "c", "d"), c(0.25, 0.25, 0.25))
+  expect_length(out2, 8)
+
+  out3 <- apportion_lr(10, 1:4, c(0.25, 0.25, 0.25, 0.25), shuffled = TRUE)
+  expect_length(out3, 10)
+})
+
+test_that("apportion_lr validates its arguments", {
+  expect_error(apportion_lr(1.5, 1:3, c(0.3, 0.3, 0.4)),
+               "vector.length must be a positive integer")
+  expect_error(apportion_lr(0, 1:3, c(0.3, 0.3, 0.4)),
+               "vector.length must be a positive integer")
+  # is.vector() returns TRUE for lists, so we need a non-vector type
+  # (matrix here) to trip the "values must be a vector" guard.
+  expect_error(apportion_lr(5, matrix(1:6, 2), c(0.3, 0.3, 0.4)),
+               "values must be a vector")
+  # Length matches but sum != 1 and not within the (length - 1, [0, 1]) branch.
+  expect_error(apportion_lr(5, 1:3, c(0.3, 0.3, 0.3)),
+               "proportions length or proportions sum")
+})
+
 test_that("check_degdist_bal", {
   expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
                                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),

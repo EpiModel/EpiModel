@@ -8,12 +8,12 @@
 #'
 #' @details
 #' `param.icm` sets the epidemic parameters for the stochastic individual
-#' contact models simulated with the [icm()] function. Models
-#' may use the base types, for which these parameters are used, or new process
-#' modules which may use these parameters (but not necessarily).
+#' contact models simulated with the [icm()] function. ICMs support the
+#' built-in SI, SIR, and SIS disease types only; for custom or extension
+#' epidemic models, use [param.net()] with the network model class.
 #'
-#' For base models, the model specification will be chosen as a result of
-#' the model parameters entered here and the control settings in
+#' The model specification will be chosen as a result of the model parameters
+#' entered here and the control settings in
 #' [control.icm()]. One-group and two-group models are available,
 #' where the former assumes a homogeneous mixing in the population and the
 #' latter assumes some form of heterogeneous mixing between two distinct
@@ -111,7 +111,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @details
 #' The initial conditions for a model solved with [icm()] should be
 #' input into the `init.icm` function. This function handles initial
-#' conditions for both base models and original models using new modules.
+#' conditions for the built-in SI, SIR, and SIS disease types; for custom or
+#' extension epidemic models, use [init.net()] with the network model class.
 #'
 #' @return An `EpiModel` object of class `init.icm`.
 #'

@@ -31,7 +31,7 @@ indicating an \code{ergm.ego} fit.}
 the network should be reproduced by the model. Common terms include
 \code{edges} (overall connectivity), \code{nodematch} (homophily by attribute),
 \code{concurrent} (overlapping partnerships), and \code{degree} (degree
-distribution constraints). See \code{\link[ergm:ergmTerm]{ergm::ergm-terms}} for the full
+distribution constraints). See \code{\link[ergm:ergm-terms]{ergm::ergm-terms}} for the full
 list of available terms.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
@@ -76,8 +76,10 @@ details).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
-\item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
-model is an initial segment of the formation model (see details).}
+\item{nested.edapprox}{Logical, only used when \code{edapprox = TRUE}. When
+\code{TRUE} (the default), the dissolution model must be an initial
+segment of the formation model; when \code{FALSE}, the dissolution terms
+need not be nested (see details).}
 
 \item{ergm.ego.popsize}{Numeric. The \code{popsize} argument passed to
 \code{ergm.ego::ergm.ego()} when \code{nw} is an \code{egor}. Shifts the edges
@@ -148,14 +150,26 @@ the vignette for the package \code{tergm}.
 It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by \code{netest}. The modified values subtracted from the formation
-coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1. The \code{nested.edapprox} argument
-toggles whether to implement this modified version by appending the
-dissolution terms to the formation model and appending the relevant values to
-the vector of formation model coefficients (value = \code{FALSE}), whereas
-the standard version subtracts the relevant values from the initial formation
-model coefficients (value = \code{TRUE}).
+applied by \code{netest} for both settings of \code{nested.edapprox}. The modified
+values subtracted from the formation coefficients are equivalent to the
+(crude) dissolution coefficients with their target durations increased by 1.
+The \code{nested.edapprox} argument does not change this approximation; it only
+controls how it is implemented. When \code{TRUE} (the default), the dissolution
+terms are an initial segment of the formation model, so the correction
+values are subtracted in place from the corresponding initial formation
+model coefficients. When \code{FALSE}, the dissolution terms need not be nested
+in the formation model: they are appended to the formation model and the
+corresponding correction values are appended to the vector of formation
+model coefficients.
+
+The nesting requirement is a property of the approximation, so it is only
+checked when \code{edapprox = TRUE}. A direct STERGM fit (\code{edapprox = FALSE})
+estimates formation and persistence jointly and places no such requirement on
+the dissolution terms. Note, however, that \code{tergm} derives the starting
+values for its EGMME fit from the same approximation, so a direct fit whose
+persistence terms have no formation analog needs starting values supplied
+through \code{set.control.tergm}, with \code{control.tergm(init = ...)} or
+\code{control.tergm(init.method = "zeros")}.
 }
 
 \section{Control Arguments}{

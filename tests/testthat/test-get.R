@@ -53,6 +53,41 @@ test_that("get_network error flags", {
   expect_error(get_network(mod, 1, 2), "Specify network")
 })
 
+test_that("get_network.netsim rejects collapse / at under tergmLite", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est_tl <- netest(nw, formation = ~edges, target.stats = 25,
+                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                   verbose = FALSE)
+  expect_warning(
+    control_tl <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                              tergmLite = TRUE, verbose = FALSE),
+    "resetting resimulate.network"
+  )
+  mod_tl <- netsim(est_tl, param.net(inf.prob = 0.3),
+                   init.net(i.num = 5), control_tl)
+
+  expect_error(get_network(mod_tl, collapse = TRUE),
+               "collapse.*FALSE when.*tergmLite")
+  expect_error(get_network(mod_tl, at = 2),
+               "at.*NULL when.*tergmLite")
+})
+
+test_that("get_network.netdx validates sim argument length and range", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est_dx <- netest(nw, formation = ~edges, target.stats = 25,
+                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                   verbose = FALSE)
+  dx <- netdx(est_dx, nsims = 2, nsteps = 5, keep.tnetwork = TRUE,
+              verbose = FALSE)
+
+  expect_error(get_network(dx, sim = 1:2),
+               "Specify a single sim between 1 and 2")
+  expect_error(get_network(dx, sim = 5),
+               "Specify a single sim between 1 and 2")
+})
+
 
 # get transmat ------------------------------------------------------------
 
@@ -118,124 +153,6 @@ test_that("get_sims error flags", {
   skip_on_cran()
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
   expect_error(get_sims(mod), "Specify sims as a vector")
-
-# get parameter set ------------------------------------------------------------
-  nw <- network_initialize(n = 50)
-
-  est <- netest(
-    nw, formation = ~edges,
-    target.stats = c(25),
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-    verbose = FALSE
-  )
-
-  init <- init.net(i.num = 10)
-
-  my.randoms <- list(
-    act.rate = param_random(c(0.25, 0.5, 0.75)),
-    dummy.param = function() rbeta(1, 1, 2),
-    dummy.strat.param = function() c(
-      rnorm(1, 0, 10),
-      rnorm(1, 10, 1)
-    )
-  )
-
-  param <- param.net(
-    inf.prob = 0.3,
-    dummy = c(0, 1, 2),
-    random.params = my.randoms
-  )
-
-  control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  d.set <- get_param_set(mod)
-
-  set.colnames <- c(
-    "sim",
-    "inf.prob",
-    "dummy_1",
-    "dummy_2",
-    "dummy_3",
-    "act.rate",
-    "vital",
-    "dummy.param",
-    "dummy.strat.param_1",
-    "dummy.strat.param_2",
-    "groups",
-    "time.unit"
-  )
-
-  expect_is(d.set, "data.frame")
-  expect_true(setequal(names(d.set), set.colnames))
-  expect_error(get_param_set(control), "`sims` must be of class netsim")
-  expect_equal(dim(get_param_set(mod)), c(3, length(set.colnames)))
-
-  mod.sub <- get_sims(mod, sims = 2)
-  d.sub <- get_param_set(mod.sub)
-  expect_equal(nrow(d.sub), 1)
-  expect_equal(d.sub$act.rate, d.set$act.rate[2])
-  expect_equal(d.sub$dummy.param, d.set$dummy.param[2])
-  expect_equal(d.sub$dummy.strat.param_1, d.set$dummy.strat.param_1[2])
-  expect_equal(d.sub$dummy.strat.param_2, d.set$dummy.strat.param_2[2])
-})
-
-test_that("get_param_set handles vector random parameters with one simulation", {
-  mod <- structure(
-    list(
-      param = list(
-        inf.prob = 0.3,
-        dummy.strat.param = c(0.1, 0.2),
-        random.params = list(dummy.strat.param = function() NULL),
-        random.params.values = list(dummy.strat.param = c(0.1, 0.2))
-      ),
-      control = list(nsims = 1)
-    ),
-    class = "netsim"
-  )
-
-  d.set <- get_param_set(mod)
-  expect_equal(nrow(d.set), 1)
-  expect_equal(d.set$dummy.strat.param_1, 0.1)
-  expect_equal(d.set$dummy.strat.param_2, 0.2)
-})
-
-test_that("get_sims subsets random parameter values", {
-  mod <- structure(
-    list(
-      param = list(
-        inf.prob = 0.3,
-        act.rate = 0.1,
-        dummy.strat.param = c(1, 2),
-        random.params = list(
-          act.rate = function() NULL,
-          dummy.strat.param = function() NULL
-        ),
-        random.params.values = list(
-          act.rate = c(0.1, 0.2, 0.3),
-          dummy.strat.param = list(c(1, 2), c(3, 4), c(5, 6))
-        )
-      ),
-      control = list(nsims = 3, save.other = character(0)),
-      epi = list(
-        i.num = data.frame(matrix(1:3, nrow = 1))
-      ),
-      stats = list(nwstats = NULL, transmat = NULL),
-      run = NULL,
-      network = NULL,
-      diss.stats = NULL
-    ),
-    class = "netsim"
-  )
-
-  mod.sub <- get_sims(mod, sims = 2)
-  d.sub <- get_param_set(mod.sub)
-
-  expect_equal(mod.sub$control$nsims, 1)
-  expect_equal(mod.sub$param$random.params.values$act.rate, 0.2)
-  expect_equal(mod.sub$param$random.params.values$dummy.strat.param, list(c(3, 4)))
-  expect_equal(d.sub$act.rate, 0.2)
-  expect_equal(d.sub$dummy.strat.param_1, 3)
-  expect_equal(d.sub$dummy.strat.param_2, 4)
 })
 
 dxs <- netdx(est, dynamic = FALSE, nsims = 5,

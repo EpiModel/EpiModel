@@ -24,4 +24,23 @@ Maintains the \code{num(.g2)} epi fields (initialized in
 \code{\link[=sim_nets_t1]{sim_nets_t1()}}) for computing the coefficient
 adjustment.
 }
+\details{
+By default the correction counts every active node. That is correct when
+every active node can form a tie, which is the usual case.
+
+It is not correct when a model carries a subpopulation that stays active but
+is structurally excluded from the network, for example an age band past a
+sexual-cessation age whose target statistics are all zero, so that \code{ergm}
+pins its terms off and no tie incident to those nodes can form. The
+population the correction sees then grows while the population that can hold
+an edge does not, and the whole of the adjustment lands on the nodes that
+can. The \code{edges.correct.attr} control names a binary nodal attribute
+identifying the nodes eligible to form ties, and the correction then counts
+only those.
+
+The size of the error is the size of the excluded share. A model whose
+excluded band grows to a quarter of the population dilutes mean degree among
+the remainder by the same quarter, and none of it appears in the network
+diagnostics, because \code{\link[=netdx]{netdx()}} runs before any node has been excluded.
+}
 \keyword{internal}

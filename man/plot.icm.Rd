@@ -45,7 +45,9 @@
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
 
-\item{sims}{A vector of simulation numbers to plot.}
+\item{sims}{A vector of simulation numbers to plot. The plot then describes
+those simulations alone: the mean line and quantile bands are
+calculated over them, not over the full set.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
 
@@ -91,7 +93,7 @@ to existing plot window.}
     The default value, \code{NULL}, indicates that the range of the
     \link{finite} values to be plotted should be used.}
 
-\item{ylim}{the y limits of the plot.}
+\item{ylim}{the y limits of the plot; see \code{xlim} for default and details.}
 
 \item{main}{a main title for the plot, see also \code{\link[graphics]{title}}.}
 

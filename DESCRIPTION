@@ -1,6 +1,6 @@
 Package: EpiModel
 Version: 2.7.0
-Date: 2026-05-18
+Date: 2026-09-15
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics.
     Epidemic model classes include deterministic compartmental models, stochastic
@@ -62,12 +62,11 @@ Suggests:
     plotly (>= 4.10.0),
     rmarkdown,
     shiny,
-    testthat,
+    testthat (>= 3.1.8),
     progressr,
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

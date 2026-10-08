@@ -16,8 +16,11 @@ object and other initialization information passed from
 invisible(TRUE) if everything is correct; an error if not.
 }
 \description{
-Check that All Attributes in the Main \code{netsim_dat} Object are of Equal
-Length
+Every nodal attribute must hold exactly one value per node, the
+number of nodes being the length of the \code{active} attribute.
+This is checked at the end of each time step of \code{\link[=netsim]{netsim()}}.
+An attribute of the wrong length is usually created by an
+\code{\link[=append_attr]{append_attr()}} call that does not cover every new node, or by
+direct assignment into \code{dat$run$attr} in place of the accessors.
 }
 \keyword{internal}
-\keyword{not_used}

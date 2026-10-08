@@ -86,12 +86,30 @@
 #' time. Without it, the network structure evolves independently of the
 #' epidemic and demographic dynamics.
 #'
+#' @section Partnership Histories (Cumulative Edgelist):
+#' For contact tracing, partnership-duration analysis, or reachability
+#' analysis, enable cumulative-edgelist tracking via
+#' `control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)`.
+#' This records every edge formed during the simulation along with its
+#' `start` and `stop` time steps, and attaches the result to the returned
+#' object as `sim$cumulative.edgelist`. Under `tergmLite = TRUE` this is
+#' the recommended substitute for the full `networkDynamic` history.
+#'
+#' The helper family ([`get_cumulative_edgelist`],
+#' [`get_cumulative_edgelists_df`], [`get_partners`], [`get_cumulative_degree`],
+#' [`get_forward_reachable`], [`get_backward_reachable`]) operates on the
+#' tracked data. See `vignette("network-objects", package = "EpiModel")`
+#' for the full lifecycle.
+#'
 #' @section Multi-Network Models:
 #' For models with multiple overlapping network layers (e.g., sexual and
 #' needle-sharing networks), pass a list of [`netest`] objects to the `x`
 #' argument, one per network layer. Each layer has its own
 #' formation/dissolution dynamics but shares the same node set. See the
-#' `multilayer` documentation and `test-multinets.R` for examples.
+#' [`multilayer`] documentation for specifying controls that vary by layer, and
+#' the [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+#' chapter of the Network Modeling for Epidemics course materials for a worked
+#' example building from independent to cross-dependent layers.
 #'
 #' @section Restarting and Checkpointing:
 #' Simulations can be checkpointed and restarted if interrupted. Set
@@ -326,7 +344,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   if (netsim_is_resume_checkpoint(control, s)) {
     dat <- netsim_load_checkpoint(control, s)
   } else {
-    param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
     dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {
@@ -385,20 +402,24 @@ netsim_run_modules <- function(dat, s) {
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
         new_dat <- modules[[i]](dat, at)
-        # Test the output of `modules[i]`. Must be stored in `new_dat` before
-        # the test as `dat` is used by the logger function.
         if (!inherits(new_dat, "netsim_dat")) {
-          stop("Module '", current_mod, "' must return the `dat` object. ",
-               "Got ", class(new_dat)[1], " instead.")
-        } else {
-          dat <- new_dat
+          # Don't overwrite `dat` so the error handler can still read
+          # `.traceback.on.error` / `.dump.frame.on.error` from it.
+          stop("Module '", current_mod, "' did not return a `netsim_dat` ",
+               "object (got ", class(new_dat)[1], "). The most common cause ",
+               "is a missing `return(dat)` at the end of the module function.",
+               call. = FALSE)
         }
+        dat <- new_dat
       }
 
       current_mod <- "epimodel.internal"
       dat <- tracked_attrs_record(dat)
       # Run the user-provided trackers, if any
       dat <- epi_trackers(dat)
+
+      # All nodal attributes must hold one value per node at the end of a step
+      check_attr_lengths(dat)
 
       ## Verbose module
       if (!is.null(get_control(dat, "verbose.FUN"))) {

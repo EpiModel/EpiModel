@@ -66,7 +66,7 @@ make_scenario <- function(scenario.rows) {
   for (i in seq_along(elements.at)) {
     scenario[[".param.updater.list"]][[i]] <- list(
       at = elements.at[[i]],
-      param = unflatten_params(scenario.rows[i, ])
+      param = unflatten_params(scenario.rows[i, , drop = FALSE])
     )
   }
 
@@ -165,19 +165,11 @@ flatten_params <- function(params) {
   return(params.flat)
 }
 
-#' list the "special parameters" from a param list. They include some EpiModel
-#' internals as well as all parameters starting with "."
+#' list the "special parameters" from a param list: all parameters starting
+#' with "."
 #' @noRd
 list_special_params <- function(params.names) {
-  builtin.special.params <- c(
-    "random.params",
-    "random.params.values"
-  )
-
-  builtin.special.params <- intersect(builtin.special.params, params.names)
-  dot.special.params <- params.names[grep("^\\.", params.names)]
-
-  return(unique(c(builtin.special.params, dot.special.params)))
+  return(params.names[grep("^\\.", params.names)])
 }
 
 #' helper function to remove the "special parameters" from a param list.
@@ -227,7 +219,10 @@ check_params_flat <- function(params.flat) {
 #' helper function to check the correctness of the flat parameters names
 #' @noRd
 check_params_names <- function(params.names) {
-  params.pattern <- "^[[:alpha:]][[:alnum:].]*(_[1-9]+)?$"
+  # The position suffix is a decimal integer with no leading zero. The bracket
+  # expression must allow 0 after the first digit, otherwise any position
+  # containing a 0 (`_10`, `_20`, `_100`) is rejected while its neighbors pass.
+  params.pattern <- "^[[:alpha:]][[:alnum:].]*(_[1-9][0-9]*)?$"
   correct.format <- grepl(params.pattern, params.names)
 
   if (!all(correct.format)) {
@@ -236,13 +231,6 @@ check_params_names <- function(params.names) {
       "you can check the names with ",
       '`grepl("', params.pattern, '", your.names)` \n',
       "Example: 'unique.param', 'param.set_1', 'param.set_2'"
-    )
-  }
-
-  special.params.names <- list_special_params(params.names)
-  if (length(special.params.names) != 0) {
-    stop("The following special parameter names are not allowed: \n`",
-      paste0(special.params.names, collapse = "`, `"), "`\n\n"
     )
   }
 

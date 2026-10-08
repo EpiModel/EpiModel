@@ -234,6 +234,39 @@ resim_nets <- function(dat, at) {
 }
 
 
+#' @title Nodes Eligible to Form Ties for the Edges Correction
+#'
+#' @description Returns a logical vector marking the nodes the edges correction
+#'              should count, or `NULL` when the `edges.correct.attr` control is
+#'              unset and every node counts.
+#'
+#' @param dat Main `netsim_dat` object containing a `networkDynamic` object and
+#'        other initialization information passed from [netsim()].
+#' @param active The `active` nodal attribute.
+#'
+#' @return A logical vector the same length as `active`, or `NULL`.
+#'
+#' @keywords internal
+#'
+edges_correct_eligible <- function(dat, active) {
+  attr.name <- get_control(dat, "edges.correct.attr",
+                           override.null.error = TRUE)
+  if (is.null(attr.name)) {
+    return(NULL)
+  }
+  if (length(attr.name) != 1 || !is.character(attr.name)) {
+    stop("The `edges.correct.attr` control must be a single attribute name.")
+  }
+  eligible <- get_attr(dat, attr.name)
+  if (length(eligible) != length(active)) {
+    stop("The nodal attribute `", attr.name, "` named by the ",
+         "`edges.correct.attr` control has length ", length(eligible),
+         ", but the `active` attribute has length ", length(active), ".")
+  }
+  !is.na(eligible) & eligible == 1
+}
+
+
 #' @title Adjustment for the Edges Coefficient with Changing Network Size
 #'
 #' @description Adjusts the edges coefficient in a dynamic network model
@@ -242,6 +275,25 @@ resim_nets <- function(dat, at) {
 #'              Maintains the `num(.g2)` epi fields (initialized in
 #'              [sim_nets_t1()]) for computing the coefficient
 #'              adjustment.
+#'
+#' @details
+#' By default the correction counts every active node. That is correct when
+#' every active node can form a tie, which is the usual case.
+#'
+#' It is not correct when a model carries a subpopulation that stays active but
+#' is structurally excluded from the network, for example an age band past a
+#' sexual-cessation age whose target statistics are all zero, so that `ergm`
+#' pins its terms off and no tie incident to those nodes can form. The
+#' population the correction sees then grows while the population that can hold
+#' an edge does not, and the whole of the adjustment lands on the nodes that
+#' can. The `edges.correct.attr` control names a binary nodal attribute
+#' identifying the nodes eligible to form ties, and the correction then counts
+#' only those.
+#'
+#' The size of the error is the size of the excluded share. A model whose
+#' excluded band grows to a quarter of the population dilutes mean degree among
+#' the remainder by the same quarter, and none of it appears in the network
+#' diagnostics, because [netdx()] runs before any node has been excluded.
 #'
 #' @inheritParams recovery.net
 #'
@@ -257,20 +309,49 @@ edges_correct <- function(dat, at) {
   active <- get_attr(dat, "active")
 
   if (resimulate.network == TRUE) {
+    eligible <- edges_correct_eligible(dat, active)
+    use.eligible <- !is.null(eligible)
+    if (!use.eligible) {
+      eligible <- TRUE
+    }
+
     if (groups == 1) {
-      old.num <- dat$run$num
-      new.num <- sum(active == 1)
+      old.num <- if (use.eligible) dat$run$num.elig else dat$run$num
+      new.num <- sum(active == 1 & eligible)
+      # A run restarted from output saved before this control existed carries
+      # no eligible count. Treating the first step as a no-op is right: there
+      # is no previous count to compare against.
+      if (is.null(old.num)) {
+        old.num <- new.num
+      }
       adjustment <- log(old.num) - log(new.num)
     }
     if (groups == 2) {
-      old.num.g1 <- dat$run$num
-      old.num.g2 <- dat$run$num.g2
       group <- get_attr(dat, "group")
-      new.num.g1 <- sum(active == 1 & group == 1)
-      new.num.g2 <- sum(active == 1 & group == 2)
+      old.num.g1 <- if (use.eligible) dat$run$num.elig else dat$run$num
+      old.num.g2 <- if (use.eligible) dat$run$num.elig.g2 else dat$run$num.g2
+      new.num.g1 <- sum(active == 1 & group == 1 & eligible)
+      new.num.g2 <- sum(active == 1 & group == 2 & eligible)
+      if (is.null(old.num.g1)) {
+        old.num.g1 <- new.num.g1
+      }
+      if (is.null(old.num.g2)) {
+        old.num.g2 <- new.num.g2
+      }
       adjustment <-
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
+    }
+
+    # An empty count makes the adjustment infinite, and an infinite adjustment
+    # added to the edges coefficient makes every proposed tie be rejected for
+    # the rest of the run, which looks like a slow collapse rather than an
+    # error. Leaving the coefficients alone and saying so is more useful.
+    if (!is.finite(adjustment)) {
+      warning("edges_correct() computed a non-finite edges adjustment at ",
+              "timestep ", at, " and left the edges coefficients unchanged. ",
+              "This means a population count reached zero.")
+      return(dat)
     }
 
     for (network in seq_len(dat$num.nw)) {
@@ -287,12 +368,22 @@ edges_correct <- function(dat, at) {
 # This is used to adjuste the `edges` coefficient of tergm
 update_sim_num <- function(dat) {
   active <- get_attr(dat, "active")
+  # NULL unless the `edges.correct.attr` control is set, in which case these
+  # are the counts `edges_correct()` reads on the next timestep.
+  eligible <- edges_correct_eligible(dat, active)
   if (get_param(dat, "groups") == 1) {
     dat$run$num <- sum(active == 1)
+    if (!is.null(eligible)) {
+      dat$run$num.elig <- sum(active == 1 & eligible)
+    }
   } else {
     group <- get_attr(dat, "group")
     dat$run$num <- sum(active == 1 & group == 1)
     dat$run$num.g2 <- sum(active == 1 & group == 2)
+    if (!is.null(eligible)) {
+      dat$run$num.elig <- sum(active == 1 & group == 1 & eligible)
+      dat$run$num.elig.g2 <- sum(active == 1 & group == 2 & eligible)
+    }
   }
   return(dat)
 }

@@ -22,9 +22,8 @@ A list of class \code{icm} with the following elements:
 \item \strong{control:} the control settings passed into the model through
 \code{control}, with additional controls added as necessary.
 \item \strong{epi:} a list of data frames, one for each epidemiological
-output from the model. Outputs for base models always include the
-size of each compartment, as well as flows in, out of, and between
-compartments.
+output from the model. Outputs always include the size of each
+compartment, as well as flows in, out of, and between compartments.
 }
 }
 \description{
@@ -38,14 +37,11 @@ on individual agents in discrete time as a function of processes with
 stochastic variation. The stochasticity is inherent in all transition
 processes: infection, recovery, and demographics.
 
-The \code{icm} function performs modeling of both the base model types
-and original models. Base model types include one-group and two-group
-models with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
-(SIS). Original models may be built by writing new process modules that
-either take the place of existing modules (for example, disease recovery),
-or supplement the set of existing processes with a new one contained in an
-original module.
+The \code{icm} function supports the built-in SI, SIR, and SIS disease types
+only, in one-group or two-group configurations, with or without demography.
+For custom or extension epidemic models, use the network model class via
+\code{\link[=netsim]{netsim()}} with \code{control.net(type = NULL, ...)} and user-supplied module
+functions.
 }
 \examples{
 \dontrun{

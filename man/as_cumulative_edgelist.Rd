@@ -2,21 +2,54 @@
 % Please edit documentation in R/reachable.R
 \name{as_cumulative_edgelist}
 \alias{as_cumulative_edgelist}
-\title{Convert an object to a \code{cumulative_edgelist}}
+\title{Convert an Object to a Cumulative Edgelist}
 \usage{
 as_cumulative_edgelist(x)
 }
 \arguments{
-\item{x}{An object to be converted to a cumulative edgelist}
+\item{x}{An object to be converted to a cumulative edgelist.}
 }
 \value{
-A \code{cumulative_edgelist} object, a \code{data.frame} with at least the
-following columns: \code{head}, \code{tail}, \code{start}, \code{stop}.
+A \code{cumulative_edgelist} object: a \code{data.frame} with at least the
+columns \code{head}, \code{tail}, \code{start}, \code{stop}. Edges are active from time
+\code{start} to time \code{stop} inclusive; \code{NA} in \code{stop} means the edge was
+never observed to dissolve.
 }
 \description{
-Convert an object to a \code{cumulative_edgelist}
+Converts an object that carries timed-edge information into a
+\code{cumulative_edgelist}: a \code{data.frame} with \code{head}, \code{tail}, \code{start}, \code{stop}
+columns matching the format used elsewhere in EpiModel. The typical use
+is feeding a \code{networkDynamic} object (from a non-\code{tergmLite} simulation,
+an external source, or a post-hoc construction) into the reachability
+tools.
 }
 \details{
-The edges are active from time \code{start} to time \code{stop} included. If stop is
-\code{NA}, the edge was not disolved in the simulation that generated the list.
+The \code{networkDynamic} method subtracts 1 from each spell's \code{terminus} so
+that the resulting \code{start}/\code{stop} range is inclusive on both ends,
+matching the convention used by \code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} and the
+reachability functions.
 }
+\examples{
+\dontrun{
+# Convert a saved networkDynamic from a non-tergmLite netsim run
+nd <- get_network(sim, sim = 1, network = 1)
+el_cuml <- as_cumulative_edgelist(nd)
+fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 100)
+}
+
+}
+\seealso{
+\code{\link[=get_forward_reachable]{get_forward_reachable()}} / \code{\link[=get_backward_reachable]{get_backward_reachable()}} for
+typical downstream uses; \code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}} when the source
+contains overlapping spells for the same pair of nodes.
+
+Other cumulative_edgelist:
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_cumulative_edgelists_df]{get_cumulative_edgelists_df()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

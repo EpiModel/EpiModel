@@ -21,6 +21,8 @@ inst/JSS/
 ^docs$
 ^pkgdown$
 CLAUDE.md
+^CRAN-.*\.md$
+^cran-comments\.md$
 ^\.claude$
 ^\.positai$
 AGENTS.md

@@ -196,6 +196,17 @@ create a new one if it does not exist already by calling the \code{add_}
 functions internally.
 }
 
+\section{One Value Per Node}{
+
+Every nodal attribute holds exactly one value per node, and \code{\link[=netsim]{netsim()}}
+checks this at the end of each time step. When \code{set_attr} and \code{append_attr}
+create an attribute, the nodes they do not write to are filled with \code{NA} to
+preserve that: \code{set_attr} with \code{posit_ids} fills the unselected nodes, and
+\code{append_attr} fills the nodes that predate the ones being appended. This
+means \code{append_core_attr} must be called before \code{append_attr} when adding new
+nodes, as it is what makes those nodes known to the rest of the object.
+}
+
 \examples{
 dat <- create_dat_object(control = list(nsteps = 150))
 dat <- append_core_attr(dat, 1, 100)

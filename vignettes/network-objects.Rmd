@@ -142,6 +142,17 @@ Conversion between the two systems is handled internally by EpiModel. The `get_u
 
 The cumulative edgelist is a historical record of all edges in a network, including the time steps when each edge started and stopped. This allows querying both current and past partnerships---essential for contact tracing, partnership duration analysis, and reachability analysis.
 
+### Lifecycle
+
+The cumulative edgelist follows a four-step lifecycle. The same data structure is produced once and read at different stages:
+
+1. **Enable** in `control.net()`: set `cumulative.edgelist = TRUE` (in-memory tracking during the run) and, if you want to use the result after `netsim()` returns, also set `save.cumulative.edgelist = TRUE`.
+2. **Track** during the run: the built-in network-resimulation module updates the cumulative edgelist once per network at every time step, using `control$truncate.el.cuml` to decide how much dissolved-edge history to retain. Custom modules that mutate the network outside the TERGM machinery should also call `update_cumulative_edgelist()` after the change.
+3. **Read during the run** (inside a module) with `get_cumulative_edgelist()` / `get_cumulative_edgelists_df()`, or with one of the derived helpers below (`get_partners()`, `get_cumulative_degree()`).
+4. **Read after the run** by accessing `sim$cumulative.edgelist[[s]]` directly on the returned `netsim` object.
+
+The control settings, accessors, and helpers all share the same column convention: `head`/`tail` (or `index`/`partner`) by unique ID, `start`/`stop` time steps (inclusive, with `NA` `stop` for active edges), and `network` index for multi-layer models.
+
 ### Enabling Cumulative Edgelists
 
 Cumulative edgelist tracking must be explicitly enabled in `control.net()`:
@@ -151,13 +162,16 @@ control <- control.net(
   type = "SI",
   nsims = 1,
   nsteps = 100,
-  cumulative.edgelist = TRUE,       # Enable tracking during simulation
-  save.cumulative.edgelist = TRUE,  # Save in output after simulation
+  cumulative.edgelist = TRUE,       # Enable in-memory tracking during the run
+  truncate.el.cuml = 0,             # Drop dissolved edges immediately (default)
+  save.cumulative.edgelist = TRUE,  # Attach the result to the returned netsim
   verbose = FALSE
 )
 ```
 
-Without `cumulative.edgelist = TRUE`, calls to `update_cumulative_edgelist()` silently do nothing and calls to `get_cumulative_edgelist()` return an empty `tibble`.
+Without `cumulative.edgelist = TRUE`, calls to `update_cumulative_edgelist()` silently do nothing, and calls to `get_cumulative_edgelist()` raise an error.
+
+The `truncate.el.cuml` control sets the default truncation passed to every automatic `update_cumulative_edgelist()` call. The default (`0`) keeps only currently active edges, which is enough for tracking active-edge start times while keeping memory low. Use `Inf` to keep full history, or a positive integer to retain dissolved edges for that many steps after they ended.
 
 ### Updating the Cumulative Edgelist
 
@@ -183,7 +197,9 @@ for (n_network in seq_len(dat$num.nw)) {
 
 ### Accessing the Cumulative Edgelist
 
-#### For a Specific Network
+#### During Simulation: Specific Network
+
+Inside a custom module, where `dat` is the live `netsim_dat` object:
 
 ```{r, eval = FALSE}
 el_cuml <- get_cumulative_edgelist(dat, network = 1)
@@ -196,15 +212,25 @@ The returned `tibble` has four columns:
 3. `start`: the time step when the edge formed.
 4. `stop`: the last time step the edge was active, or `NA` if the edge is still active.
 
-An edge with `start = 5` and `stop = 12` existed from steps 5 through 12, inclusive. `get_cumulative_edgelist()` always returns a `tibble` with these four columns, even if no edges exist or the cumulative edgelist was not enabled---in those cases, the `tibble` has zero rows.
+An edge with `start = 5` and `stop = 12` existed from steps 5 through 12, inclusive. When no edges have been recorded yet, the function still returns a `tibble` with these four columns and zero rows. If `cumulative.edgelist = FALSE`, the function raises an error rather than silently returning empty.
 
-#### For Multiple Networks
+#### During Simulation: Multiple Networks
 
 ```{r, eval = FALSE}
 el_cumls <- get_cumulative_edgelists_df(dat, networks = NULL)
 ```
 
 The `networks` argument accepts a vector of network indices or `NULL` (all networks). The returned `data.frame` adds a `network` column identifying which network layer each edge belongs to.
+
+#### After Simulation
+
+When `save.cumulative.edgelist = TRUE`, the cumulative edgelist is attached to the `netsim` return object as `sim$cumulative.edgelist`, a list with one element per simulation:
+
+```{r, eval = FALSE}
+el_cuml <- sim$cumulative.edgelist[[1]]
+```
+
+Each element is the `data.frame` produced by `get_cumulative_edgelists_df()` (`head`, `tail`, `start`, `stop`, `network`). Do not call the accessor functions on a processed `netsim` object: the live `dat$run` state they depend on is dropped during `process_out.net()`. Note also that `truncate_sim()` left-truncates the epidemiological time series but does not currently trim `sim$cumulative.edgelist`; filter it manually by `start` / `stop` if you need a matching time window.
 
 ### Contact Tracing
 
@@ -250,7 +276,7 @@ This returns a `data.frame` with columns `index_pid` (positional ID) and `degree
 
 Reachability functions determine which nodes can be connected through chains of partnerships over a time window. These are useful for outbreak investigation (forward reachability: who could a node have infected?) and source tracing (backward reachability: who could have infected a node?).
 
-These functions operate on cumulative edgelist objects directly---not on `dat`---and are typically used for post-simulation analysis.
+These functions operate on cumulative edgelist objects directly---not on `dat`---and are typically used for post-simulation analysis. Most often, the input comes from the saved `sim$cumulative.edgelist[[s]]` slot of a `netsim` run; see the *Converting External `networkDynamic` Objects* and *Deduplicating Across Sources* subsections below for two ways to construct input from other starting points.
 
 ### Forward Reachable Set
 
@@ -285,6 +311,26 @@ bkwd <- get_backward_reachable(
 ```
 
 Same interface and output structure as `get_forward_reachable()`, but follows partnerships backward in time. This answers the question: which nodes could have reached this node through a chain of partnerships during the specified period?
+
+### Converting External `networkDynamic` Objects
+
+If you have a `networkDynamic` object that was produced outside of a `cumulative.edgelist = TRUE` run (for example, from a non-`tergmLite` simulation, from a saved RDS file, or built manually), `as_cumulative_edgelist()` converts it into the same `data.frame` shape the reachability functions expect:
+
+```{r, eval = FALSE}
+nd <- get_network(sim, sim = 1, network = 1)   # full-mode netsim only
+el_cuml <- as_cumulative_edgelist(nd)
+fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 100)
+```
+
+This is the recommended entry point for post-hoc reachability analysis on simulations that did not enable cumulative-edgelist tracking up front, provided the run kept the full `networkDynamic` history (i.e., not `tergmLite`).
+
+### Deduplicating Across Sources
+
+The reachability functions assume non-overlapping spells per `(head, tail)` pair. When concatenating cumulative edgelists from multiple sources (e.g., separate simulation segments, or several `as_cumulative_edgelist()` conversions stitched together), use `dedup_cumulative_edgelist()` to merge overlapping spells into a single row:
+
+```{r, eval = FALSE}
+el_cuml <- dedup_cumulative_edgelist(rbind(el_run1, el_run2))
+```
 
 ### Performance Notes
 

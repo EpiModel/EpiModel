@@ -130,13 +130,33 @@ time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.
 }
 
+\section{Partnership Histories (Cumulative Edgelist)}{
+
+For contact tracing, partnership-duration analysis, or reachability
+analysis, enable cumulative-edgelist tracking via
+\code{control.net(cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE)}.
+This records every edge formed during the simulation along with its
+\code{start} and \code{stop} time steps, and attaches the result to the returned
+object as \code{sim$cumulative.edgelist}. Under \code{tergmLite = TRUE} this is
+the recommended substitute for the full \code{networkDynamic} history.
+
+The helper family (\code{\link{get_cumulative_edgelist}},
+\code{\link{get_cumulative_edgelists_df}}, \code{\link{get_partners}}, \code{\link{get_cumulative_degree}},
+\code{\link{get_forward_reachable}}, \code{\link{get_backward_reachable}}) operates on the
+tracked data. See \code{vignette("network-objects", package = "EpiModel")}
+for the full lifecycle.
+}
+
 \section{Multi-Network Models}{
 
 For models with multiple overlapping network layers (e.g., sexual and
 needle-sharing networks), pass a list of \code{\link{netest}} objects to the \code{x}
 argument, one per network layer. Each layer has its own
 formation/dissolution dynamics but shares the same node set. See the
-\code{multilayer} documentation and \code{test-multinets.R} for examples.
+\code{\link{multilayer}} documentation for specifying controls that vary by layer, and
+the \href{https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html}{Multi-Layer Networks}
+chapter of the Network Modeling for Epidemics course materials for a worked
+example building from independent to cross-dependent layers.
 }
 
 \section{Restarting and Checkpointing}{

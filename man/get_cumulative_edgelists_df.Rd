@@ -18,17 +18,38 @@ networks.) If \code{NULL}, extract from all networks.}
 \value{
 A \code{data.frame} with 5 columns:
 \itemize{
-\item \code{index}: the unique ID (see \code{get_unique_ids}) of the
-indexes.
-\item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
-partners/contacts.
-\item \code{start}: the time step in which the edge started.
-\item \code{stop}: the time step in which the edge stopped; if ongoing,
-then \code{NA} is returned.
-\item \code{network}: the numerical index for the network on which the
-partnership/contact is located.
+\item \code{head}: the unique ID (see \code{\link[=get_unique_ids]{get_unique_ids()}}) of the head node.
+\item \code{tail}: the unique ID of the tail node.
+\item \code{start}: the time step at which the edge formed.
+\item \code{stop}: the time step at which the edge dissolved, or \code{NA} if still
+active.
+\item \code{network}: the numerical index of the network on which the
+partnership lives.
 }
+
+Note: column names \code{head}/\code{tail} here match the single-network
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} output. The \code{index}/\code{partner} naming used by
+\code{\link[=get_partners]{get_partners()}} is reserved for queries about specific index nodes.
 }
 \description{
-Get the Cumulative Edgelists of a Model
+Combines the cumulative edgelists from one or more network layers into a
+single \code{data.frame}, adding a \code{network} column to identify the layer.
+Like \code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}}, this requires
+\code{control.net(cumulative.edgelist = TRUE)}.
 }
+\seealso{
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}} (single network), \code{\link[=control.net]{control.net()}}
+(\code{cumulative.edgelist}, \code{save.cumulative.edgelist}).
+\code{vignette("network-objects", package = "EpiModel")} walks through the
+full lifecycle.
+
+Other cumulative_edgelist:
+\code{\link[=as_cumulative_edgelist]{as_cumulative_edgelist()}},
+\code{\link[=dedup_cumulative_edgelist]{dedup_cumulative_edgelist()}},
+\code{\link[=get_cumulative_degree]{get_cumulative_degree()}},
+\code{\link[=get_cumulative_edgelist]{get_cumulative_edgelist()}},
+\code{\link[=get_partners]{get_partners()}},
+\code{\link{reachable-nodes}},
+\code{\link[=update_cumulative_edgelist]{update_cumulative_edgelist()}}
+}
+\concept{cumulative_edgelist}

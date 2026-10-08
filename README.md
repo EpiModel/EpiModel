@@ -53,7 +53,7 @@ EpiModel is developed by [Samuel Jenness](https://www.epimodel.org/team.html), [
 
 The development of EpiModel has been supported by grants from the National Institutes of Health (NIH) and the Centers for Disease Control and Prevention (CDC). Details are available on the [project page](https://www.epimodel.org/about.html).
 
-EpiModel and its extension packages have been used in 125+ published studies. See the [full list](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature).
+EpiModel and its extension packages have been used in 130+ published studies. See the [full list](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature).
 
 ### Copyright
 

@@ -65,7 +65,9 @@ network formation, duration, or dissolution statistics.}
 to plot lines for one-group models but not for two-group models.}
 
 \item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
-simulation numbers to plot. If \code{type="network"}, a single
+simulation numbers to plot. The plot then describes those
+simulations alone: the mean line and quantile bands are calculated
+over them, not over the full set. If \code{type="network"}, a single
 simulation number for which to plot the network, or else \code{"min"}
 to plot the simulation number with the lowest disease prevalence,
 \code{"max"} for the simulation with the highest disease prevalence,
@@ -165,7 +167,7 @@ with options of \code{"l"} for line plots and \code{"b"} for box plots.}
 
 \item{xlab}{a label for the x axis, defaults to a description of \code{x}.}
 
-\item{ylim}{the y limits of the plot.}
+\item{ylim}{the y limits of the plot; see \code{xlim} for default and details.}
 
 \item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
 
