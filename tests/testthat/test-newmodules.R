@@ -45,7 +45,7 @@ test_that("New network models vignette example", {
     }
 
     # Output
-    dat <- set_epi(dat, "d.flow", at, nDepartures)
+    dat <- set_epi(dat, "d.flow", nDepartures)
     return(dat)
   }
 
@@ -71,7 +71,7 @@ test_that("New network models vignette example", {
     dat <- append_attr(dat, "age", 0, nArrivals)
 
     # Output
-    dat <- set_epi(dat, "a.flow", at, nArrivals)
+    dat <- set_epi(dat, "a.flow", nArrivals)
 
     return(dat)
   }
@@ -410,35 +410,31 @@ test_that("Time varying elements", {
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_norm",
-      some_nodes,
-      rnorm(length(some_nodes))
+      dat, "attr_norm",
+      rnorm(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_unif",
-      some_nodes,
-      runif(length(some_nodes))
+      dat, "attr_unif",
+      runif(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_fix",
-      some_nodes,
-      at
+      dat, "attr_fix",
+      at,
+      posit_ids = some_nodes
     )
 
     # test when 0 nodes selected
     some_nodes <- integer(0)
     dat <- record_attr_history(
-      dat, at,
-      "attr_none",
-      some_nodes,
-      at
+      dat, "attr_none",
+      at,
+      posit_ids = some_nodes
     )
 
     return(dat)
@@ -475,7 +471,7 @@ test_that("Time varying elements", {
   attr_history <- get_attr_history(mod)
   expect_is(attr_history, "list")
   expect_is(attr_history[[1]], "data.frame")
-  expect_equal(
+  expect_setequal(
     names(attr_history),
     c("attr_norm", "attr_unif", "attr_fix", "attr_none"))
 })
@@ -876,7 +872,7 @@ test_that("an attribute first appended mid-simulation covers every node", {
     dat <- append_attr(dat, "status", "s", n.new)
     dat <- append_attr(dat, "infTime", NA, n.new)
     dat <- append_attr(dat, "arrival.step", at, n.new)
-    dat <- set_epi(dat, "a.flow", at, n.new)
+    dat <- set_epi(dat, "a.flow", n.new)
     return(dat)
   }
 

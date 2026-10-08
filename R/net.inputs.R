@@ -256,6 +256,10 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     p[["inter.start"]] <- 1
   }
 
+  if (is.null(p[["time.unit"]])) {
+    p[["time.unit"]] <- 1
+  }
+
   ## Output
   class(p) <- c("param.net", "list")
   return(p)
@@ -546,6 +550,21 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        [`get_cumulative_edgelists_df`]). Requires `cumulative.edgelist =
 #'        TRUE`; without it, no history is collected to save. Off by default
 #'        to keep output objects small.
+#' @param tracked.attributes A character vector of nodal attribute names whose
+#'        changes should be automatically recorded at each time step. The
+#'        `active` attribute is always tracked when this is non-empty. At each
+#'        step, only the nodes whose values changed (including `NA` transitions),
+#'        plus newly arrived and departed nodes, are recorded via
+#'        [record_attr_history()]. The resulting history can be retrieved with
+#'        [get_attr_history()] and used to reconstruct attribute state at any
+#'        time step with [get_attr_at()] or to build a `networkDynamic` object
+#'        with [make_networkDynamic()].
+#' @param tracked.attributes.once A character vector of nodal attribute names
+#'        to record only in the initial snapshot and for newly arriving nodes.
+#'        Unlike `tracked.attributes`, these are not diff-tracked at every step,
+#'        so subsequent changes are **not** captured. Use this for attributes
+#'        that are fixed at entry and never change during the simulation (e.g.,
+#'        `"race"`, `"birth.year"`).
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.
@@ -688,6 +707,8 @@ control.net <- function(type,
                         edges.correct.attr = NULL,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
+                        tracked.attributes = NULL,
+                        tracked.attributes.once = NULL,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,

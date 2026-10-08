@@ -81,10 +81,10 @@ departures.net <- function(dat, at) {
   dat <- set_attr(dat, "active", active)
   dat <- set_attr(dat, "exitTime", exitTime)
 
-  dat <- set_epi(dat, "ds.flow", at, nDepartures.sus)
-  dat <- set_epi(dat, "di.flow", at, nDepartures.inf)
+  dat <- set_epi(dat, "ds.flow", nDepartures.sus)
+  dat <- set_epi(dat, "di.flow", nDepartures.inf)
   if (type == "SIR") {
-    dat <- set_epi(dat, "dr.flow", at, nDepartures.rec)
+    dat <- set_epi(dat, "dr.flow", nDepartures.rec)
   }
   return(dat)
 }
@@ -129,7 +129,7 @@ arrivals.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat <- set_epi(dat, "a.flow", at, nArrivals)
+  dat <- set_epi(dat, "a.flow", nArrivals)
 
   return(dat)
 }
@@ -230,15 +230,15 @@ departures.2g.net <- function(dat, at) {
   dat <- set_attr(dat, "active", active)
   dat <- set_attr(dat, "exitTime", exitTime)
 
-  dat <- set_epi(dat, "ds.flow", at, nDepartures.sus)
-  dat <- set_epi(dat, "di.flow", at, nDepartures.inf)
+  dat <- set_epi(dat, "ds.flow", nDepartures.sus)
+  dat <- set_epi(dat, "di.flow", nDepartures.inf)
   if (type == "SIR") {
-    dat <- set_epi(dat, "dr.flow", at, nDepartures.rec)
+    dat <- set_epi(dat, "dr.flow", nDepartures.rec)
   }
-  dat <- set_epi(dat, "ds.flow.g2", at, nDeparturesG2.sus)
-  dat <- set_epi(dat, "di.flow.g2", at, nDeparturesG2.inf)
+  dat <- set_epi(dat, "ds.flow.g2", nDeparturesG2.sus)
+  dat <- set_epi(dat, "di.flow.g2", nDeparturesG2.inf)
   if (type == "SIR") {
-    dat <- set_epi(dat, "dr.flow.g2", at, nDeparturesG2.rec)
+    dat <- set_epi(dat, "dr.flow.g2", nDeparturesG2.rec)
   }
   return(dat)
 }
@@ -297,8 +297,8 @@ arrivals.2g.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat <- set_epi(dat, "a.flow", at, nArrivals)
-  dat <- set_epi(dat, "a.flow.g2", at, nArrivalsG2)
+  dat <- set_epi(dat, "a.flow", nArrivals)
+  dat <- set_epi(dat, "a.flow.g2", nArrivalsG2)
 
   return(dat)
 }

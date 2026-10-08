@@ -3,6 +3,19 @@
 ### BREAKING CHANGES
 
 -   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Passing `random.params` to `param.net()` now produces an error, rather than storing the list as an ordinary parameter and running the model on the fixed values without any draws. To vary parameters across simulations, draw the values in advance into a table with one row per draw and run each row as a scenario with `create_scenario_list()` and `use_scenario()`. The new Parameter Uncertainty section of the "Working with Model Parameters in EpiModel" vignette shows this approach, including correlated draws and a mapping from each part of the removed interface. To tabulate the parameters of a single `param.net` object, use `param.net_to_table()`.
+-   `record_attr_history()` has a new signature: `record_attr_history(dat, item, value, at, posit_ids, unique_ids)`. The previous positional arguments `(dat, at, attribute, posit_ids, values)` have been renamed and reordered. Calls using positional arguments will break. Update by switching to named arguments: replace `record_attr_history(dat, at, "attr", ids, vals)` with `record_attr_history(dat, "attr", vals, posit_ids = ids)` (`at` now defaults to the current time step).
+-   `set_epi()` has a new signature: `set_epi(dat, item, value, at = NULL)`. The `at` argument has moved after `value` and is now optional (defaults to the current time step). Positional calls of the form `set_epi(dat, "i.num", at, value)` will silently invert the meaning of the last two arguments. Update by dropping `at` when recording at the current step, or by passing it named (`at = <value>`) otherwise.
+
+### NEW FEATURES
+
+-   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage. A companion parameter `tracked.attributes.once` records attributes only in the initial snapshot and for new arrivals, suitable for fixed-at-entry attributes like `"race"` or `"birth.year"`.
+-   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node.
+-   Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`.
+
+### BUG FIXES
+
+-   Fix `saveout.net` naming of `raw.records` list elements across simulations. Previously used `".records"` instead of `"raw.records"`, causing simulation names not to be assigned.
+-   Fix error message in `record_attr_history()` that reported the expected length instead of the actual length of the `value` vector.
 
 ## EpiModel 2.6.2
 

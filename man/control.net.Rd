@@ -15,6 +15,8 @@ control.net(
   edges.correct.attr = NULL,
   cumulative.edgelist = FALSE,
   truncate.el.cuml = 0,
+  tracked.attributes = NULL,
+  tracked.attributes.once = NULL,
   attr.rules,
   epi.by,
   initialize.FUN = initialize.net,
@@ -113,6 +115,23 @@ only currently active edges; use \code{Inf} to retain the full history
 (memory permitting) or a positive integer to keep dissolved edges
 for that many steps after they ended. Only relevant when
 \code{cumulative.edgelist = TRUE}.}
+
+\item{tracked.attributes}{A character vector of nodal attribute names whose
+changes should be automatically recorded at each time step. The
+\code{active} attribute is always tracked when this is non-empty. At each
+step, only the nodes whose values changed (including \code{NA} transitions),
+plus newly arrived and departed nodes, are recorded via
+\code{\link[=record_attr_history]{record_attr_history()}}. The resulting history can be retrieved with
+\code{\link[=get_attr_history]{get_attr_history()}} and used to reconstruct attribute state at any
+time step with \code{\link[=get_attr_at]{get_attr_at()}} or to build a \code{networkDynamic} object
+with \code{\link[=make_networkDynamic]{make_networkDynamic()}}.}
+
+\item{tracked.attributes.once}{A character vector of nodal attribute names
+to record only in the initial snapshot and for newly arriving nodes.
+Unlike \code{tracked.attributes}, these are not diff-tracked at every step,
+so subsequent changes are \strong{not} captured. Use this for attributes
+that are fixed at entry and never change during the simulation (e.g.,
+\code{"race"}, \code{"birth.year"}).}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of incoming nodes, with
 one list element per attribute to be set (see details below).}
