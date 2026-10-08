@@ -578,7 +578,6 @@ is_per_sim <- function(elt_list, elt_name, nsims) {
   n_elts == nsims
 }
 
-
 #' @title Get Arguments from EpiModel Parameterization Functions
 #'
 #' @description Returns a list of argument names and values for use for

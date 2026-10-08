@@ -178,6 +178,17 @@ was never an accepted name; passing it now produces an error pointing to
 \code{data.frame.params}.
 }
 
+\section{Parameter Uncertainty}{
+
+To vary parameter values across simulations for uncertainty or sensitivity
+analysis, draw the values in advance into a \code{data.frame} with one row per
+draw, convert it with \code{\link[=create_scenario_list]{create_scenario_list()}}, and apply each resulting
+scenario to the base parameters with \code{\link[=use_scenario]{use_scenario()}}. The "Working with
+Model Parameters in EpiModel" vignette works through an example. The
+\code{random.params} argument that served this purpose through v2.6.2 has been
+removed; passing it now produces an error.
+}
+
 \section{Parameters with New Modules}{
 
 To build original models outside of the base models, new process modules

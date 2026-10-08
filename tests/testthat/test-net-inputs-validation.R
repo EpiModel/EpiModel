@@ -10,6 +10,16 @@ test_that("param.net rejects the .m2 suffix", {
                "\\.m2 suffix have been removed")
 })
 
+test_that("param.net rejects random.params", {
+  # Removed in v2.7.0 (#1082). Without the guard the list falls through to
+  # `...` and the model runs on the fixed values with no draws.
+  expect_error(param.net(inf.prob = 0.3,
+                         random.params = list(act.rate = function() 2)),
+               "random.params argument has been removed")
+  expect_error(param.net(inf.prob = 0.3, random.params = list()),
+               "random.params argument has been removed")
+})
+
 test_that("init.net rejects the .m2 suffix", {
   expect_error(init.net(i.num = 10, i.num.m2 = 5),
                "\\.m2 suffix have been removed")
