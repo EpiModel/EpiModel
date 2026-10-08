@@ -112,7 +112,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
             control$start <- nsteps + 1L
             nsteps <- 11L
             control$nsteps <- nsteps
-            basis <- sim
+            basis <- get_sims(sim, sims = 1)
           }
           sim <- netsim(basis, param, init, control)
 

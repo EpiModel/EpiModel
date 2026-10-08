@@ -119,6 +119,13 @@
 #' greater than the final time step of the prior simulation. See the
 #' Checkpointing Simulations section of [`control.net`] for full details.
 #'
+#' When restarting, every simulation restarts from the first simulation of `x`,
+#' with a warning if `x` holds more than one. [`make_restart_point`] makes a
+#' lightweight `x` holding the single simulation to restart from ([`get_sims`]
+#' selects one from a `netsim` object). The parameters are taken from `param`
+#' alone, which must hold all the parameters of the model: the ones saved in
+#' `x` are not used.
+#'
 #' @return
 #' A list of class `netsim` with the following elements:
 #'
@@ -308,8 +315,9 @@ netsim_validate_control <- function(control) {
   if (is.null(control$truncate.el.cuml))
     control$truncate.el.cuml <- 0
 
-  if (is.null(control$start))
+  if (is.null(control$start)) {
     control$start <- 1
+  }
 
   if (control$nsims == 1) {
     control$ncores <- 1

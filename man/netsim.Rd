@@ -167,6 +167,13 @@ automatic checkpointing. To restart a simulation from a prior \code{netsim}
 output, pass the \code{netsim} object as \code{x} and set \code{control$start} to one
 greater than the final time step of the prior simulation. See the
 Checkpointing Simulations section of \code{\link{control.net}} for full details.
+
+When restarting, every simulation restarts from the first simulation of \code{x},
+with a warning if \code{x} holds more than one. \code{\link{make_restart_point}} makes a
+lightweight \code{x} holding the single simulation to restart from (\code{\link{get_sims}}
+selects one from a \code{netsim} object). The parameters are taken from \code{param}
+alone, which must hold all the parameters of the model: the ones saved in
+\code{x} are not used.
 }
 
 \examples{

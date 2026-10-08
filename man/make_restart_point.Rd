@@ -10,7 +10,7 @@ make_restart_point(sim_obj, time_attrs, sim_num = 1, keep_steps = 1)
 \item{sim_obj}{a \code{netsim} object from an ended \code{netsim} call.}
 
 \item{time_attrs}{a \code{character} vector containing the names of the attributes
-that are expressed in time-steps. These will be offsetted so the last
+that are expressed in time-steps. These will be offset so the last
 step in the original simulation become the step 1 (default) in the new
 ones. If no such attributes exist, pass \code{c()}.}
 
@@ -22,8 +22,8 @@ run. By default only keep one but more is possible if some
 back-history is wanted.}
 }
 \value{
-a trimed \code{netsim} object with only one simulation that is ready to be
-used as a restart point.
+a trimmed \code{netsim} object with only one simulation that is ready to
+be used as a restart point.
 }
 \description{
 Extract the elements required for re-initializing a \code{netsim} simulation from
@@ -33,22 +33,27 @@ simulations where \code{control$tergmLite = TRUE}
 }
 \details{
 The restart point created always contains a single simulation and drops the
-\code{attr.history}, the \code{raw.records} and \code{stats} from the initial simulation.
+\code{attr.history} and the \code{raw.records} from the initial simulation.
+
+\code{sim_obj} does not need to hold the parameters: when restarting, \code{\link[=netsim]{netsim()}}
+takes them from its \code{param} argument alone, which must hold all the
+parameters of the model.
 
 The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} are
-truncated to only contain the last \code{keep_steps} entries.
+truncated to only contain the last \code{keep_steps} entries. The unique IDs in
+the transmission matrix are re-based like the ones of the attributes.
 
-Warning: the \code{time_attrs} argument is mandatory. Almost all simulation worth
+Warning: the \code{time_attrs} argument is mandatory. Almost all simulations worth
 restarting have such attributes (e.g. time.of.hiv.infection). If no such
 argument exists, passing \code{c()} will allow the function to run while ensuring
 that this was done on purpose.
 
 When restarting from the output of this function, it is suggested to express
-the time steps in a relative maner in \code{control.net}:
+the time steps in a relative manner in \code{control.net}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control.net(
-  start = restart_point$control$nsteps + 1),
-  nsteps = restart_point$control$nsteps + 1 + 104)
+  start = restart_point$control$nsteps + 1,
+  nsteps = restart_point$control$nsteps + 1 + 104
 )
 }\if{html}{\out{</div>}}
 }
@@ -63,7 +68,7 @@ time_attrs <- c(
   "aids.time",
   "prep.start.last"
 )
-# Make a restart point a re-run for 10 more timesteps
+# Make a restart point from simulation 1, re-run for 10 more timesteps
 x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 control <- control_msm(
   start = x$control$nsteps + 1,

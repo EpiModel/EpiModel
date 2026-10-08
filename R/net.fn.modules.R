@@ -35,7 +35,7 @@ make_module_list <- function(dat) {
   if (is.null(morder)) {
     if (get_control(dat, "verbose")) {
       message("No `module.order` control found.\n",
-              "The ordering of the arguments to `contro.net` will be used.")
+              "The ordering of the arguments to `control.net` will be used.")
     }
     bi.mods <- get_control(dat, "bi.mods")
     user.mods <- get_control(dat, "user.mods")

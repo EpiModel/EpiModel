@@ -345,7 +345,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
     expect_is(x, "netsim")
     control$start <- 6
     control$nsteps <- 11
-    y <- netsim(x, param, init, control)
+    y <- netsim(get_sims(x, sims = 1), param, init, control)
     expect_is(y, "netsim")
   }
 })
@@ -392,7 +392,7 @@ test_that("reinitialization a truncated netsim object", {
     sim_num = 1
   )
 
-  # In this case, the `restart_point` contains a single timestap
+  # In this case, the `restart_point` contains a single timestep
   control$start <- restart_point$control$nsteps + 1
   control$nsteps <- restart_point$control$nsteps + 1 + 11
   y <- netsim(restart_point, param, init, control)

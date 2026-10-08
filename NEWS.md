@@ -2,7 +2,39 @@
 
 ### BREAKING CHANGES
 
--   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Passing `random.params` to `param.net()` now produces an error, rather than storing the list as an ordinary parameter and running the model on the fixed values without any draws. To vary parameters across simulations, draw the values in advance into a table with one row per draw and run each row as a scenario with `create_scenario_list()` and `use_scenario()`. The new Parameter Uncertainty section of the "Working with Model Parameters in EpiModel" vignette shows this approach, including correlated draws and a mapping from each part of the removed interface. To tabulate the parameters of a single `param.net` object, use `param.net_to_table()`.
+-   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Passing `random.params` to `param.net()` now produces an error. To vary parameters across simulations, draw the values in advance into a table with one row per draw and run each row as a scenario with `create_scenario_list()` and `use_scenario()`. The new Parameter Uncertainty section of the "Working with Model Parameters in EpiModel" vignette shows this approach, including correlated draws and a mapping from each part of the removed interface. To tabulate the parameters of a single `param.net` object, use `param.net_to_table()`.
+
+-   `netsim()` restarts every simulation from the first simulation of `x`, with a warning when `x` holds more than one. Simulation `s` restarted from simulation `(s - 1) %% n + 1` of the `n` simulations of `x` before. Use `get_sims()` or `make_restart_point()` to select the simulation to restart from.
+
+-   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, EpiModelCOVID and EpiModelHIV-p modify `param` by setting `time.unit` after `netsim` has started. Now `time.unit` has to be declared explicitly in `param`
+
+-   Objects saved with EpiModel 2.6.x or earlier, can no longer be restarted. They need to be regenerated with 2.7.0.
+
+-   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is with a warning, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one, with only that warning. Merge the original objects again with 2.7.0 instead.
+
+### NEW FEATURES
+
+- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists holds the state needed to restart from any of its simulations, selected with `get_sims()`. Only `keep.cumulative.edgelist` defaults to `FALSE`.
+
+### BUG FIXES
+
+-   Fix `merge.netsim()` when merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`. The dropped elements made the merged object differ in structure from the next one, which failed with "x and y have different structure". The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it, as well as the kept elements whose classes differ between `x` and `y`. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
+
+-   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a simulation of the merged object coming from `y` read the wrong formation coefficients.
+
+-   Fix `get_sims()` to subset the per-simulation `coef.form`, `attr.history` and `raw.records` elements, which were returned for every simulation regardless of `sims`.
+
+-   Fix the error raised by `make_restart_point()` when a `time_attrs` element is missing from the attributes, which listed the wrong names.
+
+-   Fix `merge.netsim()` to compare the formula-type controls (`monitors`, `nwstats.formula`, `set.control.tergm`, `set.control.ergm` and `dat.updates`) with `all.equal()` rather than `identical()`. These carry an environment, which differs once simulations run with the same controls are serialized and read back (e.g. returned by parallel workers, or saved as the batches of an HPC run), and their merge then failed with "x and y have different controls".
+
+-   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is left as is with a warning, as its entries cannot be matched to the simulations; it was subset by position before.
+
+-   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
+
+-   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the new time steps are then recorded on their own.
+
+-   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
 
 ## EpiModel 2.6.2
 

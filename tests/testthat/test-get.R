@@ -225,3 +225,51 @@ test_that("get_network_attributes functions as intended", {
                                                 n = 10,
                                                 newattr = "string"))
 })
+
+test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
+  skip_on_cran()
+  nw <- network_initialize(n = 30)
+  est <- netest(nw, formation = ~edges, target.stats = 10,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 4, nsims = 3,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  expect_named(mod$raw.records, paste0("sim", 1:3))
+
+  s2 <- get_sims(mod, sims = 2)
+  expect_named(s2$cumulative.edgelist, "sim1")
+  expect_equal(s2$cumulative.edgelist$sim1, mod$cumulative.edgelist$sim2)
+
+  # duplicated and unordered sims: each simulation once, in original order
+  s31 <- get_sims(mod, sims = c(3, 1, 3))
+  expect_equal(s31$control$nsims, 2)
+  expect_named(s31$run, c("sim1", "sim2"))
+  expect_equal(s31$run$sim2, mod$run$sim3)
+  expect_equal(ncol(s31$epi$i.num), 2)
+
+  # empty per-simulation elements are left alone
+  mod_empty <- mod
+  mod_empty$attr.history <- list()
+  expect_warning(s23 <- get_sims(mod_empty, sims = 2:3), NA)
+  expect_equal(s23$attr.history, list())
+  expect_named(s23$run, c("sim1", "sim2"))
+
+  # elements not holding one entry per simulation are left alone, with a warning
+  mod_bad <- mod
+  mod_bad$raw.records <- mod_bad$raw.records[1:2]
+  expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), "`raw.records` holds 2 elements for 3")
+  expect_identical(s23$raw.records, mod_bad$raw.records)
+  expect_equal(s23$run$sim1, mod$run$sim2)
+})
+
+test_that("is_per_sim accepts lists holding one element per simulation", {
+  expect_true(is_per_sim(list(1, 2), "x", nsims = 2))
+  expect_false(is_per_sim(NULL, "x", nsims = 2))
+  expect_false(is_per_sim(list(), "x", nsims = 2))
+  expect_warning(res <- is_per_sim(list(1), "x", nsims = 2), "`x` holds 1 elements for 2")
+  expect_false(res)
+})

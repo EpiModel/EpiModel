@@ -514,6 +514,8 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims)
   }
+  # simulations are returned once each, in their original order
+  sims <- sort(unique(sims))
 
   out <- x
   out$control$nsims <- length(sims)
@@ -525,31 +527,31 @@ get_sims <- function(x, sims = NULL, var = NULL) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
 
-    if (!is.null(out$run)) {
-      out$run[delsim] <- NULL
-      names(out$run) <- newnames
+    elts_name <- union(
+      c(
+        "run",
+        "network",
+        "diss.stats",
+        "coef.form",
+        "attr.history",
+        "raw.records",
+        "cumulative.edgelist"
+      ),
+      out$control$save.other
+    )
+
+    for (elt in elts_name) {
+      if (is_per_sim(out[[elt]], elt, nsims)) {
+        out[[elt]][delsim] <- NULL
+        names(out[[elt]]) <- newnames
+      }
     }
-    if (!is.null(out$network)) {
-      out$network[delsim] <- NULL
-      names(out$network) <- newnames
-    }
-    if (!is.null(out$stats$nwstats)) {
-      out$stats$nwstats[delsim] <- NULL
-      names(out$stats$nwstats) <- newnames
-    }
-    if (!is.null(out$stats$transmat)) {
-      out$stats$transmat[delsim] <- NULL
-      names(out$stats$transmat) <- newnames
-    }
-    if (!is.null(out$diss.stats)) {
-      out$diss.stats[delsim] <- NULL
-      names(out$diss.stats) <- newnames
-    }
-    if (!is.null(out$control$save.other)) {
-      oname <- out$control$save.other
-      for (i in seq_along(oname)) {
-        out[[oname[i]]][delsim] <- NULL
-        names(out[[oname[i]]]) <- newnames
+
+    stats_elts_name <- c("nwstats", "transmat")
+    for (elt in stats_elts_name) {
+      if (is_per_sim(out$stats[[elt]], paste0("stats$", elt), nsims)) {
+        out$stats[[elt]][delsim] <- NULL
+        names(out$stats[[elt]]) <- newnames
       }
     }
   }
@@ -562,6 +564,19 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   return(out)
 }
 
+# Whether `elt_list` holds one element per simulation, so it can be subset by
+# simulation. Empty lists are not, other lengths are not with a warning.
+is_per_sim <- function(elt_list, elt_name, nsims) {
+  n_elts <- length(elt_list)
+  if (n_elts > 0 && n_elts != nsims) {
+    warning(
+      "`", elt_name, "` holds ", n_elts, " elements for ", nsims,
+      " simulations. It is returned as is, as its elements cannot be ",
+      "matched to the simulations."
+    )
+  }
+  n_elts == nsims
+}
 
 #' @title Get Arguments from EpiModel Parameterization Functions
 #'
