@@ -222,7 +222,7 @@ get_nodes_spell <- function(d_active) {
 
   dplyr::tibble(
     uid = all_uids,
-    onset = as.numeric(onset),
-    terminus = as.numeric(term_vals)
+    onset = as.integer(onset),
+    terminus = as.integer(term_vals)
   )
 }
