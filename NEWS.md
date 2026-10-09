@@ -19,7 +19,7 @@
 
 ### OTHER
 
-- Add Multi-Layer Networks and Clique Layers sections to the "Working with Network Objects in EpiModel" vignette. No vignette covered multi-layer models before. The new sections cover passing a list of layers to `netsim()`, per-layer controls and parameters with `multilayer()`, reading each layer inside modules and after the simulation, dependent layers kept current with `dat.updates`, and `netclique()` layers: building the grouping attribute with `sample_groups()` or `assign_groups()`, the arrival rules, and `move_to_group()`. The Multi-Layer Networks chapter of the Network Modeling for Epidemics course remains the full worked example.
+- Add Multi-Layer Networks, Clique Layers, and Observed Network Layers sections to the "Working with Network Objects in EpiModel" vignette. No vignette covered multi-layer models before. The new sections cover passing a list of layers to `netsim()`, per-layer controls and parameters with `multilayer()`, reading each layer inside modules and after the simulation, dependent layers kept current with `dat.updates`, `netclique()` layers (building the grouping attribute with `sample_groups()` or `assign_groups()`, the arrival rules, and `move_to_group()`), and `netcensus()` layers (the observation window, the fixed node set, and how the layer is read in each storage mode). The Multi-Layer Networks chapter of the Network Modeling for Epidemics course remains the full worked example.
 
 ## EpiModel 2.6.2
 
