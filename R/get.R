@@ -520,7 +520,6 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   newnames <- paste0("sim", seq_len(out$control$nsims))
 
   delsim <- setdiff(1:nsims, sims)
-  keepsim <- setdiff(seq_len(nsims), delsim)
   if (length(delsim) > 0) {
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
@@ -555,113 +554,9 @@ get_sims <- function(x, sims = NULL, var = NULL) {
     }
   }
 
-  out$param$random.params.values <- subset_random_params_values(
-    out$param$random.params.values, keepsim, nsims
-  )
-
   if (!is.null(var)) {
     match.vars <- which(names(x$epi) %in% var)
     out$epi <- out$epi[match.vars]
-  }
-
-  return(out)
-}
-
-random_param_draws <- function(value, nsims) {
-  if (is.list(value)) {
-    return(value)
-  }
-
-  if (nsims > 1 && length(value) == nsims) {
-    return(as.list(value))
-  }
-
-  return(list(value))
-}
-
-random_param_from_draws <- function(draws) {
-  if (length(draws) == 0) {
-    return(draws)
-  }
-
-  draw_lengths <- vapply(draws, length, integer(1))
-  draw_is_list <- vapply(draws, is.list, logical(1))
-  if (all(draw_lengths == 1) && !any(draw_is_list)) {
-    return(unname(unlist(draws, recursive = FALSE, use.names = FALSE)))
-  }
-
-  return(draws)
-}
-
-normalize_random_params_values <- function(values, nsims) {
-  if (is.null(values)) {
-    return(NULL)
-  }
-
-  lapply(values, function(value) {
-    random_param_from_draws(random_param_draws(value, nsims))
-  })
-}
-
-subset_random_params_values <- function(values, sims, nsims) {
-  if (is.null(values)) {
-    return(NULL)
-  }
-
-  lapply(values, function(value) {
-    draws <- random_param_draws(value, nsims)
-    random_param_from_draws(draws[sims])
-  })
-}
-
-param_without_random_values <- function(param) {
-  random_value_names <- names(param[["random.params.values"]])
-  param[c(random_value_names, "random.params.values")] <- NULL
-  return(param)
-}
-
-random_param_na_like <- function(value) {
-  if (length(value) == 0) {
-    return(NA)
-  }
-
-  out <- value
-  out[] <- NA
-  return(out)
-}
-
-random_param_missing_draws <- function(nsims, template) {
-  rep(list(random_param_na_like(template)), nsims)
-}
-
-merge_random_params_values <- function(x_values, y_values, x_nsims, y_nsims) {
-  if (is.null(x_values) && is.null(y_values)) {
-    return(NULL)
-  }
-
-  random_names <- union(names(x_values), names(y_values))
-  out <- vector("list", length(random_names))
-  names(out) <- random_names
-
-  for (name in random_names) {
-    x_has_name <- name %in% names(x_values)
-    y_has_name <- name %in% names(y_values)
-
-    if (x_has_name) {
-      x_draws <- random_param_draws(x_values[[name]], x_nsims)
-    }
-    if (y_has_name) {
-      y_draws <- random_param_draws(y_values[[name]], y_nsims)
-    }
-
-    if (!x_has_name) {
-      x_draws <- random_param_missing_draws(x_nsims, y_draws[[1]])
-    }
-    if (!y_has_name) {
-      y_draws <- random_param_missing_draws(y_nsims, x_draws[[1]])
-    }
-
-    out[[name]] <- random_param_from_draws(c(x_draws, y_draws))
   }
 
   return(out)
@@ -695,114 +590,6 @@ get_args <- function(formal.args, dot.args) {
     }
   }
   return(p)
-}
-
-#' @title Extract the Parameter Set from Network Simulations
-#'
-#' @param sims An `EpiModel` object of class `netsim`.
-#'
-#' @return A `data.frame` with one row per simulation and one column per
-#'   parameter or parameter element where the parameters are of size > 1.
-#'
-#' @section Output Format:
-#' The outputted `data.frame` has one row per simulation and the columns
-#' correspond to the parameters used in this simulation.
-#'
-#' The column name will match the parameter name if it is a size 1 parameter or
-#' if the parameter is of size > 1, there will be N columns (with N being the
-#' size of the parameter) named `parameter.name_1`,
-#' `parameter.name_2`, ..., `parameter.name_N`.
-#'
-#'
-#' @examples
-#' \donttest{
-#' # Setup network
-#' nw <- network_initialize(n = 50)
-#'
-#' est <- netest(
-#'   nw, formation = ~edges,
-#'   target.stats = c(25),
-#'   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-#'   verbose = FALSE
-#' )
-#'
-#' init <- init.net(i.num = 10)
-#'
-#' n <- 5
-#'
-#' related.param <- data.frame(
-#'   dummy.param = rbeta(n, 1, 2)
-#' )
-#'
-#'  my.randoms <- list(
-#'    act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'    dummy.param = function() rbeta(1, 1, 2),
-#'    dummy.strat.param = function() c(
-#'      rnorm(1, 0, 10),
-#'      rnorm(1, 10, 1)
-#'    )
-#'  )
-#'
-#' param <- param.net(
-#'   inf.prob = 0.3,
-#'   dummy = c(0, 1, 2),
-#'   random.params = my.randoms
-#' )
-#'
-#' control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
-#' mod <- netsim(est, param, init, control)
-#'
-#' get_param_set(mod)
-#' }
-#' @export
-get_param_set <- function(sims) {
-  if (!inherits(sims, "netsim")) {
-    stop("`sims` must be of class netsim")
-  }
-
-  p.random <- normalize_random_params_values(
-    sims[["param"]][["random.params.values"]],
-    sims[["control"]][["nsims"]]
-  )
-  fixed.names <- setdiff(
-    names(sims[["param"]]),
-    c(names(p.random), "random.params", "random.params.values")
-  )
-
-  p.fixed <- sims[["param"]][fixed.names]
-
-  d.param <- data.frame(sim = seq_len(sims[["control"]][["nsims"]]))
-
-  # Fixed parameters
-  for (i in seq_along(p.fixed)) {
-    val <- p.fixed[[i]]
-    name <- names(p.fixed)[i]
-    l <- length(val)
-
-    if (l > 1) {
-      name <- paste0(name, "_", seq_len(l))
-    }
-
-    names(val) <- name
-    d.param <- cbind(d.param, t(val))
-  }
-
-  # Random parameters
-  for (i in seq_along(p.random)) {
-    val <- p.random[[i]]
-    name <- names(p.random)[i]
-
-    if (is.list(val)) {
-      l <- length(val[[1]])
-      val <- matrix(Reduce(c, val), ncol = l, byrow = TRUE)
-      colnames(val) <- paste0(name, "_", seq_len(l))
-      d.param <- cbind(d.param, val)
-    } else {
-      d.param[name] <- val
-    }
-  }
-
-  return(d.param)
 }
 
 #' @title Extract the Attributes History from Network Simulations

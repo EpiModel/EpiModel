@@ -239,8 +239,7 @@ print.netdx <- function(x, digits = 3, ...) {
 #' **Simulation summary**: model class, model type (e.g., SI, SIR, SIS),
 #' number of simulations, number of time steps, and number of network groups.
 #'
-#' **Model parameters**: printed via `print.param.net()`, showing fixed and
-#' (if applicable) random parameters.
+#' **Model parameters**: printed via `print.param.net()`.
 #'
 #' **Model functions**: for extension models (`type = NULL`), lists the names
 #' of all custom module functions.
@@ -479,45 +478,12 @@ print.param.icm <- function(x, ...) {
 #' @export
 print.param.net <- function(x, ...) {
 
-  randoms <- c("random.params", "random.params.values")
-  pToPrint <- which(!(names(x) %in% c("vital", randoms)))
-  rng_values <- list()
-  rng_defs <- NULL
+  pToPrint <- which(!(names(x) %in% c("vital")))
 
-  if (all(randoms %in% names(x))) {
-    rng_values <- x$random.params.values
-    pToPrint <- pToPrint[! names(x)[pToPrint] %in% names(rng_values)]
-  } else if (randoms[1] %in% names(x)) {
-    rng_defs <- names(x[[randoms[1]]])
-    pToPrint <- pToPrint[! names(x)[pToPrint] %in% rng_defs]
-  }
-
-  cat("Fixed Parameters")
+  cat("Model Parameters")
   cat("\n---------------------------\n")
   for (i in pToPrint) {
     format_param(names(x)[i], x[[i]])
-  }
-
-  if (!is.null(rng_defs)) {
-    cat("\nRandom Parameters")
-    cat("\n(Not drawn yet)")
-    cat("\n---------------------------\n")
-    for (prm in rng_defs) {
-      if (prm == "param.random.set") {
-        cat(prm, "= <data.frame> ( dimensions:",
-            dim(x$random.param$param.random.set), ")\n")
-      } else {
-        cat(prm, "= <function>\n")
-      }
-    }
-  }
-
-  if (length(rng_values) > 0) {
-    cat("\nRandom Parameters")
-    cat("\n---------------------------\n")
-    for (i in seq_along(rng_values)) {
-      format_param(names(rng_values)[i], rng_values[[i]])
-    }
   }
 
   invisible()

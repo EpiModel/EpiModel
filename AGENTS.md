@@ -238,6 +238,8 @@ v2.6.1 (#992) completed removal of long-deprecated argument names — they now h
 - `births.FUN` / `deaths.FUN` → `arrivals.FUN` / `departures.FUN` (`control.net`)
 - `depend` → `resimulate.network` (`control.net`)
 
+v2.7.0 (#1086) removed the random parameter interface: the `random.params` argument of `param.net()`, `param_random()`, `generate_random_params()`, and `get_param_set()`. `param.net(random.params = )` hard-errors. To vary parameters across simulations, run a table of draws as scenarios (see the Parameter Uncertainty section of the `model-parameters` vignette).
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using `status` as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (`inter.eff`, `inter.start`).
@@ -259,7 +261,7 @@ plot(sim)                                      # compartment sizes over time
 
 Other exported accessors and helpers worth knowing:
 
-- **Simulation slicing**: `get_sims()` (subset by index), `get_param_set()` and `get_attr_history()` (recorded parameter and attribute trajectories).
+- **Simulation slicing**: `get_sims()` (subset by index) and `get_attr_history()` (recorded attribute trajectories).
 - **Transmission / reachability**: `get_discordant_edgelist()` (S–I pairs — generic form, supply the discordance attribute explicitly), `get_forward_reachable()` / `get_backward_reachable()` over cumulative edgelists (set `control.net(save.cumulative.edgelist = TRUE)` to capture them).
 - **Restart & truncation**: `truncate_sim()` is an S3 generic over `dcm` / `icm` / `netsim` with a `reset.time` argument; `make_restart_point()` trims a `netsim` to the minimum state needed to resume.
 - **Attribute utilities**: `overwrite_attrs()` applies an `init_attr` data frame at initialization; `get_core_attributes()` lists the core attributes and their types (#969).

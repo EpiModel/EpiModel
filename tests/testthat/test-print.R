@@ -93,7 +93,7 @@ test_that("print.param", {
   expect_output(print(p), "ICM Parameters")
 
   p <- param.net(inf.prob = 0.1, rec.rate = 0.1)
-  expect_output(print(p), "Fixed Parameters")
+  expect_output(print(p), "Model Parameters")
   expect_output(print(p), "act.rate = 1")
 })
 
