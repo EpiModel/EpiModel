@@ -366,7 +366,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   if (netsim_is_resume_checkpoint(control, s)) {
     dat <- netsim_load_checkpoint(control, s)
   } else {
-    param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
     dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {

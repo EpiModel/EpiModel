@@ -649,56 +649,16 @@ test_that("parameter vectors with ten or more elements round trip", {
   expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
 })
 
-test_that("reserved parameter names are rejected with and without a suffix", {
+test_that("dot-prefixed parameter names are rejected as malformed", {
   skip_on_cran()
 
-  # Scalar reserved names were already rejected.
-  for (nm in c("random.params", "random.params.values")) {
-    df <- data.frame(param = c("inf.prob", nm), value = c("0.3", "1"),
-                     type = rep("numeric", 2), stringsAsFactors = FALSE)
-    expect_error(param.net_from_table(df), "not allowed")
-  }
-
-  # Dot-prefixed internals are caught earlier, by the name format check, since
-  # a flat parameter name must begin with a letter.
+  # Dot-prefixed internals cannot come in through a parameter table, since a
+  # flat parameter name must begin with a letter.
   for (nm in c(".param.updater.list", ".param.updater.list_1")) {
     df <- data.frame(param = c("inf.prob", nm), value = c("0.3", "1"),
                      type = rep("numeric", 2), stringsAsFactors = FALSE)
     expect_error(param.net_from_table(df), "malformed")
   }
-
-  # Suffixed reserved names bypassed the guard, and `unflatten_params` then
-  # rebuilt the forbidden parameter from the pieces.
-  df <- data.frame(
-    param = c("inf.prob", "random.params_1", "random.params_2"),
-    value = c("0.3", "1", "2"),
-    type  = rep("numeric", 3),
-    stringsAsFactors = FALSE
-  )
-  expect_error(param.net_from_table(df), "not allowed")
-  # The error names the offending entries as the user wrote them.
-  expect_error(param.net_from_table(df), "random.params_1")
-
-  df2 <- data.frame(
-    param = c("inf.prob", "random.params.values_1"),
-    value = c("0.3", "1"),
-    type  = rep("numeric", 2),
-    stringsAsFactors = FALSE
-  )
-  expect_error(param.net_from_table(df2), "not allowed")
-
-  # Same guard through the scenario path.
-  sc.df <- data.frame(.scenario.id = "s1", .at = 1, inf.prob = 0.3,
-                      random.params_1 = 1, random.params_2 = 2,
-                      check.names = FALSE, stringsAsFactors = FALSE)
-  expect_error(create_scenario_list(sc.df), "not allowed")
-
-  # Ordinary parameters whose names merely start with a reserved prefix are
-  # still accepted.
-  ok <- data.frame(param = c("random.params.mine", "random.paramsX"),
-                   value = c("1", "2"), type = rep("numeric", 2),
-                   stringsAsFactors = FALSE)
-  expect_silent(param.net_from_table(ok))
 })
 
 test_that("param.net preserves data.frame.params values against constructor defaults", {
@@ -760,115 +720,6 @@ test_that("param.net rejects the misdocumented data.frame.parameters name", {
   p <- param.net(data.frame.params = params.df)
   expect_equal(p$inf.prob, 0.3)
   expect_equal(p$act.rate, 2)
-})
-
-context("Random Parameter Generators")
-
-test_that("Random parameters generators", {
-  skip_on_cran()
-
-  my_randoms <- list(
-    act.rate = param_random(c(0.25, 0.5, 0.75)),
-    tx.halt.part.prob = function() rbeta(1, 1, 2),
-    hiv.test.rate = function() c(
-      rnorm(1, 0.015, 0.01),
-      rnorm(1, 0.010, 0.01),
-      rnorm(1, 0.020, 0.01)
-    )
-  )
-
-  expect_warning(param <- param.net(
-      inf.prob = 0.3,
-      act.rate = 0.3,
-      random.params = my_randoms)
-  )
-  expect_message(generate_random_params(param, verbose = TRUE))
-  expect_silent(generate_random_params(param, verbose = FALSE))
-
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1)
-  expect_equal(generate_random_params(param), param)
-
-  param <- param.net(inf.prob = 0.3, random.params = list())
-  expect_equal(generate_random_params(param), param)
-
-  param <- param.net(inf.prob = 0.3, random.params = 4)
-  expect_error(generate_random_params(param))
-
-  param <- param.net(inf.prob = 0.3, random.params = list(1))
-  expect_error(generate_random_params(param))
-
-
-  generate_correlated_params <- function() {
-    param.unique <- runif(1)
-    param.set.1 <- param.unique + runif(2)
-    param.set.2 <- param.unique * rnorm(3)
-
-    return(list(param.unique, param.set.1, param.set.2))
-  }
-
-  # Data.frame set of random parameters :
-  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-  correlated_params <- as.data.frame(correlated_params)
-  colnames(correlated_params) <- c(
-    "param.unique",
-    "param.set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
-
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_silent(generate_random_params(param))
-
-  # duplicated `act.rate` random definition
-  colnames(correlated_params) <- c(
-    "act.rate",
-    "param.set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  expect_warning(
-    param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
-  )
-  expect_warning(generate_random_params(param))
-
-  # malformed name "param_set.1_1"
-  colnames(correlated_params) <- c(
-    "act.rate",
-    "param_set.1_1", "param.set.1_2",
-    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-  )
-  randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_error(generate_random_params(param))
-
-  # param.random.set not a data.frame
-  randoms <- c(my_randoms, list(param.random.set = list()))
-  param <- param.net(inf.prob = 0.3, random.params = randoms)
-  expect_error(generate_random_params(param))
-})
-
-test_that("generate_random_params handles a single-column param.random.set (#1045)", {
-  # Same root cause as the scenario path: picking a row of a one-column
-  # `param.random.set` dropped it to an unnamed scalar, so `unflatten_params`
-  # errored on NULL names. No netsim here, so this runs on CRAN too.
-  set.seed(11)
-  prs <- data.frame(tx.halt.prob = c(0.25, 0.5, 0.75))
-  param <- param.net(inf.prob = 0.3,
-                     random.params = list(param.random.set = prs))
-
-  expect_silent(p <- generate_random_params(param))
-  expect_length(p$tx.halt.prob, 1)
-  expect_true(p$tx.halt.prob %in% prs$tx.halt.prob)
-  # The drawn value is also recorded for the run.
-  expect_equal(p$random.params.values, list(tx.halt.prob = p$tx.halt.prob))
-
-  # A lone column carrying a position suffix rebuilds the vector parameter.
-  prs2 <- data.frame(d.rate_1 = c(0.1, 0.2), check.names = FALSE)
-  param2 <- param.net(inf.prob = 0.3,
-                      random.params = list(param.random.set = prs2))
-  p2 <- generate_random_params(param2)
-  expect_length(p2$d.rate, 1)
-  expect_true(p2$d.rate %in% prs2$d.rate_1)
 })
 
 # `module.order` validation (run at control.net() construction time) -----------

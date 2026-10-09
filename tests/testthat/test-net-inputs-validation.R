@@ -10,6 +10,16 @@ test_that("param.net rejects the .m2 suffix", {
                "\\.m2 suffix have been removed")
 })
 
+test_that("param.net rejects random.params", {
+  # Removed in v2.7.0 (#1082). Without the guard the list falls through to
+  # `...` and the model runs on the fixed values with no draws.
+  expect_error(param.net(inf.prob = 0.3,
+                         random.params = list(act.rate = function() 2)),
+               "random.params argument has been removed")
+  expect_error(param.net(inf.prob = 0.3, random.params = list()),
+               "random.params argument has been removed")
+})
+
 test_that("init.net rejects the .m2 suffix", {
   expect_error(init.net(i.num = 10, i.num.m2 = 5),
                "\\.m2 suffix have been removed")
@@ -33,11 +43,6 @@ test_that("update_params validates its inputs", {
                "x should be object of class param.net")
   expect_error(update_params(param.net(inf.prob = 0.3), c(inf.prob = 0.5)),
                "new.param.list should be object of class list")
-})
-
-test_that("param_random rejects mis-sized probability vectors", {
-  expect_error(param_random(values = 1:3, prob = c(0.5, 0.5)),
-               "incorrect number of probabilites")
 })
 
 test_that("init.net rejects conflicting initial-condition arguments", {
@@ -97,21 +102,6 @@ test_that("control.net warns and resets resimulate.network under tergmLite", {
                                     resimulate.network = FALSE,
                                     verbose = FALSE))
   expect_false(ctrl$resimulate.network)
-})
-
-test_that("generate_random_params validates random.params structure", {
-  # random.params validation runs at simulation time, inside
-  # generate_random_params(). Calling that function directly lets us hit
-  # the guards without spinning up a full netsim.
-  p_not_list <- param.net(inf.prob = 0.3, random.params = "not a list")
-  expect_error(generate_random_params(p_not_list),
-               "random.params.*must be.*list")
-
-  p_unnamed <- param.net(inf.prob = 0.3,
-                         random.params = list(param_random(1:3),
-                                              foo = param_random(1:3)))
-  expect_error(generate_random_params(p_unnamed),
-               "must be named")
 })
 
 context("crosscheck.net: end-to-end netsim input validation")

@@ -188,7 +188,7 @@ We recommend the following tiered sequence for learning EpiModel, consistent wit
 ### Advanced
 
 - **Package vignettes:** These vignettes within the package cover specific topics for users building custom network models with the extension API:
-    - *Working with Model Parameters:* Scenarios for time-varying parameters, parameter input via tables, and random parameter distributions for sensitivity analysis.
+    - *Working with Model Parameters:* Scenarios for time-varying parameters, parameter input via tables, and parameter draws for uncertainty and sensitivity analysis.
     - *Working with Custom Attributes and Summary Statistics:* Nodal attributes, attribute histories, epidemic trackers, and custom summary statistics.
     - *Working with Network Objects:* Accessing and manipulating network objects, edgelists, cumulative edgelists, and reachability analysis within custom modules.
 - **EpiModelHPC & slurmworkflow:** Tools for running large-scale simulations on high-performance computing clusters.

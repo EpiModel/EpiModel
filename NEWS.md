@@ -1,4 +1,8 @@
-## EpiModel 2.6.3 (development)
+## EpiModel 2.7.0
+
+### BREAKING CHANGES
+
+-   Removed the random parameter interface: the `random.params` argument of `param.net()` (including `param.random.set`), `param_random()`, `generate_random_params()`, and `get_param_set()`. Passing `random.params` to `param.net()` now produces an error, rather than storing the list as an ordinary parameter and running the model on the fixed values without any draws. To vary parameters across simulations, draw the values in advance into a table with one row per draw and run each row as a scenario with `create_scenario_list()` and `use_scenario()`. The new Parameter Uncertainty section of the "Working with Model Parameters in EpiModel" vignette shows this approach, including correlated draws and a mapping from each part of the removed interface. To tabulate the parameters of a single `param.net` object, use `param.net_to_table()`.
 
 ### NEW FEATURES
 
@@ -12,6 +16,10 @@
 
 - Fix the attribution of transmissions to layers in `infection.net()` and `infection.2g.net()` for multi-layer models. The discordant edgelists of the layers were bound in layer order and the transmission matrix keeps the first successful exposure of each newly infected node, so a node exposed on more than one layer in the same step was always credited to the lowest-indexed layer. The bound edgelist is now shuffled when there is more than one layer, so the recorded infector, and so the layer, is a uniform draw among the node's successful exposures. Single-layer models are unaffected, and the total number of infections per step does not change in either case.
 - Fix `auto_update_attr()` so that a fixed `attr.rules` value of `NA` is accepted; the rule was compared with `==`, which is `NA` for that value and made the `if` fail.
+
+### OTHER
+
+- Add Multi-Layer Networks and Clique Layers sections to the "Working with Network Objects in EpiModel" vignette. No vignette covered multi-layer models before. The new sections cover passing a list of layers to `netsim()`, per-layer controls and parameters with `multilayer()`, reading each layer inside modules and after the simulation, dependent layers kept current with `dat.updates`, and `netclique()` layers: building the grouping attribute with `sample_groups()` or `assign_groups()`, the arrival rules, and `move_to_group()`. The Multi-Layer Networks chapter of the Network Modeling for Epidemics course remains the full worked example.
 
 ## EpiModel 2.6.2
 
