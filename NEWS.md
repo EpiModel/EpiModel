@@ -10,15 +10,17 @@
 
 -   Objects saved with EpiModel 2.6.x or earlier, can no longer be restarted. They need to be regenerated with 2.7.0.
 
--   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is with a warning, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one, with only that warning. Merge the original objects again with 2.7.0 instead.
+-   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one. Merge the original objects again with 2.7.0 instead.
 
 ### NEW FEATURES
 
-- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist` and `keep.attr.history` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists holds the state needed to restart from any of its simulations, selected with `get_sims()`. Only `keep.cumulative.edgelist` defaults to `FALSE`.
+- `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist`, `keep.attr.history` and `keep.raw.records` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists holds the state needed to restart from any of its simulations, selected with `get_sims()`. Only `keep.cumulative.edgelist` defaults to `FALSE`.
+
+- `merge.netsim()` drops the elements not kept from both `x` and `y`, which must then hold the same elements, per-simulation elements and network statistics. An element with its own `keep.*` argument (e.g. `run`) follows it even when listed in `save.other`. `get_sims()` now requires `sims`.
 
 ### BUG FIXES
 
--   Fix `merge.netsim()` when merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`. The dropped elements made the merged object differ in structure from the next one, which failed with "x and y have different structure". The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it, as well as the kept elements whose classes differ between `x` and `y`. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
+-   Fix `merge.netsim()` when merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`. The dropped elements made the merged object differ in structure from the next one, which failed with "x and y have different structure". The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
 
 -   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a simulation of the merged object coming from `y` read the wrong formation coefficients.
 

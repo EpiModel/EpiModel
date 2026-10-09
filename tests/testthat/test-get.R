@@ -152,7 +152,6 @@ test_that("get_sims extracts simulations", {
 test_that("get_sims error flags", {
   skip_on_cran()
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
-  expect_error(get_sims(mod), "Specify sims as a vector")
 })
 
 dxs <- netdx(est, dynamic = FALSE, nsims = 5,
@@ -258,18 +257,10 @@ test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
   expect_equal(s23$attr.history, list())
   expect_named(s23$run, c("sim1", "sim2"))
 
-  # elements not holding one entry per simulation are left alone, with a warning
+  # elements not holding one entry per simulation are left alone
   mod_bad <- mod
   mod_bad$raw.records <- mod_bad$raw.records[1:2]
-  expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), "`raw.records` holds 2 elements for 3")
+  expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), NA)
   expect_identical(s23$raw.records, mod_bad$raw.records)
   expect_equal(s23$run$sim1, mod$run$sim2)
-})
-
-test_that("is_per_sim accepts lists holding one element per simulation", {
-  expect_true(is_per_sim(list(1, 2), "x", nsims = 2))
-  expect_false(is_per_sim(NULL, "x", nsims = 2))
-  expect_false(is_per_sim(list(), "x", nsims = 2))
-  expect_warning(res <- is_per_sim(list(1), "x", nsims = 2), "`x` holds 1 elements for 2")
-  expect_false(res)
 })

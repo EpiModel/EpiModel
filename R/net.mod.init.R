@@ -91,19 +91,26 @@ initialize.net <- function(x, param, init, control, s) {
     dat$epi <- sapply(x$epi, function(var) var[1])
     names(dat$epi) <- names(x$epi)
 
-    dat$stats <- lapply(x$stats, function(var) var[[1]])
-    if (get_control(dat, "save.nwstats") == TRUE) {
-      nsteps <- get_control(dat, "nsteps")
-      start <- get_control(dat, "start")
-      # the prior statistics of each network, if any (`x` run with
-      # `save.nwstats = FALSE` holds none), fill the first slot
-      dat$stats$nwstats <- lapply(seq_len(dat$num.nw), function(network) {
-        padded_vector(list(dat$stats$nwstats[[network]]), nsteps - start + 2L)
-      })
+    #TODO - continue here
+    dat$stats <- list()
+    if (get_control(dat, "save.nwstats")) {
+      dat$stats$nwstats <- vector("list", dat$num.nw)
+      for (nw in seq_len(dat$num.nw)) {
+        if (is.data.frame(x$stats$nwstats[[1]][[nw]])) {
+          dat$nwstats[[nw]] <- x$stats$nwstats[[1]][[nw]] |>
+            as.matrix() |>
+            apply(1, c, simplify = FALSE) |>
+            unname()
+        } else {
+          dat$nwstats[[nw]] <- vector("list", start - 1)
+        }
+      }
     }
-    if (is.data.frame(dat$stats$transmat)) {
+
+    if (get_control(dat, "save.nwstats") &&
+          is.data.frame(x$stats$transmat[[1]])) {
       nsteps <- get_control(dat, "nsteps")
-      dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
+      dat$stats$transmat <- padded_vector(list(x$stats$transmat[[1]]), nsteps)
     }
   }
 

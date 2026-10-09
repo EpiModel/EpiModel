@@ -489,7 +489,7 @@ get_nwparam <- function(x, network = 1) {
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
 #' }
 #'
-get_sims <- function(x, sims = NULL, var = NULL) {
+get_sims <- function(x, sims, var = NULL) {
 
   if (!inherits(x, "netsim")) {
     stop("x must be of class netsim")
@@ -497,11 +497,8 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
   nsims <- x$control$nsims
 
-  if (is.null(sims)) {
-    stop("Specify sims as a vector of simulations or \"mean\" ")
-  }
-  if (length(sims) == 1 && sims ==
-        "mean" && (is.null(var) || length(var) > 1)) {
+  if (length(sims) == 1 && sims == "mean" &&
+        (is.null(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single variable name")
   }
 
@@ -519,40 +516,28 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
   out <- x
   out$control$nsims <- length(sims)
-  newnames <- paste0("sim", seq_len(out$control$nsims))
+  newnames <- get_sim_names(out$control$nsims)
 
-  delsim <- setdiff(1:nsims, sims)
+  delsim <- setdiff(seq_len(nsims), sims)
   if (length(delsim) > 0) {
+    # Subset Epis
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
+      names(out$epi[[i]]) <- newnames
     }
 
-    elts_name <- union(
-      c(
-        "run",
-        "network",
-        "diss.stats",
-        "coef.form",
-        "attr.history",
-        "raw.records",
-        "cumulative.edgelist"
-      ),
-      out$control$save.other
-    )
-
+    # Subset per-sim elements
+    elts_name <- get_per_sim_element_names(out, nsims)
     for (elt in elts_name) {
-      if (is_per_sim(out[[elt]], elt, nsims)) {
-        out[[elt]][delsim] <- NULL
-        names(out[[elt]]) <- newnames
-      }
+      out[[elt]][delsim] <- NULL
+      names(out[[elt]]) <- newnames
     }
 
-    stats_elts_name <- c("nwstats", "transmat")
+    # Subset per-sim stats elements
+    stats_elts_name <- get_per_sim_element_names(out$stats, nsims)
     for (elt in stats_elts_name) {
-      if (is_per_sim(out$stats[[elt]], paste0("stats$", elt), nsims)) {
         out$stats[[elt]][delsim] <- NULL
         names(out$stats[[elt]]) <- newnames
-      }
     }
   }
 
@@ -562,20 +547,6 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   }
 
   return(out)
-}
-
-# Whether `elt_list` holds one element per simulation, so it can be subset by
-# simulation. Empty lists are not, other lengths are not with a warning.
-is_per_sim <- function(elt_list, elt_name, nsims) {
-  n_elts <- length(elt_list)
-  if (n_elts > 0 && n_elts != nsims) {
-    warning(
-      "`", elt_name, "` holds ", n_elts, " elements for ", nsims,
-      " simulations. It is returned as is, as its elements cannot be ",
-      "matched to the simulations."
-    )
-  }
-  n_elts == nsims
 }
 
 #' @title Get Arguments from EpiModel Parameterization Functions

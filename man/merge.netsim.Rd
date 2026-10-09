@@ -16,6 +16,7 @@
   keep.run = TRUE,
   keep.cumulative.edgelist = FALSE,
   keep.attr.history = TRUE,
+  keep.raw.records = TRUE,
   ...
 )
 }
@@ -39,7 +40,8 @@ the original \code{x} and \code{y} elements.}
 
 \item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
 by the \code{save.other} parameter in \code{control.net}) from the
-original \code{x} and \code{y} elements.}
+original \code{x} and \code{y} elements. Elements with their own \verb{keep.*}
+argument (e.g. \code{run}) follow that argument instead.}
 
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
 params (in \code{\link[=param.net]{param.net()}}) or controls (passed in
@@ -59,10 +61,11 @@ merged object in \code{\link[=netsim]{netsim()}}, selected with \code{\link[=get
 \code{control.net}) from the original \code{x} and \code{y} elements. \code{FALSE} by
 default, as these grow with the length of the simulation.}
 
-\item{keep.attr.history}{If \code{TRUE}, keep the recorded histories (as set by
-\code{\link[=record_attr_history]{record_attr_history()}} and \code{\link[=record_raw_object]{record_raw_object()}}) from the original
-\code{x} and \code{y} elements. This governs both \code{attr.history} and
-\code{raw.records}.}
+\item{keep.attr.history}{If \code{TRUE}, keep the attribute histories (as set by
+\code{\link[=record_attr_history]{record_attr_history()}}) from the original \code{x} and \code{y} elements.}
+
+\item{keep.raw.records}{If \code{TRUE}, keep the raw records (as set by
+\code{\link[=record_raw_object]{record_raw_object()}}) from the original \code{x} and \code{y} elements.}
 
 \item{...}{Additional merge arguments (not currently used).}
 }
@@ -87,26 +90,28 @@ Instead, the function checks that objects are identical in model
 parameterization in every respect (except number of simulations) and binds
 the results.
 
-Only the per-simulation elements not kept (see the \verb{keep.*} arguments) may
-be missing from one of \code{x} and \code{y}, e.g. from the result of a previous merge
-that dropped them. The transmission matrices and network statistics are an
-exception: they are dropped when missing from one of them.
+After dropping the elements not kept (see the \verb{keep.*} arguments), \code{x} and
+\code{y} must hold the same elements.
 }
 \examples{
 \donttest{
 # Network model
 nw <- network_initialize(n = 100)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-est <- netest(nw, formation = ~edges, target.stats = 25,
-              coef.diss = coef.diss, verbose = FALSE)
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 10)
+est <- netest(nw,
+  formation = ~edges, target.stats = 25,
+  coef.diss = coef.diss, verbose = FALSE
+)
 
 # Epidemic models
 param <- param.net(inf.prob = 1)
 init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 20, nsims = 2,
-                       save.nwstats = TRUE,
-                       nwstats.formula = ~edges + degree(0),
-                       verbose = FALSE)
+control <- control.net(
+  type = "SI", nsteps = 20, nsims = 2,
+  save.nwstats = TRUE,
+  nwstats.formula = ~ edges + degree(0),
+  verbose = FALSE
+)
 x <- netsim(est, param, init, control)
 y <- netsim(est, param, init, control)
 

@@ -95,7 +95,7 @@ test_that("merge for netsim", {
   expect_is(z, "netsim")
   expect_true(length(z$run) == 4)
   expect_true(length(z$run[[1]]$attr) == 6)
-  z <- merge(x, y, keep.other = FALSE)
+  z <- merge(x, y, keep.run = FALSE)
   expect_true(any(names(z) == "run") == FALSE)
 })
 
@@ -145,7 +145,12 @@ test_that("merge.netsim works as expected for transmat", {
   mod3 <- merge(mod, mod, keep.transmat = FALSE)
   expect_true(is.null(mod3$stats$transmat))
 
-  mod4 <- merge(mod2, mod3)
+  expect_error(
+    merge(mod2, mod3),
+    "`stats$transmat` is missing from y (set `keep.transmat = FALSE` to drop it)",
+    fixed = TRUE
+  )
+  mod4 <- merge(mod2, mod3, keep.transmat = FALSE)
   expect_true(is.null(mod4$stats$transmat))
 })
 
@@ -177,7 +182,7 @@ test_that("merge and print work as expected for save.other", {
   expect_equal(length(mod2[["run"]]), 4)
   expect_equal(length(mod2[["el"]]), 4)
 
-  mod3 <- merge(mod, mod, keep.other = FALSE)
+  mod3 <- merge(mod, mod, keep.other = FALSE, keep.run = FALSE)
   expect_error(expect_output(print(mod3), "Other Elements"))
   expect_true(is.null(mod3[["run"]]))
   expect_true(is.null(mod3[["el"]]))
@@ -257,7 +262,11 @@ test_that("merge.netsim merges the recorded histories", {
 
   z2 <- merge(x, y, keep.attr.history = FALSE)
   expect_null(z2$attr.history)
-  expect_null(z2$raw.records)
+  expect_named(z2$raw.records, simnames)
+
+  z3 <- merge(x, y, keep.raw.records = FALSE)
+  expect_named(z3$attr.history, simnames)
+  expect_null(z3$raw.records)
 })
 
 test_that("merge.netsim output can be used as a restart point", {
@@ -291,7 +300,7 @@ test_that("merge.netsim output can be used as a restart point", {
   }
 })
 
-test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {
+test_that("merge.netsim lets keep.run drive run even when in save.other", {
   skip_on_cran()
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 20,
@@ -306,9 +315,9 @@ test_that("merge.netsim lets save.other drive run when keep.other is FALSE", {
   y <- netsim(est, param, init, control)
 
   expect_length(merge(x, y, keep.other = TRUE)$run, 4)
-  expect_null(merge(x, y, keep.other = FALSE)$run)
-  # `keep.run = FALSE` does not corrupt a `run` managed by `save.other`
-  expect_length(merge(x, y, keep.other = TRUE, keep.run = FALSE)$run, 4)
+  # `keep.run` takes precedence over `keep.other`
+  expect_length(merge(x, y, keep.other = FALSE)$run, 4)
+  expect_null(merge(x, y, keep.other = TRUE, keep.run = FALSE)$run)
 })
 
 test_that("merge.netsim chains merges that drop elements", {
@@ -331,7 +340,9 @@ test_that("merge.netsim chains merges that drop elements", {
   expect_length(z$run, 6)
   expect_equal(z$epi$i.num, mod$epi$i.num, check.attributes = FALSE)
 
-  z <- Reduce(function(a, b) merge(a, b, keep.run = FALSE, keep.attr.history = FALSE), parts)
+  z <- Reduce(function(a, b) {
+    merge(a, b, keep.run = FALSE, keep.attr.history = FALSE, keep.raw.records = FALSE)
+  }, parts)
   expect_equal(z$control$nsims, 6)
   expect_null(z$run)
   expect_null(z$attr.history)
@@ -357,10 +368,6 @@ test_that("merge.netsim chains merges that drop elements", {
   odd <- parts[[2]]
   odd$coef.form <- NULL
   expect_error(merge(parts[[1]], odd), "`coef.form` is missing from y\n",
-               fixed = TRUE)
-  odd <- parts[[2]]
-  odd$epi <- as.data.frame(odd$epi)
-  expect_error(merge(parts[[1]], odd), "`epi`: `list` in x, `data.frame` in y",
                fixed = TRUE)
 })
 
