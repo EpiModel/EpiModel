@@ -150,6 +150,13 @@ test_that("DCM and ICM refuse by_infection_duration parameters", {
 
 test_that("transmission follows the infected partner's duration of infection", {
   skip_on_cran()
+  # seed infections at t = 1, so that every seed starts inside the window in
+  # which inf.prob is 1 (with i.num, infTime is drawn over past steps, and about
+  # one fixture network in five gave no transmission)
+  status <- rep("s", 100)
+  status[seq(1, 100, by = 5)] <- "i"
+  init_t1 <- init.net(status.vector = status,
+                      infTime.vector = ifelse(status == "i", 1, NA))
   for (tergmLite in c(TRUE, FALSE)) {
     # certain in the first two steps of infection, impossible after
     set.seed(31)
@@ -159,7 +166,7 @@ test_that("transmission follows the infected partner's duration of infection", {
     control <- control.net(type = "SI", nsteps = 15, nsims = 1,
                            tergmLite = tergmLite, resimulate.network = TRUE,
                            verbose = FALSE)
-    sim <- netsim(est, param, init, control)
+    sim <- netsim(est, param, init_t1, control)
     tm <- get_transmat(sim)
     expect_gt(nrow(tm), 0)
     expect_true(all(tm$infDur <= 2))
@@ -220,7 +227,7 @@ test_that("an updater can switch a parameter to vary by duration of infection", 
   param <- param.net(inf.prob = 0.3, act.rate = 1,
                      .param.updater.list = updater)
   control <- control.net(type = "SI", nsteps = 15, nsims = 1, tergmLite = TRUE,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   sim <- netsim(est, param, init, control)
   tm <- get_transmat(sim)
   before <- tm[tm$at < 6, ]
