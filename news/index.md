@@ -241,6 +241,27 @@
   layers (the observation window, the fixed node set, and how the layer
   is read in each storage mode). The Multi-Layer Networks chapter of the
   Network Modeling for Epidemics course remains the full worked example.
+- [`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
+  now tables only the nodal attributes that the arrivals module left
+  without values for the arriving nodes, which are the only ones
+  [`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md)
+  fills in, and tables none when the arrivals module sets them all. It
+  had called
+  [`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md)
+  on every time step with arrivals, which tables every nodal attribute,
+  including `unique_id` and any continuous attribute such as age, whose
+  tables have about one entry per node. In a 117,810-node model with
+  four network layers and arrivals on every time step, whose arrivals
+  module sets every attribute, those tables took 45% of the run time
+  (48.5 s against 26.9 s over 60 time steps). The values given to
+  arriving nodes and the random number stream are unchanged.
+  [`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md)
+  gains an `attrs` argument that restricts the tables to the attributes
+  named, and
+  [`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md)
+  now finds each attribute’s time 1 table by name rather than by
+  position, since the positions in a restricted table no longer match
+  those in the time 1 table.
 
 ## EpiModel 2.6.2
 

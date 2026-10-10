@@ -43,7 +43,7 @@ attribute contained in a network.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_attr_prop</span><span class="op">(</span><span class="va">dat</span>, <span class="va">nwterms</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_attr_prop</span><span class="op">(</span><span class="va">dat</span>, <span class="va">nwterms</span>, attrs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,13 +58,20 @@ object and other initialization information passed from
 
 <dt id="arg-nwterms">nwterms<a class="anchor" aria-label="anchor" href="#arg-nwterms"></a></dt>
 <dd><p>Vector of attributes on the network object, usually as
-output of <code><a href="get_formula_term_attr.html">get_formula_term_attr()</a></code>.</p></dd>
+output of <code><a href="get_formula_term_attr.html">get_formula_term_attr()</a></code>. If <code>NULL</code>, no table is made.</p></dd>
+
+
+<dt id="arg-attrs">attrs<a class="anchor" aria-label="anchor" href="#arg-attrs"></a></dt>
+<dd><p>Optional character vector of attribute names to restrict the
+tables to. If <code>NULL</code> (default), every nodal attribute is tabled.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A table containing the proportional distribution of each attribute in
-<code>nwterms</code>.</p>
+    <p>A list of proportional tables, one for each nodal attribute (or each one
+named in <code>attrs</code>), other than <code>active</code>, <code>entrTime</code>, <code>exitTime</code>, <code>infTime</code>,
+<code>group</code>, <code>status</code>, <code>na</code>, and <code>vertex.names</code>. Returns <code>NULL</code> if <code>nwterms</code> is
+<code>NULL</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

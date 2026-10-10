@@ -6,7 +6,7 @@ contained in a network.
 ## Usage
 
 ``` r
-get_attr_prop(dat, nwterms)
+get_attr_prop(dat, nwterms, attrs = NULL)
 ```
 
 ## Arguments
@@ -21,11 +21,19 @@ get_attr_prop(dat, nwterms)
 
   Vector of attributes on the network object, usually as output of
   [`get_formula_term_attr()`](https://epimodel.github.io/EpiModel/reference/get_formula_term_attr.md).
+  If `NULL`, no table is made.
+
+- attrs:
+
+  Optional character vector of attribute names to restrict the tables
+  to. If `NULL` (default), every nodal attribute is tabled.
 
 ## Value
 
-A table containing the proportional distribution of each attribute in
-`nwterms`.
+A list of proportional tables, one for each nodal attribute (or each one
+named in `attrs`), other than `active`, `entrTime`, `exitTime`,
+`infTime`, `group`, `status`, `na`, and `vertex.names`. Returns `NULL`
+if `nwterms` is `NULL`.
 
 ## See also
 

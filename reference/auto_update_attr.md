@@ -25,7 +25,11 @@ auto_update_attr(dat, newNodes, curr.tab)
 
 - curr.tab:
 
-  Current proportional distribution of all vertex attributes.
+  Current proportional distribution of the vertex attributes, as output
+  of
+  [`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md).
+  Only the attributes in `curr.tab` are filled in for the incoming
+  nodes.
 
 ## Value
 
