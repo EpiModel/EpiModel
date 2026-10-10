@@ -29,8 +29,15 @@ nwupdate.net <- function(dat, at) {
     ## Arrivals
     nwterms <- dat$run$nwterms
     if (!is.null(nwterms)) {
-      curr.tab <- get_attr_prop(dat, nwterms)
-      dat <- auto_update_attr(dat, arrivals, curr.tab)
+      # Table only the attributes the arrivals module left short, which are the
+      # only ones auto_update_attr() fills in. Tabling every attribute on every
+      # step with arrivals is slow when one is continuous, such as age.
+      attr_list <- get_attr_list(dat)
+      short <- names(attr_list)[lengths(attr_list) < length(active)]
+      if (length(short) > 0) {
+        curr.tab <- get_attr_prop(dat, nwterms, attrs = short)
+        dat <- auto_update_attr(dat, arrivals, curr.tab)
+      }
     }
     if (length(unique(vapply(get_attr_list(dat), length, 1))) != 1) {
       stop(

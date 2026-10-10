@@ -554,11 +554,15 @@ edgelist_censor <- function(el) {
 #'
 #' @inheritParams recovery.net
 #' @param nwterms Vector of attributes on the network object, usually as
-#'        output of [get_formula_term_attr()].
+#'        output of [get_formula_term_attr()]. If `NULL`, no table is made.
+#' @param attrs Optional character vector of attribute names to restrict the
+#'        tables to. If `NULL` (default), every nodal attribute is tabled.
 #'
 #' @return
-#' A table containing the proportional distribution of each attribute in
-#' `nwterms`.
+#' A list of proportional tables, one for each nodal attribute (or each one
+#' named in `attrs`), other than `active`, `entrTime`, `exitTime`, `infTime`,
+#' `group`, `status`, `na`, and `vertex.names`. Returns `NULL` if `nwterms` is
+#' `NULL`.
 #'
 #' @seealso [get_formula_term_attr()],
 #'          [copy_nwattr_to_datattr()],
@@ -566,13 +570,16 @@ edgelist_censor <- function(el) {
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(dat, nwterms) {
+get_attr_prop <- function(dat, nwterms, attrs = NULL) {
 
   if (is.null(nwterms)) {
     return(NULL)
   }
   attr_list <- get_attr_list(dat)
   nwVal <- names(attr_list)
+  if (!is.null(attrs)) {
+    nwVal <- intersect(nwVal, attrs)
+  }
   nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
                             "exitTime", "infTime", "group", "status"))
   out <- list()
@@ -699,7 +706,9 @@ idgroup <- function(nw, ids = NULL) {
 #' @inheritParams recovery.net
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param curr.tab Current proportional distribution of all vertex attributes.
+#' @param curr.tab Current proportional distribution of the vertex attributes,
+#'        as output of [get_attr_prop()]. Only the attributes in `curr.tab`
+#'        are filled in for the incoming nodes.
 #'
 #' @inherit recovery.net return
 #'
@@ -733,10 +742,10 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = curr.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(curr.tab[[i]])),
+          nattr <- sample(as.numeric(names(curr.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = curr.tab[[i]])
+                          prob = curr.tab[[vname]])
         }
       } else if (identical(rule, "t1")) {
         vclass <- class(get_attr(dat, vname))
@@ -746,10 +755,10 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = t1.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(t1.tab[[i]])),
+          nattr <- sample(as.numeric(names(t1.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = t1.tab[[i]])
+                          prob = t1.tab[[vname]])
         }
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
