@@ -23,7 +23,7 @@ library(EpiModel)
 
 ## Introduction
 
-This vignette covers how to work with network objects, edgelists, multi-layer and clique network layers, and partnership histories in EpiModel network models with custom extension modules. It assumes familiarity with setting up and running network models with `netsim()` and with the extension API. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
+This vignette covers how to work with network objects, edgelists, multi-layer models, clique and observed network layers, and partnership histories in EpiModel network models with custom extension modules. It assumes familiarity with setting up and running network models with `netsim()` and with the extension API. See the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) (NME) course materials and the [EpiModel Gallery](https://epimodel.github.io/EpiModel-Gallery/) for background.
 
 For working with nodal attributes and epidemic summary statistics, see the companion vignette *Working with Custom Attributes and Summary Statistics in EpiModel*.
 
@@ -140,7 +140,7 @@ Conversion between the two systems is handled internally by EpiModel. The `get_u
 
 ## Multi-Layer Networks
 
-A multi-layer model has several edge sets over one node set, such as main and casual sexual partnerships, sexual and needle-sharing partnerships, or household and community contacts. Each layer has its own formation and dissolution model, and infection can be transmitted across the edges of any layer. The node set, including the network size and the nodal attributes, is shared by all layers. The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html) chapter of the NME course materials works through a complete two-layer model; this section summarizes the mechanics.
+A multi-layer model has several edge sets over one node set, such as main and casual sexual partnerships, sexual and needle-sharing partnerships, or household and community contacts. Each layer estimated with `netest()` has its own formation and dissolution model, and infection can be transmitted across the edges of any layer. The node set, including the network size and the nodal attributes, is shared by all layers. A layer may also be a clique layer built with `netclique()` or an observed network wrapped with `netcensus()`; both are described in the sections that follow. The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html) chapter of the NME course materials works through a complete two-layer model; this section summarizes the mechanics.
 
 ### Specifying Layers
 
@@ -309,6 +309,59 @@ leave_home <- function(dat, at) {
 The `ids` argument takes positional IDs. The `group` argument takes one group ID per node, or a single value for all of them: an ID in use joins that group, an unused ID starts a new group, and `NA` takes the node out of its group. In a model with more than one clique layer, the `network` argument names the layer to change.
 
 The cumulative edgelist (see below) records the initial clique edges with a `start` of 0. Edges added by arrivals and moves, and edges ended by moves and departures, are recorded when the network resimulation module next updates the cumulative edgelist, which it does for every layer at every time step. A module that reads the cumulative edgelist later in the same time step as a move should call `update_cumulative_edgelist()` after the move.
+
+## Observed Network Layers
+
+`netest()` turns partial, usually egocentric, network data into a generative model that `netsim()` can simulate from. When the whole network has been observed (every node and every contact, and for a dynamic network every time step), there is nothing to estimate: the observed object is what `netsim()` would otherwise have to generate. `netcensus()` wraps such a network, either a static `network` object or a `networkDynamic` object with edge spells, as a layer that `netsim()` accepts anywhere in its list of layers. Sensor, proximity-logger, contact-tracing, and animal-tracking datasets are the usual sources.
+
+Like a clique layer, an observed layer is an addition to `netest()`, not a substitute for it. It is the wrong tool for a sample from which one wants to generalize to a population, and it is not a way to model how the observed ties arise; a network whose ties are to be reproduced from their predictors is estimated with `netest()`, whatever their turnover. The [Epidemics over Observed Networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html) chapter of the NME course materials works through a complete example.
+
+### Building an Observed Layer
+
+```{r, eval = FALSE}
+library(networkDynamicData)
+data(concurrencyComparisonNets)
+
+obs <- netcensus(base)
+obs
+```
+
+`netcensus()` carries the vertex attributes of the observed network into the simulation as nodal attributes. Temporally extended vertex attributes (those ending in `.active`), such as the `status.active` attribute stored on `base`, are dropped with a message, since `netsim()` keeps its own disease status. Printing a dynamic census shows the observation window and the number of edges active per step across it; printing a static census shows its edge count, mean degree, and number of isolates. As with a clique layer, there is no model to diagnose, so `netdx()` does not accept a `netcensus` object.
+
+### Simulation Time and the Observation Window
+
+A static census has the same edges at every time step. For a dynamic census, EpiModel time step `at` reads the edges active at time `at` of the observed object, so the simulation clock is the observation clock. The `window` argument of `netcensus()` sets the observation window. It defaults to the `net.obs.period` network attribute when the object has one, and otherwise to the range of the finite edge spell times; for `base`, the window runs from time 2 to time 102.
+
+By the `networkDynamic` convention, edges active at the last observed time stay active indefinitely, so a simulation that runs past the window sees a frozen edge set. Keep `nsteps` in `control.net()` within the window; `netsim()` warns when `nsteps` reaches its end:
+
+```{r, eval = FALSE}
+param <- param.net(inf.prob = 0.5, act.rate = 1)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+                       resimulate.network = FALSE)
+sim <- netsim(obs, param, init, control)
+```
+
+An observed layer is skipped by the network resimulation whatever the value of `resimulate.network`. Setting it to `FALSE` is enough here because the only layer is observed; the setting matters only when an observed layer sits next to an estimated one.
+
+### Observed Layers During Simulation
+
+Without `tergmLite`, the observed `networkDynamic` object is used as stored, and `get_edgelist()` reads the edges active at the current time step from it. Under `tergmLite`, the edgelist of the layer is replaced at every time step with the edges active in the observed object. Either way, the accessors read the layer as any other, and the built-in infection modules transmit across its edges. Next to other layers, the per-layer `inf.prob` and `act.rate` are set through `multilayer()`:
+
+```{r, eval = FALSE}
+# nw_obs: an observed static network on the same nodes as the estimated layer
+sim <- netsim(list(netcensus(nw_obs), est),
+              param.net(inf.prob = multilayer(0.3, 0.1), act.rate = 1),
+              init, control)
+```
+
+An observed layer differs from an estimated one in a few other respects:
+
+- **Fixed node set:** a census has a fixed node set, so `netsim()` refuses vital dynamics in a model with an observed layer, and `arrive_nodes()` and `depart_nodes()` stop if a custom module tries to add or remove nodes. Vertex activity spells are not used: every node is present throughout, and a node absent from part of the observation simply has no contacts then.
+- **Network statistics:** with the default `nwstats.formula = "formation"`, the statistic recorded for the layer is its edge count, summarized at every time step for a dynamic census. There are no target statistics, so `print(sim)` and `plot(sim, type = "formation")` show the recorded values without targets.
+- **Durations:** duration tracking under `tergmLite` (`tergmLite.track.duration = TRUE`) is refused for a dynamic census, whose observed spells already carry the edge durations.
+- **Edge attributes:** edge attributes such as contact duration or contact count are not read, so the layer is binary. A custom module can read them from the observed object, which the layer's network parameter record holds for a dynamic census as `get_nwparam(dat, network = 1)$census.nw`.
+- **Module order:** a module that reads the layer before the network resimulation module runs in a time step sees the previous step's edges under `tergmLite`, but the current step's edges in full mode, which reads the `networkDynamic` object directly. Modules added to `control.net()` under new names run before the built-in modules unless `module.order` places them later.
 
 ## Cumulative Edgelist
 

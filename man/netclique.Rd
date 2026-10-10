@@ -85,8 +85,9 @@ built-in infection modules through \code{\link[=discord_edgelist]{discord_edgeli
 layer.
 
 A network whose edges are given rather than generated, such as a fully
-observed contact network, is a different case again and is not what this
-function is for.
+observed contact network, is a different case again: it may carry its own
+edge dynamics and it skips estimation for a different reason. That case is
+handled by \code{\link[=netcensus]{netcensus()}}.
 
 The group attribute must be an integer, numeric, or character vector; a
 factor is refused because arrivals under \code{"new"} need to create values the

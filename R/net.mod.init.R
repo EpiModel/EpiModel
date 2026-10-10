@@ -5,7 +5,8 @@
 #'              the networks, and simulates disease status and other attributes.
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest`, a clique layer of class [`netclique`], or a list
+#'        of class `netest`, a clique layer of class [`netclique`], an
+#'        observed network layer of class [`netcensus`], or a list
 #'        of such objects. If `control$start > 1`, an object of class
 #'        `netsim`. When multiple networks are used, the node sets (including
 #'        network size and nodal attributes) are assumed to be the same for
@@ -286,7 +287,8 @@ init_status.net <- function(dat) {
 #'        [create_dat_object()], including the `control`
 #'        argument.
 #' @param x Either a fitted network model object of class `netest`, a clique
-#'        layer of class [`netclique`], or a list of such objects.
+#'        layer of class [`netclique`], an observed network layer of class
+#'        [`netcensus`], or a list of such objects.
 #'
 #' @return A `netsim_dat` class main data object with network data and
 #'         stats initialized.
@@ -295,7 +297,7 @@ init_status.net <- function(dat) {
 #' @keywords internal
 #'
 init_nets <- function(dat, x) {
-  if (inherits(x, c("netest", "netclique"))) {
+  if (inherits(x, c("netest", "netclique", "netcensus"))) {
     x <- list(x)
   }
 
@@ -308,12 +310,23 @@ init_nets <- function(dat, x) {
     if (is_model_free_layer(y)) {
       class(out) <- class(y)
     }
+    # a dynamic census is read step by step under tergmLite, so the observed
+    # object stays with the layer's parameters
+    if (is_census_layer(y) && isTRUE(y$dynamic)) {
+      out$census.nw <- y$newnetwork
+    }
     out
   })
   nws <- lapply(x, `[[`, "newnetwork")
   nw <- nws[[1]]
   if (get_control(dat, "tergmLite") == TRUE) {
-    dat$run$el <- lapply(nws, as.edgelist)
+    dat$run$el <- lapply(seq_along(nws), function(network) {
+      if (is_census_layer(x[[network]]) && isTRUE(x[[network]]$dynamic)) {
+        census_edgelist_at(nws[[network]], at = 1L)
+      } else {
+        as.edgelist(nws[[network]])
+      }
+    })
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
     dat$run$nw <- nws

@@ -8,10 +8,11 @@ netsim(x, param, init, control)
 }
 \arguments{
 \item{x}{If \code{control$start == 1}, either a fitted network model object
-of class \code{netest}, a clique layer of class \code{\link{netclique}}, or a list
-of such objects. If \code{control$start > 1}, an object of class
-\code{netsim}. When multiple networks are used (multi-layer models), pass
-a list with one \code{netest} or \code{netclique} object per network layer,
+of class \code{netest}, a clique layer of class \code{\link{netclique}}, an
+observed network layer of class \code{\link{netcensus}}, or a list of such
+objects. If \code{control$start > 1}, an object of class \code{netsim}. When
+multiple networks are used (multi-layer models), pass a list with
+one \code{netest}, \code{netclique}, or \code{netcensus} object per network layer,
 in any order; the node sets (including network size and nodal
 attributes) are assumed to be the same for all networks.}
 
@@ -171,11 +172,19 @@ term targeted at its maximum, where no finite coefficient exists, so the
 fit is unstable and rarely completes every group. A clique layer is skipped
 by the network resimulation and the edges correction, its edges are removed
 with departing nodes, and arriving nodes are placed on it under the rule
-chosen in \code{netclique}. The built-in infection modules read every layer
-alike; to give each layer its own transmission probability or act rate,
-pass \code{inf.prob} and \code{act.rate} as \code{\link{multilayer}} objects in \code{\link{param.net}}.
-The transmission matrix records the layer of every transmission in its
-\code{network} column.
+chosen in \code{netclique}.
+
+A fully observed network, a static \code{network} or a \code{networkDynamic} with
+edge spells from sensors, proximity loggers, or contact tracing, may be
+placed in the list with \code{\link{netcensus}}. Here estimation is skipped because
+the whole network is in hand rather than a sample to generalize from; the
+simulation reads the edges active at each time step from the observed
+object, and the node set is fixed, so vital dynamics are refused.
+
+The built-in infection modules read every layer alike; to give each layer
+its own transmission probability or act rate, pass \code{inf.prob} and
+\code{act.rate} as \code{\link{multilayer}} objects in \code{\link{param.net}}. The transmission
+matrix records the layer of every transmission in its \code{network} column.
 }
 
 \section{Restarting and Checkpointing}{
