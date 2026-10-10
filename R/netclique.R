@@ -373,14 +373,30 @@ group_edgelist <- function(group) {
 }
 
 # Append rows to a tergmLite edgelist, keeping its attributes (n and the
-# as.edgelist class and metadata) and its sorted order.
+# as.edgelist class and metadata) and its sorted order. A clique layer can
+# hold hundreds of thousands of edges and gains a few each step, so the new
+# rows are merged into place by position instead of sorting the whole
+# edgelist again; the result is the same as rbind() followed by a stable sort.
 add_edges_to_el <- function(el, new) {
   if (NROW(new) == 0) {
     return(el)
   }
   a <- attributes(el)
-  out <- rbind(matrix(el, ncol = 2), matrix(new, ncol = 2))
-  out <- out[order(out[, 1], out[, 2]), , drop = FALSE]
+  old <- matrix(el, ncol = 2)
+  new <- matrix(new, ncol = 2)
+  new <- new[order(new[, 1], new[, 2]), , drop = FALSE]
+  base <- as.numeric(max(old, new)) + 1
+  key.old <- old[, 1] * base + old[, 2]
+  if (is.unsorted(key.old)) {
+    out <- rbind(old, new)
+    out <- out[order(out[, 1], out[, 2]), , drop = FALSE]
+  } else {
+    pos <- findInterval(new[, 1] * base + new[, 2], key.old) +
+      seq_len(nrow(new))
+    out <- matrix(0L, nrow(old) + nrow(new), 2)
+    out[pos, ] <- new
+    out[-pos, ] <- old
+  }
   a$dim <- dim(out)
   a$dimnames <- NULL
   attributes(out) <- a
@@ -519,7 +535,9 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
   if (length(joining) == 0) {
     return(dat)
   }
-  in_group <- which(active == 1 & !is.na(group))
+  ## split only the groups being joined, which keeps the cost from growing
+  ## with the population
+  in_group <- which(active == 1 & group %in% group[joining])
   members <- split(in_group, group[in_group])
   el_new <- lapply(joining, function(i) {
     m <- members[[as.character(group[i])]]
@@ -693,9 +711,9 @@ move_to_group <- function(dat, ids, group, network = NULL) {
 
   ## edges from each moved node to every active member of its new group,
   ## including other nodes moved into the same group in this call
-  in_group <- which(active == 1 & !is.na(grp))
-  members <- split(in_group, grp[in_group])
   joining <- ids[!is.na(group)]
+  in_group <- which(active == 1 & grp %in% grp[joining])
+  members <- split(in_group, grp[in_group])
   el_new <- do.call(rbind, lapply(joining, function(i) {
     m <- members[[as.character(grp[i])]]
     m <- m[m != i]

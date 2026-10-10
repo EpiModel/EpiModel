@@ -520,6 +520,34 @@ test_that("print.param.net shows multilayer parameters", {
 param_open <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1,
                         a.rate = 0.05, ds.rate = 0.02, di.rate = 0.02)
 
+test_that("add_edges_to_el merges new rows as a full sort would", {
+  # the merge by position must give exactly rbind() followed by a stable sort,
+  # duplicates included, and fall back to the sort for an unsorted edgelist
+  sorted_rbind <- function(el, new) {
+    out <- rbind(matrix(el, ncol = 2), matrix(new, ncol = 2))
+    out[order(out[, 1], out[, 2]), , drop = FALSE]
+  }
+  set.seed(51)
+  for (i in 1:20) {
+    el <- unique(t(apply(matrix(sample(300, 400, TRUE), ncol = 2), 1, sort)))
+    el <- el[order(el[, 1], el[, 2]), , drop = FALSE]
+    storage.mode(el) <- "integer"
+    attr(el, "n") <- 300L
+    new <- t(apply(matrix(sample(300, 2 * sample(1:15, 1), TRUE), ncol = 2),
+                   1, sort))
+    new <- rbind(new, el[sample(nrow(el), 2), ])
+    out <- add_edges_to_el(el, new)
+    expect_equal(unclass(out)[, 1:2], sorted_rbind(el, new), ignore_attr = TRUE)
+    expect_equal(attr(out, "n"), 300L)
+  }
+  expect_equal(unclass(add_edges_to_el(el[0, , drop = FALSE], new))[, 1:2],
+               sorted_rbind(el[0, , drop = FALSE], new), ignore_attr = TRUE)
+  shuffled <- el[sample(nrow(el)), ]
+  expect_equal(unclass(add_edges_to_el(shuffled, new))[, 1:2],
+               sorted_rbind(shuffled, new), ignore_attr = TRUE)
+  expect_identical(add_edges_to_el(el, matrix(integer(0), ncol = 2)), el)
+})
+
 test_that("join: arrivals join a group in proportion to its size, tergmLite", {
   skip_on_cran()
   set.seed(21)

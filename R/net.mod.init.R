@@ -424,7 +424,7 @@ overwrite_attrs <- function(dat) {
     stop("init_attr should contains the same number of nodes as the model")
   }
 
-  new_attrs <- setdiff(names(init_attr), names(dat$attr))
+  new_attrs <- setdiff(names(init_attr), names(get_attr_list(dat)))
   if (length(new_attrs) > 0) {
     stop(
       "Some attributes in `init_attr` are not present in `dat`: ",

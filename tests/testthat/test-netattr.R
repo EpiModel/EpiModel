@@ -413,3 +413,25 @@ test_that("reinitialization a truncated netsim object", {
     time_attrs = c("infTime")
   ))
 })
+
+test_that("overwrite_attrs sets attributes from init_attr", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "age", rep(30, 50))
+  est <- netest(nw, ~edges, 25, dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init_with_attrs <- function(x, param, init, control, s) {
+    dat <- initialize.net(x, param, init, control, s)
+    overwrite_attrs(dat)
+  }
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, verbose = FALSE,
+                         initialize.FUN = init_with_attrs, save.run = TRUE)
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50))
+  expect_message(sim <- netsim(est, param, init, control), "init_attr used")
+  expect_equal(sim$run[[1]]$attr$age, 1:50)
+
+  # every column must name an attribute the model already has
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50, nope = 1))
+  expect_error(suppressMessages(netsim(est, param, init, control)),
+               "not present in `dat`: nope")
+})
