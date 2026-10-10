@@ -1086,8 +1086,9 @@ make_restart_point <- function(sim_obj, time_attrs,
     x
   })
 
-  # If transmat was saved, trim it and offset the `at` column
-  if (x$control$save.transmat) {
+  # If transmat was saved, trim it and offset the `at` column; a simulation
+  # without transmissions has no columns to offset
+  if (x$control$save.transmat && NROW(x$stats$transmat$sim1) > 0) {
     tsmt <- x$stats$transmat$sim1
     tsmt$at <- tsmt$at - time_offset
     x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]

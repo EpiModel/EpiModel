@@ -105,6 +105,24 @@ test_that("get_transmat error flags", {
   expect_error(get_transmat(mod, 1), "transmat not saved")
 })
 
+test_that("get_transmat returns no rows for a simulation without transmissions", {
+  skip_on_cran()
+  control0 <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE)
+  mod0 <- netsim(est, param.net(inf.prob = 0, inf.prob.g2 = 0), init, control0)
+  for (deduplicate in c(TRUE, FALSE)) {
+    a <- get_transmat(mod0, sim = 2, deduplicate = deduplicate)
+    expect_s3_class(a, "transmat")
+    expect_equal(nrow(a), 0)
+    expect_named(a, c("at", "sus", "inf"))
+  }
+
+  # with transmissions in another simulation, the columns are taken from it
+  mod$stats$transmat[[2]] <- mod0$stats$transmat[[1]]
+  a <- get_transmat(mod, sim = 2)
+  expect_equal(nrow(a), 0)
+  expect_named(a, names(get_transmat(mod, sim = 1)))
+})
+
 
 # get nwstats -------------------------------------------------------------
 

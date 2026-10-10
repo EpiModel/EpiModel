@@ -253,6 +253,9 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #'  * **finalProb:** the final transmission probability for the
 #'        transmission event.
 #'
+#' A simulation without transmissions gives a data frame with no rows and the
+#' columns of the other simulations in `x`, or, if none of them has a
+#' transmission either, the columns `at`, `sus`, and `inf`.
 #'
 #' @keywords extract
 #' @export
@@ -292,10 +295,20 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
   ## Extraction
   out <- x$stats$transmat[[sim]]
+  if (NCOL(out) == 0) {
+    # a simulation without transmissions is stored with no columns
+    filled <- Filter(NCOL, x$stats$transmat)
+    out <- if (length(filled) > 0) {
+      filled[[1]][0, , drop = FALSE]
+    } else {
+      data.frame(at = integer(0), sus = integer(0), inf = integer(0))
+    }
+  }
   out <- dplyr::as_tibble(out)
 
   if (deduplicate) {
-    out <- dplyr::sample_n(dplyr::group_by(out, .data$at, .data$sus), 1)
+    out <- dplyr::group_by(out, .data$at, .data$sus)
+    if (nrow(out) > 0) out <- dplyr::sample_n(out, 1)
   }
 
   class(out) <- c("transmat", class(out))

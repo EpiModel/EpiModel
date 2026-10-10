@@ -20,6 +20,7 @@
 - Fix `auto_update_attr()` so that a fixed `attr.rules` value of `NA` is accepted; the rule was compared with `==`, which is `NA` for that value and made the `if` fail.
 - Fix parameter and control updaters (`.param.updater.list` and `.control.updater.list`) for new values that are lists without names, including `multilayer()` objects. The updater merged a list value into the old one element by element by name, so a value with no names changed nothing, while the updater still reported the parameter as modified: an updater setting `inf.prob = multilayer(0.05, 0.1)` left the old per-layer values in place. Such values now replace the old value whole, and named lists are still merged by name. A `multilayer` value whose length does not match the number of network layers now stops with an error.
 - Fix `overwrite_attrs()`, which stopped with "Some attributes in `init_attr` are not present in `dat`" for every `init_attr` data frame. It checked the column names against `dat$attr`, which has been empty since nodal attributes moved under `dat$run`.
+- Fix `get_transmat()` for a simulation without transmissions, which stopped with the dplyr error "Must group by variables found in `.data`". It now returns a transmission matrix with no rows, with the columns of the other simulations in the object, or `at`, `sus`, and `inf` if none of them has a transmission either. `make_restart_point()` no longer warns about an unknown `at` column on such a simulation.
 
 ### OTHER
 
