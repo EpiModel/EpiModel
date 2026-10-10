@@ -662,6 +662,19 @@ test_that("parameter vectors with ten or more elements round trip", {
   expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
 })
 
+test_that("param.net_to_table refuses multilayer parameters", {
+  p <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
+  expect_error(param.net_to_table(p), "multilayer\\(\\) parameters: `inf.prob`")
+  p2 <- param.net(inf.prob = multilayer(0.3, c(0.1, 0.05)),
+                  act.rate = multilayer(1, 2))
+  expect_error(param.net_to_table(p2), "`inf.prob`, `act.rate`")
+
+  # without the multilayer parameters the rest converts as before
+  p2[c("inf.prob", "act.rate")] <- NULL
+  expect_silent(tbl <- param.net_to_table(p2))
+  expect_false(any(grepl("^(inf.prob|act.rate)", tbl$param)))
+})
+
 test_that("dot-prefixed parameter names are rejected as malformed", {
   skip_on_cran()
 

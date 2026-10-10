@@ -101,10 +101,29 @@ param.net_from_table <- function(long.param.df) {
 #'
 #' @inheritSection param.net_from_table long.param.df
 #'
+#' @details
+#' Parameters given per network layer with [multilayer()] are not supported
+#' and stop with an error. A parameter table records each element of a vector
+#' as its own row but not what the vector means, so a `multilayer` value
+#' would read back as a plain vector, which the built-in modules read as
+#' varying with the duration of infection rather than by layer. Remove such
+#' parameters before converting and set them again after reading the table
+#' back.
+#'
 #' @return  A `data.frame` of parameters.
 #'
 #' @export
 param.net_to_table <- function(params) {
+  # a multilayer value would flatten into a plain vector, which reads back
+  # with a different meaning
+  ml <- names(params)[vapply(params, inherits, logical(1), "multilayer")]
+  if (length(ml) > 0) {
+    stop("param.net_to_table() does not support multilayer() parameters: `",
+         paste(ml, collapse = "`, `"), "`. A parameter table cannot record ",
+         "that a value is given per network layer, so it would read back as ",
+         "a plain vector. Remove these parameters before converting and set ",
+         "them again after reading the table back.", call. = FALSE)
+  }
   flat_params <- flatten_params(params)
   check_params_names(names(flat_params))
   dplyr::tibble(

@@ -15,6 +15,15 @@ A \code{data.frame} of parameters.
 \description{
 Coerce a list of parameters to a \code{long.param.df}
 }
+\details{
+Parameters given per network layer with \code{\link[=multilayer]{multilayer()}} are not supported
+and stop with an error. A parameter table records each element of a vector
+as its own row but not what the vector means, so a \code{multilayer} value
+would read back as a plain vector, which the built-in modules read as
+varying with the duration of infection rather than by layer. Remove such
+parameters before converting and set them again after reading the table
+back.
+}
 \section{long.param.df}{
 
 It is possible to set input parameters using a specifically formatted
