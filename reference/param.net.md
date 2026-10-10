@@ -33,9 +33,14 @@ param.net(
 
   Probability of infection per transmissible act between a susceptible
   and an infected person. In two-group models, this is the probability
-  of infection to the group 1 nodes. This may also be a vector of
-  probabilities, with each element corresponding to the probability in
-  that time step of infection (see Time-Varying Parameters below).
+  of infection to the group 1 nodes. This may also vary with the
+  infected partner's duration of infection, given as a
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object (see Parameters by Duration of Infection below). In multi-layer
+  models, this may be a
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  object with one entry (a probability or a `by_infection_duration`
+  object) per network layer (see Multi-Layer Parameters below).
 
 - inter.eff:
 
@@ -52,9 +57,13 @@ param.net(
 - act.rate:
 
   Average number of transmissible acts *per partnership* per unit time
-  (see `act.rate` Parameter below). This may also be a vector of rates,
-  with each element corresponding to the rate in that time step of
-  infection (see Time-Varying Parameters below).
+  (see `act.rate` Parameter below). This may also vary with the infected
+  partner's duration of infection, given as a
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object (see Parameters by Duration of Infection below), or be a
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  object with one entry per network layer (see Multi-Layer Parameters
+  below).
 
 - rec.rate:
 
@@ -62,9 +71,10 @@ param.net(
   re-susceptibility (in `SIS` models). The recovery rate is the
   reciprocal of the disease duration. For two-group models, this is the
   recovery rate for group 1 persons only. This parameter is only used
-  for `SIR` and `SIS` models. This may also be a vector of rates, with
-  each element corresponding to the rate in that time step of infection
-  (see Time-Varying Parameters below).
+  for `SIR` and `SIS` models. This may also vary with the duration of
+  infection, given as a
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object (see Parameters by Duration of Infection below).
 
 - a.rate:
 
@@ -93,13 +103,21 @@ param.net(
 
   Probability of transmission given a transmissible act between a
   susceptible group 2 person and an infected group 1 person. It is the
-  probability of transmission to group 2 members.
+  probability of transmission to group 2 members. As for `inf.prob`, it
+  may be a
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  or
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  object.
 
 - rec.rate.g2:
 
   Average rate of recovery with immunity (in `SIR` models) or
   re-susceptibility (in `SIS` models) for group 2 persons. This
-  parameter is only used for two-group `SIR` and `SIS` models.
+  parameter is only used for two-group `SIR` and `SIS` models. As for
+  `rec.rate`, it may be a
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object.
 
 - a.rate.g2:
 
@@ -166,20 +184,50 @@ Therefore, the `act.rate` parameter has a different interpretation here,
 where it is the number of transmissible acts *per partnership* per unit
 time.
 
-## Time-Varying Parameters
+## Parameters by Duration of Infection
 
-The `inf.prob`, `act.rate`, `rec.rate` arguments (and their `.g2`
-companions) may be specified as time-varying parameters by passing in a
-vector of probabilities or rates, respectively. The value in each
-position on the vector then corresponds to the probability or rate at
-that discrete time step for the infected partner. For example, an
-`inf.prob` of `c(0.5, 0.5, 0.1)` would simulate a 0.5 transmission
-probability for the first two time steps of a person's infection,
-followed by a 0.1 for the third time step. If the infected person has
-not recovered or exited the population by the fourth time step, the
-third element in the vector will carry forward until one of those events
-occurs or the simulation ends. For further examples, see the [Network
-Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
+The `inf.prob`, `act.rate`, and `rec.rate` arguments (and their `.g2`
+companions) may vary with the duration of infection, given as
+[`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+objects, by stage or one value per time step since infection. For
+example,
+`inf.prob = by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))`
+gives a 0.5 transmission probability for the first two time steps of the
+infected partner's infection and 0.1 from the third time step on, until
+the person recovers, departs, or the simulation ends. This is variation
+over the course of each infection, not over calendar time; to change a
+parameter at a given time step of the simulation, use scenarios or
+parameter updaters (see
+[`vignette("model-parameters", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/model-parameters.md)).
+
+With the built-in model types, a plain vector of length greater than one
+passed to these arguments is an error. Before EpiModel 2.7.0, the
+built-in modules read such a vector as varying with the duration of
+infection; wrap it in
+[`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+for the same model. Custom modules read their parameters as they choose,
+so plain vectors remain available to them.
+
+## Multi-Layer Parameters
+
+In models with more than one network layer (a list of
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+and
+[`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+objects passed to
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)),
+the `inf.prob`, `inf.prob.g2`, and `act.rate` arguments may be given per
+layer as
+[`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+objects with one entry per layer, in the order of the layer list:
+`inf.prob = multilayer(0.45, 0.10)` sets a per-act transmission
+probability of 0.45 on the first layer and 0.10 on the second. Each
+entry may itself be a
+[`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+object. The built-in infection modules look up the entry for the layer
+each discordant edge belongs to; a parameter that is not a `multilayer`
+object applies to every layer. The transmission matrix records the layer
+of each transmission in its `network` column.
 
 ## Using a Parameter data.frame
 

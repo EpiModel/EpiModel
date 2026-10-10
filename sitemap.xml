@@ -30,8 +30,10 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/as.phylo.transmat.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/assign_groups.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/auto_update_attr.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/brewer_ramp.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/by_infection_duration.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/check_attr_lengths.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/check_degdist_bal.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/check_end_horizon_control.html</loc></url>
@@ -120,9 +122,12 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/merge.netsim.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/modules.icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/modules.net.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/move_to_group.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/multilayer.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/mutate_epi.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/net-accessor.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/netcensus.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/netclique.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/netdx.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/netest.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/netsim.html</loc></url>
@@ -161,6 +166,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/recovery.net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/remove_modules.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/resim_nets.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/sample_groups.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/saveout.dcm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/saveout.icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/saveout.net.html</loc></url>

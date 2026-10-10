@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.2</h4>
             
-            <h4 data-toc-skip class="date">2026-10-07</h4>
+            <h4 data-toc-skip class="date">2026-10-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/network-objects.Rmd" class="external-link"><code>vignettes/network-objects.Rmd</code></a></small>
       <div class="d-none name"><code>network-objects.Rmd</code></div>
@@ -70,10 +70,11 @@ v2.6.2</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette covers how to work with network objects, edgelists, and
-partnership histories in EpiModel network models with custom extension
-modules. It assumes familiarity with setting up and running network
-models with <code><a href="../reference/netsim.html">netsim()</a></code> and with the extension API. See the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
+<p>This vignette covers how to work with network objects, edgelists,
+multi-layer models, clique and observed network layers, and partnership
+histories in EpiModel network models with custom extension modules. It
+assumes familiarity with setting up and running network models with
+<code><a href="../reference/netsim.html">netsim()</a></code> and with the extension API. See the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for
 Epidemics</a> (NME) course materials and the <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a>
 for background.</p>
 <p>For working with nodal attributes and epidemic summary statistics,
@@ -158,7 +159,8 @@ simulation:</p>
 <code class="sourceCode R"><span><span class="va">transmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>This returns a <code>data.frame</code> with columns including
 <code>at</code> (time step), <code>sus</code> (ID of the newly infected
-node), <code>inf</code> (ID of the infecting node), <code>infDur</code>
+node), <code>inf</code> (ID of the infecting node), <code>network</code>
+(the layer on which the transmission occurred), <code>infDur</code>
 (duration of infector’s infection), <code>transProb</code>,
 <code>actRate</code>, and <code>finalProb</code>. Transmission matrices
 are saved by default (<code>save.transmat = TRUE</code> in
@@ -227,11 +229,11 @@ version of this function used in built-in models.</p>
 <p>EpiModel uses two ways to reference nodes:</p>
 <ul>
 <li><p><strong>By position:</strong> Think of it like a row number in a
-spreadsheet. <code>dat$attr$active[3]</code> accesses the third node’s
-value directly. This is the standard way to look up node information and
-is very fast. In a model with 100 nodes, positions range from 1 to 100.
-When nodes depart, they may be dropped from the vectors, freeing their
-position for new arrivals.</p></li>
+spreadsheet. <code>get_attr(dat, "active", posit_ids = 3)</code>
+accesses the third node’s value directly. This is the standard way to
+look up node information and is very fast. In a model with 100 nodes,
+positions range from 1 to 100. When nodes depart, they may be dropped
+from the vectors, freeing their position for new arrivals.</p></li>
 <li><p><strong>By <code>unique_id</code>:</strong> A globally unique
 integer attribute assigned to each node at creation and never reused.
 Slower to look up, but allows referencing nodes that have already
@@ -242,6 +244,481 @@ The <code><a href="../reference/unique_id-tools.html">get_unique_ids()</a></code
 functions perform the conversion. See
 <code><a href="../reference/unique_id-tools.html">help("unique_id-tools", package = "EpiModel")</a></code> for
 details.</p>
+</div>
+<div class="section level2">
+<h2 id="multi-layer-networks">Multi-Layer Networks<a class="anchor" aria-label="anchor" href="#multi-layer-networks"></a>
+</h2>
+<p>A multi-layer model has several edge sets over one node set, such as
+main and casual sexual partnerships, sexual and needle-sharing
+partnerships, or household and community contacts. Each layer estimated
+with <code><a href="../reference/netest.html">netest()</a></code> has its own formation and dissolution model,
+and infection can be transmitted across the edges of any layer. The node
+set, including the network size and the nodal attributes, is shared by
+all layers. A layer may also be a clique layer built with
+<code><a href="../reference/netclique.html">netclique()</a></code> or an observed network wrapped with
+<code><a href="../reference/netcensus.html">netcensus()</a></code>; both are described in the sections that
+follow. The <a href="https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html" class="external-link">Multi-Layer
+Networks</a> chapter of the NME course materials works through a
+complete two-layer model; this section summarizes the mechanics.</p>
+<div class="section level3">
+<h3 id="specifying-layers">Specifying Layers<a class="anchor" aria-label="anchor" href="#specifying-layers"></a>
+</h3>
+<p>Each layer is estimated with its own <code><a href="../reference/netest.html">netest()</a></code> call on
+the same starting network, so that every layer carries the same nodes
+and nodal attributes. The fitted layers are then passed to
+<code><a href="../reference/netsim.html">netsim()</a></code> as a list:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"race"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">est_main</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">nodematch</span><span class="op">(</span><span class="st">"race"</span><span class="op">)</span>,</span>
+<span>                   target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">240</span><span class="op">)</span>,</span>
+<span>                   coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">est_casl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">nodematch</span><span class="op">(</span><span class="st">"race"</span><span class="op">)</span>,</span>
+<span>                   target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">150</span><span class="op">)</span>,</span>
+<span>                   coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">est_main</span>, <span class="va">est_casl</span><span class="op">)</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+<p>The order of the list sets the network index of each layer: here the
+main layer is network 1 and the casual layer is network 2. Every
+accessor below refers to a layer by this index. <code><a href="../reference/netsim.html">netsim()</a></code>
+reads the nodal attributes from the network of the first layer in the
+list. Each layer is diagnosed separately with <code><a href="../reference/netdx.html">netdx()</a></code>, as
+in a single-layer model.</p>
+</div>
+<div class="section level3">
+<h3 id="per-layer-controls-and-parameters">Per-Layer Controls and Parameters<a class="anchor" aria-label="anchor" href="#per-layer-controls-and-parameters"></a>
+</h3>
+<p>The <code><a href="../reference/multilayer.html">multilayer()</a></code> function specifies one value per layer,
+in the order of the layer list. Four <code><a href="../reference/control.net.html">control.net()</a></code>
+arguments accept it: <code>nwstats.formula</code> (the network
+statistics recorded for each layer), <code>set.control.ergm</code>,
+<code>set.control.tergm</code>, and
+<code>tergmLite.track.duration</code>. In <code><a href="../reference/param.net.html">param.net()</a></code>,
+<code>inf.prob</code>, <code>inf.prob.g2</code>, and
+<code>act.rate</code> accept it, and the built-in infection modules then
+apply each layer’s value to the discordant edges of that layer. An
+argument that is not a <code>multilayer</code> object applies to every
+layer:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fu"><a href="../reference/multilayer.html">multilayer</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>                   act.rate <span class="op">=</span> <span class="fu"><a href="../reference/multilayer.html">multilayer</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">100</span>, nsims <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                       tergmLite <span class="op">=</span> <span class="cn">TRUE</span>, resimulate.network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                       nwstats.formula <span class="op">=</span> <span class="fu"><a href="../reference/multilayer.html">multilayer</a></span><span class="op">(</span><span class="st">"formation"</span>,</span>
+<span>                                                    <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">degree</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Each entry of a <code>multilayer</code> parameter may itself vary
+with the duration of infection, given as a
+<code><a href="../reference/by_infection_duration.html">by_infection_duration()</a></code> object:
+<code>inf.prob = multilayer(by_infection_duration(c(0.5, 0.2)), 0.1)</code>
+gives the first layer a probability of 0.5 in the first time step of an
+infection and 0.2 after.</p>
+<p>In a custom infection module, <code><a href="../reference/net-accessor.html">get_param()</a></code> returns the
+<code>multilayer</code> object, a list with one element per layer, and
+the <code>network</code> column of the discordant edgelist selects the
+element that applies to each edge:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">inf.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_param</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"inf.prob"</span><span class="op">)</span></span>
+<span><span class="va">del</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_discordant_edgelist.html">get_discordant_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, status.attr <span class="op">=</span> <span class="st">"status"</span>,</span>
+<span>                               head.status <span class="op">=</span> <span class="st">"i"</span>, tail.status <span class="op">=</span> <span class="st">"s"</span><span class="op">)</span></span>
+<span><span class="va">del</span><span class="op">$</span><span class="va">transProb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">inf.prob</span><span class="op">)</span><span class="op">[</span><span class="va">del</span><span class="op">$</span><span class="va">network</span><span class="op">]</span>  <span class="co"># one fixed value per layer</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="accessing-layers">Accessing Layers<a class="anchor" aria-label="anchor" href="#accessing-layers"></a>
+</h3>
+<p>The network accessors take the layer index in their
+<code>network</code> argument:</p>
+<ul>
+<li>
+<strong>Inside a module:</strong>
+<code>get_network(dat, network = 2)</code> and
+<code>get_edgelist(dat, network = 2)</code> read one layer, while
+<code><a href="../reference/get_edgelists_df.html">get_edgelists_df()</a></code> and
+<code><a href="../reference/get_discordant_edgelist.html">get_discordant_edgelist()</a></code> combine the layers and add a
+<code>network</code> column (see <em>Current Edgelists</em> above).
+<code>dat$num.nw</code> holds the number of layers.</li>
+<li>
+<strong>After the simulation:</strong>
+<code>get_network(sim, network = 2)</code> extracts one layer, and
+<code>get_nwstats(sim, network = 2)</code>,
+<code>print(sim, network = 2)</code>, and
+<code>plot(sim, type = "formation", network = 2)</code> report its
+network statistics.</li>
+<li>
+<strong>Transmissions:</strong> the transmission matrix records the
+layer of each transmission in its <code>network</code> column, so
+<code>table(get_transmat(sim)$network)</code> counts the transmissions
+on each layer.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="dependent-layers">Dependent Layers<a class="anchor" aria-label="anchor" href="#dependent-layers"></a>
+</h3>
+<p>Layers estimated separately are independent: the edges of one layer
+do not affect the formation of edges in another. Dependence between
+layers enters through a nodal attribute that summarizes one layer and
+appears in the formation model of another. Here, the formation of casual
+partnerships depends on whether a node has a main partner:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># nw carries a starting value of deg.main (1 if the node has a main partner)</span></span>
+<span><span class="va">est_casl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">nodematch</span><span class="op">(</span><span class="st">"race"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                     <span class="fu">nodefactor</span><span class="op">(</span><span class="st">"deg.main"</span><span class="op">)</span>,</span>
+<span>                   target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">150</span>, <span class="fl">40</span><span class="op">)</span>,</span>
+<span>                   coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">update_deg_main</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">network</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">network</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_degree.html">get_degree</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_edgelist.html">get_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"deg.main"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">deg</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">100</span>, nsims <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                       tergmLite <span class="op">=</span> <span class="cn">TRUE</span>, resimulate.network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                       dat.updates <span class="op">=</span> <span class="va">update_deg_main</span><span class="op">)</span></span></code></pre></div>
+<p>The starting values of the attribute should be consistent with the
+main layer, and they must be on the network of the first layer in the
+list, from which <code><a href="../reference/netsim.html">netsim()</a></code> reads nodal attributes. The
+attribute must then be kept current as the layers are resimulated. The
+<code>dat.updates</code> argument of <code><a href="../reference/control.net.html">control.net()</a></code> takes a
+function of <code>dat</code>, <code>at</code>, and <code>network</code>
+that <code><a href="../reference/netsim.html">netsim()</a></code> calls at every time step, including
+initialization, before the first layer is resimulated
+(<code>network = 0</code>) and after each layer is resimulated
+(<code>network = 1, 2, ...</code>). The function above recomputes
+<code>deg.main</code> after the main layer is redrawn, so that the
+casual layer is resimulated against the current main partnerships. When
+each layer depends on the other, the function also recomputes the
+attribute that summarizes the second layer; the NME chapter covers that
+case, including how to seed the starting values with
+<code>san()</code>.</p>
+<p>This pattern assumes <code>tergmLite = TRUE</code>, under which the
+resimulation reads nodal attributes from <code>dat</code>. In full mode,
+each network object carries its own copy of the nodal attributes, which
+<code><a href="../reference/nwupdate.net.html">nwupdate.net()</a></code> refreshes from <code>dat</code> once per
+time step, so an attribute set in <code>dat.updates</code> does not
+reach the next layer’s resimulation in the same time step. Because main
+partnerships begin and end while casual partnerships formed under the
+earlier value of <code>deg.main</code> persist, the cross-layer
+statistic can drift from its target during the simulation; recording it
+through <code>nwstats.formula</code> shows by how much.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="clique-layers">Clique Layers<a class="anchor" aria-label="anchor" href="#clique-layers"></a>
+</h2>
+<p>Some contact structures are groups by definition: every pair of
+people in a household, classroom, hospital ward, or ship cabin is in
+contact for as long as they share it. <code><a href="../reference/netclique.html">netclique()</a></code> builds a
+network layer of this kind from a grouping attribute, connecting every
+pair of nodes that share a value so that each group is a clique.
+<code><a href="../reference/netsim.html">netsim()</a></code> accepts the result anywhere in its list of layers,
+alongside layers estimated with <code><a href="../reference/netest.html">netest()</a></code>, and the edges of
+the layer never form or dissolve on their own.</p>
+<p>A clique layer is an addition to <code><a href="../reference/netest.html">netest()</a></code>, not a
+substitute for it. An ERGM remains the model for any network whose ties
+depend on nodal and dyadic predictors (degree, mixing by attribute,
+clustering), whether those ties turn over quickly, slowly, or not at
+all; a long partnership duration in <code><a href="../reference/dissolution_coefs.html">dissolution_coefs()</a></code>
+keeps a <code>netest</code> layer close to fixed. A clique layer has no
+tie-formation process to estimate. An ERGM could reproduce the cliques
+only through a <code>nodematch</code> term on the grouping attribute
+targeted at its maximum, where no finite coefficient exists. See
+<code><a href="../reference/netclique.html">help("netclique", package = "EpiModel")</a></code> for the full
+rationale.</p>
+<div class="section level3">
+<h3 id="building-a-clique-layer">Building a Clique Layer<a class="anchor" aria-label="anchor" href="#building-a-clique-layer"></a>
+</h3>
+<p>The grouping attribute is a vertex attribute (integer, numeric, or
+character, but not a factor) whose values partition the nodes into
+groups. Nodes with a missing (<code>NA</code>) value belong to no group
+and are isolates on the layer. Two helpers build the attribute:</p>
+<ul>
+<li>
+<code><a href="../reference/sample_groups.html">sample_groups()</a></code> builds a population one group at a time
+from a table of group types, such as household compositions by age
+group, and returns each node’s group ID together with the attributes its
+group type implies.</li>
+<li>
+<code><a href="../reference/assign_groups.html">assign_groups()</a></code> solves the reverse problem. It assigns
+group IDs to a population whose attributes already exist, drawing group
+sizes from a target distribution and keeping dependent members (such as
+children) in groups with an anchor member (such as an adult).</li>
+</ul>
+<p>Here, a population of 1,000 is drawn from four household types, and
+the same starting network is used for a household clique layer and a
+community TERGM layer:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sample_groups.html">sample_groups</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adult"</span> <span class="op">=</span> <span class="fl">0.25</span>, <span class="st">"adult adult"</span> <span class="op">=</span> <span class="fl">0.35</span>,</span>
+<span>                            <span class="st">"adult adult child"</span> <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>                            <span class="st">"adult adult child child"</span> <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span>
+<span>                    attr.name <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"age"</span>, <span class="va">hh</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"hh_id"</span>, <span class="va">hh</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">est_hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netclique.html">netclique</a></span><span class="op">(</span><span class="va">nw</span>, group.attr <span class="op">=</span> <span class="st">"hh_id"</span>, arrivals <span class="op">=</span> <span class="st">"join"</span><span class="op">)</span></span>
+<span><span class="va">est_com</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">nodematch</span><span class="op">(</span><span class="st">"age"</span><span class="op">)</span>,</span>
+<span>                  target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">300</span><span class="op">)</span>,</span>
+<span>                  coef.diss <span class="op">=</span> <span class="fu"><a href="../reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fu"><a href="../reference/multilayer.html">multilayer</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.05</span><span class="op">)</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">est_hh</span>, <span class="va">est_com</span><span class="op">)</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+<p>The household layer is network 1 and the community layer is network
+2, and the <code><a href="../reference/multilayer.html">multilayer()</a></code> parameter gives household contacts
+the higher per-act transmission probability. Since <code><a href="../reference/netsim.html">netsim()</a></code>
+reads nodal attributes from the first layer in the list, the grouping
+attribute should also be set on the network passed to
+<code><a href="../reference/netest.html">netest()</a></code> for the other layers, as it is here; when it is
+not, <code><a href="../reference/netsim.html">netsim()</a></code> copies it from the clique layer.</p>
+<p>Printing a <code>netclique</code> object shows the number of groups,
+the edge count, the mean degree, and the group size distribution, and
+<code>print(est_hh, by = "age")</code> adds the mean degree by a nodal
+attribute. There is no model to diagnose, so <code><a href="../reference/netdx.html">netdx()</a></code> does
+not accept a <code>netclique</code> object.</p>
+</div>
+<div class="section level3">
+<h3 id="clique-layers-during-simulation">Clique Layers During Simulation<a class="anchor" aria-label="anchor" href="#clique-layers-during-simulation"></a>
+</h3>
+<p>A clique layer is stored like any other layer: as an edgelist in
+tergmLite mode and as a <code>networkDynamic</code> object in full mode.
+The accessors in this vignette (<code><a href="../reference/get_network.html">get_network()</a></code>,
+<code><a href="../reference/get_edgelist.html">get_edgelist()</a></code>, <code><a href="../reference/get_edgelists_df.html">get_edgelists_df()</a></code>,
+<code><a href="../reference/get_discordant_edgelist.html">get_discordant_edgelist()</a></code>) read it without special
+handling, and the built-in infection modules transmit across its edges
+as on any other layer. The network resimulation and the edges correction
+skip the layer, so its edges change only when nodes depart, when nodes
+arrive, and when a module calls <code><a href="../reference/move_to_group.html">move_to_group()</a></code>. With the
+default <code>nwstats.formula = "formation"</code>, the network
+statistic recorded for the layer is its edge count.</p>
+</div>
+<div class="section level3">
+<h3 id="arrivals-and-departures">Arrivals and Departures<a class="anchor" aria-label="anchor" href="#arrivals-and-departures"></a>
+</h3>
+<p>Departing nodes are removed from a clique layer together with their
+edges, as on every other layer. Arriving nodes are placed on the layer
+under the rule chosen with the <code>arrivals</code> argument of
+<code><a href="../reference/netclique.html">netclique()</a></code>. The rule is applied within
+<code><a href="../reference/arrive_nodes.html">arrive_nodes()</a></code>, called from the built-in
+<code><a href="../reference/nwupdate.net.html">nwupdate.net()</a></code> module after the arrivals module has created
+the new nodes and set their other attributes:</p>
+<ul>
+<li>
+<code>"isolate"</code> (the default): the new node has no edges on
+the layer and its grouping attribute is <code>NA</code>. A custom module
+may place it later with <code><a href="../reference/move_to_group.html">move_to_group()</a></code>.</li>
+<li>
+<code>"new"</code>: each new node starts a group of size one, with a
+fresh group ID.</li>
+<li>
+<code>"join"</code>: each new node joins an existing group and is
+connected to every active member of that group, including other nodes
+joining the same group in the same time step. By default, the group is
+drawn with probability proportional to its current size.</li>
+</ul>
+<p>Under <code>"join"</code>, an <code>arrivals.FUN</code> function
+replaces the default draw. It is called as
+<code>arrivals.FUN(dat, at, new_ids, network)</code>, where
+<code>new_ids</code> holds the positional IDs of the new nodes, and it
+returns one group ID per new node (<code>NA</code> leaves that node as
+an isolate). Because it receives <code>dat</code>, it can read any nodal
+attribute. Here, each newborn joins a household that already has a
+child:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">est_hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netclique.html">netclique</a></span><span class="op">(</span><span class="va">nw</span>, group.attr <span class="op">=</span> <span class="st">"hh_id"</span>, arrivals <span class="op">=</span> <span class="st">"join"</span>,</span>
+<span>  arrivals.FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">new_ids</span>, <span class="va">network</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
+<span>    <span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
+<span>    <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>    <span class="va">existing</span> <span class="op">&lt;-</span> <span class="va">active</span> <span class="op">==</span> <span class="fl">1</span></span>
+<span>    <span class="va">existing</span><span class="op">[</span><span class="va">new_ids</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span>    <span class="va">pool</span> <span class="op">&lt;-</span> <span class="va">hh</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">existing</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">==</span> <span class="st">"child"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">hh</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span>    <span class="va">pool</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">pool</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">new_ids</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>The pool leaves out <code>new_ids</code>. When the arrivals module
+gives new nodes a default value of the grouping attribute, such as
+<code>0</code>, a pool taken from all nodes would contain that value,
+and every arrival that drew it would join the other arrivals in a
+spurious group. Define <code>arrivals.FUN</code> at the top level of a
+script or in a package: the layer keeps the function with its enclosing
+environment, and so does every simulation run from it.</p>
+<p>A custom arrivals module does not need to set the grouping attribute:
+the new nodes receive <code>NA</code> unless the module gives the
+attribute a default value, and the layer’s rule then places them either
+way. A module that does set the attribute itself should be paired with
+<code>arrivals = "join"</code> and an <code>arrivals.FUN</code> that
+returns those values,
+<code>function(dat, at, new_ids, network) get_attr(dat, "hh_id")[new_ids]</code>,
+so that the new nodes are connected to the members of their groups.</p>
+</div>
+<div class="section level3">
+<h3 id="moving-nodes-between-groups">Moving Nodes Between Groups<a class="anchor" aria-label="anchor" href="#moving-nodes-between-groups"></a>
+</h3>
+<p>The clique edges are built from the grouping attribute once, when the
+simulation starts. Setting the attribute with <code><a href="../reference/net-accessor.html">set_attr()</a></code>
+afterward does not rewire the layer: the old edges remain and the layer
+no longer matches the groups. <code><a href="../reference/move_to_group.html">move_to_group()</a></code> sets the
+attribute and the edges together, in either storage mode. Each moved
+node loses its edges to the members of its old group and is connected to
+every active member of its new group. In a model where <code>age</code>
+is in years, a module in which young adults leave home to start
+households of their own is:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">leave_home</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">hh_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
+<span>  <span class="va">elig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">active</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">&gt;=</span> <span class="fl">18</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">&lt;</span> <span class="fl">30</span><span class="op">)</span></span>
+<span>  <span class="va">movers</span> <span class="op">&lt;-</span> <span class="va">elig</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">elig</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">]</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">movers</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">new_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hh_id</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">movers</span><span class="op">)</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/move_to_group.html">move_to_group</a></span><span class="op">(</span><span class="va">dat</span>, ids <span class="op">=</span> <span class="va">movers</span>, group <span class="op">=</span> <span class="va">new_ids</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The <code>ids</code> argument takes positional IDs. The
+<code>group</code> argument takes one group ID per node, or a single
+value for all of them: an ID in use joins that group, an unused ID
+starts a new group, and <code>NA</code> takes the node out of its group.
+In a model with more than one clique layer, the <code>network</code>
+argument names the layer to change.</p>
+<p>The cumulative edgelist (see below) records the initial clique edges
+with a <code>start</code> of 0. Edges added by arrivals and moves, and
+edges ended by moves and departures, are recorded when the network
+resimulation module next updates the cumulative edgelist, which it does
+for every layer at every time step. A module that reads the cumulative
+edgelist later in the same time step as a move should call
+<code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> after the move.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="observed-network-layers">Observed Network Layers<a class="anchor" aria-label="anchor" href="#observed-network-layers"></a>
+</h2>
+<p><code><a href="../reference/netest.html">netest()</a></code> turns partial, usually egocentric, network data
+into a generative model that <code><a href="../reference/netsim.html">netsim()</a></code> can simulate from.
+When the whole network has been observed (every node and every contact,
+and for a dynamic network every time step), there is nothing to
+estimate: the observed object is what <code><a href="../reference/netsim.html">netsim()</a></code> would
+otherwise have to generate. <code><a href="../reference/netcensus.html">netcensus()</a></code> wraps such a
+network, either a static <code>network</code> object or a
+<code>networkDynamic</code> object with edge spells, as a layer that
+<code><a href="../reference/netsim.html">netsim()</a></code> accepts anywhere in its list of layers. Sensor,
+proximity-logger, contact-tracing, and animal-tracking datasets are the
+usual sources.</p>
+<p>Like a clique layer, an observed layer is an addition to
+<code><a href="../reference/netest.html">netest()</a></code>, not a substitute for it. It is the wrong tool for
+a sample from which one wants to generalize to a population, and it is
+not a way to model how the observed ties arise; a network whose ties are
+to be reproduced from their predictors is estimated with
+<code><a href="../reference/netest.html">netest()</a></code>, whatever their turnover. The <a href="https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html" class="external-link">Epidemics
+over Observed Networks</a> chapter of the NME course materials works
+through a complete example.</p>
+<div class="section level3">
+<h3 id="building-an-observed-layer">Building an Observed Layer<a class="anchor" aria-label="anchor" href="#building-an-observed-layer"></a>
+</h3>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statnet.org" class="external-link">networkDynamicData</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">concurrencyComparisonNets</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netcensus.html">netcensus</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
+<span><span class="va">obs</span></span></code></pre></div>
+<p><code><a href="../reference/netcensus.html">netcensus()</a></code> carries the vertex attributes of the
+observed network into the simulation as nodal attributes. Temporally
+extended vertex attributes (those ending in <code>.active</code>), such
+as the <code>status.active</code> attribute stored on <code>base</code>,
+are dropped with a message, since <code><a href="../reference/netsim.html">netsim()</a></code> keeps its own
+disease status. Printing a dynamic census shows the observation window
+and the number of edges active per step across it; printing a static
+census shows its edge count, mean degree, and number of isolates. As
+with a clique layer, there is no model to diagnose, so
+<code><a href="../reference/netdx.html">netdx()</a></code> does not accept a <code>netcensus</code>
+object.</p>
+</div>
+<div class="section level3">
+<h3 id="simulation-time-and-the-observation-window">Simulation Time and the Observation Window<a class="anchor" aria-label="anchor" href="#simulation-time-and-the-observation-window"></a>
+</h3>
+<p>A static census has the same edges at every time step. For a dynamic
+census, EpiModel time step <code>at</code> reads the edges active at
+time <code>at</code> of the observed object, so the simulation clock is
+the observation clock. The <code>window</code> argument of
+<code><a href="../reference/netcensus.html">netcensus()</a></code> sets the observation window. It defaults to the
+<code>net.obs.period</code> network attribute when the object has one,
+and otherwise to the range of the finite edge spell times; for
+<code>base</code>, the window runs from time 2 to time 102.</p>
+<p>By the <code>networkDynamic</code> convention, edges active at the
+last observed time stay active indefinitely, so a simulation that runs
+past the window sees a frozen edge set. Keep <code>nsteps</code> in
+<code><a href="../reference/control.net.html">control.net()</a></code> within the window; <code><a href="../reference/netsim.html">netsim()</a></code>
+warns when <code>nsteps</code> reaches its end:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.5</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">100</span>, nsims <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                       resimulate.network <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">obs</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+<p>An observed layer is skipped by the network resimulation whatever the
+value of <code>resimulate.network</code>. Setting it to
+<code>FALSE</code> is enough here because the only layer is observed;
+the setting matters only when an observed layer sits next to an
+estimated one.</p>
+</div>
+<div class="section level3">
+<h3 id="observed-layers-during-simulation">Observed Layers During Simulation<a class="anchor" aria-label="anchor" href="#observed-layers-during-simulation"></a>
+</h3>
+<p>Without <code>tergmLite</code>, the observed
+<code>networkDynamic</code> object is used as stored, and
+<code><a href="../reference/get_edgelist.html">get_edgelist()</a></code> reads the edges active at the current time
+step from it. Under <code>tergmLite</code>, the edgelist of the layer is
+replaced at every time step with the edges active in the observed
+object. Either way, the accessors read the layer as any other, and the
+built-in infection modules transmit across its edges. Next to other
+layers, the per-layer <code>inf.prob</code> and <code>act.rate</code>
+are set through <code><a href="../reference/multilayer.html">multilayer()</a></code>:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># nw_obs: an observed static network on the same nodes as the estimated layer</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/netcensus.html">netcensus</a></span><span class="op">(</span><span class="va">nw_obs</span><span class="op">)</span>, <span class="va">est</span><span class="op">)</span>,</span>
+<span>              <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fu"><a href="../reference/multilayer.html">multilayer</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.1</span><span class="op">)</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>              <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+<p>An observed layer differs from an estimated one in a few other
+respects:</p>
+<ul>
+<li>
+<strong>Fixed node set:</strong> a census has a fixed node set, so
+<code><a href="../reference/netsim.html">netsim()</a></code> refuses vital dynamics in a model with an observed
+layer, and <code><a href="../reference/arrive_nodes.html">arrive_nodes()</a></code> and <code><a href="../reference/depart_nodes.html">depart_nodes()</a></code>
+stop if a custom module tries to add or remove nodes. Vertex activity
+spells are not used: every node is present throughout, and a node absent
+from part of the observation simply has no contacts then.</li>
+<li>
+<strong>Network statistics:</strong> with the default
+<code>nwstats.formula = "formation"</code>, the statistic recorded for
+the layer is its edge count, summarized at every time step for a dynamic
+census. There are no target statistics, so <code>print(sim)</code> and
+<code>plot(sim, type = "formation")</code> show the recorded values
+without targets.</li>
+<li>
+<strong>Durations:</strong> duration tracking under
+<code>tergmLite</code> (<code>tergmLite.track.duration = TRUE</code>) is
+refused for a dynamic census, whose observed spells already carry the
+edge durations.</li>
+<li>
+<strong>Edge attributes:</strong> edge attributes such as contact
+duration or contact count are not read, so the layer is binary. A custom
+module can read them from the observed object, which the layer’s network
+parameter record holds for a dynamic census as
+<code>get_nwparam(dat, network = 1)$census.nw</code>.</li>
+<li>
+<strong>Module order:</strong> a module that reads the layer before
+the network resimulation module runs in a time step sees the previous
+step’s edges under <code>tergmLite</code>, but the current step’s edges
+in full mode, which reads the <code>networkDynamic</code> object
+directly. Modules added to <code><a href="../reference/control.net.html">control.net()</a></code> under new names
+run before the built-in modules unless <code>module.order</code> places
+them later.</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="cumulative-edgelist">Cumulative Edgelist<a class="anchor" aria-label="anchor" href="#cumulative-edgelist"></a>
@@ -292,7 +769,7 @@ column convention: <code>head</code>/<code>tail</code> (or
 </h3>
 <p>Cumulative edgelist tracking must be explicitly enabled in
 <code><a href="../reference/control.net.html">control.net()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"SI"</span>,</span>
 <span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -319,7 +796,7 @@ ended.</p>
 <p>The cumulative edgelist must be updated at each time step after
 network resimulation. In a custom module or at the end of
 initialization:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span>, truncate <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>truncate</code> argument controls memory usage:</p>
 <ul>
@@ -335,7 +812,7 @@ edges. Use this if you only need to track active edge start times.</li>
 memory use.</li>
 </ul>
 <p>To update all networks in a multi-layer model:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">n_network</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">num.nw</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">n_network</span>, truncate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -348,7 +825,7 @@ memory use.</li>
 </h4>
 <p>Inside a custom module, where <code>dat</code> is the live
 <code>netsim_dat</code> object:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>The returned <code>tibble</code> has four columns:</p>
 <ol style="list-style-type: decimal">
@@ -374,7 +851,7 @@ rather than silently returning empty.</p>
 <div class="section level4">
 <h4 id="during-simulation-multiple-networks">During Simulation: Multiple Networks<a class="anchor" aria-label="anchor" href="#during-simulation-multiple-networks"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cumls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df</a></span><span class="op">(</span><span class="va">dat</span>, networks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>networks</code> argument accepts a vector of network
 indices or <code>NULL</code> (all networks). The returned
@@ -388,7 +865,7 @@ which network layer each edge belongs to.</p>
 edgelist is attached to the <code>netsim</code> return object as
 <code>sim$cumulative.edgelist</code>, a list with one element per
 simulation:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">cumulative.edgelist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p>Each element is the <code>data.frame</code> produced by
 <code><a href="../reference/get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code> (<code>head</code>,
@@ -407,7 +884,7 @@ a matching time window.</p>
 </h3>
 <p><code><a href="../reference/get_partners.html">get_partners()</a></code> extracts the partners of specified nodes
 from the cumulative edgelist:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">partner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_partners.html">get_partners</a></span><span class="op">(</span></span>
 <span>    <span class="va">dat</span>,</span>
 <span>    <span class="va">index_posit_ids</span>,</span>
@@ -444,7 +921,7 @@ already departed.</p>
 </h3>
 <p><code><a href="../reference/get_cumulative_degree.html">get_cumulative_degree()</a></code> counts the number of distinct
 partners each node has had over the tracked history:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cum_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_degree.html">get_cumulative_degree</a></span><span class="op">(</span></span>
 <span>    <span class="va">dat</span>,</span>
 <span>    index_posit_ids <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,</span>
@@ -476,7 +953,7 @@ for two ways to construct input from other starting points.</p>
 <div class="section level3">
 <h3 id="forward-reachable-set">Forward Reachable Set<a class="anchor" aria-label="anchor" href="#forward-reachable-set"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_cumulative_edgelist.html">get_cumulative_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span></span>
@@ -506,7 +983,7 @@ themselves (size 1).</p>
 <div class="section level3">
 <h3 id="backward-reachable-set">Backward Reachable Set<a class="anchor" aria-label="anchor" href="#backward-reachable-set"></a>
 </h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bkwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_backward_reachable</a></span><span class="op">(</span></span>
 <span>  <span class="va">el_cuml</span>,</span>
 <span>  from_step <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -527,7 +1004,7 @@ from a non-<code>tergmLite</code> simulation, from a saved RDS file, or
 built manually), <code><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code> converts it into
 the same <code>data.frame</code> shape the reachability functions
 expect:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>   <span class="co"># full-mode netsim only</span></span>
 <span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist</a></span><span class="op">(</span><span class="va">nd</span><span class="op">)</span></span>
 <span><span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
@@ -545,7 +1022,7 @@ from multiple sources (e.g., separate simulation segments, or several
 <code><a href="../reference/as_cumulative_edgelist.html">as_cumulative_edgelist()</a></code> conversions stitched together),
 use <code><a href="../reference/dedup_cumulative_edgelist.html">dedup_cumulative_edgelist()</a></code> to merge overlapping spells
 into a single row:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dedup_cumulative_edgelist.html">dedup_cumulative_edgelist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">el_run1</span>, <span class="va">el_run2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -554,7 +1031,7 @@ into a single row:</p>
 <p>Both reachability functions use the <a href="https://progressr.futureverse.org/" class="external-link">progressr</a> package for
 progress reporting. Wrap calls in
 <code><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">progressr::with_progress()</a></code> to display a progress bar:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">260</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>

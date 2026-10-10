@@ -36,30 +36,39 @@ births and in-migration).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 library("EpiModel")
 nw <- network_initialize(100)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 x <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
+#> Starting maximum pseudolikelihood estimation (MPLE):
+#> Obtaining the responsible dyads.
+#> Evaluating the predictor and response matrix.
+#> Maximizing the pseudolikelihood.
+#> Finished MPLE.
 
 param <- param.net(inf.prob = 0.3)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5,
-                       tergmLite = TRUE)
+                       tergmLite = TRUE, resimulate.network = TRUE)
 
-# networkLite representation after initialization
-dat <- crosscheck.net(x, param, init, control)
-dat <- initialize.net(x, param, init, control)
+# Edgelist representation after initialization
+crosscheck.net(x, param, init, control)
+dat <- initialize.net(x, param, init, control, s = 1)
+el <- get_edgelist(dat, network = 1)
 
 # Check current network size
-attributes(dat$el[[1]])$n
+attributes(el)$n
+#> [1] 100
 
 # Add 10 vertices
-dat$el[[1]] <- add_vertices(dat$el[[1]], 10)
+el <- add_vertices(el, 10)
 
 # Check new network size
-attributes(dat$el[[1]])$n
-} # }
+attributes(el)$n
+#> [1] 110
 ```

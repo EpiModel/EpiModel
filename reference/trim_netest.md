@@ -20,7 +20,10 @@ trim_netest(
 
 - object:
 
-  A `netest` class object.
+  A `netest` class object, or a model-free layer of class
+  [`netclique`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+  or
+  [`netcensus`](https://epimodel.github.io/EpiModel/reference/netcensus.md).
 
 - as.networkLite:
 
@@ -40,7 +43,8 @@ trim_netest(
 
 A `netest` object with formula environments trimmed, optionally with the
 `newnetwork` element converted to a `networkLite` and the `fit` element
-removed.
+removed; or the model-free layer, with its network converted to a
+`networkLite`.
 
 ## Details
 
@@ -80,6 +84,15 @@ If `as.networkLite = TRUE`, converts `object$newnetwork` to a
 `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if present)
 from `object`.
 
+A model-free layer has no fit and no formulas, and its `summary`
+describes the layer rather than a fit, so only its network is converted.
+A
+[`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+layer is built as a `networkLite` already. A dynamic
+[`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+layer is returned unchanged, since `netsim` reads its edge spells from
+the `networkDynamic` object.
+
 ## Examples
 
 ``` r
@@ -103,17 +116,17 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Iteration 1 of at most 60:
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0041.
-#> Convergence test p-value: < 0.0001. 
+#> The log-likelihood improved by 0.0959.
+#> Convergence test p-value: 0.0002. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
 #> for degeneracy, use the mcmc.diagnostics() function.
 print(object.size(est), units = "KB")
-#> 414.3 Kb
+#> 442.7 Kb
 
 est.small <- trim_netest(est)
 print(object.size(est.small), units = "KB")
-#> 12.1 Kb
+#> 12.2 Kb
 # }
 ```

@@ -2,10 +2,10 @@
 
 ## Introduction
 
-This vignette covers how to work with network objects, edgelists, and
-partnership histories in EpiModel network models with custom extension
-modules. It assumes familiarity with setting up and running network
-models with
+This vignette covers how to work with network objects, edgelists,
+multi-layer models, clique and observed network layers, and partnership
+histories in EpiModel network models with custom extension modules. It
+assumes familiarity with setting up and running network models with
 [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 and with the extension API. See the [Network Modeling for
 Epidemics](https://epimodel.github.io/sismid/) (NME) course materials
@@ -111,7 +111,8 @@ transmat <- get_transmat(sim, sim = 1)
 
 This returns a `data.frame` with columns including `at` (time step),
 `sus` (ID of the newly infected node), `inf` (ID of the infecting node),
-`infDur` (duration of infector’s infection), `transProb`, `actRate`, and
+`network` (the layer on which the transmission occurred), `infDur`
+(duration of infector’s infection), `transProb`, `actRate`, and
 `finalProb`. Transmission matrices are saved by default
 (`save.transmat = TRUE` in
 [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)).
@@ -186,11 +187,11 @@ models.
 EpiModel uses two ways to reference nodes:
 
 - **By position:** Think of it like a row number in a spreadsheet.
-  `dat$attr$active[3]` accesses the third node’s value directly. This is
-  the standard way to look up node information and is very fast. In a
-  model with 100 nodes, positions range from 1 to 100. When nodes
-  depart, they may be dropped from the vectors, freeing their position
-  for new arrivals.
+  `get_attr(dat, "active", posit_ids = 3)` accesses the third node’s
+  value directly. This is the standard way to look up node information
+  and is very fast. In a model with 100 nodes, positions range from 1
+  to 100. When nodes depart, they may be dropped from the vectors,
+  freeing their position for new arrivals.
 
 - **By `unique_id`:** A globally unique integer attribute assigned to
   each node at creation and never reused. Slower to look up, but allows
@@ -205,6 +206,538 @@ and
 functions perform the conversion. See
 [`help("unique_id-tools", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
 for details.
+
+## Multi-Layer Networks
+
+A multi-layer model has several edge sets over one node set, such as
+main and casual sexual partnerships, sexual and needle-sharing
+partnerships, or household and community contacts. Each layer estimated
+with
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+has its own formation and dissolution model, and infection can be
+transmitted across the edges of any layer. The node set, including the
+network size and the nodal attributes, is shared by all layers. A layer
+may also be a clique layer built with
+[`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+or an observed network wrapped with
+[`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md);
+both are described in the sections that follow. The [Multi-Layer
+Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+chapter of the NME course materials works through a complete two-layer
+model; this section summarizes the mechanics.
+
+### Specifying Layers
+
+Each layer is estimated with its own
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+call on the same starting network, so that every layer carries the same
+nodes and nodal attributes. The fitted layers are then passed to
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md) as
+a list:
+
+``` r
+
+nw <- network_initialize(n = 1000)
+nw <- set_vertex_attribute(nw, "race", rep(0:1, each = 500))
+
+est_main <- netest(nw, formation = ~edges + nodematch("race"),
+                   target.stats = c(300, 240),
+                   coef.diss = dissolution_coefs(~offset(edges), duration = 100))
+est_casl <- netest(nw, formation = ~edges + nodematch("race"),
+                   target.stats = c(200, 150),
+                   coef.diss = dissolution_coefs(~offset(edges), duration = 10))
+
+sim <- netsim(list(est_main, est_casl), param, init, control)
+```
+
+The order of the list sets the network index of each layer: here the
+main layer is network 1 and the casual layer is network 2. Every
+accessor below refers to a layer by this index.
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+reads the nodal attributes from the network of the first layer in the
+list. Each layer is diagnosed separately with
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md), as
+in a single-layer model.
+
+### Per-Layer Controls and Parameters
+
+The
+[`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+function specifies one value per layer, in the order of the layer list.
+Four
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+arguments accept it: `nwstats.formula` (the network statistics recorded
+for each layer), `set.control.ergm`, `set.control.tergm`, and
+`tergmLite.track.duration`. In
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md),
+`inf.prob`, `inf.prob.g2`, and `act.rate` accept it, and the built-in
+infection modules then apply each layer’s value to the discordant edges
+of that layer. An argument that is not a `multilayer` object applies to
+every layer:
+
+``` r
+
+param <- param.net(inf.prob = multilayer(0.2, 0.1),
+                   act.rate = multilayer(2, 1))
+control <- control.net(type = "SI", nsteps = 100, nsims = 1,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       nwstats.formula = multilayer("formation",
+                                                    ~edges + degree(0:3)))
+```
+
+Each entry of a `multilayer` parameter may itself vary with the duration
+of infection, given as a
+[`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+object: `inf.prob = multilayer(by_infection_duration(c(0.5, 0.2)), 0.1)`
+gives the first layer a probability of 0.5 in the first time step of an
+infection and 0.2 after.
+
+In a custom infection module,
+[`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+returns the `multilayer` object, a list with one element per layer, and
+the `network` column of the discordant edgelist selects the element that
+applies to each edge:
+
+``` r
+
+inf.prob <- get_param(dat, "inf.prob")
+del <- get_discordant_edgelist(dat, status.attr = "status",
+                               head.status = "i", tail.status = "s")
+del$transProb <- unlist(inf.prob)[del$network]  # one fixed value per layer
+```
+
+### Accessing Layers
+
+The network accessors take the layer index in their `network` argument:
+
+- **Inside a module:** `get_network(dat, network = 2)` and
+  `get_edgelist(dat, network = 2)` read one layer, while
+  [`get_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_edgelists_df.md)
+  and
+  [`get_discordant_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.md)
+  combine the layers and add a `network` column (see *Current Edgelists*
+  above). `dat$num.nw` holds the number of layers.
+- **After the simulation:** `get_network(sim, network = 2)` extracts one
+  layer, and `get_nwstats(sim, network = 2)`, `print(sim, network = 2)`,
+  and `plot(sim, type = "formation", network = 2)` report its network
+  statistics.
+- **Transmissions:** the transmission matrix records the layer of each
+  transmission in its `network` column, so
+  `table(get_transmat(sim)$network)` counts the transmissions on each
+  layer.
+
+### Dependent Layers
+
+Layers estimated separately are independent: the edges of one layer do
+not affect the formation of edges in another. Dependence between layers
+enters through a nodal attribute that summarizes one layer and appears
+in the formation model of another. Here, the formation of casual
+partnerships depends on whether a node has a main partner:
+
+``` r
+
+# nw carries a starting value of deg.main (1 if the node has a main partner)
+est_casl <- netest(nw, formation = ~edges + nodematch("race") +
+                     nodefactor("deg.main"),
+                   target.stats = c(200, 150, 40),
+                   coef.diss = dissolution_coefs(~offset(edges), duration = 10))
+
+update_deg_main <- function(dat, at, network) {
+  if (network == 1) {
+    deg <- get_degree(get_edgelist(dat, network = 1))
+    dat <- set_attr(dat, "deg.main", pmin(deg, 1))
+  }
+  return(dat)
+}
+
+control <- control.net(type = "SI", nsteps = 100, nsims = 1,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       dat.updates = update_deg_main)
+```
+
+The starting values of the attribute should be consistent with the main
+layer, and they must be on the network of the first layer in the list,
+from which
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+reads nodal attributes. The attribute must then be kept current as the
+layers are resimulated. The `dat.updates` argument of
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+takes a function of `dat`, `at`, and `network` that
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+calls at every time step, including initialization, before the first
+layer is resimulated (`network = 0`) and after each layer is resimulated
+(`network = 1, 2, ...`). The function above recomputes `deg.main` after
+the main layer is redrawn, so that the casual layer is resimulated
+against the current main partnerships. When each layer depends on the
+other, the function also recomputes the attribute that summarizes the
+second layer; the NME chapter covers that case, including how to seed
+the starting values with `san()`.
+
+This pattern assumes `tergmLite = TRUE`, under which the resimulation
+reads nodal attributes from `dat`. In full mode, each network object
+carries its own copy of the nodal attributes, which
+[`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
+refreshes from `dat` once per time step, so an attribute set in
+`dat.updates` does not reach the next layer’s resimulation in the same
+time step. Because main partnerships begin and end while casual
+partnerships formed under the earlier value of `deg.main` persist, the
+cross-layer statistic can drift from its target during the simulation;
+recording it through `nwstats.formula` shows by how much.
+
+## Clique Layers
+
+Some contact structures are groups by definition: every pair of people
+in a household, classroom, hospital ward, or ship cabin is in contact
+for as long as they share it.
+[`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+builds a network layer of this kind from a grouping attribute,
+connecting every pair of nodes that share a value so that each group is
+a clique.
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+accepts the result anywhere in its list of layers, alongside layers
+estimated with
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+and the edges of the layer never form or dissolve on their own.
+
+A clique layer is an addition to
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+not a substitute for it. An ERGM remains the model for any network whose
+ties depend on nodal and dyadic predictors (degree, mixing by attribute,
+clustering), whether those ties turn over quickly, slowly, or not at
+all; a long partnership duration in
+[`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+keeps a `netest` layer close to fixed. A clique layer has no
+tie-formation process to estimate. An ERGM could reproduce the cliques
+only through a `nodematch` term on the grouping attribute targeted at
+its maximum, where no finite coefficient exists. See
+[`help("netclique", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+for the full rationale.
+
+### Building a Clique Layer
+
+The grouping attribute is a vertex attribute (integer, numeric, or
+character, but not a factor) whose values partition the nodes into
+groups. Nodes with a missing (`NA`) value belong to no group and are
+isolates on the layer. Two helpers build the attribute:
+
+- [`sample_groups()`](https://epimodel.github.io/EpiModel/reference/sample_groups.md)
+  builds a population one group at a time from a table of group types,
+  such as household compositions by age group, and returns each node’s
+  group ID together with the attributes its group type implies.
+- [`assign_groups()`](https://epimodel.github.io/EpiModel/reference/assign_groups.md)
+  solves the reverse problem. It assigns group IDs to a population whose
+  attributes already exist, drawing group sizes from a target
+  distribution and keeping dependent members (such as children) in
+  groups with an anchor member (such as an adult).
+
+Here, a population of 1,000 is drawn from four household types, and the
+same starting network is used for a household clique layer and a
+community TERGM layer:
+
+``` r
+
+hh <- sample_groups(1000, c("adult" = 0.25, "adult adult" = 0.35,
+                            "adult adult child" = 0.25,
+                            "adult adult child child" = 0.15),
+                    attr.name = "age")
+
+nw <- network_initialize(n = 1000)
+nw <- set_vertex_attribute(nw, "age", hh$age)
+nw <- set_vertex_attribute(nw, "hh_id", hh$group)
+
+est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join")
+est_com <- netest(nw, formation = ~edges + nodematch("age"),
+                  target.stats = c(400, 300),
+                  coef.diss = dissolution_coefs(~offset(edges), duration = 20))
+
+param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
+sim <- netsim(list(est_hh, est_com), param, init, control)
+```
+
+The household layer is network 1 and the community layer is network 2,
+and the
+[`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+parameter gives household contacts the higher per-act transmission
+probability. Since
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+reads nodal attributes from the first layer in the list, the grouping
+attribute should also be set on the network passed to
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+for the other layers, as it is here; when it is not,
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+copies it from the clique layer.
+
+Printing a `netclique` object shows the number of groups, the edge
+count, the mean degree, and the group size distribution, and
+`print(est_hh, by = "age")` adds the mean degree by a nodal attribute.
+There is no model to diagnose, so
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) does
+not accept a `netclique` object.
+
+### Clique Layers During Simulation
+
+A clique layer is stored like any other layer: as an edgelist in
+tergmLite mode and as a `networkDynamic` object in full mode. The
+accessors in this vignette
+([`get_network()`](https://epimodel.github.io/EpiModel/reference/get_network.md),
+[`get_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_edgelist.md),
+[`get_edgelists_df()`](https://epimodel.github.io/EpiModel/reference/get_edgelists_df.md),
+[`get_discordant_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.md))
+read it without special handling, and the built-in infection modules
+transmit across its edges as on any other layer. The network
+resimulation and the edges correction skip the layer, so its edges
+change only when nodes depart, when nodes arrive, and when a module
+calls
+[`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md).
+With the default `nwstats.formula = "formation"`, the network statistic
+recorded for the layer is its edge count.
+
+### Arrivals and Departures
+
+Departing nodes are removed from a clique layer together with their
+edges, as on every other layer. Arriving nodes are placed on the layer
+under the rule chosen with the `arrivals` argument of
+[`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md).
+The rule is applied within
+[`arrive_nodes()`](https://epimodel.github.io/EpiModel/reference/arrive_nodes.md),
+called from the built-in
+[`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
+module after the arrivals module has created the new nodes and set their
+other attributes:
+
+- `"isolate"` (the default): the new node has no edges on the layer and
+  its grouping attribute is `NA`. A custom module may place it later
+  with
+  [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md).
+- `"new"`: each new node starts a group of size one, with a fresh group
+  ID.
+- `"join"`: each new node joins an existing group and is connected to
+  every active member of that group, including other nodes joining the
+  same group in the same time step. By default, the group is drawn with
+  probability proportional to its current size.
+
+Under `"join"`, an `arrivals.FUN` function replaces the default draw. It
+is called as `arrivals.FUN(dat, at, new_ids, network)`, where `new_ids`
+holds the positional IDs of the new nodes, and it returns one group ID
+per new node (`NA` leaves that node as an isolate). Because it receives
+`dat`, it can read any nodal attribute. Here, each newborn joins a
+household that already has a child:
+
+``` r
+
+est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join",
+  arrivals.FUN = function(dat, at, new_ids, network) {
+    active <- get_attr(dat, "active")
+    hh <- get_attr(dat, "hh_id")
+    age <- get_attr(dat, "age")
+    existing <- active == 1
+    existing[new_ids] <- FALSE
+    pool <- hh[which(existing & age == "child" & !is.na(hh))]
+    pool[sample.int(length(pool), length(new_ids), replace = TRUE)]
+  })
+```
+
+The pool leaves out `new_ids`. When the arrivals module gives new nodes
+a default value of the grouping attribute, such as `0`, a pool taken
+from all nodes would contain that value, and every arrival that drew it
+would join the other arrivals in a spurious group. Define `arrivals.FUN`
+at the top level of a script or in a package: the layer keeps the
+function with its enclosing environment, and so does every simulation
+run from it.
+
+A custom arrivals module does not need to set the grouping attribute:
+the new nodes receive `NA` unless the module gives the attribute a
+default value, and the layer’s rule then places them either way. A
+module that does set the attribute itself should be paired with
+`arrivals = "join"` and an `arrivals.FUN` that returns those values,
+`function(dat, at, new_ids, network) get_attr(dat, "hh_id")[new_ids]`,
+so that the new nodes are connected to the members of their groups.
+
+### Moving Nodes Between Groups
+
+The clique edges are built from the grouping attribute once, when the
+simulation starts. Setting the attribute with
+[`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+afterward does not rewire the layer: the old edges remain and the layer
+no longer matches the groups.
+[`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md)
+sets the attribute and the edges together, in either storage mode. Each
+moved node loses its edges to the members of its old group and is
+connected to every active member of its new group. In a model where
+`age` is in years, a module in which young adults leave home to start
+households of their own is:
+
+``` r
+
+leave_home <- function(dat, at) {
+  active <- get_attr(dat, "active")
+  age <- get_attr(dat, "age")
+  hh_id <- get_attr(dat, "hh_id")
+  elig <- which(active == 1 & age >= 18 & age < 30)
+  movers <- elig[runif(length(elig)) < 0.01]
+  if (length(movers) > 0) {
+    new_ids <- max(hh_id, na.rm = TRUE) + seq_along(movers)
+    dat <- move_to_group(dat, ids = movers, group = new_ids)
+  }
+  return(dat)
+}
+```
+
+The `ids` argument takes positional IDs. The `group` argument takes one
+group ID per node, or a single value for all of them: an ID in use joins
+that group, an unused ID starts a new group, and `NA` takes the node out
+of its group. In a model with more than one clique layer, the `network`
+argument names the layer to change.
+
+The cumulative edgelist (see below) records the initial clique edges
+with a `start` of 0. Edges added by arrivals and moves, and edges ended
+by moves and departures, are recorded when the network resimulation
+module next updates the cumulative edgelist, which it does for every
+layer at every time step. A module that reads the cumulative edgelist
+later in the same time step as a move should call
+[`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+after the move.
+
+## Observed Network Layers
+
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
+turns partial, usually egocentric, network data into a generative model
+that
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+can simulate from. When the whole network has been observed (every node
+and every contact, and for a dynamic network every time step), there is
+nothing to estimate: the observed object is what
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+would otherwise have to generate.
+[`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+wraps such a network, either a static `network` object or a
+`networkDynamic` object with edge spells, as a layer that
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+accepts anywhere in its list of layers. Sensor, proximity-logger,
+contact-tracing, and animal-tracking datasets are the usual sources.
+
+Like a clique layer, an observed layer is an addition to
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+not a substitute for it. It is the wrong tool for a sample from which
+one wants to generalize to a population, and it is not a way to model
+how the observed ties arise; a network whose ties are to be reproduced
+from their predictors is estimated with
+[`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+whatever their turnover. The [Epidemics over Observed
+Networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html)
+chapter of the NME course materials works through a complete example.
+
+### Building an Observed Layer
+
+``` r
+
+library(networkDynamicData)
+data(concurrencyComparisonNets)
+
+obs <- netcensus(base)
+obs
+```
+
+[`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+carries the vertex attributes of the observed network into the
+simulation as nodal attributes. Temporally extended vertex attributes
+(those ending in `.active`), such as the `status.active` attribute
+stored on `base`, are dropped with a message, since
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+keeps its own disease status. Printing a dynamic census shows the
+observation window and the number of edges active per step across it;
+printing a static census shows its edge count, mean degree, and number
+of isolates. As with a clique layer, there is no model to diagnose, so
+[`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) does
+not accept a `netcensus` object.
+
+### Simulation Time and the Observation Window
+
+A static census has the same edges at every time step. For a dynamic
+census, EpiModel time step `at` reads the edges active at time `at` of
+the observed object, so the simulation clock is the observation clock.
+The `window` argument of
+[`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+sets the observation window. It defaults to the `net.obs.period` network
+attribute when the object has one, and otherwise to the range of the
+finite edge spell times; for `base`, the window runs from time 2 to time
+102.
+
+By the `networkDynamic` convention, edges active at the last observed
+time stay active indefinitely, so a simulation that runs past the window
+sees a frozen edge set. Keep `nsteps` in
+[`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+within the window;
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+warns when `nsteps` reaches its end:
+
+``` r
+
+param <- param.net(inf.prob = 0.5, act.rate = 1)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+                       resimulate.network = FALSE)
+sim <- netsim(obs, param, init, control)
+```
+
+An observed layer is skipped by the network resimulation whatever the
+value of `resimulate.network`. Setting it to `FALSE` is enough here
+because the only layer is observed; the setting matters only when an
+observed layer sits next to an estimated one.
+
+### Observed Layers During Simulation
+
+Without `tergmLite`, the observed `networkDynamic` object is used as
+stored, and
+[`get_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_edgelist.md)
+reads the edges active at the current time step from it. Under
+`tergmLite`, the edgelist of the layer is replaced at every time step
+with the edges active in the observed object. Either way, the accessors
+read the layer as any other, and the built-in infection modules transmit
+across its edges. Next to other layers, the per-layer `inf.prob` and
+`act.rate` are set through
+[`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md):
+
+``` r
+
+# nw_obs: an observed static network on the same nodes as the estimated layer
+sim <- netsim(list(netcensus(nw_obs), est),
+              param.net(inf.prob = multilayer(0.3, 0.1), act.rate = 1),
+              init, control)
+```
+
+An observed layer differs from an estimated one in a few other respects:
+
+- **Fixed node set:** a census has a fixed node set, so
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  refuses vital dynamics in a model with an observed layer, and
+  [`arrive_nodes()`](https://epimodel.github.io/EpiModel/reference/arrive_nodes.md)
+  and
+  [`depart_nodes()`](https://epimodel.github.io/EpiModel/reference/depart_nodes.md)
+  stop if a custom module tries to add or remove nodes. Vertex activity
+  spells are not used: every node is present throughout, and a node
+  absent from part of the observation simply has no contacts then.
+- **Network statistics:** with the default
+  `nwstats.formula = "formation"`, the statistic recorded for the layer
+  is its edge count, summarized at every time step for a dynamic census.
+  There are no target statistics, so `print(sim)` and
+  `plot(sim, type = "formation")` show the recorded values without
+  targets.
+- **Durations:** duration tracking under `tergmLite`
+  (`tergmLite.track.duration = TRUE`) is refused for a dynamic census,
+  whose observed spells already carry the edge durations.
+- **Edge attributes:** edge attributes such as contact duration or
+  contact count are not read, so the layer is binary. A custom module
+  can read them from the observed object, which the layer’s network
+  parameter record holds for a dynamic census as
+  `get_nwparam(dat, network = 1)$census.nw`.
+- **Module order:** a module that reads the layer before the network
+  resimulation module runs in a time step sees the previous step’s edges
+  under `tergmLite`, but the current step’s edges in full mode, which
+  reads the `networkDynamic` object directly. Modules added to
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  under new names run before the built-in modules unless `module.order`
+  places them later.
 
 ## Cumulative Edgelist
 

@@ -15,10 +15,14 @@ initialize.net(x, param, init, control, s)
 - x:
 
   If `control$start == 1`, either a fitted network model object of class
-  `netest` or a list of such objects. If `control$start > 1`, an object
-  of class `netsim`. When multiple networks are used, the node sets
-  (including network size and nodal attributes) are assumed to be the
-  same for all networks.
+  `netest`, a clique layer of class
+  [`netclique`](https://epimodel.github.io/EpiModel/reference/netclique.md),
+  an observed network layer of class
+  [`netcensus`](https://epimodel.github.io/EpiModel/reference/netcensus.md),
+  or a list of such objects. If `control$start > 1`, an object of class
+  `netsim`. When multiple networks are used, the node sets (including
+  network size and nodal attributes) are assumed to be the same for all
+  networks.
 
 - param:
 

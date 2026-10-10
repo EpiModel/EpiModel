@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.2</h4>
             
-            <h4 data-toc-skip class="date">2026-10-07</h4>
+            <h4 data-toc-skip class="date">2026-10-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/attributes-and-summary-statistics.Rmd" class="external-link"><code>vignettes/attributes-and-summary-statistics.Rmd</code></a></small>
       <div class="d-none name"><code>attributes-and-summary-statistics.Rmd</code></div>
@@ -102,7 +102,7 @@ statistics computed at each time step.</li>
 </h2>
 <p><em>Attributes</em> are characteristics of the nodes (e.g., persons)
 in the model at the current time step. They are stored as vectors in
-<code>dat$attr</code>, all of the same length as the number of
+<code>dat$run$attr</code>, all of the same length as the number of
 nodes.</p>
 <div class="section level3">
 <h3 id="core-attributes">Core Attributes<a class="anchor" aria-label="anchor" href="#core-attributes"></a>
@@ -153,9 +153,9 @@ be added, such as <code>age</code>, <code>race</code>, or
 <p>Each node can be referenced in two ways:</p>
 <ul>
 <li><p><strong>By position:</strong> Think of it like a row number in a
-spreadsheet. <code>dat$attr$active[3]</code> accesses the third node’s
-value directly. This is the standard way to look up node information and
-is very fast.</p></li>
+spreadsheet. <code>get_attr(dat, "active", posit_ids = 3)</code>
+accesses the third node’s value directly. This is the standard way to
+look up node information and is very fast.</p></li>
 <li><p><strong>By <code>unique_id</code>:</strong> A globally unique
 integer attribute assigned at creation and never reused. Slower to look
 up, but allows referencing nodes that have already departed.</p></li>

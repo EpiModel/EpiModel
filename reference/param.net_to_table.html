@@ -56,6 +56,15 @@
     <p>A <code>data.frame</code> of parameters.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Parameters given per network layer with <code><a href="multilayer.html">multilayer()</a></code> or by duration of
+infection with <code><a href="by_infection_duration.html">by_infection_duration()</a></code> are not supported and stop with
+an error. A parameter table records each element of a vector as its own row
+but not what the vector means, so such a value would read back as a plain
+vector, which the built-in modules do not accept. Remove these parameters
+before converting and set them again after reading the table back.</p>
+    </div>
+    <div class="section level2">
     <h2 id="long-param-df">long.param.df<a class="anchor" aria-label="anchor" href="#long-param-df"></a></h2>
 
 

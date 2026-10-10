@@ -580,6 +580,16 @@ describes the underlying updater mechanism directly. Use this when the
 scenario API is not flexible enough—for example, when you need relative
 (function-based) parameter changes or time-varying *control* settings.
 
+The updaters change parameters over calendar time, at given time steps
+of the simulation. Variation over the course of each infection, such as
+a transmission probability that is higher in an acute stage, is a
+different thing: give the parameter as a
+[`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+object in
+[`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+(see
+[`help("by_infection_duration", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)).
+
 ### Parameter Updaters
 
 An updater is a `list` with two required elements: `at` (the time step
@@ -606,7 +616,11 @@ list(
 ```
 
 This updater sets `inf.prob` to 0.3 and `act.rate` to 0.5 at time step
-10. Multiple updaters are combined in a list:
+10. In a multi-layer model, a new value may also be a
+[`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+object with one entry per network layer, such as
+`inf.prob = multilayer(0.3, 0.05)`, which replaces the current value for
+every layer. Multiple updaters are combined in a list:
 
 ``` r
 

@@ -47,6 +47,10 @@ A data frame with the following standard columns:
 - **finalProb:** the final transmission probability for the transmission
   event.
 
+A simulation without transmissions gives a data frame with no rows and
+the columns of the other simulations in `x`, or, if none of them has a
+transmission either, the columns `at`, `sus`, and `inf`.
+
 ## Examples
 
 ``` r

@@ -18,11 +18,15 @@ netsim(x, param, init, control)
 - x:
 
   If `control$start == 1`, either a fitted network model object of class
-  `netest` or a list of such objects. If `control$start > 1`, an object
-  of class `netsim`. When multiple networks are used (multi-layer
-  models), pass a list of `netest` objects, one per network layer; the
-  node sets (including network size and nodal attributes) are assumed to
-  be the same for all networks.
+  `netest`, a clique layer of class
+  [`netclique`](https://epimodel.github.io/EpiModel/reference/netclique.md),
+  an observed network layer of class
+  [`netcensus`](https://epimodel.github.io/EpiModel/reference/netcensus.md),
+  or a list of such objects. If `control$start > 1`, an object of class
+  `netsim`. When multiple networks are used (multi-layer models), pass a
+  list with one `netest`, `netclique`, or `netcensus` object per network
+  layer, in any order; the node sets (including network size and nodal
+  attributes) are assumed to be the same for all networks.
 
 - param:
 
@@ -200,6 +204,40 @@ documentation for specifying controls that vary by layer, and the
 Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
 chapter of the Network Modeling for Epidemics course materials for a
 worked example building from independent to cross-dependent layers.
+
+A layer made of groups that are cliques by definition, such as
+households, classrooms, wards, or cabins, may instead be built with
+[`netclique`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+and placed in the same list. This is an addition to `netest`, not a
+replacement for it. An ERGM remains the natural model for a network
+whose ties depend on nodal and dyadic predictors (degree, mixing by
+attribute, clustering), whether those ties turn over quickly, slowly, or
+not at all; the model is the compact description of that structure. In a
+clique layer every pair of group members is a contact and there is no
+tie-formation process to estimate. An ERGM can reproduce such cliques
+only through a `nodematch` term targeted at its maximum, where no finite
+coefficient exists, so the fit is unstable and rarely completes every
+group. A clique layer is skipped by the network resimulation and the
+edges correction, its edges are removed with departing nodes, and
+arriving nodes are placed on it under the rule chosen in `netclique`.
+
+A fully observed network, a static `network` or a `networkDynamic` with
+edge spells from sensors, proximity loggers, or contact tracing, may be
+placed in the list with
+[`netcensus`](https://epimodel.github.io/EpiModel/reference/netcensus.md).
+Here estimation is skipped because the whole network is in hand rather
+than a sample to generalize from; the simulation reads the edges active
+at each time step from the observed object, and the node set is fixed,
+so vital dynamics are refused.
+
+The built-in infection modules read every layer alike; to give each
+layer its own transmission probability or act rate, pass `inf.prob` and
+`act.rate` as
+[`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+objects in
+[`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md).
+The transmission matrix records the layer of every transmission in its
+`network` column.
 
 ## Restarting and Checkpointing
 

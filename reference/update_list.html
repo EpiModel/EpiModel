@@ -61,10 +61,13 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function updates list <code>x</code> by name. If <code>x</code> and <code>new.x</code>
-elements are not named, the function will not work properly. If a function is
-provided to replace an element that was originally not a function, this
-function will be applied to the original value.</p>
+    <p>This function updates list <code>x</code> by name. An element of <code>new.x</code> that is
+itself a named list is merged into the matching element of <code>x</code> the same
+way, by name. An element that is a list without names, such as a
+<code><a href="multilayer.html">multilayer()</a></code> object, has no names to merge by, so it replaces the
+matching element of <code>x</code> whole. If a function is provided to replace an
+element that was originally not a function, this function will be applied
+to the original value.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

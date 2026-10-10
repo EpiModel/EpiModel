@@ -70,9 +70,12 @@ simulated with <code><a href="netsim.html">netsim()</a></code>.</p>
 <dl><dt id="arg-inf-prob">inf.prob<a class="anchor" aria-label="anchor" href="#arg-inf-prob"></a></dt>
 <dd><p>Probability of infection per transmissible act between
 a susceptible and an infected person. In two-group models, this is the
-probability of infection to the group 1 nodes. This may also be a
-vector of probabilities, with each element corresponding to the
-probability in that time step of infection (see Time-Varying
+probability of infection to the group 1 nodes. This may also vary
+with the infected partner's duration of infection, given as a
+<code><a href="by_infection_duration.html">by_infection_duration()</a></code> object (see Parameters by Duration of
+Infection below). In multi-layer models, this may be a
+<code><a href="multilayer.html">multilayer()</a></code> object with one entry (a probability or a
+<code>by_infection_duration</code> object) per network layer (see Multi-Layer
 Parameters below).</p></dd>
 
 
@@ -91,9 +94,11 @@ the number of time steps specified in the model. This will default to
 
 <dt id="arg-act-rate">act.rate<a class="anchor" aria-label="anchor" href="#arg-act-rate"></a></dt>
 <dd><p>Average number of transmissible acts <em>per partnership</em>
-per unit time (see <code>act.rate</code> Parameter below). This may also be
-a vector of rates, with each element corresponding to the rate in
-that time step of infection (see Time-Varying Parameters below).</p></dd>
+per unit time (see <code>act.rate</code> Parameter below). This may also vary
+with the infected partner's duration of infection, given as a
+<code><a href="by_infection_duration.html">by_infection_duration()</a></code> object (see Parameters by Duration of
+Infection below), or be a <code><a href="multilayer.html">multilayer()</a></code> object with one entry per
+network layer (see Multi-Layer Parameters below).</p></dd>
 
 
 <dt id="arg-rec-rate">rec.rate<a class="anchor" aria-label="anchor" href="#arg-rec-rate"></a></dt>
@@ -101,9 +106,9 @@ that time step of infection (see Time-Varying Parameters below).</p></dd>
 or re-susceptibility (in <code>SIS</code> models). The recovery rate is the
 reciprocal of the disease duration. For two-group models, this is the
 recovery rate for group 1 persons only. This parameter is only used
-for <code>SIR</code> and <code>SIS</code> models. This may also be a vector
-of rates, with each element corresponding to the rate in that time
-step of infection (see Time-Varying Parameters below).</p></dd>
+for <code>SIR</code> and <code>SIS</code> models. This may also vary with the duration of
+infection, given as a <code><a href="by_infection_duration.html">by_infection_duration()</a></code> object (see
+Parameters by Duration of Infection below).</p></dd>
 
 
 <dt id="arg-a-rate">a.rate<a class="anchor" aria-label="anchor" href="#arg-a-rate"></a></dt>
@@ -133,14 +138,17 @@ parameter is only used for <code>SIR</code> models.</p></dd>
 <dt id="arg-inf-prob-g-">inf.prob.g2<a class="anchor" aria-label="anchor" href="#arg-inf-prob-g-"></a></dt>
 <dd><p>Probability of transmission given a transmissible act
 between a susceptible group 2 person and an infected group 1 person.
-It is the probability of transmission to group 2 members.</p></dd>
+It is the probability of transmission to group 2 members. As for
+<code>inf.prob</code>, it may be a <code><a href="by_infection_duration.html">by_infection_duration()</a></code> or <code><a href="multilayer.html">multilayer()</a></code>
+object.</p></dd>
 
 
 <dt id="arg-rec-rate-g-">rec.rate.g2<a class="anchor" aria-label="anchor" href="#arg-rec-rate-g-"></a></dt>
 <dd><p>Average rate of recovery with immunity (in <code>SIR</code>
 models) or re-susceptibility (in <code>SIS</code> models) for group 2
 persons. This parameter is only used for two-group <code>SIR</code> and
-<code>SIS</code> models.</p></dd>
+<code>SIS</code> models. As for <code>rec.rate</code>, it may be a
+<code><a href="by_infection_duration.html">by_infection_duration()</a></code> object.</p></dd>
 
 
 <dt id="arg-a-rate-g-">a.rate.g2<a class="anchor" aria-label="anchor" href="#arg-a-rate-g-"></a></dt>
@@ -207,21 +215,41 @@ a different interpretation here, where it is the number of transmissible acts
 <em>per partnership</em> per unit time.</p>
     </div>
     <div class="section level2">
-    <h2 id="time-varying-parameters">Time-Varying Parameters<a class="anchor" aria-label="anchor" href="#time-varying-parameters"></a></h2>
+    <h2 id="parameters-by-duration-of-infection">Parameters by Duration of Infection<a class="anchor" aria-label="anchor" href="#parameters-by-duration-of-infection"></a></h2>
 
 
-<p>The <code>inf.prob</code>, <code>act.rate</code>, <code>rec.rate</code> arguments (and their
-<code>.g2</code> companions) may be specified as time-varying parameters by passing
-in a vector of probabilities or rates, respectively. The value in each
-position on the vector then corresponds to the probability or rate at that
-discrete time step for the infected partner. For example, an <code>inf.prob</code>
-of <code>c(0.5, 0.5, 0.1)</code> would simulate a 0.5 transmission probability for
-the first two time steps of a person's infection, followed by a 0.1 for the
-third time step. If the infected person has not recovered or exited the
-population by the fourth time step, the third element in the vector will
-carry forward until one of those events occurs or the simulation ends. For
-further examples, see the
-<a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a> tutorials.</p>
+<p>The <code>inf.prob</code>, <code>act.rate</code>, and <code>rec.rate</code> arguments (and their <code>.g2</code>
+companions) may vary with the duration of infection, given as
+<code><a href="by_infection_duration.html">by_infection_duration()</a></code> objects, by stage or one value per time step
+since infection. For example,
+<code>inf.prob = by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))</code>
+gives a 0.5 transmission probability for the first two time steps of the
+infected partner's infection and 0.1 from the third time step on, until the
+person recovers, departs, or the simulation ends. This is variation over the course of each infection, not
+over calendar time; to change a parameter at a given time step of the
+simulation, use scenarios or parameter updaters (see
+<code><a href="../articles/model-parameters.html">vignette("model-parameters", package = "EpiModel")</a></code>).</p>
+<p>With the built-in model types, a plain vector of length greater than one
+passed to these arguments is an error. Before EpiModel 2.7.0, the built-in
+modules read such a vector as varying with the duration of infection; wrap
+it in <code><a href="by_infection_duration.html">by_infection_duration()</a></code> for the same model. Custom modules read
+their parameters as they choose, so plain vectors remain available to
+them.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="multi-layer-parameters">Multi-Layer Parameters<a class="anchor" aria-label="anchor" href="#multi-layer-parameters"></a></h2>
+
+
+<p>In models with more than one network layer (a list of <code><a href="netest.html">netest()</a></code> and
+<code><a href="netclique.html">netclique()</a></code> objects passed to <code><a href="netsim.html">netsim()</a></code>), the <code>inf.prob</code>, <code>inf.prob.g2</code>,
+and <code>act.rate</code> arguments may be given per layer as <code><a href="multilayer.html">multilayer()</a></code> objects
+with one entry per layer, in the order of the layer list:
+<code>inf.prob = multilayer(0.45, 0.10)</code> sets a per-act transmission probability
+of 0.45 on the first layer and 0.10 on the second. Each entry may itself be
+a <code><a href="by_infection_duration.html">by_infection_duration()</a></code> object. The built-in infection modules look up
+the entry for the layer each discordant edge belongs to; a parameter that
+is not a <code>multilayer</code> object applies to every layer. The transmission
+matrix records the layer of each transmission in its <code>network</code> column.</p>
     </div>
     <div class="section level2">
     <h2 id="using-a-parameter-data-frame">Using a Parameter data.frame<a class="anchor" aria-label="anchor" href="#using-a-parameter-data-frame"></a></h2>

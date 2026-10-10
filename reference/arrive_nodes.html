@@ -65,7 +65,11 @@ added</p>
     <p><code>nArrivals</code> new nodes are added to the network data stored on
 the <code>netsim_dat</code> object. If <code>tergmLite</code> is <code>FALSE</code>, these
 nodes are activated from the current timestep onward. Attributes for the new
-nodes must be set separately.</p>
+nodes must be set separately. On each clique layer (see <code><a href="netclique.html">netclique()</a></code>), the
+new nodes are then placed under the layer's <code>arrivals</code> rule, which may set
+the layer's grouping attribute for them and add their edges. A model with
+an observed network layer (see <code><a href="netcensus.html">netcensus()</a></code>) has a fixed node set, and
+both this function and <code><a href="depart_nodes.html">depart_nodes()</a></code> stop if asked to change it.</p>
 <p>Note that this function only supports arriving new nodes; returning to an
 active state nodes that were previously active in the network is not
 supported.</p>

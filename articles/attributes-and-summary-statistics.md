@@ -31,7 +31,7 @@ three types of data on `dat`:
 
 *Attributes* are characteristics of the nodes (e.g., persons) in the
 model at the current time step. They are stored as vectors in
-`dat$attr`, all of the same length as the number of nodes.
+`dat$run$attr`, all of the same length as the number of nodes.
 
 ### Core Attributes
 
@@ -75,8 +75,9 @@ be added, such as `age`, `race`, or `viral_load`.
 Each node can be referenced in two ways:
 
 - **By position:** Think of it like a row number in a spreadsheet.
-  `dat$attr$active[3]` accesses the third node’s value directly. This is
-  the standard way to look up node information and is very fast.
+  `get_attr(dat, "active", posit_ids = 3)` accesses the third node’s
+  value directly. This is the standard way to look up node information
+  and is very fast.
 
 - **By `unique_id`:** A globally unique integer attribute assigned at
   creation and never reused. Slower to look up, but allows referencing

@@ -19,8 +19,12 @@ init_nets(dat, x)
 
 - x:
 
-  Either a fitted network model object of class `netest`, or a list of
-  such objects.
+  Either a fitted network model object of class `netest`, a clique layer
+  of class
+  [`netclique`](https://epimodel.github.io/EpiModel/reference/netclique.md),
+  an observed network layer of class
+  [`netcensus`](https://epimodel.github.io/EpiModel/reference/netcensus.md),
+  or a list of such objects.
 
 ## Value
 

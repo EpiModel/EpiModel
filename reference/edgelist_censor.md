@@ -61,8 +61,8 @@ el <- as.data.frame(dx)
 edgelist_censor(el)
 #>             num       pct
 #> Left Cens.    0 0.0000000
-#> Right Cens.  56 0.1800643
+#> Right Cens.  54 0.1656442
 #> Both Cens.    0 0.0000000
-#> No Cens.    255 0.8199357
+#> No Cens.    272 0.8343558
 # }
 ```

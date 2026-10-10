@@ -26,5 +26,5 @@ the updated `netsim_dat` object with the nodes in `departures` departed
 
 If `tergmLite` is `FALSE`, the vertex ids `departures` are deactivated
 (from the current timestep onward) in each `networkDynamic` stored in
-`dat$nw`. If `tergmLite` is `TRUE`, the vertex ids `departures` are
-deleted from `dat$el`, `dat$attr`, and `dat$net_attr`.
+`dat$run$nw`. If `tergmLite` is `TRUE`, the vertex ids `departures` are
+deleted from `dat$run$el`, `dat$run$attr`, and `dat$run$net_attr`.

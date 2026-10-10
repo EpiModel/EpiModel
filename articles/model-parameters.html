@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.6.2</h4>
             
-            <h4 data-toc-skip class="date">2026-10-07</h4>
+            <h4 data-toc-skip class="date">2026-10-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/model-parameters.Rmd" class="external-link"><code>vignettes/model-parameters.Rmd</code></a></small>
       <div class="d-none name"><code>model-parameters.Rmd</code></div>
@@ -864,6 +864,13 @@ This section describes the underlying updater mechanism directly. Use
 this when the scenario API is not flexible enough—for example, when you
 need relative (function-based) parameter changes or time-varying
 <em>control</em> settings.</p>
+<p>The updaters change parameters over calendar time, at given time
+steps of the simulation. Variation over the course of each infection,
+such as a transmission probability that is higher in an acute stage, is
+a different thing: give the parameter as a
+<code><a href="../reference/by_infection_duration.html">by_infection_duration()</a></code> object in <code><a href="../reference/param.net.html">param.net()</a></code>
+(see
+<code><a href="../reference/by_infection_duration.html">help("by_infection_duration", package = "EpiModel")</a></code>).</p>
 <div class="section level3">
 <h3 id="parameter-updaters">Parameter Updaters<a class="anchor" aria-label="anchor" href="#parameter-updaters"></a>
 </h3>
@@ -888,8 +895,12 @@ named list of new parameter values):</p>
 <span><span class="co">#&gt; $param$act.rate</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span></code></pre></div>
 <p>This updater sets <code>inf.prob</code> to 0.3 and
-<code>act.rate</code> to 0.5 at time step 10. Multiple updaters are
-combined in a list:</p>
+<code>act.rate</code> to 0.5 at time step 10. In a multi-layer model, a
+new value may also be a <code><a href="../reference/multilayer.html">multilayer()</a></code> object with one entry
+per network layer, such as
+<code>inf.prob = multilayer(0.3, 0.05)</code>, which replaces the
+current value for every layer. Multiple updaters are combined in a
+list:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list.of.updaters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>

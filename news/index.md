@@ -25,6 +25,223 @@
   use
   [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md).
 
+- The `inf.prob`, `inf.prob.g2`, `act.rate`, `rec.rate`, and
+  `rec.rate.g2` arguments of
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  no longer read a plain vector as varying with the duration of
+  infection. Give such parameters with the new
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md),
+  either one value per time step since infection or by stage with a
+  `durations` argument:
+  `inf.prob = by_infection_duration(c(0.5, 0.5, 0.1))` is the model that
+  `inf.prob = c(0.5, 0.5, 0.1)` gave before, and
+  `by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))`
+  writes the same parameter by stage. The last stage lasts until the
+  infection ends, so its duration is `Inf`, and
+  [`print()`](https://rdrr.io/r/base/print.html) shows a stage table.
+  With the built-in model types, a plain vector of length greater than
+  one is now an error, raised by
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  before the simulation starts, or by the built-in module when an
+  extension model uses it. A plain vector carries no record of what its
+  positions mean, and the documentation called this form “time-varying”,
+  which suggested calendar time; changes over calendar time remain the
+  job of scenarios and parameter updaters. Custom modules, which give
+  plain vectors their own meaning (values by group or by layer), are
+  unaffected. A
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object may be an entry of a
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  parameter. DCMs and ICMs refuse these objects, and
+  [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
+  stops on them, since a parameter table cannot yet record what the
+  positions of a vector mean
+  ([\#1092](https://github.com/EpiModel/EpiModel/issues/1092)).
+
+### NEW FEATURES
+
+- Add
+  [`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md),
+  a clique network layer that
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  accepts anywhere in its layer list alongside `netest` fits. The layer
+  is built from a grouping attribute: every pair of nodes sharing a
+  value becomes an edge, so each household, classroom, ward, or cabin is
+  a clique, and the edges never form or dissolve. It is an addition to
+  `netest`, not a substitute for it: an ERGM remains the natural model
+  for a network whose ties depend on nodal and dyadic predictors,
+  whatever their turnover, and a long partnership duration keeps such a
+  layer close to fixed. `netclique` is for structures that are groups by
+  definition, where there is no tie-formation process to estimate and an
+  ERGM could reproduce the cliques only through a `nodematch` term
+  targeted at its maximum, where no finite coefficient exists. The layer
+  is skipped by the network resimulation and the edges correction, its
+  edges are removed with departing nodes, and arriving nodes are placed
+  on it under one of three rules: `"isolate"` (no edges and no group),
+  `"new"` (a fresh group of size one, with an id never used before in
+  the simulation), or `"join"` (an existing group, drawn in proportion
+  to its size by default or chosen by a user function, with the new node
+  connected to every current member, including other nodes joining in
+  the same step). Before this, a household layer had to be carried into
+  `netsim` through
+  [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  and walked by a custom infection module, with the layer count toggled
+  around
+  [`resim_nets()`](https://epimodel.github.io/EpiModel/reference/resim_nets.md)
+  so that the resimulation would not see it; the EpiModel Gallery RSV
+  example and two applied COVID-19 models did exactly that.
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
+  refuses a `netclique` object with a message;
+  [`print()`](https://rdrr.io/r/base/print.html) shows the edge count,
+  mean degree, group size distribution, and, with `by`, mean degree by a
+  nodal attribute. The layer network is stored as a `networkLite`, which
+  keeps a household layer of several hundred thousand edges at a few
+  megabytes where a `network` object would take over a gigabyte, and
+  [`trim_netest()`](https://epimodel.github.io/EpiModel/reference/trim_netest.md)
+  accepts `netclique` and `netcensus` layers. Closes
+  [\#1081](https://github.com/EpiModel/EpiModel/issues/1081).
+- Add
+  [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md),
+  an observed network layer that
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  accepts anywhere in its layer list. It wraps a fully observed contact
+  network, a static `network` or a `networkDynamic` with edge spells,
+  and the simulation reads the edges active at each time step from the
+  observed object: without `tergmLite` the `networkDynamic` is used in
+  place, and under `tergmLite` the active edgelist is extracted every
+  step. Estimation is skipped because the whole network is in hand
+  rather than a sample to generalize from, which is a different reason
+  from the clique case, and the object is not a way to model how the
+  observed ties arise. The node set is fixed, so
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  refuses vital dynamics with a census layer and
+  [`arrive_nodes()`](https://epimodel.github.io/EpiModel/reference/arrive_nodes.md)
+  and
+  [`depart_nodes()`](https://epimodel.github.io/EpiModel/reference/depart_nodes.md)
+  stop if a custom module tries to change it; duration tracking is
+  refused for a dynamic census, whose spells carry the durations.
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  warns when `nsteps` reaches the end of the observation window, since
+  edges active at the last observed time stay active indefinitely.
+  [`print()`](https://rdrr.io/r/base/print.html) summarizes the edges
+  active over the window. This replaces the workflow of passing a
+  `networkDynamic` to
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  with custom initialization and infection modules, as in the Network
+  Modeling for Epidemics chapter on epidemics over observed networks.
+  Closes [\#937](https://github.com/EpiModel/EpiModel/issues/937).
+- [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+  now accepts `inf.prob`, `inf.prob.g2`, and `act.rate` as
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  objects with one entry per network layer, and the built-in infection
+  modules apply each layer’s value to the discordant edges of that
+  layer. Each entry may itself be a time-varying vector.
+  [`crosscheck.net()`](https://epimodel.github.io/EpiModel/reference/crosscheck.net.md)
+  checks that a `multilayer` parameter covers every layer. Parameter
+  tables cannot yet represent them, so
+  [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md)
+  stops on a `multilayer` parameter rather than writing it as a plain
+  vector ([\#1092](https://github.com/EpiModel/EpiModel/issues/1092)).
+  The transmission matrix already carried the layer of each transmission
+  in its `network` column.
+- Add two helpers for building the grouping attribute.
+  [`sample_groups()`](https://epimodel.github.io/EpiModel/reference/sample_groups.md)
+  builds a population from a table of group types with weights, such as
+  household compositions by age group, returning each node’s group id
+  and the attributes its type implies; it draws whole groups and fills
+  the last slots with types that fit, so the population has exactly the
+  requested size.
+  [`assign_groups()`](https://epimodel.github.io/EpiModel/reference/assign_groups.md)
+  solves the reverse problem, assigning group ids to a population whose
+  attributes already exist: it draws group sizes from a target
+  distribution, seeds each group with an anchor member (an adult),
+  places dependent members (children) in the open slots of anchored
+  groups in proportion to those slots, and fills the rest at random, so
+  that every dependent shares a group with an anchor.
+- Add
+  [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md),
+  which moves existing nodes to another group of a `netclique` layer
+  during a simulation and rewires the layer to match: each moved node
+  loses its edges to its old group and is connected to every active
+  member of its new group, in either network storage mode. The arrival
+  rules place new nodes, and departures remove nodes with their edges,
+  but people also change groups (a young adult leaving home, a couple
+  forming a household); setting the grouping attribute alone does not
+  rewire the layer, since its edges are built once from the attribute.
+  Moving nodes to an unused group id starts a new group, and `NA` takes
+  a node out of its group.
+
+### BUG FIXES
+
+- Fix the attribution of transmissions to layers in
+  [`infection.net()`](https://epimodel.github.io/EpiModel/reference/infection.net.md)
+  and
+  [`infection.2g.net()`](https://epimodel.github.io/EpiModel/reference/infection.2g.net.md)
+  for multi-layer models. The discordant edgelists of the layers were
+  bound in layer order and the transmission matrix keeps the first
+  successful exposure of each newly infected node, so a node exposed on
+  more than one layer in the same step was always credited to the
+  lowest-indexed layer. The bound edgelist is now shuffled when there is
+  more than one layer, so the recorded infector, and so the layer, is a
+  uniform draw among the node’s successful exposures. Single-layer
+  models are unaffected, and the total number of infections per step
+  does not change in either case.
+- Fix
+  [`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md)
+  so that a fixed `attr.rules` value of `NA` is accepted; the rule was
+  compared with `==`, which is `NA` for that value and made the `if`
+  fail.
+- Fix parameter and control updaters (`.param.updater.list` and
+  `.control.updater.list`) for new values that are lists without names,
+  including
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  objects. The updater merged a list value into the old one element by
+  element by name, so a value with no names changed nothing, while the
+  updater still reported the parameter as modified: an updater setting
+  `inf.prob = multilayer(0.05, 0.1)` left the old per-layer values in
+  place. Such values now replace the old value whole, and named lists
+  are still merged by name. A `multilayer` value whose length does not
+  match the number of network layers now stops with an error.
+- Fix
+  [`overwrite_attrs()`](https://epimodel.github.io/EpiModel/reference/overwrite_attrs.md),
+  which stopped with “Some attributes in `init_attr` are not present in
+  `dat`” for every `init_attr` data frame. It checked the column names
+  against `dat$attr`, which has been empty since nodal attributes moved
+  under `dat$run`.
+- Fix
+  [`get_transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
+  for a simulation without transmissions, which stopped with the dplyr
+  error “Must group by variables found in `.data`”. It now returns a
+  transmission matrix with no rows, with the columns of the other
+  simulations in the object, or `at`, `sus`, and `inf` if none of them
+  has a transmission either.
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  no longer warns about an unknown `at` column on such a simulation.
+
+### OTHER
+
+- Add Multi-Layer Networks, Clique Layers, and Observed Network Layers
+  sections to the “Working with Network Objects in EpiModel” vignette.
+  No vignette covered multi-layer models before. The new sections cover
+  passing a list of layers to
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+  per-layer controls and parameters with
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md),
+  reading each layer inside modules and after the simulation, dependent
+  layers kept current with `dat.updates`,
+  [`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+  layers (building the grouping attribute with
+  [`sample_groups()`](https://epimodel.github.io/EpiModel/reference/sample_groups.md)
+  or
+  [`assign_groups()`](https://epimodel.github.io/EpiModel/reference/assign_groups.md),
+  the arrival rules, and
+  [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md)),
+  and
+  [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+  layers (the observation window, the fixed node set, and how the layer
+  is read in each storage mode). The Multi-Layer Networks chapter of the
+  Network Modeling for Epidemics course remains the full worked example.
+
 ## EpiModel 2.6.2
 
 CRAN release: 2026-09-16

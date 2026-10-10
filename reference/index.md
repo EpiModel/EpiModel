@@ -17,6 +17,8 @@ for each model class.
   : Epidemic Parameters for Stochastic Individual Contact Models
 - [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
   : Epidemic Parameters for Stochastic Network Models
+- [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  : Parameters That Vary With the Duration of Infection
 - [`init.dcm()`](https://epimodel.github.io/EpiModel/reference/init.dcm.md)
   : Initial Conditions for Deterministic Compartmental Models
 - [`init.icm()`](https://epimodel.github.io/EpiModel/reference/init.icm.md)
@@ -54,7 +56,7 @@ netsim().
   : Initialize Network Object
 
 - [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
-  : Specify Controls by Network
+  : Specify Controls and Parameters by Network
 
 - [`get_vertex_attribute()`](https://epimodel.github.io/EpiModel/reference/get_vertex_attribute.md)
   : Get Vertex Attribute on Network Object
@@ -64,6 +66,21 @@ netsim().
 
 - [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md)
   : Dynamic Network Model Estimation
+
+- [`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+  : Clique Layer for Network Epidemic Models
+
+- [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
+  : Observed Network Layer for Network Epidemic Models
+
+- [`sample_groups()`](https://epimodel.github.io/EpiModel/reference/sample_groups.md)
+  : Sample a Population of Groups from a Table of Group Types
+
+- [`assign_groups()`](https://epimodel.github.io/EpiModel/reference/assign_groups.md)
+  : Assign Group Ids to an Existing Population
+
+- [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md)
+  : Move Nodes to Another Group of a Clique Layer
 
 - [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) :
   Dynamic Network Model Diagnostics
