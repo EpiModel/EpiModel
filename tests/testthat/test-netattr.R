@@ -12,8 +12,8 @@ test_that("Updating attributes in open populations", {
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
-  durs <- c(3, 100, 9, 10)
-  inf.probs <- by_infection_duration(rep(probs, durs))
+  durs <- c(3, 100, 9, Inf)
+  inf.probs <- by_infection_duration(probs, durations = durs)
   inf.probsf <- inf.probs * 2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,

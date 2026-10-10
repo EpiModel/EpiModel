@@ -101,12 +101,12 @@
 #' @section Parameters by Duration of Infection:
 #' The `inf.prob`, `act.rate`, and `rec.rate` arguments (and their `.g2`
 #' companions) may vary with the duration of infection, given as
-#' [by_infection_duration()] objects with one value per time step since
-#' infection. For example, `inf.prob = by_infection_duration(c(0.5, 0.5, 0.1))`
+#' [by_infection_duration()] objects, by stage or one value per time step
+#' since infection. For example,
+#' `inf.prob = by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))`
 #' gives a 0.5 transmission probability for the first two time steps of the
-#' infected partner's infection and 0.1 from the third time step on: the last
-#' value carries forward until the person recovers, departs, or the
-#' simulation ends. This is variation over the course of each infection, not
+#' infected partner's infection and 0.1 from the third time step on, until the
+#' person recovers, departs, or the simulation ends. This is variation over the course of each infection, not
 #' over calendar time; to change a parameter at a given time step of the
 #' simulation, use scenarios or parameter updaters (see
 #' `vignette("model-parameters", package = "EpiModel")`).
