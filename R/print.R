@@ -428,14 +428,20 @@ print.disscoef <- function(x, ...) {
 #'
 #' @keywords internal
 format_param <- function(param_name, param_value) {
-  if (is.numeric(param_value) && length(param_value) > 10) {
+  if (inherits(param_value, "by_infection_duration")) {
+    cat(param_name, "=", format(param_value), fill = 80)
+  } else if (is.numeric(param_value) && length(param_value) > 10) {
     cat(param_name, "=", param_value[1:10], "...", fill = 80)
   } else if (is.data.frame(param_value)) {
     cat(param_name, "= <data.frame>\n")
   } else if (inherits(param_value, "multilayer")) {
-    vals <- vapply(param_value,
-                   function(v) paste(deparse(v), collapse = ""),
-                   character(1))
+    vals <- vapply(param_value, function(v) {
+      if (inherits(v, "by_infection_duration")) {
+        format(v)
+      } else {
+        paste(deparse(v), collapse = "")
+      }
+    }, character(1))
     cat(paste0(param_name, " = multilayer(", paste(vals, collapse = ", "),
                ")\n"))
   } else if (is.list(param_value)) {

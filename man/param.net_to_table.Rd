@@ -16,13 +16,12 @@ A \code{data.frame} of parameters.
 Coerce a list of parameters to a \code{long.param.df}
 }
 \details{
-Parameters given per network layer with \code{\link[=multilayer]{multilayer()}} are not supported
-and stop with an error. A parameter table records each element of a vector
-as its own row but not what the vector means, so a \code{multilayer} value
-would read back as a plain vector, which the built-in modules read as
-varying with the duration of infection rather than by layer. Remove such
-parameters before converting and set them again after reading the table
-back.
+Parameters given per network layer with \code{\link[=multilayer]{multilayer()}} or by duration of
+infection with \code{\link[=by_infection_duration]{by_infection_duration()}} are not supported and stop with
+an error. A parameter table records each element of a vector as its own row
+but not what the vector means, so such a value would read back as a plain
+vector, which the built-in modules do not accept. Remove these parameters
+before converting and set them again after reading the table back.
 }
 \section{long.param.df}{
 

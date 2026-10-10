@@ -337,6 +337,8 @@ Through EpiModel v2.6.2, random parameters were specified with the `random.param
 
 The *scenarios* system described above uses an internal updater module to implement parameter changes at designated time steps. This section describes the underlying updater mechanism directly. Use this when the scenario API is not flexible enough---for example, when you need relative (function-based) parameter changes or time-varying *control* settings.
 
+The updaters change parameters over calendar time, at given time steps of the simulation. Variation over the course of each infection, such as a transmission probability that is higher in an acute stage, is a different thing: give the parameter as a `by_infection_duration()` object in `param.net()` (see `help("by_infection_duration", package = "EpiModel")`).
+
 ### Parameter Updaters
 
 An updater is a `list` with two required elements: `at` (the time step for the change) and `param` (a named list of new parameter values):

@@ -662,12 +662,14 @@ test_that("parameter vectors with ten or more elements round trip", {
   expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
 })
 
-test_that("param.net_to_table refuses multilayer parameters", {
+test_that("param.net_to_table refuses multilayer and duration parameters", {
   p <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
-  expect_error(param.net_to_table(p), "multilayer\\(\\) parameters: `inf.prob`")
+  expect_error(param.net_to_table(p), "parameters: `inf.prob`")
   p2 <- param.net(inf.prob = multilayer(0.3, c(0.1, 0.05)),
                   act.rate = multilayer(1, 2))
   expect_error(param.net_to_table(p2), "`inf.prob`, `act.rate`")
+  p3 <- param.net(inf.prob = by_infection_duration(c(0.5, 0.1)), act.rate = 1)
+  expect_error(param.net_to_table(p3), "by_infection_duration")
 
   # without the multilayer parameters the rest converts as before
   p2[c("inf.prob", "act.rate")] <- NULL

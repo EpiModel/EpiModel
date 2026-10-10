@@ -72,16 +72,18 @@ infection.net <- function(dat, at) {
       del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
-      # Calculate infection-stage (and layer-specific) transmission rates
-      del$transProb <- layer_stage_param(inf.prob, del$network, del$infDur)
+      # Transmission probability by duration of infection (and by layer)
+      del$transProb <- layer_duration_value(inf.prob, del$network, del$infDur,
+                                            "inf.prob")
 
       # Interventions
       if (!is.null(inter.eff) && at >= inter.start) {
         del$transProb <- del$transProb * (1 - inter.eff)
       }
 
-      # Calculate infection-stage (and layer-specific) act/contact rates
-      del$actRate <- layer_stage_param(act.rate, del$network, del$infDur)
+      # Act rate by duration of infection (and by layer)
+      del$actRate <- layer_duration_value(act.rate, del$network, del$infDur,
+                                          "act.rate")
 
       # Calculate final transmission probability per timestep
       del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
@@ -115,26 +117,6 @@ infection.net <- function(dat, at) {
   dat <- set_epi(dat, "si.flow", at, nInf)
 
   return(dat)
-}
-
-# Resolve a parameter that may vary by network layer (a `multilayer` object
-# with one entry per layer) and by stage of infection (a vector indexed by the
-# duration of infection, holding its last value) to one value per discordant
-# edge, given the edges' layers and infection durations.
-layer_stage_param <- function(x, network, infDur) {
-  if (!inherits(x, "multilayer")) {
-    return(stage_param(x, infDur))
-  }
-  out <- numeric(length(network))
-  for (k in unique(network)) {
-    idx <- which(network == k)
-    out[idx] <- stage_param(x[[k]], infDur[idx])
-  }
-  out
-}
-
-stage_param <- function(x, infDur) {
-  x[pmin(infDur, length(x))]
 }
 
 #' @title Primary Infection Module for netsim
@@ -216,14 +198,16 @@ infection.2g.net <- function(dat, at) {
       del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
-      # Calculate infection-stage (and layer-specific) transmission rates
+      # Transmission probability by duration of infection (and by layer)
       if (is.null(inf.prob.g2)) {
-        del$transProb <- layer_stage_param(inf.prob, del$network, del$infDur)
+        del$transProb <- layer_duration_value(inf.prob, del$network,
+                                              del$infDur, "inf.prob")
       } else {
         del$transProb <- ifelse(
           group[del$sus] == 1,
-          layer_stage_param(inf.prob, del$network, del$infDur),
-          layer_stage_param(inf.prob.g2, del$network, del$infDur)
+          layer_duration_value(inf.prob, del$network, del$infDur, "inf.prob"),
+          layer_duration_value(inf.prob.g2, del$network, del$infDur,
+                               "inf.prob.g2")
         )
       }
 
@@ -232,8 +216,9 @@ infection.2g.net <- function(dat, at) {
         del$transProb <- del$transProb * (1 - inter.eff)
       }
 
-      # Calculate infection-stage (and layer-specific) act/contact rates
-      del$actRate <- layer_stage_param(act.rate, del$network, del$infDur)
+      # Act rate by duration of infection (and by layer)
+      del$actRate <- layer_duration_value(act.rate, del$network, del$infDur,
+                                          "act.rate")
 
       # Calculate final transmission probability per timestep
       del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate

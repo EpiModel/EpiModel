@@ -57,6 +57,7 @@ reference:
       - param.dcm
       - param.icm
       - param.net
+      - by_infection_duration
       - init.dcm
       - init.icm
       - init.net

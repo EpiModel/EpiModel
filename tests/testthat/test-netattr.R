@@ -13,7 +13,7 @@ test_that("Updating attributes in open populations", {
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
   durs <- c(3, 100, 9, 10)
-  inf.probs <- rep(probs, durs)
+  inf.probs <- by_infection_duration(rep(probs, durs))
   inf.probsf <- inf.probs * 2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
