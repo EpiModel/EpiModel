@@ -345,7 +345,7 @@ init_nets <- function(dat, x) {
   groups <- length(unique(get_vertex_attribute(nw, "group")))
   dat <- set_param(dat, "groups", groups)
 
-  ## Pull attr on nw to dat$attr
+  ## Pull attr on nw to dat$run$attr
   dat <- copy_nwattr_to_datattr(dat, nw)
 
   ## record names of relevant vertex attributes

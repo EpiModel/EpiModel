@@ -21,7 +21,7 @@ Depart Nodes from the netsim_dat Object
 \details{
 If \code{tergmLite} is \code{FALSE}, the vertex ids
 \code{departures} are deactivated (from the current timestep onward) in each
-\code{networkDynamic} stored in \code{dat$nw}. If \code{tergmLite} is
-\code{TRUE}, the vertex ids \code{departures} are deleted from \code{dat$el},
-\code{dat$attr}, and \code{dat$net_attr}.
+\code{networkDynamic} stored in \code{dat$run$nw}. If \code{tergmLite} is
+\code{TRUE}, the vertex ids \code{departures} are deleted from \code{dat$run$el},
+\code{dat$run$attr}, and \code{dat$run$net_attr}.
 }

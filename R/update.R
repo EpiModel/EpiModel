@@ -23,7 +23,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' library("EpiModel")
 #' nw <- network_initialize(100)
 #' formation <- ~edges
@@ -34,21 +33,21 @@
 #' param <- param.net(inf.prob = 0.3)
 #' init <- init.net(i.num = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
-#'                        tergmLite = TRUE)
+#'                        tergmLite = TRUE, resimulate.network = TRUE)
 #'
-#' # networkLite representation after initialization
-#' dat <- crosscheck.net(x, param, init, control)
-#' dat <- initialize.net(x, param, init, control)
+#' # Edgelist representation after initialization
+#' crosscheck.net(x, param, init, control)
+#' dat <- initialize.net(x, param, init, control, s = 1)
+#' el <- get_edgelist(dat, network = 1)
 #'
 #' # Check current network size
-#' attributes(dat$el[[1]])$n
+#' attributes(el)$n
 #'
 #' # Add 10 vertices
-#' dat$el[[1]] <- add_vertices(dat$el[[1]], 10)
+#' el <- add_vertices(el, 10)
 #'
 #' # Check new network size
-#' attributes(dat$el[[1]])$n
-#' }
+#' attributes(el)$n
 #'
 add_vertices <- function(el, nv) {
   attributes(el)$n <- attributes(el)$n + nv
@@ -82,7 +81,6 @@ add_vertices <- function(el, nv) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' library("EpiModel")
 #' set.seed(12345)
 #' nw <- network_initialize(100)
@@ -94,25 +92,25 @@ add_vertices <- function(el, nv) {
 #' param <- param.net(inf.prob = 0.3)
 #' init <- init.net(i.num = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
-#'                        tergmLite = TRUE)
+#'                        tergmLite = TRUE, resimulate.network = TRUE)
 #'
 #' # Set seed for reproducibility
 #' set.seed(123456)
 #'
-#' # networkLite representation structure after initialization
-#' dat <- crosscheck.net(x, param, init, control)
-#' dat <- initialize.net(x, param, init, control)
+#' # Edgelist representation after initialization
+#' crosscheck.net(x, param, init, control)
+#' dat <- initialize.net(x, param, init, control, s = 1)
+#' el <- get_edgelist(dat, network = 1)
 #'
 #' # Current edges
-#' head(dat$el[[1]], 20)
+#' head(el, 20)
 #'
 #' # Remove nodes 1 and 2
 #' nodes.to.delete <- 1:2
-#' dat$el[[1]] <- delete_vertices(dat$el[[1]], nodes.to.delete)
+#' el <- delete_vertices(el, nodes.to.delete)
 #'
 #' # Newly permuted edges
-#' head(dat$el[[1]], 20)
-#' }
+#' head(el, 20)
 #'
 delete_vertices <- function(el, vid) {
 
@@ -167,9 +165,9 @@ delete_edges <- function(el, vid) {
 #'
 #' @details If `tergmLite` is `FALSE`, the vertex ids
 #' `departures` are deactivated (from the current timestep onward) in each
-#' `networkDynamic` stored in `dat$nw`. If `tergmLite` is
-#' `TRUE`, the vertex ids `departures` are deleted from `dat$el`,
-#' `dat$attr`, and `dat$net_attr`.
+#' `networkDynamic` stored in `dat$run$nw`. If `tergmLite` is
+#' `TRUE`, the vertex ids `departures` are deleted from `dat$run$el`,
+#' `dat$run$attr`, and `dat$run$net_attr`.
 #'
 #' @return the updated `netsim_dat` object with the nodes in
 #' `departures` departed

@@ -132,7 +132,7 @@ See also `discord_edgelist()` for the original, simpler version of this function
 
 EpiModel uses two ways to reference nodes:
 
-- **By position:** Think of it like a row number in a spreadsheet. `dat$attr$active[3]` accesses the third node's value directly. This is the standard way to look up node information and is very fast. In a model with 100 nodes, positions range from 1 to 100. When nodes depart, they may be dropped from the vectors, freeing their position for new arrivals.
+- **By position:** Think of it like a row number in a spreadsheet. `get_attr(dat, "active", posit_ids = 3)` accesses the third node's value directly. This is the standard way to look up node information and is very fast. In a model with 100 nodes, positions range from 1 to 100. When nodes depart, they may be dropped from the vectors, freeing their position for new arrivals.
 
 - **By `unique_id`:** A globally unique integer attribute assigned to each node at creation and never reused. Slower to look up, but allows referencing nodes that have already departed. Used by cumulative edgelists and attribute histories.
 
