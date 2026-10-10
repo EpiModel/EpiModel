@@ -4,7 +4,7 @@
 \alias{get_attr_prop}
 \title{Proportional Table of Vertex Attributes}
 \usage{
-get_attr_prop(dat, nwterms)
+get_attr_prop(dat, nwterms, attrs = NULL)
 }
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
@@ -12,11 +12,16 @@ object and other initialization information passed from
 \code{\link[=netsim]{netsim()}}.}
 
 \item{nwterms}{Vector of attributes on the network object, usually as
-output of \code{\link[=get_formula_term_attr]{get_formula_term_attr()}}.}
+output of \code{\link[=get_formula_term_attr]{get_formula_term_attr()}}. If \code{NULL}, no table is made.}
+
+\item{attrs}{Optional character vector of attribute names to restrict the
+tables to. If \code{NULL} (default), every nodal attribute is tabled.}
 }
 \value{
-A table containing the proportional distribution of each attribute in
-\code{nwterms}.
+A list of proportional tables, one for each nodal attribute (or each one
+named in \code{attrs}), other than \code{active}, \code{entrTime}, \code{exitTime}, \code{infTime},
+\code{group}, \code{status}, \code{na}, and \code{vertex.names}. Returns \code{NULL} if \code{nwterms} is
+\code{NULL}.
 }
 \description{
 Calculates the proportional distribution of each vertex
