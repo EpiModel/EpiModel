@@ -724,7 +724,8 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
       if (is.null(rule)) {
         rule <- "current"
       }
-      if (rule == "current") {
+      # identical() rather than ==, so that a fixed value of NA is a valid rule
+      if (identical(rule, "current")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
@@ -737,7 +738,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = curr.tab[[i]])
         }
-      } else if (rule == "t1") {
+      } else if (identical(rule, "t1")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
@@ -1085,8 +1086,9 @@ make_restart_point <- function(sim_obj, time_attrs,
     x
   })
 
-  # If transmat was saved, trim it and offset the `at` column
-  if (x$control$save.transmat) {
+  # If transmat was saved, trim it and offset the `at` column; a simulation
+  # without transmissions has no columns to offset
+  if (x$control$save.transmat && NROW(x$stats$transmat$sim1) > 0) {
     tsmt <- x$stats$transmat$sim1
     tsmt$at <- tsmt$at - time_offset
     x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
@@ -1106,7 +1108,8 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'              the `fit` element (if present) from the `netest`
 #'              object.
 #'
-#' @param object A `netest` class object.
+#' @param object A `netest` class object, or a model-free layer of class
+#'        [`netclique`] or [`netcensus`].
 #' @param as.networkLite If `TRUE`, converts `object$newnetwork`
 #'        to a `networkLite`.
 #' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
@@ -1148,10 +1151,17 @@ make_restart_point <- function(sim_obj, time_attrs,
 #' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
 #' present) from `object`.
 #'
+#' A model-free layer has no fit and no formulas, and its `summary` describes
+#' the layer rather than a fit, so only its network is converted. A
+#' [netclique()] layer is built as a `networkLite` already. A dynamic
+#' [netcensus()] layer is returned unchanged, since `netsim` reads its edge
+#' spells from the `networkDynamic` object.
+#'
 #' @return
 #' A `netest` object with formula environments trimmed, optionally with the
 #' `newnetwork` element converted to a `networkLite` and the
-#' `fit` element removed.
+#' `fit` element removed; or the model-free layer, with its network
+#' converted to a `networkLite`.
 #'
 #' @export
 #'
@@ -1172,6 +1182,14 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'
 trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
                         keep = character(0)) {
+  if (is_model_free_layer(object)) {
+    if (as.networkLite == TRUE && !isTRUE(object$dynamic) &&
+          !inherits(object$newnetwork, "networkLite")) {
+      object$newnetwork <- as.networkLite(object$newnetwork)
+    }
+    return(object)
+  }
+
   if (object$edapprox == TRUE) {
     object$formula <- trim_env(object$formula, keep = keep)
     if (object$nested.edapprox == TRUE) {

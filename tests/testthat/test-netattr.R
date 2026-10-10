@@ -12,8 +12,8 @@ test_that("Updating attributes in open populations", {
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
-  durs <- c(3, 100, 9, 10)
-  inf.probs <- rep(probs, durs)
+  durs <- c(3, 100, 9, Inf)
+  inf.probs <- by_infection_duration(probs, durations = durs)
   inf.probsf <- inf.probs * 2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
@@ -412,4 +412,26 @@ test_that("reinitialization a truncated netsim object", {
     sim_num = 1,
     time_attrs = c("infTime")
   ))
+})
+
+test_that("overwrite_attrs sets attributes from init_attr", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "age", rep(30, 50))
+  est <- netest(nw, ~edges, 25, dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init_with_attrs <- function(x, param, init, control, s) {
+    dat <- initialize.net(x, param, init, control, s)
+    overwrite_attrs(dat)
+  }
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, verbose = FALSE,
+                         initialize.FUN = init_with_attrs, save.run = TRUE)
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50))
+  expect_message(sim <- netsim(est, param, init, control), "init_attr used")
+  expect_equal(sim$run[[1]]$attr$age, 1:50)
+
+  # every column must name an attribute the model already has
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50, nope = 1))
+  expect_error(suppressMessages(netsim(est, param, init, control)),
+               "not present in `dat`: nope")
 })

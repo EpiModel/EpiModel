@@ -6,9 +6,12 @@
 #'
 #' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
-#'        probability of infection to the group 1 nodes. This may also be a
-#'        vector of probabilities, with each element corresponding to the
-#'        probability in that time step of infection (see Time-Varying
+#'        probability of infection to the group 1 nodes. This may also vary
+#'        with the infected partner's duration of infection, given as a
+#'        [by_infection_duration()] object (see Parameters by Duration of
+#'        Infection below). In multi-layer models, this may be a
+#'        [multilayer()] object with one entry (a probability or a
+#'        `by_infection_duration` object) per network layer (see Multi-Layer
 #'        Parameters below).
 #' @param inter.eff Efficacy of an intervention which affects the per-act
 #'        probability of infection. Efficacy is defined as 1 - the relative
@@ -18,16 +21,18 @@
 #'        the number of time steps specified in the model. This will default to
 #'        1 if `inter.eff` is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts *per partnership*
-#'        per unit time (see `act.rate` Parameter below). This may also be
-#'        a vector of rates, with each element corresponding to the rate in
-#'        that time step of infection (see Time-Varying Parameters below).
+#'        per unit time (see `act.rate` Parameter below). This may also vary
+#'        with the infected partner's duration of infection, given as a
+#'        [by_infection_duration()] object (see Parameters by Duration of
+#'        Infection below), or be a [multilayer()] object with one entry per
+#'        network layer (see Multi-Layer Parameters below).
 #' @param rec.rate Average rate of recovery with immunity (in `SIR` models)
 #'        or re-susceptibility (in `SIS` models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for group 1 persons only. This parameter is only used
-#'        for `SIR` and `SIS` models. This may also be a vector
-#'        of rates, with each element corresponding to the rate in that time
-#'        step of infection (see Time-Varying Parameters below).
+#'        for `SIR` and `SIS` models. This may also vary with the duration of
+#'        infection, given as a [by_infection_duration()] object (see
+#'        Parameters by Duration of Infection below).
 #' @param a.rate Arrival or entry rate. For one-group models, the arrival rate
 #'        is the rate of new arrivals per person per unit time. For two-group
 #'        models, the arrival rate is parameterized as a rate per group 1
@@ -42,11 +47,14 @@
 #'        parameter is only used for `SIR` models.
 #' @param inf.prob.g2 Probability of transmission given a transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
-#'        It is the probability of transmission to group 2 members.
+#'        It is the probability of transmission to group 2 members. As for
+#'        `inf.prob`, it may be a [by_infection_duration()] or [multilayer()]
+#'        object.
 #' @param rec.rate.g2 Average rate of recovery with immunity (in `SIR`
 #'        models) or re-susceptibility (in `SIS` models) for group 2
 #'        persons. This parameter is only used for two-group `SIR` and
-#'        `SIS` models.
+#'        `SIS` models. As for `rec.rate`, it may be a
+#'        [by_infection_duration()] object.
 #' @param a.rate.g2 Arrival or entry rate for group 2. This may either be
 #'        specified numerically as the rate of new arrivals per group 2 person
 #'        per unit time, or as `NA`, in which case the group 1 rate,
@@ -90,19 +98,37 @@
 #' a different interpretation here, where it is the number of transmissible acts
 #' *per partnership* per unit time.
 #'
-#' @section Time-Varying Parameters:
-#' The `inf.prob`, `act.rate`, `rec.rate` arguments (and their
-#' `.g2` companions) may be specified as time-varying parameters by passing
-#' in a vector of probabilities or rates, respectively. The value in each
-#' position on the vector then corresponds to the probability or rate at that
-#' discrete time step for the infected partner. For example, an `inf.prob`
-#' of `c(0.5, 0.5, 0.1)` would simulate a 0.5 transmission probability for
-#' the first two time steps of a person's infection, followed by a 0.1 for the
-#' third time step. If the infected person has not recovered or exited the
-#' population by the fourth time step, the third element in the vector will
-#' carry forward until one of those events occurs or the simulation ends. For
-#' further examples, see the
-#' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
+#' @section Parameters by Duration of Infection:
+#' The `inf.prob`, `act.rate`, and `rec.rate` arguments (and their `.g2`
+#' companions) may vary with the duration of infection, given as
+#' [by_infection_duration()] objects, by stage or one value per time step
+#' since infection. For example,
+#' `inf.prob = by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))`
+#' gives a 0.5 transmission probability for the first two time steps of the
+#' infected partner's infection and 0.1 from the third time step on, until the
+#' person recovers, departs, or the simulation ends. This is variation over the course of each infection, not
+#' over calendar time; to change a parameter at a given time step of the
+#' simulation, use scenarios or parameter updaters (see
+#' `vignette("model-parameters", package = "EpiModel")`).
+#'
+#' With the built-in model types, a plain vector of length greater than one
+#' passed to these arguments is an error. Before EpiModel 2.7.0, the built-in
+#' modules read such a vector as varying with the duration of infection; wrap
+#' it in `by_infection_duration()` for the same model. Custom modules read
+#' their parameters as they choose, so plain vectors remain available to
+#' them.
+#'
+#' @section Multi-Layer Parameters:
+#' In models with more than one network layer (a list of [netest()] and
+#' [netclique()] objects passed to [netsim()]), the `inf.prob`, `inf.prob.g2`,
+#' and `act.rate` arguments may be given per layer as [multilayer()] objects
+#' with one entry per layer, in the order of the layer list:
+#' `inf.prob = multilayer(0.45, 0.10)` sets a per-act transmission probability
+#' of 0.45 on the first layer and 0.10 on the second. Each entry may itself be
+#' a [by_infection_duration()] object. The built-in infection modules look up
+#' the entry for the layer each discordant edge belongs to; a parameter that
+#' is not a `multilayer` object applies to every layer. The transmission
+#' matrix records the layer of each transmission in its `network` column.
 #'
 #' @section Using a Parameter data.frame:
 #' It is possible to set input parameters using a specifically formatted
@@ -914,13 +940,14 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (inherits(x, "netest")) {
+      if (inherits(x, c("netest", "netclique", "netcensus"))) {
         x <- list(x)
       }
       if (!inherits(x, "list") || length(x) == 0 ||
-            !all(vapply(x, inherits, logical(1), "netest"))) {
-        stop("x must be either an object of class netest or a list of objects",
-             " of class netest when start == 1")
+            !all(vapply(x, inherits, logical(1),
+                        c("netest", "netclique", "netcensus")))) {
+        stop("x must be either an object of class netest, netclique, or ",
+             "netcensus, or a list of such objects, when start == 1")
       }
       if (!inherits(param, "param.net")) {
         stop("param must be an object of class param.net")
@@ -1087,17 +1114,98 @@ crosscheck.net <- function(x, param, init, control) {
          specified.")
   }
 
-  if (inherits(x, "netest")) {
+  if (inherits(x, c("netest", "netclique", "netcensus"))) {
     nwparam <- list(x)
   } else if (inherits(x, "netsim")) {
     nwparam <- x$nwparam
   } else if (inherits(x, "networkDynamic")) {
     nwparam <- list(x) # relevant to EpiModel gallery example
-  } else { # must be list of netest
+  } else { # must be list of netest, netclique, and netcensus
     nwparam <- x
   }
 
   num.nw <- length(nwparam)
+
+  # every layer must be built on the same node set
+  if (control[["start"]] == 1 && is.list(nwparam) &&
+        all(vapply(nwparam, inherits, logical(1),
+                   c("netest", "netclique", "netcensus")))) {
+    sizes <- vapply(nwparam, function(y) network.size(y$newnetwork), numeric(1))
+    if (length(unique(sizes)) > 1) {
+      stop("All network layers must have the same number of nodes; the layer ",
+           "sizes are ", paste(sizes, collapse = ", "), ".")
+    }
+  }
+
+  # an observed census has a fixed node set and carries its own edge spells
+  for (network in seq_len(num.nw)) {
+    if (!is_census_layer(nwparam[[network]])) {
+      next
+    }
+    if (isTRUE(param[["vital"]])) {
+      stop("Network ", network, " is a `netcensus` layer with a fixed node ",
+           "set; vital dynamics (a.rate, ds.rate, di.rate, dr.rate) are not ",
+           "supported with it.")
+    }
+    if (isTRUE(nwparam[[network]]$dynamic)) {
+      tld <- control[["tergmLite.track.duration"]]
+      tld <- if (is(tld, "multilayer")) tld[[network]] else tld
+      if (isTRUE(control[["tergmLite"]]) && isTRUE(tld)) {
+        stop("`tergmLite.track.duration` is not supported for network ",
+             network, ", a dynamic `netcensus` layer; its observed spells ",
+             "carry the edge durations.")
+      }
+      window <- nwparam[[network]]$window
+      if (!is.null(window) && is.finite(window[2]) &&
+            control[["nsteps"]] >= window[2]) {
+        warning("`nsteps` (", control[["nsteps"]], ") reaches the end of the ",
+                "observation window (", window[2], ") of network ", network,
+                ", a dynamic `netcensus` layer. Edges active at the last ",
+                "observed time stay active indefinitely, so steps past the ",
+                "window run on a frozen edge set.", call. = FALSE)
+      }
+    }
+  }
+
+  # arriving nodes get NA for the grouping attribute of a clique layer, and
+  # the layer's arrival rule then places them. A user rule for the attribute
+  # has its value replaced by the arrival rule, unless an arrivals.FUN under
+  # "join" reads that value back.
+  for (network in seq_len(num.nw)) {
+    group.attr <- nwparam[[network]]$group.attr
+    if (!is_model_free_layer(nwparam[[network]]) || is.null(group.attr)) {
+      next
+    }
+    rule <- control[["attr.rules"]][[group.attr]]
+    if (is.null(rule)) {
+      control[["attr.rules"]][[group.attr]] <- NA
+    } else if (!(length(rule) == 1 && is.na(rule)) &&
+                 is.null(nwparam[[network]]$arrivals.FUN)) {
+      warning("`attr.rules` in control.net() sets a rule for `", group.attr,
+              "`, the grouping attribute of clique layer ", network, ". The ",
+              "value it gives arriving nodes is replaced by the layer's ",
+              "arrival rule (\"", nwparam[[network]]$arrivals, "\"). To place ",
+              "each arrival in the group that value names, use arrivals = ",
+              "\"join\" with an arrivals.FUN that returns get_attr(dat, \"",
+              group.attr, "\")[new_ids].", call. = FALSE)
+    }
+  }
+
+  # parameters given per layer must cover every layer
+  for (param_name in c("inf.prob", "act.rate", "inf.prob.g2")) {
+    param_value <- param[[param_name]]
+    if (is(param_value, "multilayer") && length(param_value) != num.nw) {
+      stop("multilayer parameter `", param_name, "` has length ",
+           length(param_value), " but should have length ", num.nw, ".")
+    }
+  }
+
+  # the built-in modules read these parameters by duration of infection, which
+  # a vector expresses only through by_infection_duration(); custom modules
+  # give plain vectors their own meaning, so they are checked only here
+  if (!is.null(control[["type"]])) {
+    check_duration_params(param)
+  }
 
   # convert relevant control arguments to multilayer if they are not already, and check length
   for (control_arg_name in c("nwstats.formula", "set.control.ergm",
@@ -1111,11 +1219,16 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
-  # convert nwstats.formula = "formation" to actual formation formula
+  # convert nwstats.formula = "formation" to actual formation formula; a
+  # model-free layer has no formation model, so its edge count is recorded
   for (network in seq_len(num.nw)) {
     if (!is.null(control[["nwstats.formula"]][[network]]) &&
           control[["nwstats.formula"]][[network]] == "formation") {
-      control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
+      if (is_model_free_layer(nwparam[[network]])) {
+        control[["nwstats.formula"]][[network]] <- trim_env(~edges)
+      } else {
+        control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
+      }
     }
   }
 
@@ -1136,27 +1249,38 @@ crosscheck.net <- function(x, param, init, control) {
   assign("control", control, pos = parent.frame())
 }
 
-#' @title Specify Controls by Network
+#' @title Specify Controls and Parameters by Network
 #'
 #' @description This utility function allows specification of certain
-#'              [netsim()] controls to vary by network.  The
+#'              [netsim()] controls and parameters to vary by network.  The
 #'              [netsim()] control arguments currently supporting
 #'              `multilayer` specifications are `nwstats.formula`,
 #'              `set.control.ergm`, `set.control.tergm`, and
-#'              `tergmLite.track.duration`.
+#'              `tergmLite.track.duration`. The [param.net()] parameters
+#'              supporting them are `inf.prob`, `inf.prob.g2`, and
+#'              `act.rate`, which the built-in infection modules then apply
+#'              per layer.
 #'
-#' @param ... control arguments to apply to each network, with the index of the
-#'        network corresponding to the index of the control argument
+#' @param ... control arguments or parameter values to apply to each network,
+#'        with the index of the network corresponding to the index of the
+#'        argument
 #'
 #' @return an object of class `multilayer` containing the specified
-#'         control arguments
+#'         control arguments or parameter values
 #'
-#' @seealso [netsim()] for passing a list of [netest()] fits, one per layer.
-#'   The [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
+#' @seealso [netsim()] for passing a list of [netest()] fits and [netclique()]
+#'   layers, one per network. The
+#'   [Multi-Layer Networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
 #'   chapter of the Network Modeling for Epidemics course materials works
 #'   through a two-layer model in full.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # A household layer that transmits more per contact than the community layer
+#' param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
+#' }
 #'
 multilayer <- function(...) {
   out <- list(...)

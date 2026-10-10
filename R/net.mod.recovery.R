@@ -39,16 +39,10 @@ recovery.net <- function(dat, at) {
   nElig <- length(idsElig)
 
 
-  # Time-Varying Recovery Rate ----------------------------------------------
-  infDur <- at - infTime[active == 1 & status == "i"]
+  # Recovery Rate by Duration of Infection ----------------------------------
+  infDur <- at - infTime[idsElig]
   infDur[infDur == 0] <- 1
-  lrec.rate <- length(rec.rate)
-  if (lrec.rate == 1) {
-    ratesElig <- rec.rate
-  } else {
-    ratesElig <- ifelse(infDur <= lrec.rate, rec.rate[infDur],
-                        rec.rate[lrec.rate])
-  }
+  ratesElig <- infection_duration_value(rec.rate, infDur, "rec.rate")
 
 
   # Process -----------------------------------------------------------------
@@ -107,29 +101,15 @@ recovery.2g.net <- function(dat, at) {
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
-  # Time-Varying Recovery Rate ----------------------------------------------
-  infDur <- at - infTime[active == 1 & status == "i"]
+  # Recovery Rate by Duration of Infection ----------------------------------
+  infDur <- at - infTime[idsElig]
   infDur[infDur == 0] <- 1
-  lrec.rate <- length(rec.rate)
-  if (lrec.rate == 1) {
-    gElig <- group[idsElig]
-    rates <- c(rec.rate, rec.rate.g2)
-    ratesElig <- rates[gElig]
-  } else {
-    gElig <- group[idsElig]
-    if (is.null(rec.rate.g2)) {
-      rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur],
-                      rec.rate[lrec.rate])
-    } else {
-      rates <- rep(NA, length(infDur))
-      rates[gElig == 1] <- ifelse(infDur[gElig == 1] <= lrec.rate,
-                                  rec.rate[infDur[gElig == 1]],
-                                  rec.rate[lrec.rate])
-      rates[gElig == 2] <- ifelse(infDur[gElig == 2] <= length(rec.rate.g2),
-                                  rec.rate.g2[infDur[gElig == 2]],
-                                  rec.rate.g2[length(rec.rate.g2)])
-    }
-    ratesElig <- rates
+  gElig <- group[idsElig]
+  ratesElig <- infection_duration_value(rec.rate, infDur, "rec.rate")
+  if (!is.null(rec.rate.g2)) {
+    g2 <- which(gElig == 2)
+    ratesElig[g2] <- infection_duration_value(rec.rate.g2, infDur[g2],
+                                              "rec.rate.g2")
   }
 
 

@@ -240,6 +240,8 @@ v2.6.1 (#992) completed removal of long-deprecated argument names — they now h
 
 v2.7.0 (#1086) removed the random parameter interface: the `random.params` argument of `param.net()`, `param_random()`, `generate_random_params()`, and `get_param_set()`. `param.net(random.params = )` hard-errors. To vary parameters across simulations, run a table of draws as scenarios (see the Parameter Uncertainty section of the `model-parameters` vignette).
 
+v2.7.0 (#1093) replaced the plain-vector form of `inf.prob`, `inf.prob.g2`, `act.rate`, `rec.rate`, and `rec.rate.g2` in `param.net()`, which the built-in modules read by duration of infection, with `by_infection_duration()`. With a built-in `type`, a plain vector of length > 1 hard-errors in `crosscheck.net()`, and the built-in infection and recovery modules raise the same error when an extension model uses them. Custom modules keep plain vectors with whatever meaning they give them (by group in EpiModelHIV, by layer in EpiModelCOVID). In examples, docs, and tests, write `inf.prob = by_infection_duration(c(...))`, or by stage with `by_infection_duration(values, durations = c(..., Inf))`, and do not call this form "time-varying": changes over calendar time are scenarios and updaters. Parameter tables and scenario data frames cannot yet represent `by_infection_duration()` or `multilayer()` values (#1092).
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography (births/deaths reshape network), serosorting (using `status` as ERGM term), behavioral interventions (reduced act rates for diagnosed individuals), and built-in interventions (`inter.eff`, `inter.start`).

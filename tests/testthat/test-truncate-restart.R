@@ -65,7 +65,7 @@ test_that("truncate_sim.netsim delegates to the icm method", {
 
 context("make_restart_point validation and roundtrip")
 
-build_restart_sim <- function(nsteps = 5) {
+build_restart_sim <- function(nsteps = 5, inf.prob = 0.3) {
   nw <- network_initialize(n = 30)
   est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -75,7 +75,7 @@ build_restart_sim <- function(nsteps = 5) {
   control <- control.net(type = "SI", nsteps = nsteps, nsims = 1,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
-  netsim(est, param.net(inf.prob = 0.3),
+  netsim(est, param.net(inf.prob = inf.prob),
          init.net(i.num = 5), control)
 }
 
@@ -130,6 +130,13 @@ test_that("make_restart_point produces a trimmed netsim with reset time", {
   # Default-trimmed extras.
   expect_equal(rp$attr.history, list())
   expect_equal(rp$raw.records, list())
+})
+
+test_that("make_restart_point accepts a simulation without transmissions", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6, inf.prob = 0)
+  expect_silent(rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 1))
+  expect_equal(nrow(get_transmat(rp)), 0)
 })
 
 test_that("make_restart_point keeps multiple history steps when requested", {

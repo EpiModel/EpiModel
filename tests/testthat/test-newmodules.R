@@ -295,6 +295,19 @@ test_that("netsim with param updater", {
   expect_lt(n_obs, 31)
 })
 
+test_that("update_list merges named lists and replaces lists without names", {
+  old <- list(inf.prob = multilayer(0.3, 0.1), act.rate = 1,
+              nested = list(a = 1, b = 2), unnamed = list(1, 2), x = 2)
+  new <- list(inf.prob = multilayer(0.05, 0.1), act.rate = multilayer(1, 2),
+              nested = list(b = 3), unnamed = list(5), x = function(v) v * 3)
+  out <- update_list(old, new)
+  expect_identical(out$inf.prob, multilayer(0.05, 0.1))
+  expect_identical(out$act.rate, multilayer(1, 2))
+  expect_identical(out$nested, list(a = 1, b = 3))
+  expect_identical(out$unnamed, list(5))
+  expect_equal(out$x, 6)
+})
+
 context("Network Model with Scenarios")
 
 test_that("SIS with scenarios", {
@@ -647,6 +660,21 @@ test_that("parameter vectors with ten or more elements round trip", {
   for (i in 1:12) sc.df[[paste0("v_", i)]] <- i
   sc <- create_scenario_list(sc.df)
   expect_equal(sc[[1]][[".param.updater.list"]][[1]]$param$v, as.numeric(1:12))
+})
+
+test_that("param.net_to_table refuses multilayer and duration parameters", {
+  p <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
+  expect_error(param.net_to_table(p), "parameters: `inf.prob`")
+  p2 <- param.net(inf.prob = multilayer(0.3, c(0.1, 0.05)),
+                  act.rate = multilayer(1, 2))
+  expect_error(param.net_to_table(p2), "`inf.prob`, `act.rate`")
+  p3 <- param.net(inf.prob = by_infection_duration(c(0.5, 0.1)), act.rate = 1)
+  expect_error(param.net_to_table(p3), "by_infection_duration")
+
+  # without the multilayer parameters the rest converts as before
+  p2[c("inf.prob", "act.rate")] <- NULL
+  expect_silent(tbl <- param.net_to_table(p2))
+  expect_false(any(grepl("^(inf.prob|act.rate)", tbl$param)))
 })
 
 test_that("dot-prefixed parameter names are rejected as malformed", {

@@ -12,7 +12,8 @@ trim_netest(
 )
 }
 \arguments{
-\item{object}{A \code{netest} class object.}
+\item{object}{A \code{netest} class object, or a model-free layer of class
+\code{\link{netclique}} or \code{\link{netcensus}}.}
 
 \item{as.networkLite}{If \code{TRUE}, converts \code{object$newnetwork}
 to a \code{networkLite}.}
@@ -26,7 +27,8 @@ By default, all objects are removed.}
 \value{
 A \code{netest} object with formula environments trimmed, optionally with the
 \code{newnetwork} element converted to a \code{networkLite} and the
-\code{fit} element removed.
+\code{fit} element removed; or the model-free layer, with its network
+converted to a \code{networkLite}.
 }
 \description{
 Trims formula environments from the \code{netest} object.
@@ -68,6 +70,12 @@ simulation, any objects referenced in the formulas should be included in the
 If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
 present) from \code{object}.
+
+A model-free layer has no fit and no formulas, and its \code{summary} describes
+the layer rather than a fit, so only its network is converted. A
+\code{\link[=netclique]{netclique()}} layer is built as a \code{networkLite} already. A dynamic
+\code{\link[=netcensus]{netcensus()}} layer is returned unchanged, since \code{netsim} reads its edge
+spells from the \code{networkDynamic} object.
 }
 \examples{
 \donttest{
