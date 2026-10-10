@@ -109,6 +109,28 @@ test_that("netcensus drops temporally extended vertex attributes", {
   expect_equal(obs$summary$attributes, "sex")
 })
 
+test_that("trim_netest converts a static census and keeps a dynamic one", {
+  obs <- netcensus(nw_static)
+  tr <- trim_netest(obs)
+  expect_s3_class(tr, "netcensus")
+  expect_s3_class(tr$newnetwork, "networkLite")
+  expect_equal(tr$summary, obs$summary)
+  expect_equal(unclass(as.edgelist(tr$newnetwork))[, 1:2],
+               unclass(as.edgelist(nw_static))[, 1:2])
+  dyn <- suppressMessages(netcensus(nw_dyn))
+  expect_identical(trim_netest(dyn), dyn)
+
+  # the trimmed static census simulates in either storage mode
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  for (tergmLite in c(TRUE, FALSE)) {
+    control <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                           tergmLite = tergmLite,
+                           resimulate.network = tergmLite, verbose = FALSE)
+    sim <- netsim(tr, param, init, control)
+    expect_true(all(get_nwstats(sim, network = 1)$edges == 90))
+  }
+})
+
 test_that("netcensus validates its inputs", {
   expect_error(netcensus(list()), "class `network`")
   expect_error(netcensus(network::network.initialize(10, directed = TRUE)),

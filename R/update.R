@@ -263,9 +263,11 @@ arrive_nodes <- function(dat, nArrivals) {
       }
     }
 
-    ## place the new nodes on each clique layer under its arrival rule
+    ## place the new nodes on each clique layer under its arrival rule; a
+    ## layer that a custom module appended to the edgelists has no nwparam
+    ## record and so no rule
     new_ids <- n_old + seq_len(nArrivals)
-    for (net_index in seq_len(dat$num.nw)) {
+    for (net_index in seq_len(min(dat$num.nw, length(dat$nwparam)))) {
       if (is_clique_layer(dat$nwparam[[net_index]])) {
         dat <- clique_layer_arrivals(dat, net_index, new_ids)
       }

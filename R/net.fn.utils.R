@@ -1107,7 +1107,8 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'              the `fit` element (if present) from the `netest`
 #'              object.
 #'
-#' @param object A `netest` class object.
+#' @param object A `netest` class object, or a model-free layer of class
+#'        [`netclique`] or [`netcensus`].
 #' @param as.networkLite If `TRUE`, converts `object$newnetwork`
 #'        to a `networkLite`.
 #' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
@@ -1149,10 +1150,17 @@ make_restart_point <- function(sim_obj, time_attrs,
 #' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
 #' present) from `object`.
 #'
+#' A model-free layer has no fit and no formulas, and its `summary` describes
+#' the layer rather than a fit, so only its network is converted. A
+#' [netclique()] layer is built as a `networkLite` already. A dynamic
+#' [netcensus()] layer is returned unchanged, since `netsim` reads its edge
+#' spells from the `networkDynamic` object.
+#'
 #' @return
 #' A `netest` object with formula environments trimmed, optionally with the
 #' `newnetwork` element converted to a `networkLite` and the
-#' `fit` element removed.
+#' `fit` element removed; or the model-free layer, with its network
+#' converted to a `networkLite`.
 #'
 #' @export
 #'
@@ -1173,6 +1181,14 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'
 trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
                         keep = character(0)) {
+  if (is_model_free_layer(object)) {
+    if (as.networkLite == TRUE && !isTRUE(object$dynamic) &&
+          !inherits(object$newnetwork, "networkLite")) {
+      object$newnetwork <- as.networkLite(object$newnetwork)
+    }
+    return(object)
+  }
+
   if (object$edapprox == TRUE) {
     object$formula <- trim_env(object$formula, keep = keep)
     if (object$nested.edapprox == TRUE) {

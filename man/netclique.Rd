@@ -12,9 +12,9 @@ netclique(
 )
 }
 \arguments{
-\item{nw}{An object of class \code{network} holding the node set and any vertex
-attributes, as passed to \code{\link[=netest]{netest()}} for the other layers of the same
-model. The network must be undirected and not bipartite. Any edges
+\item{nw}{An object of class \code{network} or \code{networkLite} holding the node
+set and any vertex attributes, as passed to \code{\link[=netest]{netest()}} for the other
+layers of the same model. The network must be undirected and not bipartite. Any edges
 on \code{nw} are ignored.}
 
 \item{group.attr}{Name of a vertex attribute on \code{nw} whose values partition
@@ -35,8 +35,10 @@ choose the group each arrival joins. See Details.}
 \value{
 An object of class \code{netclique}, a list with elements:
 \itemize{
-\item \strong{newnetwork:} a \code{network} object holding the node set, the vertex
-attributes of \code{nw}, and the clique edges.
+\item \strong{newnetwork:} a \code{networkLite} object holding the node set, the vertex
+attributes of \code{nw}, and the clique edges. A \code{networkLite} stores the
+edges as an edgelist, so the layer stays small for large populations;
+\code{\link[=trim_netest]{trim_netest()}} has nothing further to remove from it.
 \item \strong{group.attr:} the grouping attribute name.
 \item \strong{arrivals}, \strong{arrivals.FUN:} the arrival rule.
 \item \strong{target.stats}, \strong{target.stats.names:} the edge count of the layer,
@@ -123,8 +125,18 @@ isolate). Because the function receives the full \code{dat} object it can
 read any nodal attribute; the example below places each newborn in a
 household that already has a young child, and a function that reads the
 group attribute back for \code{new_ids} lets a custom arrivals module set the
-group itself.
+group itself. A function that draws from existing groups should leave
+\code{new_ids} and inactive nodes out of its pool: when an arrivals module
+gives new nodes a default value of the grouping attribute, such as \code{0},
+a pool taken from all nodes contains that value, and every arrival that
+draws it joins the other arrivals in a spurious group.
 }
+
+The layer keeps \code{arrivals.FUN} with its enclosing environment, and so does
+every \code{netsim} object simulated from it. Define the function at the top
+level of a script or in a package, not inside another function whose local
+objects (fitted networks, population data) would then be saved with each
+simulation.
 
 The rule decides the group attribute of every arriving node. A value given
 by \code{attr.rules} in \code{\link[=control.net]{control.net()}} or by a custom arrivals module is
@@ -186,9 +198,12 @@ mean(tm$network == 1)
 # Newborns join a household that already has a child
 est_hh2 <- netclique(nw, group.attr = "hh_id", arrivals = "join",
   arrivals.FUN = function(dat, at, new_ids, network) {
+    active <- get_attr(dat, "active")
     hh <- get_attr(dat, "hh_id")
     age <- get_attr(dat, "age")
-    pool <- hh[which(age == "child" & !is.na(hh))]
+    existing <- active == 1
+    existing[new_ids] <- FALSE
+    pool <- hh[which(existing & age == "child" & !is.na(hh))]
     pool[sample.int(length(pool), length(new_ids), replace = TRUE)]
   })
 }

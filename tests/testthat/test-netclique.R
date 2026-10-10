@@ -80,6 +80,40 @@ test_that("netclique accepts character group ids", {
   expect_equal(es$summary$edges, est_hh$summary$edges)
 })
 
+test_that("netclique stores the layer as a networkLite", {
+  # a `network` object keeps a list per edge; the edgelist form is far smaller
+  expect_s3_class(est_hh$newnetwork, "networkLite")
+  expect_equal(network.size(est_hh$newnetwork), N)
+  el <- as.edgelist(est_hh$newnetwork)
+  nw_full <- add.edges(nw, tail = el[, 1], head = el[, 2])
+  expect_lt(as.numeric(object.size(est_hh$newnetwork)),
+            as.numeric(object.size(nw_full)) / 2)
+
+  # a networkLite input, such as the newnetwork of a trimmed netest, gives the
+  # same layer
+  es_nl <- netclique(as.networkLite(nw), group.attr = "hh_id",
+                     arrivals = "join")
+  expect_equal(unclass(as.edgelist(es_nl$newnetwork))[, 1:2],
+               unclass(el)[, 1:2])
+  expect_equal(get_vertex_attribute(es_nl$newnetwork, "age"), pop$age)
+  expect_equal(es_nl$summary, est_hh$summary)
+})
+
+test_that("trim_netest keeps a clique layer and converts an older one", {
+  expect_identical(trim_netest(est_hh), est_hh)
+
+  # a layer built before the layer network became a networkLite
+  old <- est_hh
+  el <- as.edgelist(est_hh$newnetwork)
+  old$newnetwork <- add.edges(nw, tail = el[, 1], head = el[, 2])
+  tr <- trim_netest(old)
+  expect_s3_class(tr, "netclique")
+  expect_s3_class(tr$newnetwork, "networkLite")
+  expect_equal(unclass(as.edgelist(tr$newnetwork))[, 1:2], unclass(el)[, 1:2])
+  expect_equal(tr$summary, est_hh$summary)
+  expect_identical(trim_netest(old, as.networkLite = FALSE), old)
+})
+
 test_that("netclique validates its inputs", {
   expect_error(netclique(list(), group.attr = "hh_id"), "class `network`")
   expect_error(netclique(network::network.initialize(10, directed = TRUE),
@@ -154,7 +188,8 @@ test_that("sample_groups accepts templates with prob, and data.frame types", {
   expect_true(all(p2$sex[p2$age == "child"] == "F"))
 
   # the last group is truncated only when no type fits
-  expect_message(p3 <- sample_groups(7, c("a a", "a a a a")), "truncated")
+  expect_message(p3 <- sample_groups(7, c("a a", "a a a a")),
+                 "fits the 1 remaining slots")
   expect_equal(nrow(p3), 7)
   expect_silent(p4 <- sample_groups(7, c("a", "a a a a")))
   expect_equal(nrow(p4), 7)
@@ -193,6 +228,29 @@ test_that("assign_groups keeps every dependent with an anchor", {
                       dependent = "child")
   has_adult <- tapply(age == "adult", g2, any)
   expect_true(all(has_adult[as.character(g2[age == "child"])]))
+})
+
+test_that("assign_groups shuffles a role held by a single node", {
+  # sample() on a single index k permutes 1:k, which would make other nodes
+  # anchors and leave the dependents without the one adult
+  role <- c(rep("child", 4), "adult", rep("other", 15))
+  for (seed in 1:10) {
+    set.seed(seed)
+    g <- assign_groups(c("5" = 1), role = role, anchor = "adult",
+                       dependent = "child")
+    expect_false(anyNA(g))
+    expect_true(all(g[role == "child"] == g[role == "adult"]))
+    expect_true(all(tabulate(g) == 5))
+  }
+  role2 <- c(rep("adult", 20), rep("child", 30), "other")
+  for (seed in 1:10) {
+    set.seed(seed)
+    g2 <- assign_groups(c("3" = 0.5, "4" = 0.5), role = role2,
+                        anchor = "adult", dependent = "child")
+    expect_false(anyNA(g2))
+    has_adult <- tapply(role2 == "adult", g2, any)
+    expect_true(all(has_adult[as.character(g2[role2 == "child"])]))
+  }
 })
 
 test_that("assign_groups without roles assigns random groups of the drawn sizes", {
@@ -749,6 +807,48 @@ test_that("the group attribute is copied from the clique layer when absent", {
   expect_clique_layer(run$el[[2]], run$attr$hh_id)
 })
 
+test_that("netsim stops when layer 1 carries a different grouping attribute", {
+  ec <- est_com
+  ec$newnetwork <- set_vertex_attribute(est_com$newnetwork, "hh_id",
+                                        rev(pop$group))
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
+  expect_error(netsim(list(ec, est_hh), param, init, control),
+               "differs from the grouping attribute of clique layer 2")
+  g <- pop$group
+  g[1] <- NA
+  ec$newnetwork <- set_vertex_attribute(est_com$newnetwork, "hh_id", g)
+  expect_error(netsim(list(ec, est_hh), param, init, control),
+               "differs from the grouping attribute")
+
+  # the same values stored as another numeric type agree
+  ec$newnetwork <- set_vertex_attribute(est_com$newnetwork, "hh_id",
+                                        as.numeric(pop$group))
+  expect_s3_class(netsim(list(ec, est_hh), param, init, control), "netsim")
+})
+
+test_that("the edgelists keep the names of the layers through a run", {
+  skip_on_cran()
+  # modules and dat.updates may read the layers by name
+  layer_names <- character(0)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         save.run = TRUE,
+                         dat.updates = function(dat, at, network) {
+                           layer_names <<- union(layer_names,
+                                                 paste(names(dat$run$el),
+                                                       collapse = " "))
+                           dat
+                         })
+  set.seed(31)
+  sim <- netsim(list(home = est_hh, community = est_com), param_open, init,
+                control)
+  expect_gt(sum(sim$epi$a.flow[, 1], na.rm = TRUE), 0)
+  expect_equal(layer_names, "home community")
+  expect_named(sim$run[[1]]$el, c("home", "community"))
+})
+
 test_that("a clique layer survives a restart", {
   skip_on_cran()
   set.seed(29)
@@ -813,6 +913,27 @@ dat_at_start <- function(x, control) {
   control <- netsim_validate_control(control)
   initialize.net(x, param, init, control, s = 1)
 }
+
+test_that("arrivals skip a layer appended by a module without a nwparam record", {
+  # an extension model may append a layer to the edgelists itself, beyond the
+  # layers passed to netsim; arrive_nodes extends it but has no rule for it
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  set.seed(33)
+  dat <- dat_at_start(list(est_hh, est_com), control)
+  dat <- set_current_timestep(dat, 2)
+  el3 <- matrix(c(1L, 2L), ncol = 2)
+  attr(el3, "n") <- N
+  dat$num.nw <- 3
+  dat$run$el[[3]] <- el3
+  dat$run$net_attr[[3]] <- list(n = N)
+  dat <- append_core_attr(dat, 2, 2)
+  dat <- arrive_nodes(dat, 2)
+  expect_equal(attr(dat$run$el[[3]], "n"), N + 2)
+  expect_equal(dat$run$net_attr[[3]][["n"]], N + 2)
+  expect_false(anyNA(get_attr(dat, "hh_id")))
+  expect_clique_layer(dat$run$el[[1]], get_attr(dat, "hh_id"))
+})
 
 test_that("move_to_group rewires the clique layer, tergmLite", {
   control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,

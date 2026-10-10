@@ -11,9 +11,9 @@
 #'              addition to `netest` for structures that are groups by
 #'              definition, not a substitute for an ERGM (see Details).
 #'
-#' @param nw An object of class `network` holding the node set and any vertex
-#'        attributes, as passed to [netest()] for the other layers of the same
-#'        model. The network must be undirected and not bipartite. Any edges
+#' @param nw An object of class `network` or `networkLite` holding the node
+#'        set and any vertex attributes, as passed to [netest()] for the other
+#'        layers of the same model. The network must be undirected and not bipartite. Any edges
 #'        on `nw` are ignored.
 #' @param group.attr Name of a vertex attribute on `nw` whose values partition
 #'        the nodes into groups. Every pair of nodes sharing a non-missing
@@ -91,7 +91,17 @@
 #'    read any nodal attribute; the example below places each newborn in a
 #'    household that already has a young child, and a function that reads the
 #'    group attribute back for `new_ids` lets a custom arrivals module set the
-#'    group itself.
+#'    group itself. A function that draws from existing groups should leave
+#'    `new_ids` and inactive nodes out of its pool: when an arrivals module
+#'    gives new nodes a default value of the grouping attribute, such as `0`,
+#'    a pool taken from all nodes contains that value, and every arrival that
+#'    draws it joins the other arrivals in a spurious group.
+#'
+#' The layer keeps `arrivals.FUN` with its enclosing environment, and so does
+#' every `netsim` object simulated from it. Define the function at the top
+#' level of a script or in a package, not inside another function whose local
+#' objects (fitted networks, population data) would then be saved with each
+#' simulation.
 #'
 #' The rule decides the group attribute of every arriving node. A value given
 #' by `attr.rules` in [control.net()] or by a custom arrivals module is
@@ -119,8 +129,10 @@
 #' @return
 #' An object of class `netclique`, a list with elements:
 #'
-#'  * **newnetwork:** a `network` object holding the node set, the vertex
-#'    attributes of `nw`, and the clique edges.
+#'  * **newnetwork:** a `networkLite` object holding the node set, the vertex
+#'    attributes of `nw`, and the clique edges. A `networkLite` stores the
+#'    edges as an edgelist, so the layer stays small for large populations;
+#'    [trim_netest()] has nothing further to remove from it.
 #'  * **group.attr:** the grouping attribute name.
 #'  * **arrivals**, **arrivals.FUN:** the arrival rule.
 #'  * **target.stats**, **target.stats.names:** the edge count of the layer,
@@ -172,9 +184,12 @@
 #' # Newborns join a household that already has a child
 #' est_hh2 <- netclique(nw, group.attr = "hh_id", arrivals = "join",
 #'   arrivals.FUN = function(dat, at, new_ids, network) {
+#'     active <- get_attr(dat, "active")
 #'     hh <- get_attr(dat, "hh_id")
 #'     age <- get_attr(dat, "age")
-#'     pool <- hh[which(age == "child" & !is.na(hh))]
+#'     existing <- active == 1
+#'     existing[new_ids] <- FALSE
+#'     pool <- hh[which(existing & age == "child" & !is.na(hh))]
 #'     pool[sample.int(length(pool), length(new_ids), replace = TRUE)]
 #'   })
 #' }
@@ -220,16 +235,15 @@ netclique <- function(nw, group.attr, arrivals = c("isolate", "new", "join"),
   el <- group_edgelist(group)
   sizes <- tabulate(factor(group[!is.na(group)]))
 
-  ## the layer network: node set and attributes of nw, clique edges only
-  newnetwork <- network_initialize(n)
-  for (a in setdiff(list.vertex.attributes(nw), c("na", "vertex.names"))) {
-    newnetwork <- set_vertex_attribute(newnetwork, a,
-                                       get_vertex_attribute(nw, a))
-  }
-  network.vertex.names(newnetwork) <- network.vertex.names(nw)
-  if (nrow(el) > 0) {
-    newnetwork <- add.edges(newnetwork, tail = el[, 1], head = el[, 2])
-  }
+  ## the layer network: node set and attributes of nw, clique edges only. It
+  ## is a networkLite: a `network` object keeps a list for every edge, which
+  ## for a household layer of a few hundred thousand edges is over a gigabyte
+  attrs <- list.vertex.attributes(nw)
+  attr_list <- lapply(attrs, function(a) {
+    get.vertex.attribute(nw, a, null.na = FALSE, unlist = FALSE)
+  })
+  names(attr_list) <- attrs
+  newnetwork <- networkLite(structure(el, n = n), attr_list, atomize = TRUE)
 
   deg <- tabulate(c(el[, 1], el[, 2]), nbins = n)
 
@@ -878,12 +892,12 @@ sample_groups <- function(n, types, prob = NULL, attr.name = "member",
   while (remaining > 0) {
     fit <- which(sizes <= remaining)
     if (length(fit) == 0) {
+      message("No group type fits the ", remaining, " remaining slots; the ",
+              "last group is truncated.")
       t <- sample.int(K, 1, prob = prob)
       truncate <- as.integer(sizes[t] - remaining)
       draw <- c(draw, t)
       remaining <- 0
-      message("No group type fits the ", remaining, " remaining slots; the ",
-              "last group is truncated.")
     } else {
       t <- fit[sample.int(length(fit), 1, prob = prob[fit])]
       draw <- c(draw, t)
@@ -1048,9 +1062,12 @@ assign_groups <- function(size.dist, role = NULL, anchor = NULL,
   if (any(is.anchor & is.dep)) {
     stop("`anchor` and `dependent` must not share values.")
   }
-  anchors <- sample(which(is.anchor))
-  deps <- sample(which(is.dep))
-  others <- sample(which(!is.anchor & !is.dep))
+  ## random order of each role; sample() on a single index k would permute
+  ## 1:k instead
+  shuffle <- function(x) x[sample.int(length(x))]
+  anchors <- shuffle(which(is.anchor))
+  deps <- shuffle(which(is.dep))
+  others <- shuffle(which(!is.anchor & !is.dep))
 
   group <- rep(NA_integer_, n)
   open <- drawn

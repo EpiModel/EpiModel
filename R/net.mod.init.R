@@ -329,6 +329,8 @@ init_nets <- function(dat, x) {
         as.edgelist(nws[[network]])
       }
     })
+    # modules may read the layers by the names given to them in the list
+    names(dat$run$el) <- names(nws)
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
     dat$run$nw <- nws
@@ -351,17 +353,27 @@ init_nets <- function(dat, x) {
 
   ## nodal attributes are read from the first layer's network; a clique
   ## layer's grouping attribute may be set on its own network only, so copy
-  ## it from there for the arrival rules to read. The running maximum of its
+  ## it from there for the arrival rules to read. When the first layer has
+  ## it too, the two must agree, or the arrival rules would place new nodes
+  ## by groups the clique edges do not follow. The running maximum of its
   ## ids, from which the "new" arrival rule draws, starts from the ids here.
   for (network in seq_len(dat$num.nw)) {
     group.attr <- dat$nwparam[[network]]$group.attr
     if (is.null(group.attr)) {
       next
     }
-    if (is.null(get_attr(dat, group.attr, override.null.error = TRUE))) {
-      dat <- set_attr(dat, group.attr,
-                      get_vertex_attribute(nws[[network]], group.attr))
+    layer.group <- get_vertex_attribute(nws[[network]], group.attr)
+    group <- get_attr(dat, group.attr, override.null.error = TRUE)
+    if (is.null(group)) {
+      dat <- set_attr(dat, group.attr, layer.group)
       dat$run$nwterms <- union(dat$run$nwterms, group.attr)
+    } else if (!identical(is.na(group), is.na(layer.group)) ||
+                 any(group != layer.group, na.rm = TRUE)) {
+      stop("The `", group.attr, "` attribute on the network of layer 1 ",
+           "differs from the grouping attribute of clique layer ", network,
+           ". Set the same values on both networks, or remove the attribute ",
+           "from the network of layer 1 so that it is taken from the clique ",
+           "layer.", call. = FALSE)
     }
     dat <- record_group_ids(dat, group.attr, get_attr(dat, group.attr))
   }

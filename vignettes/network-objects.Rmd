@@ -280,12 +280,16 @@ est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     active <- get_attr(dat, "active")
     hh <- get_attr(dat, "hh_id")
     age <- get_attr(dat, "age")
-    pool <- hh[which(active == 1 & age == "child" & !is.na(hh))]
+    existing <- active == 1
+    existing[new_ids] <- FALSE
+    pool <- hh[which(existing & age == "child" & !is.na(hh))]
     pool[sample.int(length(pool), length(new_ids), replace = TRUE)]
   })
 ```
 
-A custom arrivals module does not need to set the grouping attribute: the new nodes receive `NA`, and the layer's rule then places them. A module that does set the attribute itself should be paired with `arrivals = "join"` and an `arrivals.FUN` that returns those values, `function(dat, at, new_ids, network) get_attr(dat, "hh_id")[new_ids]`, so that the new nodes are connected to the members of their groups.
+The pool leaves out `new_ids`. When the arrivals module gives new nodes a default value of the grouping attribute, such as `0`, a pool taken from all nodes would contain that value, and every arrival that drew it would join the other arrivals in a spurious group. Define `arrivals.FUN` at the top level of a script or in a package: the layer keeps the function with its enclosing environment, and so does every simulation run from it.
+
+A custom arrivals module does not need to set the grouping attribute: the new nodes receive `NA` unless the module gives the attribute a default value, and the layer's rule then places them either way. A module that does set the attribute itself should be paired with `arrivals = "join"` and an `arrivals.FUN` that returns those values, `function(dat, at, new_ids, network) get_attr(dat, "hh_id")[new_ids]`, so that the new nodes are connected to the members of their groups.
 
 ### Moving Nodes Between Groups
 
