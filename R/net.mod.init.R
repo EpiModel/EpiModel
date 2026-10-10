@@ -149,7 +149,9 @@ init_status.net <- function(dat) {
   groups <- get_param(dat, "groups")
   status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
   if (type %in% c("SIS", "SIR")) {
-    rec.rate <- get_param(dat, "rec.rate")
+    # a rate by duration of infection enters the backdating below through the
+    # mean of its values per time step
+    rec.rate <- as_duration_vector(get_param(dat, "rec.rate"))
   }
   if (vital == TRUE) {
     di.rate <- get_param(dat, "di.rate")

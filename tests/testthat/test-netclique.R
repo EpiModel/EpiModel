@@ -378,9 +378,11 @@ test_that("a two-group model accepts multilayer inf.prob and inf.prob.g2", {
   expect_true(all(tm$transProb[tm$network == 2 & grp[tm$sus] == 2] == 0.02))
 })
 
-test_that("multilayer parameters may also be time-varying", {
+test_that("multilayer entries may vary by duration of infection", {
   skip_on_cran()
-  param <- param.net(inf.prob = multilayer(c(0.5, 0.1), 0.05), act.rate = 1)
+  param <- param.net(inf.prob = multilayer(by_infection_duration(c(0.5, 0.1)),
+                                           0.05),
+                     act.rate = 1)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE,
                          save.transmat = TRUE)
@@ -447,10 +449,11 @@ test_that("crosscheck.net rejects mismatched layers and parameters", {
 
 test_that("print.param.net shows multilayer parameters", {
   param <- param.net(inf.prob = multilayer(0.3, 0.05),
-                     act.rate = multilayer(c(1, 2), 1))
+                     act.rate = multilayer(by_infection_duration(c(1, 2)), 1))
   out <- capture.output(print(param))
   expect_true(any(grepl("inf.prob = multilayer(0.3, 0.05)", out, fixed = TRUE)))
-  expect_true(any(grepl("act.rate = multilayer(c(1, 2), 1)", out, fixed = TRUE)))
+  expect_true(any(grepl("act.rate = multilayer(by_infection_duration(c(1, 2)), 1)",
+                        out, fixed = TRUE)))
 })
 
 

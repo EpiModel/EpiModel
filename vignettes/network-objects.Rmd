@@ -175,7 +175,7 @@ control <- control.net(type = "SI", nsteps = 100, nsims = 1,
                                                     ~edges + degree(0:3)))
 ```
 
-Each entry of a `multilayer` parameter may itself be a vector over the time steps since infection, as described under Time-Varying Parameters in `help("param.net", package = "EpiModel")`.
+Each entry of a `multilayer` parameter may itself vary with the duration of infection, given as a `by_infection_duration()` object: `inf.prob = multilayer(by_infection_duration(c(0.5, 0.2)), 0.1)` gives the first layer a probability of 0.5 in the first time step of an infection and 0.2 after.
 
 In a custom infection module, `get_param()` returns the `multilayer` object, a list with one element per layer, and the `network` column of the discordant edgelist selects the element that applies to each edge:
 

@@ -630,7 +630,7 @@ test_that("netsim works with faux offset models", {
 
 context("Time-Varying Network Parameters")
 
-test_that("time varying parameters for one-mode", {
+test_that("parameters by duration of infection for one-group models", {
   skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
@@ -639,14 +639,10 @@ test_that("time varying parameters for one-mode", {
 
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  probs <- c(0.25, 0.02)
-  durs <- c(10, 1)
-  inf.probs <- rep(probs, durs)
-
-  acts <- c(0.5, 2)
-  act.rates <- rep(acts, durs)
-
-  rec.rates <- rep(0:1, c(20, 1))
+  durs <- c(10, Inf)
+  inf.probs <- by_infection_duration(c(0.25, 0.02), durations = durs)
+  act.rates <- by_infection_duration(c(0.5, 2), durations = durs)
+  rec.rates <- by_infection_duration(c(0, 1), durations = c(20, Inf))
 
   # Parameters, initial conditions, and controls for model
   param <- param.net(inf.prob = inf.probs, act.rate = act.rates,
@@ -659,7 +655,7 @@ test_that("time varying parameters for one-mode", {
 })
 
 
-test_that("time varying parameters for two-group models", {
+test_that("parameters by duration of infection for two-group models", {
   skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
@@ -669,16 +665,12 @@ test_that("time varying parameters for two-group models", {
 
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  probs <- c(0.25, 0.01)
-  durs <- c(10, 1)
-  inf.probs <- rep(probs, durs)
+  durs <- c(10, Inf)
+  inf.probs <- by_infection_duration(c(0.25, 0.01), durations = durs)
   inf.probs.g2 <- inf.probs * 2
-
-  acts <- c(1, 2)
-  act.rates <- rep(acts, durs)
-
-  rec.rates <- rep(0:1, c(20, 1))
-  rec.rates.g2 <- rep(0:1, c(10, 1))
+  act.rates <- by_infection_duration(c(1, 2), durations = durs)
+  rec.rates <- by_infection_duration(c(0, 1), durations = c(20, Inf))
+  rec.rates.g2 <- by_infection_duration(c(0, 1), durations = c(10, Inf))
 
   param <- param.net(inf.prob = inf.probs,
                      inf.prob.g2 = inf.probs.g2,
