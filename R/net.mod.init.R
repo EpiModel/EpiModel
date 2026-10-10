@@ -349,15 +349,19 @@ init_nets <- function(dat, x) {
 
   ## nodal attributes are read from the first layer's network; a clique
   ## layer's grouping attribute may be set on its own network only, so copy
-  ## it from there for the arrival rules to read
+  ## it from there for the arrival rules to read. The running maximum of its
+  ## ids, from which the "new" arrival rule draws, starts from the ids here.
   for (network in seq_len(dat$num.nw)) {
     group.attr <- dat$nwparam[[network]]$group.attr
-    if (!is.null(group.attr) &&
-          is.null(get_attr(dat, group.attr, override.null.error = TRUE))) {
+    if (is.null(group.attr)) {
+      next
+    }
+    if (is.null(get_attr(dat, group.attr, override.null.error = TRUE))) {
       dat <- set_attr(dat, group.attr,
                       get_vertex_attribute(nws[[network]], group.attr))
       dat$run$nwterms <- union(dat$run$nwterms, group.attr)
     }
+    dat <- record_group_ids(dat, group.attr, get_attr(dat, group.attr))
   }
 
   ## initialize stats data structure

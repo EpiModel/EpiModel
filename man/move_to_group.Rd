@@ -48,7 +48,9 @@ a group without members, the group ceases to exist, as when its last member
 departs. For numeric group ids, one more than the largest id in use,
 \code{max(get_attr(dat, group.attr), na.rm = TRUE) + 1}, is an unused id; ids of
 groups whose members have all departed are also unused, so reusing one
-starts a new group.
+starts a new group. The ids set here count toward the running maximum from
+which the \code{"new"} arrival rule of \code{\link[=netclique]{netclique()}} draws, so a later arrival
+is never given the id of a group formed by a move.
 
 Under \code{tergmLite = TRUE} with \code{tergmLite.track.duration = TRUE}, the moved
 nodes' new edges are recorded as formed at the current time step. In the

@@ -548,6 +548,50 @@ test_that("new: each arrival starts a group of its own", {
   }
 })
 
+test_that("new: a group id is never given to a second group", {
+  skip_on_cran()
+  set.seed(29)
+  # every step, the group with the largest id departs, so an id taken from
+  # the largest id in use would go to a second group at the next arrival
+  depart_top <- function(dat, at) {
+    active <- get_attr(dat, "active")
+    hh <- get_attr(dat, "hh_id")
+    top <- which(active == 1 & hh == max(hh[active == 1], na.rm = TRUE))
+    dat <- set_attr(dat, "active", replace(active, top, 0))
+    dat <- set_attr(dat, "exitTime",
+                    replace(get_attr(dat, "exitTime"), top, at))
+    return(dat)
+  }
+  check_ids <- function(dat, at) {
+    hh <- get_attr(dat, "hh_id")
+    entr <- get_attr(dat, "entrTime")
+    seen <- NVL(dat$run$test_seen_ids, hh[entr < at])
+    dat <- set_epi(dat, "reused", at, sum(hh[entr == at] %in% seen))
+    dat$run$test_seen_ids <- union(seen, hh)
+    return(dat)
+  }
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "new")
+  param <- param.net(inf.prob = 0.1, act.rate = 1, a.rate = 0.02,
+                     ds.rate = 0, di.rate = 0)
+  for (tergmLite in c(TRUE, FALSE)) {
+    control <- control.net(type = NULL, nsteps = 20, nsims = 1,
+                           tergmLite = tergmLite, resimulate.network = TRUE,
+                           infection.FUN = infection.net,
+                           departures.FUN = depart_top,
+                           arrivals.FUN = arrivals.net,
+                           check.FUN = check_ids,
+                           module.order = c("resim_nets.FUN",
+                                            "summary_nets.FUN",
+                                            "infection.FUN", "departures.FUN",
+                                            "arrivals.FUN", "nwupdate.FUN",
+                                            "check.FUN", "prevalence.FUN"),
+                           verbose = FALSE)
+    sim <- netsim(list(es, est_com), param, init, control)
+    expect_gt(sum(sim$epi$a.flow[, 1], na.rm = TRUE), 0)
+    expect_equal(sum(sim$epi$reused[, 1], na.rm = TRUE), 0)
+  }
+})
+
 test_that("new: character group ids get unique new values", {
   skip_on_cran()
   set.seed(24)
@@ -580,12 +624,38 @@ test_that("isolate: arrivals get no edges and an NA group", {
   expect_false(any(arrived %in% run$el[[1]]))
   expect_clique_layer(run$el[[1]], run$attr$hh_id)
 
-  # a user attr.rules entry for the group attribute is respected
-  control$attr.rules <- list(hh_id = 1)
-  sim <- netsim(list(es, est_com), param_open, init, control)
+  # an attr.rules entry for the group attribute would put the arrivals in a
+  # group without edges to it, so the rule replaces it with NA, with a warning
+  for (rule in list(1, "current")) {
+    control$attr.rules <- list(hh_id = rule)
+    expect_warning(sim <- netsim(list(es, est_com), param_open, init, control),
+                   "replaced by the layer's arrival rule")
+    run <- sim$run[[1]]
+    arrived <- which(run$attr$entrTime > 1)
+    expect_gt(length(arrived), 0)
+    expect_true(all(is.na(run$attr$hh_id[arrived])))
+    expect_clique_layer(run$el[[1]], run$attr$hh_id)
+  }
+})
+
+test_that("join with arrivals.FUN can keep a group set by attr.rules", {
+  skip_on_cran()
+  set.seed(28)
+  # attr.rules draws each arrival's household from the current distribution;
+  # the function reads it back, so the arrival joins that household
+  es <- netclique(nw, group.attr = "hh_id", arrivals = "join",
+    arrivals.FUN = function(dat, at, new_ids, network) {
+      get_attr(dat, "hh_id")[new_ids]
+    })
+  control <- control.net(type = "SI", nsteps = 15, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         save.run = TRUE, attr.rules = list(hh_id = "current"))
+  expect_silent(sim <- netsim(list(es, est_com), param_open, init, control))
   run <- sim$run[[1]]
   arrived <- which(run$attr$entrTime > 1)
-  expect_true(all(run$attr$hh_id[arrived] == 1))
+  expect_gt(length(arrived), 0)
+  expect_false(anyNA(run$attr$hh_id[arrived]))
+  expect_clique_layer(run$el[[1]], run$attr$hh_id)
 })
 
 test_that("join with arrivals.FUN: the user function picks the group", {

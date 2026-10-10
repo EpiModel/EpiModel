@@ -1157,15 +1157,27 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
-  # arriving nodes get NA for the grouping attribute of a clique layer unless
-  # the user set a rule; the layer's arrival rule then places them
+  # arriving nodes get NA for the grouping attribute of a clique layer, and
+  # the layer's arrival rule then places them. A user rule for the attribute
+  # has its value replaced by the arrival rule, unless an arrivals.FUN under
+  # "join" reads that value back.
   for (network in seq_len(num.nw)) {
-    if (is_model_free_layer(nwparam[[network]])) {
-      group.attr <- nwparam[[network]]$group.attr
-      if (!is.null(group.attr) &&
-            is.null(control[["attr.rules"]][[group.attr]])) {
-        control[["attr.rules"]][[group.attr]] <- NA
-      }
+    group.attr <- nwparam[[network]]$group.attr
+    if (!is_model_free_layer(nwparam[[network]]) || is.null(group.attr)) {
+      next
+    }
+    rule <- control[["attr.rules"]][[group.attr]]
+    if (is.null(rule)) {
+      control[["attr.rules"]][[group.attr]] <- NA
+    } else if (!(length(rule) == 1 && is.na(rule)) &&
+                 is.null(nwparam[[network]]$arrivals.FUN)) {
+      warning("`attr.rules` in control.net() sets a rule for `", group.attr,
+              "`, the grouping attribute of clique layer ", network, ". The ",
+              "value it gives arriving nodes is replaced by the layer's ",
+              "arrival rule (\"", nwparam[[network]]$arrivals, "\"). To place ",
+              "each arrival in the group that value names, use arrivals = ",
+              "\"join\" with an arrivals.FUN that returns get_attr(dat, \"",
+              group.attr, "\")[new_ids].", call. = FALSE)
     }
   }
 

@@ -105,10 +105,13 @@ created the node and set its other attributes:
 \itemize{
 \item \code{"isolate"}: the node gets no edges and its group attribute is \code{NA}. A
 custom module may place it later.
-\item \code{"new"}: the node gets a fresh group id, one larger than the largest
-integer id in use (or a new unique string for character ids), and no
-edges. Groups then grow only through further \code{"join"} arrivals, so this
-rule suits models in which arrivals are single-person households.
+\item \code{"new"}: the node gets a fresh group id and no edges. Fresh ids
+continue from the largest id used so far in the simulation, so an id is
+never given to a second group, even after every member of the first has
+departed; for character ids they are new strings of the form
+\verb{arrival_<i>}. Groups then grow only through further \code{"join"} arrivals,
+so this rule suits models in which arrivals are single-person
+households.
 \item \code{"join"}: the node joins an existing group and is connected to every
 active member of that group, including other nodes joining the same
 group in the same time step. By default the group is drawn with
@@ -122,6 +125,12 @@ household that already has a young child, and a function that reads the
 group attribute back for \code{new_ids} lets a custom arrivals module set the
 group itself.
 }
+
+The rule decides the group attribute of every arriving node. A value given
+by \code{attr.rules} in \code{\link[=control.net]{control.net()}} or by a custom arrivals module is
+replaced, so that the layer always matches the groups, and \code{netsim} warns
+when \code{attr.rules} names the group attribute. The exception is \code{"join"} with
+an \code{arrivals.FUN} that reads that value back, as described above.
 }
 
 \section{Transmission over a clique layer}{

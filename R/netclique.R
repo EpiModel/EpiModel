@@ -73,10 +73,13 @@
 #'
 #'  * `"isolate"`: the node gets no edges and its group attribute is `NA`. A
 #'    custom module may place it later.
-#'  * `"new"`: the node gets a fresh group id, one larger than the largest
-#'    integer id in use (or a new unique string for character ids), and no
-#'    edges. Groups then grow only through further `"join"` arrivals, so this
-#'    rule suits models in which arrivals are single-person households.
+#'  * `"new"`: the node gets a fresh group id and no edges. Fresh ids
+#'    continue from the largest id used so far in the simulation, so an id is
+#'    never given to a second group, even after every member of the first has
+#'    departed; for character ids they are new strings of the form
+#'    `arrival_<i>`. Groups then grow only through further `"join"` arrivals,
+#'    so this rule suits models in which arrivals are single-person
+#'    households.
 #'  * `"join"`: the node joins an existing group and is connected to every
 #'    active member of that group, including other nodes joining the same
 #'    group in the same time step. By default the group is drawn with
@@ -89,6 +92,12 @@
 #'    household that already has a young child, and a function that reads the
 #'    group attribute back for `new_ids` lets a custom arrivals module set the
 #'    group itself.
+#'
+#' The rule decides the group attribute of every arriving node. A value given
+#' by `attr.rules` in [control.net()] or by a custom arrivals module is
+#' replaced, so that the layer always matches the groups, and `netsim` warns
+#' when `attr.rules` names the group attribute. The exception is `"join"` with
+#' an `arrivals.FUN` that reads that value back, as described above.
 #'
 #' @section Transmission over a clique layer:
 #' The built-in infection modules treat every layer alike, so a clique layer
@@ -392,14 +401,42 @@ add_clique_edges <- function(dat, network, el_new) {
 }
 
 # Fresh group ids for k arrivals, of the same type as the existing ids.
-new_group_ids <- function(group, k) {
+# `last` is the running maximum kept by record_group_ids(), so that an id is
+# never given to a second group, even after every member of the first has
+# departed: for numeric ids it is the largest id used so far, and for
+# character ids the largest i of the "arrival_<i>" ids used so far.
+new_group_ids <- function(group, k, last = NULL) {
   existing <- group[!is.na(group)]
   if (is.numeric(group) || length(existing) == 0) {
-    start <- if (length(existing) == 0) 0 else max(existing)
-    return(start + seq_len(k))
+    return(max(c(0, last, existing)) + seq_len(k))
   }
-  ids <- make.unique(c(unique(existing), rep("arrival", k)), sep = "_")
-  ids[length(ids) - k + seq_len(k)]
+  ids <- character(0)
+  i <- NVL(last, 0)
+  while (length(ids) < k) {
+    i <- i + 1
+    id <- paste0("arrival_", i)
+    if (!id %in% existing) {
+      ids <- c(ids, id)
+    }
+  }
+  ids
+}
+
+# Raise the running maximum of the ids of a grouping attribute, kept on
+# dat$run so that it carries over a restart, to cover the ids just assigned.
+# Character ids count only in the "arrival_<i>" form that new_group_ids()
+# creates.
+record_group_ids <- function(dat, group.attr, ids) {
+  ids <- ids[!is.na(ids)]
+  if (is.character(ids)) {
+    ids <- ids[grepl("^arrival_[0-9]+$", ids)]
+    ids <- as.numeric(sub("^arrival_", "", ids))
+  }
+  if (length(ids) > 0) {
+    dat$run$group_id_max[[group.attr]] <-
+      max(c(dat$run$group_id_max[[group.attr]], ids))
+  }
+  return(dat)
 }
 
 # Apply a clique layer's arrival rule to the nodes new_ids, which arrive_nodes
@@ -411,7 +448,7 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
   nwparam <- get_nwparam(dat, network = network)
   group.attr <- nwparam$group.attr
   rule <- nwparam$arrivals
-  if (is.null(group.attr) || rule == "isolate" || length(new_ids) == 0) {
+  if (is.null(group.attr) || length(new_ids) == 0) {
     return(dat)
   }
 
@@ -424,9 +461,19 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
     group <- c(group, rep(NA, n - length(group)))
   }
 
-  if (rule == "new") {
-    group[new_ids] <- new_group_ids(group, length(new_ids))
+  ## the rule sets the group of every arrival, replacing a value that
+  ## attr.rules or a custom arrivals module gave it; an isolate has no group
+  if (rule == "isolate") {
+    group[new_ids] <- NA
     dat <- set_attr(dat, group.attr, group)
+    return(dat)
+  }
+
+  last <- dat$run$group_id_max[[group.attr]]
+  if (rule == "new") {
+    group[new_ids] <- new_group_ids(group, length(new_ids), last)
+    dat <- set_attr(dat, group.attr, group)
+    dat <- record_group_ids(dat, group.attr, group[new_ids])
     return(dat)
   }
 
@@ -444,7 +491,7 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
     pool <- group[old_ids]
     pool <- pool[!is.na(pool)]
     if (length(pool) == 0) {
-      new_group <- new_group_ids(group, length(new_ids))
+      new_group <- new_group_ids(group, length(new_ids), last)
     } else {
       new_group <- pool[sample.int(length(pool), length(new_ids),
                                    replace = TRUE)]
@@ -452,6 +499,7 @@ clique_layer_arrivals <- function(dat, network, new_ids) {
   }
   group[new_ids] <- new_group
   dat <- set_attr(dat, group.attr, group)
+  dat <- record_group_ids(dat, group.attr, new_group)
 
   joining <- new_ids[!is.na(new_group)]
   if (length(joining) == 0) {
@@ -548,7 +596,9 @@ remove_clique_edges <- function(dat, network, ids) {
 #' departs. For numeric group ids, one more than the largest id in use,
 #' `max(get_attr(dat, group.attr), na.rm = TRUE) + 1`, is an unused id; ids of
 #' groups whose members have all departed are also unused, so reusing one
-#' starts a new group.
+#' starts a new group. The ids set here count toward the running maximum from
+#' which the `"new"` arrival rule of [netclique()] draws, so a later arrival
+#' is never given the id of a group formed by a move.
 #'
 #' Under `tergmLite = TRUE` with `tergmLite.track.duration = TRUE`, the moved
 #' nodes' new edges are recorded as formed at the current time step. In the
@@ -625,6 +675,7 @@ move_to_group <- function(dat, ids, group, network = NULL) {
   }
   grp[ids] <- group
   dat <- set_attr(dat, group.attr, grp)
+  dat <- record_group_ids(dat, group.attr, group)
 
   ## edges from each moved node to every active member of its new group,
   ## including other nodes moved into the same group in this call
