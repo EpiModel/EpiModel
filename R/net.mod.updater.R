@@ -6,20 +6,25 @@
 #' @return The full `x` list with the modifications added by `new.x`.
 #'
 #' @details
-#' This function updates list `x` by name. If `x` and `new.x`
-#' elements are not named, the function will not work properly. If a function is
-#' provided to replace an element that was originally not a function, this
-#' function will be applied to the original value.
+#' This function updates list `x` by name. An element of `new.x` that is
+#' itself a named list is merged into the matching element of `x` the same
+#' way, by name. An element that is a list without names, such as a
+#' [multilayer()] object, has no names to merge by, so it replaces the
+#' matching element of `x` whole. If a function is provided to replace an
+#' element that was originally not a function, this function will be applied
+#' to the original value.
 #'
 #' @keywords internal
 update_list <- function(x, new.x) {
   for (nm in names(new.x)) {
-    if (is.list(new.x[[nm]])) {
-      x[[nm]] <- update_list(x[[nm]], new.x[[nm]])
-    } else if (is.function(new.x[[nm]]) && !is.function(x[[nm]])) {
-      x[[nm]] <- new.x[[nm]](x[[nm]])
+    value <- new.x[[nm]]
+    if (is.list(value) && !inherits(value, "multilayer") &&
+          !is.null(names(value))) {
+      x[[nm]] <- update_list(x[[nm]], value)
+    } else if (is.function(value) && !is.function(x[[nm]])) {
+      x[[nm]] <- value(x[[nm]])
     } else {
-      x[[nm]] <- new.x[[nm]]
+      x[[nm]] <- value
     }
   }
 
@@ -184,7 +189,14 @@ common_updater <- function(dat, type) {
       updated.list <- update_list(old.list, new.list)
 
       for (nm in names(updated.list)) {
-        dat <- type.set(dat, nm, updated.list[[nm]])
+        value <- updated.list[[nm]]
+        if (inherits(value, "multilayer") && length(value) != dat$num.nw) {
+          stop("The ", type, " updater at step ", at, " sets `", nm,
+               "` to a multilayer object of length ", length(value),
+               ", but the model has ", dat$num.nw, " network layers.",
+               call. = FALSE)
+        }
+        dat <- type.set(dat, nm, value)
       }
 
       used.updaters <- c(used.updaters, i)

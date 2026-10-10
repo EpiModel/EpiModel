@@ -351,7 +351,7 @@ list(
 )
 ```
 
-This updater sets `inf.prob` to 0.3 and `act.rate` to 0.5 at time step 10. Multiple updaters are combined in a list:
+This updater sets `inf.prob` to 0.3 and `act.rate` to 0.5 at time step 10. In a multi-layer model, a new value may also be a `multilayer()` object with one entry per network layer, such as `inf.prob = multilayer(0.3, 0.05)`, which replaces the current value for every layer. Multiple updaters are combined in a list:
 
 ```{r updater-list}
 list.of.updaters <- list(

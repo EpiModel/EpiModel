@@ -391,6 +391,43 @@ test_that("multilayer parameters may also be time-varying", {
   expect_true(all(hh_tm$transProb[hh_tm$infDur > 1] == 0.1))
 })
 
+test_that("a parameter updater replaces a multilayer parameter", {
+  skip_on_cran()
+  # at step 6 the household and community probabilities swap, and the scalar
+  # act.rate becomes one value per layer
+  updater <- list(list(at = 6, verbose = FALSE,
+                       param = list(inf.prob = multilayer(0.05, 0.3),
+                                    act.rate = multilayer(1, 2))))
+  param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1,
+                     .param.updater.list = updater)
+  control <- control.net(type = "SI", nsteps = 12, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         save.transmat = TRUE)
+  set.seed(23)
+  sim <- netsim(list(est_hh, est_com), param, init, control)
+  tm <- get_transmat(sim)
+  before <- tm[tm$at < 6, ]
+  after <- tm[tm$at >= 6, ]
+  expect_gt(nrow(after), 0)
+  expect_true(all(before$transProb[before$network == 1] == 0.3))
+  expect_true(all(before$transProb[before$network == 2] == 0.05))
+  expect_true(all(after$transProb[after$network == 1] == 0.05))
+  expect_true(all(after$transProb[after$network == 2] == 0.3))
+  expect_true(all(after$actRate[after$network == 1] == 1))
+  expect_true(all(after$actRate[after$network == 2] == 2))
+})
+
+test_that("a parameter updater checks the length of a multilayer value", {
+  updater <- list(list(at = 3, verbose = FALSE,
+                       param = list(inf.prob = multilayer(0.1, 0.1, 0.1))))
+  param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1,
+                     .param.updater.list = updater)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  expect_error(netsim(list(est_hh, est_com), param, init, control),
+               "multilayer object of length 3, but the model has 2 network")
+})
+
 test_that("crosscheck.net rejects mismatched layers and parameters", {
   param <- param.net(inf.prob = multilayer(0.3, 0.05, 0.1), act.rate = 1)
   control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
