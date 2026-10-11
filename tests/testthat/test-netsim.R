@@ -581,7 +581,11 @@ test_that("netsim with checkpoint", {
     verbose = FALSE, end.horizon = end_horizon
   )
   sim <- netsim(est, param, init, control)
-  expect_true(nrow(get_nwstats(sim)) == 4)
+  # the steps after the summary module is removed are recorded as `NA`
+  nws <- get_nwstats(sim)
+  expect_equal(nrow(nws), 20)
+  expect_false(anyNA(nws$edges[1:4]))
+  expect_true(all(is.na(nws$edges[5:20])))
 
   # SI module without arrival or departure
   # prevalence stays constant if the infection module is disabled

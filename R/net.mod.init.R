@@ -54,6 +54,18 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
+    x_ver <- attr(x, "version")
+    pkg_ver <- utils::packageVersion("EpiModel")
+    if (paste0(x_ver$major, ".", x_ver$minor) !=
+          paste0(pkg_ver$major, ".", pkg_ver$minor)) {
+      if (is.null(x_ver)) x_ver <- "(<2.7)"
+      stop(
+        "EpiModel is version v", pkg_ver, " but the restart object comes from ",
+        "version v", x_ver, ". Please rebuild the restart object with the ",
+        "current version"
+      )
+    }
+
     ## check that required names are present
     required_names <- c("nwparam", "epi", "run", "coef.form", "num.nw")
     missing_names <- setdiff(required_names, names(x))
@@ -91,25 +103,24 @@ initialize.net <- function(x, param, init, control, s) {
     dat$epi <- sapply(x$epi, function(var) var[1])
     names(dat$epi) <- names(x$epi)
 
-    #TODO - continue here
+    # The prior stats fill the first steps, the new steps are recorded at `at`
+    nsteps <- get_control(dat, "nsteps")
     dat$stats <- list()
     if (get_control(dat, "save.nwstats")) {
       dat$stats$nwstats <- vector("list", dat$num.nw)
       for (nw in seq_len(dat$num.nw)) {
         if (is.data.frame(x$stats$nwstats[[1]][[nw]])) {
-          dat$nwstats[[nw]] <- x$stats$nwstats[[1]][[nw]] |>
-            as.matrix() |>
-            apply(1, c, simplify = FALSE) |>
-            unname()
+          dat$stats$nwstats[[nw]] <- x$stats$nwstats[[1]][[nw]] |>
+            apply(1, c, simplify = FALSE)
         } else {
-          dat$nwstats[[nw]] <- vector("list", start - 1)
+          dat$stats$nwstats[[nw]] <- list()
         }
+        dat$stats$nwstats[[nw]] <- padded_vector(dat$stats$nwstats[[nw]], nsteps)
       }
     }
 
-    if (get_control(dat, "save.nwstats") &&
+    if (get_control(dat, "save.transmat") &&
           is.data.frame(x$stats$transmat[[1]])) {
-      nsteps <- get_control(dat, "nsteps")
       dat$stats$transmat <- padded_vector(list(x$stats$transmat[[1]]), nsteps)
     }
   }

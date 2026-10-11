@@ -37,13 +37,7 @@ summary_nets <- function(dat, at) {
     } else {
       nwstats <- nwstats[!duplicated(names(nwstats))]
     }
-    start_time <- get_control(dat, "start")
-    if (start_time > 1L) {
-      loc <- at - start_time + 2L
-    } else {
-      loc <- at
-    }
-    dat$stats$nwstats[[network]][[loc]] <- nwstats
+    dat$stats$nwstats[[network]][[at]] <- nwstats
   }
 
   return(dat)

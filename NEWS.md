@@ -6,9 +6,9 @@
 
 -   `netsim()` restarts every simulation from the first simulation of `x`, with a warning when `x` holds more than one. Simulation `s` restarted from simulation `(s - 1) %% n + 1` of the `n` simulations of `x` before. Use `get_sims()` or `make_restart_point()` to select the simulation to restart from.
 
--   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, EpiModelCOVID and EpiModelHIV-p modify `param` by setting `time.unit` after `netsim` has started. Now `time.unit` has to be declared explicitly in `param`
+-   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, `initialize_msm()` in EpiModelHIV-p sets `time.unit` from `param$epistats`, so `time.unit` must now be passed in `param` or set in the reinitialization module.
 
--   Objects saved with EpiModel 2.6.x or earlier, can no longer be restarted. They need to be regenerated with 2.7.0.
+-   Objects saved with EpiModel 2.6.x or earlier can no longer be restarted. They need to be regenerated with 2.7.0. `netsim()` now stamps its output with the EpiModel version and refuses to restart from an object of another major or minor version.
 
 -   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one. Merge the original objects again with 2.7.0 instead.
 
@@ -34,7 +34,7 @@
 
 -   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
 
--   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the new time steps are then recorded on their own.
+-   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the earlier time steps are then `NA`, so that they stay in line with the epi trackers. The same goes for the steps after `summary_nets` is removed by `end.horizon`.
 
 -   Fix `netsim()` to name the per-simulation `raw.records` (`sim1`, `sim2`, ...) like the other per-simulation elements. A typo (`".records"`) skipped them.
 

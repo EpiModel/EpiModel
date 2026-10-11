@@ -271,6 +271,46 @@ test_that("simulations restarted from make_restart_point keep nwstats and transm
   expect_equal(rp2$stats$transmat$sim1$at, tm2$at[tm2$at > 8 - 2] - (8 - 2))
 })
 
+test_that("restarting from x without nwstats records the earlier steps as NA", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 5, tergmLite = TRUE,
+                         resimulate.network = TRUE, save.run = TRUE,
+                         save.nwstats = FALSE, verbose = FALSE)
+  x <- netsim(est, param, init, control)
+  expect_null(x$stats$nwstats)
+
+  rp <- make_restart_point(x, time_attrs = "infTime")
+  for (x_rs in list(x, rp)) {
+    start <- x_rs$control$nsteps + 1
+    nsteps <- start + 4
+    for (nsims in 1:2) {
+      control_rs <- control.net(type = "SI", start = start, nsteps = nsteps,
+                                nsims = nsims, tergmLite = TRUE,
+                                resimulate.network = TRUE, save.run = TRUE,
+                                verbose = FALSE)
+      mod <- netsim(x_rs, param, init, control_rs)
+
+      expect_equal(nrow(mod$epi$i.num), nsteps)
+      for (s in seq_len(nsims)) {
+        nwstats <- mod$stats$nwstats[[s]][[1]]
+        expect_equal(nrow(nwstats), nsteps)
+        expect_true(all(is.na(nwstats[seq_len(start - 1), ])))
+        expect_false(anyNA(nwstats[start:nsteps, ]))
+      }
+
+      nws <- get_nwstats(mod)
+      expect_equal(nws$time, rep(seq_len(nsteps), nsims))
+      expect_equal(nws$sim, rep(seq_len(nsims), each = nsteps))
+    }
+  }
+})
+
 test_that("restarted simulations all restart from the first simulation of x", {
   skip_on_cran()
   mod <- build_restart_sim(nsteps = 5, nsims = 2)
@@ -321,4 +361,31 @@ test_that("restarted simulations restore the groups parameter from run", {
   mod2 <- netsim(rp, param, init, control)
   expect_equal(mod2$param$groups, 2)
   expect_false(anyNA(mod2$epi$num.g2))
+})
+
+test_that("netsim refuses to restart from objects of another EpiModel version", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 3, nsims = 2)
+  pkg_ver <- utils::packageVersion("EpiModel")
+  expect_equal(attr(mod, "version"), pkg_ver)
+
+  # the version is kept by the functions preparing a restart
+  rp <- make_restart_point(mod, time_attrs = "infTime", sim_num = 2)
+  expect_equal(attr(get_sims(mod, sims = 1), "version"), pkg_ver)
+  expect_equal(attr(merge(mod, mod), "version"), pkg_ver)
+  expect_equal(attr(rp, "version"), pkg_ver)
+
+  control <- control.net(type = "SI", start = 2, nsteps = 4, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  restart <- function(x) {
+    netsim(x, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  }
+  expect_s3_class(restart(rp), "netsim")
+
+  # objects from 2.6.x or earlier have no version
+  attr(rp, "version") <- NULL
+  expect_error(restart(rp), "comes from version v(<2.7)", fixed = TRUE)
+
+  attr(rp, "version") <- package_version("2.6.2")
+  expect_error(restart(rp), "comes from version v2.6.2", fixed = TRUE)
 })
