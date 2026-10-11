@@ -549,8 +549,8 @@ get_sims <- function(x, sims, var = NULL) {
     # Subset per-sim stats elements
     stats_elts_name <- get_per_sim_element_names(out$stats, nsims)
     for (elt in stats_elts_name) {
-        out$stats[[elt]][delsim] <- NULL
-        names(out$stats[[elt]]) <- newnames
+      out$stats[[elt]][delsim] <- NULL
+      names(out$stats[[elt]]) <- newnames
     }
   }
 

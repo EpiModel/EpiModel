@@ -344,7 +344,7 @@ check_similar_sim <- function(sim1, sim2) {
     }
   }
 
-  # nwstats & transmat
+  # nwstats and transmat
   sim1_stats <- get_per_sim_element_names(sim1$stats, sim1_n_sims)
   sim2_stats <- get_per_sim_element_names(sim2$stats, sim2_n_sims)
 
