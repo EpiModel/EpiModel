@@ -101,10 +101,31 @@ param.net_from_table <- function(long.param.df) {
 #'
 #' @inheritSection param.net_from_table long.param.df
 #'
+#' @details
+#' Parameters given per network layer with [multilayer()] or by duration of
+#' infection with [by_infection_duration()] are not supported and stop with
+#' an error. A parameter table records each element of a vector as its own row
+#' but not what the vector means, so such a value would read back as a plain
+#' vector, which the built-in modules do not accept. Remove these parameters
+#' before converting and set them again after reading the table back.
+#'
 #' @return  A `data.frame` of parameters.
 #'
 #' @export
 param.net_to_table <- function(params) {
+  # a multilayer or by_infection_duration value would flatten into a plain
+  # vector, which loses what its positions mean
+  structured <- vapply(params, inherits, logical(1),
+                       c("multilayer", "by_infection_duration"))
+  if (any(structured)) {
+    stop("param.net_to_table() does not support multilayer() or ",
+         "by_infection_duration() parameters: `",
+         paste(names(params)[structured], collapse = "`, `"), "`. A ",
+         "parameter table cannot record what the positions of a vector ",
+         "mean, so these would read back as plain vectors. Remove them before ",
+         "converting and set them again after reading the table back.",
+         call. = FALSE)
+  }
   flat_params <- flatten_params(params)
   check_params_names(names(flat_params))
   dplyr::tibble(

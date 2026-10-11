@@ -554,11 +554,15 @@ edgelist_censor <- function(el) {
 #'
 #' @inheritParams recovery.net
 #' @param nwterms Vector of attributes on the network object, usually as
-#'        output of [get_formula_term_attr()].
+#'        output of [get_formula_term_attr()]. If `NULL`, no table is made.
+#' @param attrs Optional character vector of attribute names to restrict the
+#'        tables to. If `NULL` (default), every nodal attribute is tabled.
 #'
 #' @return
-#' A table containing the proportional distribution of each attribute in
-#' `nwterms`.
+#' A list of proportional tables, one for each nodal attribute (or each one
+#' named in `attrs`), other than `active`, `entrTime`, `exitTime`, `infTime`,
+#' `group`, `status`, `na`, and `vertex.names`. Returns `NULL` if `nwterms` is
+#' `NULL`.
 #'
 #' @seealso [get_formula_term_attr()],
 #'          [copy_nwattr_to_datattr()],
@@ -566,13 +570,16 @@ edgelist_censor <- function(el) {
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(dat, nwterms) {
+get_attr_prop <- function(dat, nwterms, attrs = NULL) {
 
   if (is.null(nwterms)) {
     return(NULL)
   }
   attr_list <- get_attr_list(dat)
   nwVal <- names(attr_list)
+  if (!is.null(attrs)) {
+    nwVal <- intersect(nwVal, attrs)
+  }
   nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
                             "exitTime", "infTime", "group", "status"))
   out <- list()
@@ -699,7 +706,9 @@ idgroup <- function(nw, ids = NULL) {
 #' @inheritParams recovery.net
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param curr.tab Current proportional distribution of all vertex attributes.
+#' @param curr.tab Current proportional distribution of the vertex attributes,
+#'        as output of [get_attr_prop()]. Only the attributes in `curr.tab`
+#'        are filled in for the incoming nodes.
 #'
 #' @inherit recovery.net return
 #'
@@ -724,7 +733,8 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
       if (is.null(rule)) {
         rule <- "current"
       }
-      if (rule == "current") {
+      # identical() rather than ==, so that a fixed value of NA is a valid rule
+      if (identical(rule, "current")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
@@ -732,12 +742,12 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = curr.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(curr.tab[[i]])),
+          nattr <- sample(as.numeric(names(curr.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = curr.tab[[i]])
+                          prob = curr.tab[[vname]])
         }
-      } else if (rule == "t1") {
+      } else if (identical(rule, "t1")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
@@ -745,10 +755,10 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = t1.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(t1.tab[[i]])),
+          nattr <- sample(as.numeric(names(t1.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = t1.tab[[i]])
+                          prob = t1.tab[[vname]])
         }
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
@@ -935,7 +945,8 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'              the `fit` element (if present) from the `netest`
 #'              object.
 #'
-#' @param object A `netest` class object.
+#' @param object A `netest` class object, or a model-free layer of class
+#'        [`netclique`] or [`netcensus`].
 #' @param as.networkLite If `TRUE`, converts `object$newnetwork`
 #'        to a `networkLite`.
 #' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
@@ -977,10 +988,17 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
 #' present) from `object`.
 #'
+#' A model-free layer has no fit and no formulas, and its `summary` describes
+#' the layer rather than a fit, so only its network is converted. A
+#' [netclique()] layer is built as a `networkLite` already. A dynamic
+#' [netcensus()] layer is returned unchanged, since `netsim` reads its edge
+#' spells from the `networkDynamic` object.
+#'
 #' @return
 #' A `netest` object with formula environments trimmed, optionally with the
 #' `newnetwork` element converted to a `networkLite` and the
-#' `fit` element removed.
+#' `fit` element removed; or the model-free layer, with its network
+#' converted to a `networkLite`.
 #'
 #' @export
 #'
@@ -1001,6 +1019,14 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
 #'
 trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
                         keep = character(0)) {
+  if (is_model_free_layer(object)) {
+    if (as.networkLite == TRUE && !isTRUE(object$dynamic) &&
+          !inherits(object$newnetwork, "networkLite")) {
+      object$newnetwork <- as.networkLite(object$newnetwork)
+    }
+    return(object)
+  }
+
   if (object$edapprox == TRUE) {
     object$formula <- trim_env(object$formula, keep = keep)
     if (object$nested.edapprox == TRUE) {

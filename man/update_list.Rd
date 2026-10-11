@@ -18,9 +18,12 @@ The full \code{x} list with the modifications added by \code{new.x}.
 Update List \code{x} Using the Elements of List \code{new.x}.
 }
 \details{
-This function updates list \code{x} by name. If \code{x} and \code{new.x}
-elements are not named, the function will not work properly. If a function is
-provided to replace an element that was originally not a function, this
-function will be applied to the original value.
+This function updates list \code{x} by name. An element of \code{new.x} that is
+itself a named list is merged into the matching element of \code{x} the same
+way, by name. An element that is a list without names, such as a
+\code{\link[=multilayer]{multilayer()}} object, has no names to merge by, so it replaces the
+matching element of \code{x} whole. If a function is provided to replace an
+element that was originally not a function, this function will be applied
+to the original value.
 }
 \keyword{internal}

@@ -61,26 +61,29 @@ infection.net <- function(dat, at) {
     # If some discordant edges, then proceed
     if (NROW(del) > 0) {
 
+      # With several layers, shuffle so that a node exposed on more than one
+      # of them has its recorded infector, and so its layer, drawn at random
+      # among its successful exposures rather than taken from the first layer
+      if (dat$num.nw > 1) {
+        del <- del[sample.int(nrow(del)), , drop = FALSE]
+      }
+
       # Infection duration to at
       del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
-      # Calculate infection-stage transmission rates
-      linf.prob <- length(inf.prob)
-      del$transProb <- ifelse(del$infDur <= linf.prob,
-                              inf.prob[del$infDur],
-                              inf.prob[linf.prob])
+      # Transmission probability by duration of infection (and by layer)
+      del$transProb <- layer_duration_value(inf.prob, del$network, del$infDur,
+                                            "inf.prob")
 
       # Interventions
       if (!is.null(inter.eff) && at >= inter.start) {
         del$transProb <- del$transProb * (1 - inter.eff)
       }
 
-      # Calculate infection-stage act/contact rates
-      lact.rate <- length(act.rate)
-      del$actRate <- ifelse(del$infDur <= lact.rate,
-                            act.rate[del$infDur],
-                            act.rate[lact.rate])
+      # Act rate by duration of infection (and by layer)
+      del$actRate <- layer_duration_value(act.rate, del$network, del$infDur,
+                                          "act.rate")
 
       # Calculate final transmission probability per timestep
       del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
@@ -184,25 +187,28 @@ infection.2g.net <- function(dat, at) {
     # If some discordant edges, then proceed
     if (NROW(del) > 0) {
 
+      # With several layers, shuffle so that a node exposed on more than one
+      # of them has its recorded infector, and so its layer, drawn at random
+      # among its successful exposures rather than taken from the first layer
+      if (dat$num.nw > 1) {
+        del <- del[sample.int(nrow(del)), , drop = FALSE]
+      }
+
       # Infection duration to at
       del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
-      # Calculate infection-stage transmission rates
-      linf.prob <- length(inf.prob)
+      # Transmission probability by duration of infection (and by layer)
       if (is.null(inf.prob.g2)) {
-        del$transProb <- ifelse(del$infDur <= linf.prob,
-                                inf.prob[del$infDur],
-                                inf.prob[linf.prob])
+        del$transProb <- layer_duration_value(inf.prob, del$network,
+                                              del$infDur, "inf.prob")
       } else {
-        #FLAG
-        del$transProb <- ifelse(group[del$sus] == 1,
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob[del$infDur],
-                                       inf.prob[linf.prob]),
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob.g2[del$infDur],
-                                       inf.prob.g2[linf.prob]))
+        del$transProb <- ifelse(
+          group[del$sus] == 1,
+          layer_duration_value(inf.prob, del$network, del$infDur, "inf.prob"),
+          layer_duration_value(inf.prob.g2, del$network, del$infDur,
+                               "inf.prob.g2")
+        )
       }
 
       # Interventions
@@ -210,11 +216,9 @@ infection.2g.net <- function(dat, at) {
         del$transProb <- del$transProb * (1 - inter.eff)
       }
 
-      # Calculate infection-stage act/contact rates
-      lact.rate <- length(act.rate)
-      del$actRate <- ifelse(del$infDur <= lact.rate,
-                            act.rate[del$infDur],
-                            act.rate[lact.rate])
+      # Act rate by duration of infection (and by layer)
+      del$actRate <- layer_duration_value(act.rate, del$network, del$infDur,
+                                          "act.rate")
 
       # Calculate final transmission probability per timestep
       del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate

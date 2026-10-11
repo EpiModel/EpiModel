@@ -375,6 +375,7 @@ crosscheck.dcm <- function(param, init, control) {
   if (!inherits(control, "control.dcm")) {
     stop("control must be an object of class control.dcm")
   }
+  stop_if_by_infection_duration(param, "DCM")
 
   # Parameter checks for base models ----------------------------------
   if (is.null(control$new.mod)) {

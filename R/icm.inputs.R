@@ -242,6 +242,7 @@ crosscheck.icm <- function(param, init, control) {
   if (!inherits(control, "control.icm")) {
     stop("control must be an object of class control.icm")
   }
+  stop_if_by_infection_duration(param, "ICM")
 
   ## Check that rec.rate is supplied for SIR models
   if (control$type %in% c("SIR", "SIS")) {

@@ -14,7 +14,9 @@ object and other initialization information passed from
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
 
-\item{curr.tab}{Current proportional distribution of all vertex attributes.}
+\item{curr.tab}{Current proportional distribution of the vertex attributes,
+as output of \code{\link[=get_attr_prop]{get_attr_prop()}}. Only the attributes in \code{curr.tab}
+are filled in for the incoming nodes.}
 }
 \value{
 The updated \code{netsim_dat} main list object.

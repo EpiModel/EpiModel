@@ -75,7 +75,7 @@ build_restart_sim <- function(nsteps = 5, nsims = 1) {
   control <- control.net(type = "SI", nsteps = nsteps, nsims = nsims,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.run = TRUE, verbose = FALSE)
-  netsim(est, param.net(inf.prob = 0.3),
+  netsim(est, param.net(inf.prob = inf.prob),
          init.net(i.num = 5), control)
 }
 
@@ -132,6 +132,13 @@ test_that("make_restart_point produces a trimmed netsim with reset time", {
   # Default-trimmed extras.
   expect_equal(rp$attr.history, list())
   expect_equal(rp$raw.records, list())
+})
+
+test_that("make_restart_point accepts a simulation without transmissions", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6, inf.prob = 0)
+  expect_silent(rp <- make_restart_point(mod, time_attrs = c(), keep_steps = 1))
+  expect_equal(nrow(get_transmat(rp)), 0)
 })
 
 test_that("make_restart_point keeps multiple history steps when requested", {
