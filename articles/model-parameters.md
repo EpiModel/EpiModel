@@ -20,9 +20,8 @@ rate**, and a **recovery rate**. In simple models, each parameter is a
 single fixed value that remains constant throughout a simulation.
 Real-world applications, however, often require more flexibility:
 parameters that change over time (e.g., to represent an intervention
-rollout or behavioral change during an epidemic), parameters drawn from
-distributions (for sensitivity analysis or calibration), or large
-parameter sets managed via spreadsheets.
+rollout or behavioral change during an epidemic) or large parameter sets
+managed via spreadsheets.
 
 This vignette demonstrates how to implement:
 

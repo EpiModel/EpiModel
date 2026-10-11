@@ -111,7 +111,7 @@ plot(
 
 - ylim:
 
-  the y limits of the plot; see `xlim` for default and details.
+  the y limits of the plot.
 
 - xlab:
 

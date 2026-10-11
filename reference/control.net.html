@@ -108,7 +108,9 @@ argument, this number must be at least one greater than that argument's value.</
 <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
 <dd><p>For models with network resimulation, time point to start up the simulation. For
 restarted simulations, this must be one greater than the final time step in the prior
-simulation and must be less than the value in <code>nsteps</code>.</p></dd>
+simulation and must be less than the value in <code>nsteps</code>. Every simulation restarts from
+the first simulation of the prior <code>netsim</code> object (see the Restarting and Checkpointing
+section of <code><a href="netsim.html">netsim</a></code>).</p></dd>
 
 
 <dt id="arg-nsims">nsims<a class="anchor" aria-label="anchor" href="#arg-nsims"></a></dt>

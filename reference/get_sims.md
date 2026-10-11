@@ -6,7 +6,7 @@ essentially functioning like a reverse of `merge`.
 ## Usage
 
 ``` r
-get_sims(x, sims = NULL, var = NULL)
+get_sims(x, sims, var = NULL)
 ```
 
 ## Arguments

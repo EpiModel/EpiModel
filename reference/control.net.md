@@ -73,7 +73,10 @@ control.net(
   For models with network resimulation, time point to start up the
   simulation. For restarted simulations, this must be one greater than
   the final time step in the prior simulation and must be less than the
-  value in `nsteps`.
+  value in `nsteps`. Every simulation restarts from the first simulation
+  of the prior `netsim` object (see the Restarting and Checkpointing
+  section of
+  [`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)).
 
 - nsims:
 

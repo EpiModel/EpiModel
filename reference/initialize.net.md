@@ -41,7 +41,9 @@ initialize.net(x, param, init, control, s)
 
 - s:
 
-  Simulation number, used for restarting dependent simulations.
+  Simulation number. When restarting, every simulation restarts from the
+  first simulation of `x`, and a warning is raised (for `s = 1`) if `x`
+  holds more than one.
 
 ## Value
 
@@ -50,5 +52,8 @@ A `netsim_dat` class main data object.
 ## Details
 
 When re-initializing a simulation, the `netsim` object passed to
-`initialize.net` must contain the elements `param`, `nwparam`, `epi`,
-`coef.form`, and `num.nw`.
+`initialize.net` must contain the elements `nwparam`, `epi`, `run`,
+`coef.form`, and `num.nw`. The parameters are taken from `param` alone,
+which must hold all the parameters of the model: the ones of `x` are not
+used. The internal `groups` parameter is restored from the `run` sublist
+of `x`.

@@ -53,6 +53,10 @@ stochastic network models from <code>netsim</code>.</p>
 <span>  keep.other <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  param.error <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  keep.diss.stats <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  keep.run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  keep.cumulative.edgelist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  keep.attr.history <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  keep.raw.records <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -91,7 +95,8 @@ the original <code>x</code> and <code>y</code> elements.</p></dd>
 <dt id="arg-keep-other">keep.other<a class="anchor" aria-label="anchor" href="#arg-keep-other"></a></dt>
 <dd><p>If <code>TRUE</code>, keep the other simulation elements (as set
 by the <code>save.other</code> parameter in <code>control.net</code>) from the
-original <code>x</code> and <code>y</code> elements.</p></dd>
+original <code>x</code> and <code>y</code> elements. Elements with their own <code>keep.*</code>
+argument (e.g. <code>run</code>) follow that argument instead.</p></dd>
 
 
 <dt id="arg-param-error">param.error<a class="anchor" aria-label="anchor" href="#arg-param-error"></a></dt>
@@ -104,6 +109,30 @@ params (in <code><a href="param.net.html">param.net()</a></code>) or controls (p
 <dt id="arg-keep-diss-stats">keep.diss.stats<a class="anchor" aria-label="anchor" href="#arg-keep-diss-stats"></a></dt>
 <dd><p>If <code>TRUE</code>, keep <code>diss.stats</code> from the
 original <code>x</code> and <code>y</code> objects.</p></dd>
+
+
+<dt id="arg-keep-run">keep.run<a class="anchor" aria-label="anchor" href="#arg-keep-run"></a></dt>
+<dd><p>If <code>TRUE</code>, keep the <code>run</code> sublists (as set by the
+<code>save.run</code> parameter in <code>control.net</code>) from the original <code>x</code> and
+<code>y</code> elements. These are required to restart from a simulation of the
+merged object in <code><a href="netsim.html">netsim()</a></code>, selected with <code><a href="get_sims.html">get_sims()</a></code>.</p></dd>
+
+
+<dt id="arg-keep-cumulative-edgelist">keep.cumulative.edgelist<a class="anchor" aria-label="anchor" href="#arg-keep-cumulative-edgelist"></a></dt>
+<dd><p>If <code>TRUE</code>, keep the cumulative edgelists
+(as set by the <code>save.cumulative.edgelist</code> parameter in
+<code>control.net</code>) from the original <code>x</code> and <code>y</code> elements. <code>FALSE</code> by
+default, as these grow with the length of the simulation.</p></dd>
+
+
+<dt id="arg-keep-attr-history">keep.attr.history<a class="anchor" aria-label="anchor" href="#arg-keep-attr-history"></a></dt>
+<dd><p>If <code>TRUE</code>, keep the attribute histories (as set by
+<code><a href="record_attr_history.html">record_attr_history()</a></code>) from the original <code>x</code> and <code>y</code> elements.</p></dd>
+
+
+<dt id="arg-keep-raw-records">keep.raw.records<a class="anchor" aria-label="anchor" href="#arg-keep-raw-records"></a></dt>
+<dd><p>If <code>TRUE</code>, keep the raw records (as set by
+<code><a href="record_raw_object.html">record_raw_object()</a></code>) from the original <code>x</code> and <code>y</code> elements.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -127,6 +156,8 @@ for a combined object where the structure differs between the input elements.
 Instead, the function checks that objects are identical in model
 parameterization in every respect (except number of simulations) and binds
 the results.</p>
+<p>After dropping the elements not kept (see the <code>keep.*</code> arguments), <code>x</code> and
+<code>y</code> must hold the same elements.</p>
     </div>
 
     <div class="section level2">
@@ -134,9 +165,11 @@ the results.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Network model</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">25</span>,</span></span>
-<span class="r-in"><span>              coef.diss <span class="op">=</span> <span class="va">coef.diss</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>,</span></span>
+<span class="r-in"><span>  formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">25</span>,</span></span>
+<span class="r-in"><span>  coef.diss <span class="op">=</span> <span class="va">coef.diss</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting simulated annealing (SAN)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 4</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished simulated annealing</span>
@@ -149,10 +182,12 @@ the results.</p>
 <span class="r-in"><span><span class="co"># Epidemic models</span></span></span>
 <span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">20</span>, nsims <span class="op">=</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>                       save.nwstats <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                       nwstats.formula <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="fu">degree</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                       verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">20</span>, nsims <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  save.nwstats <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  nwstats.formula <span class="op">=</span> <span class="op">~</span> <span class="va">edges</span> <span class="op">+</span> <span class="fu">degree</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

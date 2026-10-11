@@ -251,6 +251,15 @@ Checkpointing Simulations section of
 [`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 for full details.
 
+When restarting, every simulation restarts from the first simulation of
+`x`, with a warning if `x` holds more than one.
+[`make_restart_point`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+makes a lightweight `x` holding the single simulation to restart from
+([`get_sims`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+selects one from a `netsim` object). The parameters are taken from
+`param` alone, which must hold all the parameters of the model: the ones
+saved in `x` are not used.
+
 ## References
 
 Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for

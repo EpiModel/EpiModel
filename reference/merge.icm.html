@@ -87,12 +87,16 @@ the results.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.icm.html">param.icm</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.icm.html">init.icm</a></span><span class="op">(</span>s.num <span class="op">=</span> <span class="fl">1000</span>, i.num <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.icm.html">control.icm</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>                       nsims <span class="op">=</span> <span class="fl">3</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.icm.html">control.icm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  nsims <span class="op">=</span> <span class="fl">3</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="icm.html">icm</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.icm.html">control.icm</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>                       nsims <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.icm.html">control.icm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  nsims <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="icm.html">icm</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></span>

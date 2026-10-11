@@ -16,6 +16,10 @@ merge(
   keep.other = TRUE,
   param.error = TRUE,
   keep.diss.stats = TRUE,
+  keep.run = TRUE,
+  keep.cumulative.edgelist = FALSE,
+  keep.attr.history = TRUE,
+  keep.raw.records = TRUE,
   ...
 )
 ```
@@ -54,7 +58,8 @@ merge(
 
   If `TRUE`, keep the other simulation elements (as set by the
   `save.other` parameter in `control.net`) from the original `x` and `y`
-  elements.
+  elements. Elements with their own `keep.*` argument (e.g. `run`)
+  follow that argument instead.
 
 - param.error:
 
@@ -67,6 +72,34 @@ merge(
 - keep.diss.stats:
 
   If `TRUE`, keep `diss.stats` from the original `x` and `y` objects.
+
+- keep.run:
+
+  If `TRUE`, keep the `run` sublists (as set by the `save.run` parameter
+  in `control.net`) from the original `x` and `y` elements. These are
+  required to restart from a simulation of the merged object in
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+  selected with
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md).
+
+- keep.cumulative.edgelist:
+
+  If `TRUE`, keep the cumulative edgelists (as set by the
+  `save.cumulative.edgelist` parameter in `control.net`) from the
+  original `x` and `y` elements. `FALSE` by default, as these grow with
+  the length of the simulation.
+
+- keep.attr.history:
+
+  If `TRUE`, keep the attribute histories (as set by
+  [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md))
+  from the original `x` and `y` elements.
+
+- keep.raw.records:
+
+  If `TRUE`, keep the raw records (as set by
+  [`record_raw_object()`](https://epimodel.github.io/EpiModel/reference/record_raw_object.md))
+  from the original `x` and `y` elements.
 
 - ...:
 
@@ -93,15 +126,20 @@ input elements. Instead, the function checks that objects are identical
 in model parameterization in every respect (except number of
 simulations) and binds the results.
 
+After dropping the elements not kept (see the `keep.*` arguments), `x`
+and `y` must hold the same elements.
+
 ## Examples
 
 ``` r
 # \donttest{
 # Network model
 nw <- network_initialize(n = 100)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-est <- netest(nw, formation = ~edges, target.stats = 25,
-              coef.diss = coef.diss, verbose = FALSE)
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 10)
+est <- netest(nw,
+  formation = ~edges, target.stats = 25,
+  coef.diss = coef.diss, verbose = FALSE
+)
 #> Starting simulated annealing (SAN)
 #> Iteration 1 of at most 4
 #> Finished simulated annealing
@@ -114,10 +152,12 @@ est <- netest(nw, formation = ~edges, target.stats = 25,
 # Epidemic models
 param <- param.net(inf.prob = 1)
 init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 20, nsims = 2,
-                       save.nwstats = TRUE,
-                       nwstats.formula = ~edges + degree(0),
-                       verbose = FALSE)
+control <- control.net(
+  type = "SI", nsteps = 20, nsims = 2,
+  save.nwstats = TRUE,
+  nwstats.formula = ~ edges + degree(0),
+  verbose = FALSE
+)
 x <- netsim(est, param, init, control)
 y <- netsim(est, param, init, control)
 

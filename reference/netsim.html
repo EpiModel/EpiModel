@@ -238,6 +238,12 @@ automatic checkpointing. To restart a simulation from a prior <code>netsim</code
 output, pass the <code>netsim</code> object as <code>x</code> and set <code>control$start</code> to one
 greater than the final time step of the prior simulation. See the
 Checkpointing Simulations section of <code><a href="control.net.html">control.net</a></code> for full details.</p>
+<p>When restarting, every simulation restarts from the first simulation of <code>x</code>,
+with a warning if <code>x</code> holds more than one. <code><a href="make_restart_point.html">make_restart_point</a></code> makes a
+lightweight <code>x</code> holding the single simulation to restart from (<code><a href="get_sims.html">get_sims</a></code>
+selects one from a <code>netsim</code> object). The parameters are taken from <code>param</code>
+alone, which must hold all the parameters of the model: the ones saved in
+<code>x</code> are not used.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -76,7 +76,9 @@ all networks.</p></dd>
 
 
 <dt id="arg-s">s<a class="anchor" aria-label="anchor" href="#arg-s"></a></dt>
-<dd><p>Simulation number, used for restarting dependent simulations.</p></dd>
+<dd><p>Simulation number. When restarting, every simulation restarts from
+the first simulation of <code>x</code>, and a warning is raised (for <code>s = 1</code>)
+if <code>x</code> holds more than one.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -86,8 +88,11 @@ all networks.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>When re-initializing a simulation, the <code>netsim</code> object passed
-to <code>initialize.net</code> must contain the elements <code>param</code>,
-<code>nwparam</code>, <code>epi</code>, <code>coef.form</code>, and <code>num.nw</code>.</p>
+to <code>initialize.net</code> must contain the elements <code>nwparam</code>, <code>epi</code>,
+<code>run</code>, <code>coef.form</code>, and <code>num.nw</code>. The parameters are taken from
+<code>param</code> alone, which must hold all the parameters of the model:
+the ones of <code>x</code> are not used. The internal <code>groups</code> parameter is
+restored from the <code>run</code> sublist of <code>x</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
