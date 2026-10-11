@@ -60,7 +60,9 @@ argument, this number must be at least one greater than that argument's value.}
 
 \item{start}{For models with network resimulation, time point to start up the simulation. For
 restarted simulations, this must be one greater than the final time step in the prior
-simulation and must be less than the value in \code{nsteps}.}
+simulation and must be less than the value in \code{nsteps}. Every simulation restarts from
+the first simulation of the prior \code{netsim} object (see the Restarting and Checkpointing
+section of \code{\link{netsim}}).}
 
 \item{nsims}{The total number of disease simulations.}
 

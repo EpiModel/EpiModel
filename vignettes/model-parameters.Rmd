@@ -28,7 +28,7 @@ This vignette assumes familiarity with setting up and running network models in 
 
 For working with nodal attributes and epidemic summary statistics, see the companion vignette *Working with Custom Attributes and Summary Statistics in EpiModel*. For network objects and edgelists, see *Working with Network Objects in EpiModel*.
 
-In a model, *parameters* are the input variables that define aspects of system behavior. In a basic SIS (Susceptible-Infected-Susceptible) model, these might include an **infection probability**, an **act rate**, and a **recovery rate**. In simple models, each parameter is a single fixed value that remains constant throughout a simulation. Real-world applications, however, often require more flexibility: parameters that change over time (e.g., to represent an intervention rollout or behavioral change during an epidemic), parameters drawn from distributions (for sensitivity analysis or calibration), or large parameter sets managed via spreadsheets.
+In a model, *parameters* are the input variables that define aspects of system behavior. In a basic SIS (Susceptible-Infected-Susceptible) model, these might include an **infection probability**, an **act rate**, and a **recovery rate**. In simple models, each parameter is a single fixed value that remains constant throughout a simulation. Real-world applications, however, often require more flexibility: parameters that change over time (e.g., to represent an intervention rollout or behavioral change during an epidemic) or large parameter sets managed via spreadsheets.
 
 This vignette demonstrates how to implement:
 
