@@ -22,6 +22,8 @@
 
 -   Fix `merge.netsim()` when merging three or more objects in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`. The dropped elements made the merged object differ in structure from the next one, which failed with "x and y have different structure". The elements not kept may now be missing from one side. A kept element missing from one side is still an error, which now names each such element and the `keep.*` argument that would drop it. The `save.other` elements are also bound like the other per-simulation elements, which keeps their `NULL` entries.
 
+-   Fix `merge.netsim()` to bind the epi trackers of `y` by name rather than by position. When `x` and `y` held their trackers in a different order, the values of one tracker in `y` were bound to another in `x`.
+
 -   Fix `merge.netsim()` to bind the per-simulation `coef.form` lists, which were kept from `x` alone. Restarting from a simulation of the merged object coming from `y` read the wrong formation coefficients.
 
 -   Fix `get_sims()` to subset the per-simulation `coef.form`, `attr.history` and `raw.records` elements, which were returned for every simulation regardless of `sims`.
@@ -30,7 +32,7 @@
 
 -   Fix `merge.netsim()` to compare the formula-type controls (`monitors`, `nwstats.formula`, `set.control.tergm`, `set.control.ergm` and `dat.updates`) with `all.equal()` rather than `identical()`. These carry an environment, which differs once simulations run with the same controls are serialized and read back (e.g. returned by parallel workers, or saved as the batches of an HPC run), and their merge then failed with "x and y have different controls".
 
--   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is left as is with a warning, as its entries cannot be matched to the simulations; it was subset by position before.
+-   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is also left as is, as its entries cannot be matched to the simulations; it was subset by position before.
 
 -   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
 

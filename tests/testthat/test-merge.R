@@ -434,3 +434,19 @@ test_that("merge.netsim chains merges of restart points", {
                init.net(i.num = 5), control.rs)
   expect_equal(rs$epi$i.num[1, 1], pool$epi$i.num[1, 2])
 })
+
+test_that("merge.netsim binds the epi trackers of y by name", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 3, nsims = 2, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  x <- get_sims(mod, sims = 1)
+  y <- get_sims(mod, sims = 2)
+  y$epi <- rev(y$epi)
+
+  z <- merge(x, y)
+  expect_named(z$epi, names(mod$epi))
+  expect_equal(z$epi, mod$epi, check.attributes = FALSE)
+})

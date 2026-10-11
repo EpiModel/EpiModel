@@ -233,8 +233,6 @@ merge.netsim <- function(
     keep.raw.records = keep.raw.records
   )
 
-  # TODO: check param / control there ?
-  #       return a list of elements (persim, stats, ...)
   similar_components <- check_similar_sim(x, y)
 
   # Check that `param` and `control` are identical if `param.error == TRUE`
@@ -274,9 +272,9 @@ merge.netsim <- function(
   out$control$nsims <- sum(similar_components$n_sims)
   newnames <- get_sim_names(out$control$nsims)
 
-  # Merge epi data
+  # Merge epi data, matching the trackers of `y` by name
   for (i in seq_along(x$epi)) {
-    out$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
+    out$epi[[i]] <- cbind(x$epi[[i]], y$epi[[names(x$epi)[i]]])
     names(out$epi[[i]]) <- newnames
   }
 
@@ -318,17 +316,17 @@ check_similar_sim <- function(sim1, sim2) {
 
   # similar epi
   if (!setequal(names(sim1$epi), names(sim2$epi))) {
-    stop("sim1 and sim2 do not save the same epi Trackers")
+    stop("x and y do not hold the same epi trackers", call. = FALSE)
   }
   sim1_n_steps <- unique(vapply(sim1$epi, nrow, 1L))
   sim2_n_steps <- unique(vapply(sim2$epi, nrow, 1L))
   if (sim1_n_steps != sim2_n_steps) {
-    stop("sim1 and sim2 do not have the same number of steps")
+    stop("x and y do not have the same number of steps", call. = FALSE)
   }
 
   # same `num.nw`
   if (sim1$num.nw != sim2$num.nw) {
-    stop("sim1 and sim2 do not have the same number of networks")
+    stop("x and y do not have the same number of networks", call. = FALSE)
   }
 
   # Do they have `run`
@@ -340,7 +338,7 @@ check_similar_sim <- function(sim1, sim2) {
     sim1_attrs_names <- unique(unlist(lapply(sim1$run, \(x) names(x$attr))))
     sim2_attrs_names <- unique(unlist(lapply(sim2$run, \(x) names(x$attr))))
     if (!setequal(sim1_attrs_names, sim2_attrs_names)) {
-      stop("sim1 and sim2 do not store the same attributes")
+      stop("x and y do not store the same attributes", call. = FALSE)
     }
   }
 
@@ -440,12 +438,3 @@ get_per_sim_element_names <- function(obj, n_sims) {
 get_sim_names <- function(n_sims) {
   paste0("sim", seq_len(n_sims))
 }
-
-# TODO: get_sims should not warn on improper `netsim`. If we want this, we
-# should have a dedicated function. I think it's a good idea but if we plan to
-# update the netsim / dat structures, I would wait until then
-# TODO: similarly, caclulating `nsims` with the epi. That breaks if epi's have
-# different length. But I would argue it's out of scope and should be fix with a
-# general netsim object checker longer term. Current use of `control$nsims` is
-# no better as it simply does not check anything
-# TODO: explain these differences when push
