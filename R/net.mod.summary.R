@@ -21,21 +21,25 @@ summary_nets <- function(dat, at) {
   }
 
   for (network in seq_len(dat$num.nw)) {
-    nwstats <- summary(
-      get_network_control(dat, network, "nwstats.formula"),
-      basis = get_network(dat, network = network),
-      at = at, # needed for networkDynamic case
-      dynamic = TRUE,
-      term.options = get_network_control(
-        dat,
-        network,
-        "set.control.tergm"
-      )$term.options
-    )
-    if (is(nwstats, "matrix")) {
-      nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = TRUE]
+    if (is_model_free_layer(get_nwparam(dat, network = network))) {
+      nwstats <- model_free_nwstats(dat, network, at)
     } else {
-      nwstats <- nwstats[!duplicated(names(nwstats))]
+      nwstats <- summary(
+        get_network_control(dat, network, "nwstats.formula"),
+        basis = get_network(dat, network = network),
+        at = at, # needed for networkDynamic case
+        dynamic = TRUE,
+        term.options = get_network_control(
+          dat,
+          network,
+          "set.control.tergm"
+        )$term.options
+      )
+      if (is(nwstats, "matrix")) {
+        nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = TRUE]
+      } else {
+        nwstats <- nwstats[!duplicated(names(nwstats))]
+      }
     }
     dat$stats$nwstats[[network]][[at]] <- nwstats
   }

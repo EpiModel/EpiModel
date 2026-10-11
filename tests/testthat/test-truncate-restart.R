@@ -65,7 +65,7 @@ test_that("truncate_sim.netsim delegates to the icm method", {
 
 context("make_restart_point validation and roundtrip")
 
-build_restart_sim <- function(nsteps = 5, nsims = 1) {
+build_restart_sim <- function(nsteps = 5, nsims = 1, inf.prob = 0.3) {
   nw <- network_initialize(n = 30)
   est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
