@@ -190,43 +190,45 @@ sim <- netsim(est, param, init, control)
 # Reconstruct attributes at time step 200
 attrs_200 <- get_attr_at(sim, at = 200)
 attrs_200
-# # A tibble: 487 x 3
-#    unique_id active status
-#        <int>  <int> <chr>
-#  1         1      1 s
-#  2         2      1 i
-#  3         3      1 s
-#  ...
+# # A tibble: 500 x 4
+#   unique_id active status race
+#       <int>  <int> <chr>  <chr>
+# 1         1      1 s      W
+# 2         2      1 i      W
+# 3         3      1 s      W
+# # ... with 497 more rows
 ```
 
 The raw delta-compressed history is also available via `get_attr_history()`:
 
 ```{r get_attr_history_auto, eval = FALSE}
 attr_history <- get_attr_history(sim)
+names(attr_history)
+# [1] "active" "status" "race"
 
-# $active
-#    sim time attribute  uids values
-# 1    1    1 active        1      1
-# 2    1    1 active        2      1
-# ...
-# 50   1   42 active      501      1
-# 51   1   65 active        7      0
-# ...
-#
-# $status
-#    sim time attribute  uids values
-# 1    1    1 status        1      s
-# 2    1    1 status        2      s
-# ...
-# 50   1   22 status        5      i
-# 51   1   64 status       12      i
-# ...
+attr_history$status
+# # A tibble: 11,812 x 5
+#     sim  time attribute  uids values
+#   <dbl> <int> <chr>     <int> <chr>
+# 1     1     1 status        1 s
+# 2     1     1 status        2 s
+# 3     1     1 status        3 s
+# # ... with 11,809 more rows
+
+# After the initial snapshot of the 500 nodes, only the changes are recorded
+attr_history$status[501:503, ]
+# # A tibble: 3 x 5
+#     sim  time attribute  uids values
+#   <dbl> <int> <chr>     <int> <chr>
+# 1     1     2 status       97 i
+# 2     1     2 status      123 i
+# 3     1     3 status       13 i
 ```
 
-Each `data.frame` has columns `sim` (simulation number), `time` (time step),
-`attribute` (the label), `uids` (unique IDs), and `values` (the recorded
-values). The initial time step contains the full snapshot; subsequent steps
-contain only the changes.
+Each element is a `tibble` with columns `sim` (simulation number), `time`
+(time step), `attribute` (the label), `uids` (unique IDs), and `values` (the
+recorded values). The initial time step contains the full snapshot; subsequent
+steps contain only the changes.
 
 ### Manual Attribute Recording
 
