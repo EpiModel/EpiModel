@@ -235,8 +235,8 @@ test_that("merge.netsim merges the recorded histories", {
 
   # record one value per time step, plus a raw object
   test_logger <- function(dat, at) {
-    dat <- record_attr_history(dat, "test.attr", at, posit_ids = get_posit_ids(dat), at = at)
-    dat <- record_raw_object(dat, at, "test.obj", at)
+    dat <- record_attr_history(dat, "test.attr", at, posit_ids = get_posit_ids(dat))
+    dat <- record_raw_object(dat, "test.obj", at)
     return(dat)
   }
 
@@ -263,6 +263,10 @@ test_that("merge.netsim merges the recorded histories", {
   z2 <- merge(x, y, keep.attr.history = FALSE)
   expect_null(z2$attr.history)
   expect_named(z2$raw.records, simnames)
+
+  rec <- z$raw.records$sim3$as_list()
+  expect_equal(vapply(rec, `[[`, "", "label"), rep("test.obj", 4))
+  expect_equal(vapply(rec, `[[`, 0, "object"), vapply(rec, `[[`, 0, "time"))
 
   z3 <- merge(x, y, keep.raw.records = FALSE)
   expect_named(z3$attr.history, simnames)

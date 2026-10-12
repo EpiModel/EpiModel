@@ -29,8 +29,13 @@
 #'        elements to append at the end of `item`.
 #' @param at For `get_epi`, the timestep at which to access the specified
 #'        `item`; for `set_epi`, the timestep at which to add the new
-#'        value for the epi output `item`; for `append_core_attr`, the
-#'        current time step.
+#'        value for the epi output `item`, which defaults to the current
+#'        time step ([get_current_timestep()]) when `NULL`; for
+#'        `append_core_attr`, the current time step.
+#' @param ... For `set_epi`, must be empty. It makes `at` a named-only
+#'        argument, so that calls written for the `set_epi(dat, item, at,
+#'        value)` signature of EpiModel 2.6 and earlier error instead of
+#'        silently swapping `at` and `value`.
 #' @return A vector or a list of vectors for `get_` functions; the main
 #'         list object for `set_`, `append_`, and `add_`
 #'         functions.
@@ -345,12 +350,18 @@ add_epi <- function(dat, item) {
 
 #' @rdname net-accessor
 #' @export
-set_epi <- function(dat, item, value, at = NULL) {
-  if (is.null(at)) {
-    at <- get_current_timestep(dat)
-  } else if (length(at) != 1L || !is.numeric(at)) {
-    stop("`at` must be numeric and of length one")
+set_epi <- function(dat, item, value, ..., at = NULL) {
+  if (...length() > 0L) {
+    stop_old_signature(
+      "set_epi",
+      new_usage = "set_epi(dat, item, value, at = NULL)",
+      old_usage = "set_epi(dat, item, at, value)",
+      fix = "set_epi(dat, item, value)",
+      dots_names = ...names()
+    )
   }
+  check_record_name(item, "item")
+  at <- resolve_record_at(dat, at)
 
   if (!item %in% names(dat$epi)) {
     dat <- add_epi(dat, item)

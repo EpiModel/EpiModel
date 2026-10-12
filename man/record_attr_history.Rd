@@ -8,6 +8,7 @@ record_attr_history(
   dat,
   item,
   value,
+  ...,
   at = NULL,
   posit_ids = NULL,
   unique_ids = NULL
@@ -23,6 +24,11 @@ object and other initialization information passed from
 \item{value}{The values to be recorded. Must be of length 1 (recycled for
 all nodes) or the same length as the number of nodes identified by
 \code{posit_ids} or \code{unique_ids}.}
+
+\item{...}{Must be empty. It makes \code{at}, \code{posit_ids} and \code{unique_ids}
+named-only arguments, so that calls written for the EpiModel 2.6
+signature, \code{record_attr_history(dat, at, attribute, posit_ids, values)},
+error instead of silently recording the wrong values.}
 
 \item{at}{The time step at which the recording happens. Defaults to the
 current time step if \code{NULL}.}
@@ -53,8 +59,9 @@ the conversion from positional IDs is skipped, which is more efficient
 when unique IDs are already known (e.g., from the automatic tracking
 system).
 
-See the "Time-Varying Parameters" section of the "Working With Model
-Parameters" vignette.
+See the "Historical Nodal Attributes" section of the "Working with Custom
+Attributes and Summary Statistics" vignette
+(\code{vignette("attributes-and-summary-statistics", package = "EpiModel")}).
 }
 \examples{
 \dontrun{

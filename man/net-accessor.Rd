@@ -47,7 +47,7 @@ get_epi(dat, item, at = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
-set_epi(dat, item, value, at = NULL)
+set_epi(dat, item, value, ..., at = NULL)
 
 get_param_list(dat, item = NULL)
 
@@ -108,8 +108,13 @@ elements to append at the end of \code{item}.}
 
 \item{at}{For \code{get_epi}, the timestep at which to access the specified
 \code{item}; for \code{set_epi}, the timestep at which to add the new
-value for the epi output \code{item}; for \code{append_core_attr}, the
-current time step.}
+value for the epi output \code{item}, which defaults to the current
+time step (\code{\link[=get_current_timestep]{get_current_timestep()}}) when \code{NULL}; for
+\code{append_core_attr}, the current time step.}
+
+\item{...}{For \code{set_epi}, must be empty. It makes \code{at} a named-only
+argument, so that calls written for the \code{set_epi(dat, item, at, value)} signature of EpiModel 2.6 and earlier error instead of
+silently swapping \code{at} and \code{value}.}
 
 \item{network}{index of network for which to get control}
 }
