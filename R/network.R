@@ -188,6 +188,18 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
     onset = spells$onset,
     terminus = spells$terminus
   )
+  # A vertex without any spell (e.g., a node that departed before a restart,
+  # and so is not in the history) would otherwise count as always active
+  never_active <- setdiff(seq_len(n_nodes), spells$uid)
+  if (length(never_active) > 0) {
+    networkDynamic::deactivate.vertices(
+      nw,
+      v = never_active,
+      onset = -Inf,
+      terminus = Inf,
+      deactivate.edges = FALSE
+    )
+  }
 
   # Setup Edges
   el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]]

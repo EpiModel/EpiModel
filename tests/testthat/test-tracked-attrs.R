@@ -479,3 +479,20 @@ test_that("make_networkDynamic refuses a truncated cumulative edgelist", {
                 init.net(i.num = 5), control)
   expect_error(make_networkDynamic(sim), "truncate.el.cuml = Inf")
 })
+
+test_that("make_networkDynamic after a restart activates only tracked nodes", {
+  skip_on_cran()
+  f <- open_pop_fixture(nsteps = 10, cumulative.edgelist = TRUE,
+                        truncate.el.cuml = Inf,
+                        save.cumulative.edgelist = TRUE)
+  ctrl2 <- f$control
+  ctrl2$start <- 11
+  ctrl2$nsteps <- 20
+  sim2 <- netsim(f$sim, f$param, f$init, ctrl2)
+  nd <- make_networkDynamic(sim2)
+  # the nodes that departed before the restart are not in the history
+  n_active <- vapply(11:20, function(at) {
+    sum(is.active(nd, at = at, v = seq_len(network.size(nd))))
+  }, 0)
+  expect_equal(n_active, sim2$epi$num[11:20, 1])
+})
