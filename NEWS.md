@@ -54,6 +54,10 @@
 
 -   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is also left as is, as its entries cannot be matched to the simulations; it was subset by position before.
 
+-   Fix `merge.netsim()` to keep the `transmat` class of the `stats$transmat` list, which `netsim()` and `get_sims()` set and `c()` dropped. Splitting an object with `get_sims()` and merging the parts back now returns the original object.
+
+-   `get_sims()` now stops with a clear error when `sims` holds a value that is not a whole number of at least 1 (e.g. `0`, `1.5` or `NA`), which failed with an unrelated error about the length of a `names` attribute. Its documentation now states that each simulation is returned once, in ascending order, whatever the order of `sims`.
+
 -   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
 
 -   Fix `make_restart_point()` to keep the unique IDs integer. Re-basing them made them double.

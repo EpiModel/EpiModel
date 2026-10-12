@@ -278,15 +278,18 @@ merge.netsim <- function(
     names(out$epi[[i]]) <- newnames
   }
 
-  # Merge per simulation elements
+  # Merge per simulation elements. `c()` drops the class of the list (e.g.
+  # `transmat`), which is restored from `x`
   for (elt in similar_components$per_sim) {
     out[[elt]] <- c(x[[elt]], y[[elt]])
     names(out[[elt]]) <- newnames
+    oldClass(out[[elt]]) <- oldClass(x[[elt]])
   }
 
   for (elt in similar_components$stats) {
     out$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
     names(out$stats[[elt]]) <- newnames
+    oldClass(out$stats[[elt]]) <- oldClass(x$stats[[elt]])
   }
 
   return(out)

@@ -465,7 +465,8 @@ get_nwparam <- function(x, network = 1) {
 #' @param sims Either a numeric vector of simulation numbers to retain in the
 #'        output object, or `"mean"`, which selects the one simulation with
 #'        the value of the variable specified in `var` closest to the mean
-#'        of `var` across all simulations at the final step.
+#'        of `var` across all simulations at the final step. Each simulation
+#'        is returned once, in ascending order, whatever the order of `sims`.
 #' @param var A character vector of variables to retain from `x` if
 #'        `sims` is a numeric vector, or a single variable name for
 #'        selecting the average simulation from the set if `sims = "mean"`.
@@ -521,6 +522,10 @@ get_sims <- function(x, sims, var = NULL) {
     sims <- which.min(abs(d - md))
   }
 
+  if (!is.numeric(sims) || length(sims) == 0 || anyNA(sims) ||
+        any(sims < 1) || any(sims != round(sims))) {
+    stop("`sims` must hold whole numbers between 1 and ", nsims)
+  }
   if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims)
   }

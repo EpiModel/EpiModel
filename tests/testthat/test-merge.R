@@ -454,3 +454,71 @@ test_that("merge.netsim binds the epi trackers of y by name", {
   expect_named(z$epi, names(mod$epi))
   expect_equal(z$epi, mod$epi, check.attributes = FALSE)
 })
+
+test_that("merge.netsim binds open population runs with independent controls and splits back", {
+  skip_on_cran()
+  # arrivals and departures make `edges_correct()` move the formation
+  # coefficients apart across simulations, so a misaligned `coef.form` shows
+  set.seed(1072)
+  nw <- network_initialize(n = 80)
+  est <- netest(nw, formation = ~edges, target.stats = 40,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.03),
+                verbose = FALSE)
+  # runs first in each step, so it records the coefficient carried over from
+  # the previous step
+  logger <- function(dat, at) {
+    dat <- record_attr_history(dat, "n.active", length(get_posit_ids(dat)),
+                               posit_ids = get_posit_ids(dat)[1])
+    dat <- record_raw_object(dat, "coef", dat$nwparam[[1]]$coef.form[[1]])
+    dat$last.coef <- dat$nwparam[[1]]$coef.form[[1]]
+    dat
+  }
+  # each run builds its own `param.net()` and `control.net()` objects, as
+  # separate jobs do
+  run_open <- function(nsims, start = 1, nsteps = 6, x = est) {
+    param <- param.net(inf.prob = 0.3, act.rate = 1, a.rate = 0.03,
+                       ds.rate = 0.03, di.rate = 0.03)
+    control <- control.net(
+      type = NULL, nsteps = nsteps, start = start, nsims = nsims,
+      infection.FUN = infection.net, departures.FUN = departures.net,
+      arrivals.FUN = arrivals.net, logger.FUN = logger,
+      tergmLite = TRUE, resimulate.network = TRUE,
+      cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE,
+      save.run = TRUE, save.network = TRUE, save.nwstats = TRUE,
+      save.transmat = TRUE, save.other = "last.coef", verbose = FALSE
+    )
+    netsim(x, param, init.net(i.num = 10), control)
+  }
+  x <- run_open(3)
+  y <- run_open(2)
+
+  # the restart check below needs the first simulations of `x` and `y` to have
+  # drifted apart
+  expect_false(isTRUE(all.equal(x$coef.form$sim1, y$coef.form$sim1)))
+
+  per_sim <- c("run", "coef.form", "cumulative.edgelist", "attr.history",
+               "raw.records", "network", "last.coef")
+  z <- merge(x, y, keep.cumulative.edgelist = TRUE)
+  expect_equal(z$control$nsims, 5)
+  for (elt in per_sim) {
+    expect_named(z[[elt]], paste0("sim", 1:5))
+    expect_identical(unname(z[[elt]]), unname(c(x[[elt]], y[[elt]])),
+                     info = elt)
+  }
+  for (elt in c("nwstats", "transmat")) {
+    expect_identical(unclass(unname(z$stats[[elt]])),
+                     unname(c(x$stats[[elt]], y$stats[[elt]])), info = elt)
+  }
+  expect_s3_class(z$stats$transmat, "transmat")
+
+  # restarting from a simulation that came from `y` starts from its formation
+  # coefficients
+  rs <- run_open(1, start = 7, nsteps = 8, x = get_sims(z, sims = 4))
+  expect_equal(rs$raw.records$sim1$as_list()[[1]]$object,
+               y$coef.form$sim1[[1]][[1]])
+
+  # splitting and merging back gives the original object
+  rt <- merge(get_sims(x, sims = 1), get_sims(x, sims = 2:3),
+              keep.cumulative.edgelist = TRUE)
+  expect_equal(rt, x)
+})

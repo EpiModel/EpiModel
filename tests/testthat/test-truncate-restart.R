@@ -195,6 +195,36 @@ test_that("make_restart_point extracts and trims the requested simulation", {
   expect_equal(rp$stats$transmat$sim1$at, tm$at[kept] - (6 - 2))
 })
 
+test_that("make_restart_point keeps the formation coefficients of the requested simulation", {
+  skip_on_cran()
+  # arrivals and departures make `edges_correct()` move the formation
+  # coefficients apart across simulations
+  set.seed(1)
+  nw <- network_initialize(n = 60)
+  est <- netest(nw, formation = ~edges, target.stats = 30,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.03),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, a.rate = 0.03, ds.rate = 0.03,
+                     di.rate = 0.03)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 6, nsims = 3,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  coefs <- vapply(mod$coef.form, function(cf) cf[[1]][[1]], numeric(1))
+  expect_false(isTRUE(all.equal(coefs[[1]], coefs[[2]])))
+
+  rp <- make_restart_point(mod, time_attrs = c(), sim_num = 2)
+  expect_equal(rp$coef.form$sim1, mod$coef.form$sim2)
+
+  # the restart initializes from them
+  control.rs <- control.net(type = "SI", start = 2, nsteps = 3, nsims = 1,
+                            tergmLite = TRUE, resimulate.network = TRUE,
+                            save.run = TRUE, verbose = FALSE)
+  dat <- initialize.net(rp, param, init, control.rs, s = 1)
+  expect_equal(dat$nwparam[[1]]$coef.form, mod$coef.form$sim2[[1]])
+})
+
 test_that("make_restart_point re-bases the unique IDs of the transmission matrix", {
   skip_on_cran()
   set.seed(12)
