@@ -25,6 +25,16 @@ tracked attribute history for vertex activity and time-varying
 attributes. The resulting object can be used with \code{ndtv} for
 visualization or with \code{tsna} for temporal network analysis.
 }
+\details{
+The simulation must be run with \code{cumulative.edgelist = TRUE},
+\code{save.cumulative.edgelist = TRUE}, and \code{truncate.el.cuml = Inf} in
+\code{\link{control.net}}, so that the cumulative edgelist holds every edge, and with
+at least one attribute in \code{tracked.attributes} or \code{tracked.attributes.once},
+so that the activity of the nodes is recorded. The vertex ids of the
+\code{networkDynamic} object are the \code{unique_id}s of the nodes. The edges of all
+the network layers are merged into one network, with the layer of each edge
+in the \code{network} edge attribute.
+}
 \seealso{
 \code{\link[=get_attr_at]{get_attr_at()}}, \code{\link[=get_attr_history]{get_attr_history()}}
 }

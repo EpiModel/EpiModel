@@ -450,12 +450,12 @@ netsim_run_modules <- function(dat, s) {
       }
 
       current_mod <- "epimodel.internal"
+      # All nodal attributes must hold one value per node at the end of a step
+      check_attr_lengths(dat)
+
       dat <- tracked_attrs_record(dat)
       # Run the user-provided trackers, if any
       dat <- epi_trackers(dat)
-
-      # All nodal attributes must hold one value per node at the end of a step
-      check_attr_lengths(dat)
 
       ## Verbose module
       if (!is.null(get_control(dat, "verbose.FUN"))) {

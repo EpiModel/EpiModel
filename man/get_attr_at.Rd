@@ -4,7 +4,7 @@
 \alias{get_attr_at}
 \title{Get Tracked Attributes at a Given Time Step}
 \usage{
-get_attr_at(sim, at, sim_num = 1, compute_age = TRUE)
+get_attr_at(sim, at, sim_num = 1, compute_age = FALSE)
 }
 \arguments{
 \item{sim}{An \code{EpiModel} object of class \code{netsim}.}
@@ -13,8 +13,11 @@ get_attr_at(sim, at, sim_num = 1, compute_age = TRUE)
 
 \item{sim_num}{The simulation number to use (default 1).}
 
-\item{compute_age}{If \code{age} is recorded even once, compute the age of nodes
-at this time. Assumes \code{time.unit} is correctly set in \code{params}.}
+\item{compute_age}{If \code{TRUE} and \code{age} is tracked, compute the age of nodes
+at \code{at} from their last recorded age, assuming age in years and 364
+days in a year. This needs a \code{time.unit} parameter (the number of days
+in a time step) in \code{sim$param}, passed to \code{\link{param.net}} or set by the
+initialization module (as EpiModelHIV does from its \code{epistats}).}
 }
 \value{
 A \code{tibble} with columns \code{unique_id}, \code{active}, and one column per
