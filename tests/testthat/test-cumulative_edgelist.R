@@ -317,76 +317,45 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
 
 })
 
-test_that("netsim can remake the `networkDynamic`", {
-  testthat::skip("Slow test - for local runs")
+test_that("make_networkDynamic matches the networkDynamic of netsim", {
+  skip_on_cran()
+  set.seed(11)
+  nw <- network_initialize(100)
+  est <- netest(nw, ~edges, 60, dissolution_coefs(~offset(edges), 10, 0.02),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1, rec.rate = 0.05,
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     dr.rate = 0.02)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 40,
+                         resimulate.network = TRUE, tergmLite = FALSE,
+                         cumulative.edgelist = TRUE, truncate.el.cuml = Inf,
+                         save.cumulative.edgelist = TRUE,
+                         tracked.attributes = "status", verbose = FALSE)
+  sim <- netsim(est, param, init.net(i.num = 10, r.num = 0), control)
+  orig <- get_network(sim, collapse = FALSE)
+  made <- make_networkDynamic(sim)
 
-  num <- 50
-  nw <- network_initialize(num)
-
-  formation <- ~edges
-  target.stats <- 40
-  coef.diss <- dissolution_coefs(
-    dissolution = ~offset(edges),
-    duration = 20,
-    d.rate = 0.005      # departure rate feeds into dissolution adjustment
-  )
-  est <- netest(nw, formation, target.stats, coef.diss)
-
-  param <- param.net(
-    inf.prob = 0.3,
-    rec.rate = 0.02,
-    a.rate = 0.005,      # arrival rate (was b.rate pre-1.7)
-    ds.rate = 0.005,     # departure rate, susceptible
-    di.rate = 0.005,     # departure rate, infected
-    dr.rate = 0.005      # departure rate, recovered
-  )
-  init <- init.net(i.num = 10, r.num = 0)
-  control <- control.net(
-    type = "SIR",
-    nsteps = 200,
-    nsims = 1,
-    resimulate.network = TRUE,   # required for open population
-    tergmLite = FALSE,
-    tracked.attributes = c('active'),
-    cumulative.edgelist = TRUE,
-    truncate.el.cuml = Inf,
-    save.cumulative.edgelist = TRUE,
-    save.run = FALSE,
-    verbose = FALSE
-  )
-
-  sim <- netsim(est, param, init, control)
-  orig_nw <- get_network(sim)
-
-  orig_nw <- get_network(sim) |>
-    network.extract(onset = 2, terminus = Inf, retain.all.vertices = TRUE)
-
-  made_nw <- make_networkDynamic(sim)
-
-  expect_silent({
-    for (v in seq_along(orig_nw$val)) {
-      for (e in get.edges(orig_nw, v)) {
-        # get the edge ID in both network
-        eid_orig <- get.edgeIDs(orig_nw, v = e$inl,  alter = e$outl)
-        eid_made <- get.edgeIDs(made_nw, v = e$inl,  alter = e$outl)
-        # Reformat the 2 edge spells list so they can be compared
-        act_orig <- Reduce(rbind, get.edge.activity(orig_nw, e = eid_orig),
-          simplify = FALSE)
-        # Edges finished before step 2 cannot be recorded by the
-        #   cumulative.edgelist
-        act_orig <- act_orig[act_orig[, 2] > 2, , drop = FALSE]
-        act_made <- Reduce(rbind, get.edge.activity(made_nw, e = eid_made),
-          simplify = FALSE)
-        act_made <- act_made[order(act_made[, 1]),, drop = FALSE]
-        # Edges from the cumulative edgelist never start at time < 2
-        if (any(pmax(act_orig[, 1], 2) != act_made[, 1]) ||
-          any(act_orig[, 2] != act_made[, 2])) {
-          stop()
-        }
-      }
-    }
-  })
-
+  dyads <- function(x) {
+    el <- as.matrix(x, matrix.type = "edgelist")
+    sort(paste(pmin(el[, 1], el[, 2]), pmax(el[, 1], el[, 2])))
+  }
+  n <- network.size(orig)
+  expect_equal(network.size(made), n)
+  for (at in 1:40) {
+    act <- is.active(orig, at = at, v = seq_len(n))
+    expect_identical(is.active(made, at = at, v = seq_len(n)), act)
+    expect_identical(
+      get.vertex.attribute.active(made, "status", at = at)[act],
+      get.vertex.attribute.active(orig, "testatus", at = at)[act]
+    )
+    expect_identical(
+      dyads(network.extract(made, at = at, retain.all.vertices = TRUE)),
+      dyads(network.extract(orig, at = at, retain.all.vertices = TRUE))
+    )
+  }
+  # no edge spell ends where it starts
+  spells <- as.data.frame(made)
+  expect_true(all(spells$onset < spells$terminus))
 })
 
 context("Cumulative Edgelist: head/tail orientation")
