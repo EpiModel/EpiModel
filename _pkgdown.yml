@@ -118,6 +118,8 @@ reference:
       - get_nwstats
       - get_nwparam
       - get_attr_history
+      - get_attr_at
+      - make_networkDynamic
       - make_restart_point
 
   - title: "Transmission & Reachability Analysis"

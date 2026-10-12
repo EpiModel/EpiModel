@@ -16,10 +16,11 @@
 
 ### NEW FEATURES
 
--   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage. A companion parameter `tracked.attributes.once` records attributes only in the initial snapshot and for new arrivals, suitable for fixed-at-entry attributes like `"race"` or `"birth.year"`.
--   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node. With `compute_age = TRUE`, the age of each node at that step is computed from its last recorded `age`, which needs a `time.unit` parameter (days per time step).
--   Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`.
+- Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage. A companion parameter `tracked.attributes.once` records attributes only in the initial snapshot and for new arrivals, suitable for fixed-at-entry attributes like `"race"` or `"birth.year"`. Attributes that a module creates on its first call are recorded for every node from the step they appear, and a tracked attribute that does not exist at the end of a step is an error. On restart, the history starts again from a full snapshot at `start - 1`, as the history of `x` is not carried over. `control.net()` checks that both arguments are character vectors of attribute names, without `"unique_id"`.
 
+- Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node. With `compute_age = TRUE`, the age of each node at that step is computed from its last recorded `age`, which needs a `time.unit` parameter (days per time step).
+
+- Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`. It needs every edge of the simulation, so it stops unless the simulation ran with `truncate.el.cuml = Inf`.
 
 - `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist`, `keep.attr.history` and `keep.raw.records` arguments, binding the per-simulation `run` sublists, cumulative edgelists and recorded histories. A merged object keeping its `run` sublists holds the state needed to restart from any of its simulations, selected with `get_sims()`. Only `keep.cumulative.edgelist` defaults to `FALSE`.
 
@@ -42,6 +43,12 @@
 -   Fix `get_sims()` to subset the per-simulation `cumulative.edgelist` element, which was returned for every simulation regardless of `sims`. `get_sims()` also now returns each requested simulation once (a repeated `sims` value set `control$nsims` to a count that did not match the simulations returned), and only subsets the per-simulation elements holding one entry per simulation. An empty one (e.g. `attr.history` after `make_restart_point()`) is left as is, where it errored or came back holding a `NULL` entry, depending on the simulations removed. An element of any other length, which only a malformed `netsim` object holds, is also left as is, as its entries cannot be matched to the simulations; it was subset by position before.
 
 -   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
+
+-   Fix `make_restart_point()` to keep the unique IDs integer. Re-basing them made them double.
+
+-   Fix `truncate_sim()` for `netsim` objects with `reset.time = TRUE` to shift the times of the attribute history and of the cumulative edgelist to the new time steps, as it does for the epi trackers. They kept the original times, so that `get_attr_at()` and `make_networkDynamic()` read them in the wrong frame. Their records before `at` are kept, with times of 0 or less.
+
+-   Fix `get_attr_history()` for a `netsim` object with a simulation that recorded nothing, which failed with "attempt to apply non-function".
 
 -   Fix `netsim()` restarting with `save.nwstats = TRUE` from an object holding no network statistics (e.g. a simulation run with `save.nwstats = FALSE`), which failed with "subscript out of bounds". The network statistics of the earlier time steps are then `NA`, so that they stay in line with the epi trackers. The same goes for the steps after `summary_nets` is removed by `end.horizon`.
 
