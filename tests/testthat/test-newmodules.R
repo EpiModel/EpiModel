@@ -414,6 +414,112 @@ test_that("create_scenario_list handles a single parameter column (#1045)", {
                list(inf.prob = 0.2, act.rate = 1))
 })
 
+test_that("a scenario sets single positions of a vector parameter", {
+  # Setting `x_1` alone replaced `x` with a vector of length 1, and `x_2`
+  # alone with `c(NA, value)`. No netsim here, so this runs on CRAN too.
+  param <- param.net(inf.prob = 0.3, x = c(0.1, 0.2, 0.3))
+  sc_param <- function(..., p = param) {
+    sc.df <- data.frame(.scenario.id = "s", .at = 0, ..., check.names = FALSE)
+    use_scenario(p, create_scenario_list(sc.df)[["s"]])
+  }
+
+  # The positions set change and the others keep their current value.
+  expect_equal(sc_param(x_1 = 0.5)$x, c(0.5, 0.2, 0.3))
+  expect_equal(sc_param(x_2 = 0.5)$x, c(0.1, 0.5, 0.3))
+  expect_equal(sc_param(x_3 = 0.7, x_1 = 0.5)$x, c(0.5, 0.2, 0.7))
+  expect_equal(sc_param(x_1 = 1, x_2 = 2, x_3 = 3)$x, c(1, 2, 3))
+  expect_equal(sc_param(x_2 = 0.5)$inf.prob, 0.3)
+
+  # A column without a position suffix replaces the whole parameter.
+  expect_equal(sc_param(x = 0.5)$x, 0.5)
+
+  # Positions past the end extend the vector when they leave no gap.
+  expect_equal(sc_param(x_4 = 0.4)$x, c(0.1, 0.2, 0.3, 0.4))
+  expect_equal(sc_param(x_5 = 0.5, x_4 = 0.4)$x, c(0.1, 0.2, 0.3, 0.4, 0.5))
+  expect_error(sc_param(x_5 = 0.5), "no value for position 4")
+  expect_error(sc_param(x_6 = 0.6, x_4 = 0.4), "no value for position 5")
+
+  # Names are kept and other atomic types are merged the same way.
+  p.chr <- param.net(grp = c(a = "low", b = "mid", c = "high"))
+  expect_equal(sc_param(grp_2 = "none", p = p.chr)$grp,
+               c(a = "low", b = "none", c = "high"))
+
+  # Rows with .at < 2 are applied in turn, each to the result of the last.
+  sc.df <- data.frame(.scenario.id = "s", .at = c(0, 1), x_1 = c(0.5, 0.6),
+                      x_3 = c(0.7, 0.7), check.names = FALSE)
+  expect_equal(use_scenario(param, create_scenario_list(sc.df)[["s"]])$x,
+               c(0.6, 0.2, 0.7))
+
+  # The scenario records the positions next to the values.
+  sc <- create_scenario_list(
+    data.frame(.scenario.id = "s", .at = 5, x_2 = 0.5, inf.prob = 0.2,
+               check.names = FALSE)
+  )[["s"]]
+  updater <- sc[[".param.updater.list"]][[1]]
+  expect_equal(updater$param, list(x = c(NA, 0.5), inf.prob = 0.2))
+  expect_equal(updater$positions, list(x = 2))
+  # Scalar columns alone add no positions.
+  sc.scalar <- create_scenario_list(
+    data.frame(.scenario.id = "s", .at = 5, inf.prob = 0.2)
+  )[["s"]]
+  expect_null(sc.scalar[[".param.updater.list"]][[1]]$positions)
+
+  # Parameters that are not plain vectors cannot be set by position.
+  p.ml <- param.net(inf.prob = 0.3, act.rate = multilayer(1, 2))
+  expect_error(sc_param(act.rate_2 = 3, p = p.ml),
+               "`act.rate` is a multilayer object rather than a plain vector")
+  p.bid <- param.net(inf.prob = by_infection_duration(c(0.5, 0.1)))
+  expect_error(sc_param(inf.prob_2 = 0.2, p = p.bid),
+               "`inf.prob` is a by_infection_duration object")
+})
+
+test_that("a scenario updater sets single positions of a vector parameter", {
+  skip_on_cran()
+  set.seed(10)
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # Records the value of the vector parameter `x` at each step
+  record_x <- function(dat, at) {
+    x <- get_param(dat, "x")
+    dat <- set_epi(dat, "x.len", at, length(x))
+    for (i in 1:3) dat <- set_epi(dat, paste0("x", i), at, x[i])
+    dat
+  }
+
+  param <- param.net(inf.prob = 0.3, x = c(0.1, 0.2, 0.3))
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 6,
+                         infection.FUN = infection.net,
+                         record.FUN = record_x, verbose = FALSE)
+
+  # The updater sets the second position at step 4
+  sc.df <- data.frame(.scenario.id = "s", .at = 4, x_2 = 0.7,
+                      check.names = FALSE)
+  sc.param <- use_scenario(param, create_scenario_list(sc.df)[["s"]])
+  expect_equal(sc.param$x, c(0.1, 0.2, 0.3))
+
+  sim <- suppressMessages(netsim(est, sc.param, init, control))
+  d <- as.data.frame(sim)[2:6, ]
+  expect_equal(d$x.len, rep(3, 5))
+  expect_equal(d$x1, rep(0.1, 5))
+  expect_equal(d$x2, c(0.2, 0.2, 0.7, 0.7, 0.7))
+  expect_equal(d$x3, rep(0.3, 5))
+  expect_equal(sim$param$x, c(0.1, 0.7, 0.3))
+
+  # An updater position that would leave a gap stops the run
+  sc.gap <- data.frame(.scenario.id = "s", .at = 3, x_5 = 0.5,
+                       check.names = FALSE)
+  gap.param <- use_scenario(param, create_scenario_list(sc.gap)[["s"]])
+  expect_error(suppressMessages(netsim(est, gap.param, init, control)),
+               "no value for position 4")
+})
+
 context("Records: attr_history and Raw Objects")
 
 test_that("Time varying elements", {

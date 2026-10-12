@@ -49,6 +49,10 @@ update_list <- function(x, new.x) {
 #' values(s) with which to update, with the names being the same as the
 #' parameter / control names. If the new value is a function but the old one is
 #' not, the function will be applied to the current element (see example).
+#' An updater may also hold a `positions` named list, as made by
+#' [create_scenario_list()] from scenario columns with a position suffix
+#' (`x_2`). For each parameter named in it, only the positions listed are
+#' changed in the current value, and the others keep their value.
 #'
 #' @examples
 #' \dontrun{
@@ -186,6 +190,10 @@ common_updater <- function(dat, type) {
       }
 
       old.list <- type.get_list(dat, names(new.list))
+      # Values set by position (`x_2` in a scenario) are merged into the
+      # current value, as `use_scenario()` does before the simulation
+      new.list <- merge_param_positions(old.list, new.list,
+                                        updaters[[i]][["positions"]])
       updated.list <- update_list(old.list, new.list)
 
       for (nm in names(updated.list)) {
