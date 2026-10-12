@@ -26,9 +26,12 @@ param.net(
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
 a susceptible and an infected person. In two-group models, this is the
-probability of infection to the group 1 nodes. This may also be a
-vector of probabilities, with each element corresponding to the
-probability in that time step of infection (see Time-Varying
+probability of infection to the group 1 nodes. This may also vary
+with the infected partner's duration of infection, given as a
+\code{\link[=by_infection_duration]{by_infection_duration()}} object (see Parameters by Duration of
+Infection below). In multi-layer models, this may be a
+\code{\link[=multilayer]{multilayer()}} object with one entry (a probability or a
+\code{by_infection_duration} object) per network layer (see Multi-Layer
 Parameters below).}
 
 \item{inter.eff}{Efficacy of an intervention which affects the per-act
@@ -41,17 +44,19 @@ the number of time steps specified in the model. This will default to
 1 if \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts \emph{per partnership}
-per unit time (see \code{act.rate} Parameter below). This may also be
-a vector of rates, with each element corresponding to the rate in
-that time step of infection (see Time-Varying Parameters below).}
+per unit time (see \code{act.rate} Parameter below). This may also vary
+with the infected partner's duration of infection, given as a
+\code{\link[=by_infection_duration]{by_infection_duration()}} object (see Parameters by Duration of
+Infection below), or be a \code{\link[=multilayer]{multilayer()}} object with one entry per
+network layer (see Multi-Layer Parameters below).}
 
 \item{rec.rate}{Average rate of recovery with immunity (in \code{SIR} models)
 or re-susceptibility (in \code{SIS} models). The recovery rate is the
 reciprocal of the disease duration. For two-group models, this is the
 recovery rate for group 1 persons only. This parameter is only used
-for \code{SIR} and \code{SIS} models. This may also be a vector
-of rates, with each element corresponding to the rate in that time
-step of infection (see Time-Varying Parameters below).}
+for \code{SIR} and \code{SIS} models. This may also vary with the duration of
+infection, given as a \code{\link[=by_infection_duration]{by_infection_duration()}} object (see
+Parameters by Duration of Infection below).}
 
 \item{a.rate}{Arrival or entry rate. For one-group models, the arrival rate
 is the rate of new arrivals per person per unit time. For two-group
@@ -71,12 +76,15 @@ parameter is only used for \code{SIR} models.}
 
 \item{inf.prob.g2}{Probability of transmission given a transmissible act
 between a susceptible group 2 person and an infected group 1 person.
-It is the probability of transmission to group 2 members.}
+It is the probability of transmission to group 2 members. As for
+\code{inf.prob}, it may be a \code{\link[=by_infection_duration]{by_infection_duration()}} or \code{\link[=multilayer]{multilayer()}}
+object.}
 
 \item{rec.rate.g2}{Average rate of recovery with immunity (in \code{SIR}
 models) or re-susceptibility (in \code{SIS} models) for group 2
 persons. This parameter is only used for two-group \code{SIR} and
-\code{SIS} models.}
+\code{SIS} models. As for \code{rec.rate}, it may be a
+\code{\link[=by_infection_duration]{by_infection_duration()}} object.}
 
 \item{a.rate.g2}{Arrival or entry rate for group 2. This may either be
 specified numerically as the rate of new arrivals per group 2 person
@@ -133,20 +141,40 @@ a different interpretation here, where it is the number of transmissible acts
 \emph{per partnership} per unit time.
 }
 
-\section{Time-Varying Parameters}{
+\section{Parameters by Duration of Infection}{
 
-The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
-\code{.g2} companions) may be specified as time-varying parameters by passing
-in a vector of probabilities or rates, respectively. The value in each
-position on the vector then corresponds to the probability or rate at that
-discrete time step for the infected partner. For example, an \code{inf.prob}
-of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
-the first two time steps of a person's infection, followed by a 0.1 for the
-third time step. If the infected person has not recovered or exited the
-population by the fourth time step, the third element in the vector will
-carry forward until one of those events occurs or the simulation ends. For
-further examples, see the
-\href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics} tutorials.
+The \code{inf.prob}, \code{act.rate}, and \code{rec.rate} arguments (and their \code{.g2}
+companions) may vary with the duration of infection, given as
+\code{\link[=by_infection_duration]{by_infection_duration()}} objects, by stage or one value per time step
+since infection. For example,
+\code{inf.prob = by_infection_duration(c(acute = 0.5, chronic = 0.1), durations = c(2, Inf))}
+gives a 0.5 transmission probability for the first two time steps of the
+infected partner's infection and 0.1 from the third time step on, until the
+person recovers, departs, or the simulation ends. This is variation over the course of each infection, not
+over calendar time; to change a parameter at a given time step of the
+simulation, use scenarios or parameter updaters (see
+\code{vignette("model-parameters", package = "EpiModel")}).
+
+With the built-in model types, a plain vector of length greater than one
+passed to these arguments is an error. Before EpiModel 2.7.0, the built-in
+modules read such a vector as varying with the duration of infection; wrap
+it in \code{by_infection_duration()} for the same model. Custom modules read
+their parameters as they choose, so plain vectors remain available to
+them.
+}
+
+\section{Multi-Layer Parameters}{
+
+In models with more than one network layer (a list of \code{\link[=netest]{netest()}} and
+\code{\link[=netclique]{netclique()}} objects passed to \code{\link[=netsim]{netsim()}}), the \code{inf.prob}, \code{inf.prob.g2},
+and \code{act.rate} arguments may be given per layer as \code{\link[=multilayer]{multilayer()}} objects
+with one entry per layer, in the order of the layer list:
+\code{inf.prob = multilayer(0.45, 0.10)} sets a per-act transmission probability
+of 0.45 on the first layer and 0.10 on the second. Each entry may itself be
+a \code{\link[=by_infection_duration]{by_infection_duration()}} object. The built-in infection modules look up
+the entry for the layer each discordant edge belongs to; a parameter that
+is not a \code{multilayer} object applies to every layer. The transmission
+matrix records the layer of each transmission in its \code{network} column.
 }
 
 \section{Using a Parameter data.frame}{

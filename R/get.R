@@ -253,6 +253,9 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #'  * **finalProb:** the final transmission probability for the
 #'        transmission event.
 #'
+#' A simulation without transmissions gives a data frame with no rows and the
+#' columns of the other simulations in `x`, or, if none of them has a
+#' transmission either, the columns `at`, `sus`, and `inf`.
 #'
 #' @keywords extract
 #' @export
@@ -292,10 +295,20 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
   ## Extraction
   out <- x$stats$transmat[[sim]]
+  if (NCOL(out) == 0) {
+    # a simulation without transmissions is stored with no columns
+    filled <- Filter(NCOL, x$stats$transmat)
+    out <- if (length(filled) > 0) {
+      filled[[1]][0, , drop = FALSE]
+    } else {
+      data.frame(at = integer(0), sus = integer(0), inf = integer(0))
+    }
+  }
   out <- dplyr::as_tibble(out)
 
   if (deduplicate) {
-    out <- dplyr::sample_n(dplyr::group_by(out, .data$at, .data$sus), 1)
+    out <- dplyr::group_by(out, .data$at, .data$sus)
+    if (nrow(out) > 0) out <- dplyr::sample_n(out, 1)
   }
 
   class(out) <- c("transmat", class(out))
@@ -489,7 +502,7 @@ get_nwparam <- function(x, network = 1) {
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
 #' }
 #'
-get_sims <- function(x, sims = NULL, var = NULL) {
+get_sims <- function(x, sims, var = NULL) {
 
   if (!inherits(x, "netsim")) {
     stop("x must be of class netsim")
@@ -497,11 +510,8 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
   nsims <- x$control$nsims
 
-  if (is.null(sims)) {
-    stop("Specify sims as a vector of simulations or \"mean\" ")
-  }
-  if (length(sims) == 1 && sims ==
-        "mean" && (is.null(var) || length(var) > 1)) {
+  if (length(sims) == 1 && sims == "mean" &&
+        (is.null(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single variable name")
   }
 
@@ -514,43 +524,33 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims)
   }
+  # simulations are returned once each, in their original order
+  sims <- sort(unique(sims))
 
   out <- x
   out$control$nsims <- length(sims)
-  newnames <- paste0("sim", seq_len(out$control$nsims))
+  newnames <- get_sim_names(out$control$nsims)
 
-  delsim <- setdiff(1:nsims, sims)
+  delsim <- setdiff(seq_len(nsims), sims)
   if (length(delsim) > 0) {
+    # Subset Epis
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
+      names(out$epi[[i]]) <- newnames
     }
 
-    if (!is.null(out$run)) {
-      out$run[delsim] <- NULL
-      names(out$run) <- newnames
+    # Subset per-sim elements
+    elts_name <- get_per_sim_element_names(out, nsims)
+    for (elt in elts_name) {
+      out[[elt]][delsim] <- NULL
+      names(out[[elt]]) <- newnames
     }
-    if (!is.null(out$network)) {
-      out$network[delsim] <- NULL
-      names(out$network) <- newnames
-    }
-    if (!is.null(out$stats$nwstats)) {
-      out$stats$nwstats[delsim] <- NULL
-      names(out$stats$nwstats) <- newnames
-    }
-    if (!is.null(out$stats$transmat)) {
-      out$stats$transmat[delsim] <- NULL
-      names(out$stats$transmat) <- newnames
-    }
-    if (!is.null(out$diss.stats)) {
-      out$diss.stats[delsim] <- NULL
-      names(out$diss.stats) <- newnames
-    }
-    if (!is.null(out$control$save.other)) {
-      oname <- out$control$save.other
-      for (i in seq_along(oname)) {
-        out[[oname[i]]][delsim] <- NULL
-        names(out[[oname[i]]]) <- newnames
-      }
+
+    # Subset per-sim stats elements
+    stats_elts_name <- get_per_sim_element_names(out$stats, nsims)
+    for (elt in stats_elts_name) {
+      out$stats[[elt]][delsim] <- NULL
+      names(out$stats[[elt]]) <- newnames
     }
   }
 
@@ -561,7 +561,6 @@ get_sims <- function(x, sims = NULL, var = NULL) {
 
   return(out)
 }
-
 
 #' @title Get Arguments from EpiModel Parameterization Functions
 #'

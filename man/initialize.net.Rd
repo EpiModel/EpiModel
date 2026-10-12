@@ -8,10 +8,12 @@ initialize.net(x, param, init, control, s)
 }
 \arguments{
 \item{x}{If \code{control$start == 1}, either a fitted network model object
-of class \code{netest} or a list of such objects. If
-\code{control$start > 1}, an object of class \code{netsim}. When
-multiple networks are used, the node sets (including network size
-and nodal attributes) are assumed to be the same for all networks.}
+of class \code{netest}, a clique layer of class \code{\link{netclique}}, an
+observed network layer of class \code{\link{netcensus}}, or a list
+of such objects. If \code{control$start > 1}, an object of class
+\code{netsim}. When multiple networks are used, the node sets (including
+network size and nodal attributes) are assumed to be the same for
+all networks.}
 
 \item{param}{An \code{EpiModel} object of class \code{\link[=param.net]{param.net()}}.}
 
@@ -19,7 +21,9 @@ and nodal attributes) are assumed to be the same for all networks.}
 
 \item{control}{An \code{EpiModel} object of class \code{\link[=control.net]{control.net()}}.}
 
-\item{s}{Simulation number, used for restarting dependent simulations.}
+\item{s}{Simulation number. When restarting, every simulation restarts from
+the first simulation of \code{x}, and a warning is raised (for \code{s = 1})
+if \code{x} holds more than one.}
 }
 \value{
 A \code{netsim_dat} class main data object.
@@ -31,7 +35,10 @@ the networks, and simulates disease status and other attributes.
 }
 \details{
 When re-initializing a simulation, the \code{netsim} object passed
-to \code{initialize.net} must contain the elements \code{param},
-\code{nwparam}, \code{epi}, \code{coef.form}, and \code{num.nw}.
+to \code{initialize.net} must contain the elements \code{nwparam}, \code{epi},
+\code{run}, \code{coef.form}, and \code{num.nw}. The parameters are taken from
+\code{param} alone, which must hold all the parameters of the model:
+the ones of \code{x} are not used. The internal \code{groups} parameter is
+restored from the \code{run} sublist of \code{x}.
 }
 \keyword{internal}

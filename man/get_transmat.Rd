@@ -32,6 +32,10 @@ time of the transmission.
 \item \strong{finalProb:} the final transmission probability for the
 transmission event.
 }
+
+A simulation without transmissions gives a data frame with no rows and the
+columns of the other simulations in \code{x}, or, if none of them has a
+transmission either, the columns \code{at}, \code{sus}, and \code{inf}.
 }
 \description{
 Extracts the matrix of transmission data for each transmission

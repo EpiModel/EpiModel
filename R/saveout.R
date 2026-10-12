@@ -202,8 +202,17 @@ saveout.net <- function(dat, s, out = NULL) {
   out$raw.records[s] <- list(dat$raw.records)
 
   if (dat$control$save.nwstats == TRUE) {
-    ## bind rows
-    nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+    # Add a `..filler` column to all row to prevent them to be deleted
+    # Then bind_rows and remove the `..filler` column
+    nwstats <- lapply(
+      dat$stats$nwstats,
+      function(obj) {
+        obj <- lapply(obj, \(x) c(..filler = NA, x))
+        out <- dplyr::bind_rows(obj)
+        out[["..filler"]] <- NULL
+        out
+      }
+    )
     ## compute ess
     nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
     out$stats$nwstats[s] <- list(nwstats)
@@ -245,9 +254,11 @@ saveout.net <- function(dat, s, out = NULL) {
         dat$control$tergmLite == FALSE &&
         !is.null(dat$nwparam)) {
 
-    ## for each simulated network, if dissolution model is edges-only, compute diss stats
+    ## for each simulated network, if dissolution model is edges-only, compute
+    ## diss stats; a model-free layer has no dissolution model
     out$diss.stats[s] <- list(lapply(seq_len(dat$num.nw), function(network) {
-      if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+      if (!is.null(dat$nwparam[[network]]$coef.diss) &&
+            dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
         net <- get_network(dat, network = network)
         toggles_to_diss_stats(
           tedgelist_to_toggles(as.data.frame(net)),
@@ -367,6 +378,7 @@ process_out.net <- function(dat_list) {
     }
   }
   class(out) <- "netsim"
+  attr(out, "version") <- utils::packageVersion("EpiModel")
 
   return(out)
 }

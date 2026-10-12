@@ -554,11 +554,15 @@ edgelist_censor <- function(el) {
 #'
 #' @inheritParams recovery.net
 #' @param nwterms Vector of attributes on the network object, usually as
-#'        output of [get_formula_term_attr()].
+#'        output of [get_formula_term_attr()]. If `NULL`, no table is made.
+#' @param attrs Optional character vector of attribute names to restrict the
+#'        tables to. If `NULL` (default), every nodal attribute is tabled.
 #'
 #' @return
-#' A table containing the proportional distribution of each attribute in
-#' `nwterms`.
+#' A list of proportional tables, one for each nodal attribute (or each one
+#' named in `attrs`), other than `active`, `entrTime`, `exitTime`, `infTime`,
+#' `group`, `status`, `na`, and `vertex.names`. Returns `NULL` if `nwterms` is
+#' `NULL`.
 #'
 #' @seealso [get_formula_term_attr()],
 #'          [copy_nwattr_to_datattr()],
@@ -566,13 +570,16 @@ edgelist_censor <- function(el) {
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(dat, nwterms) {
+get_attr_prop <- function(dat, nwterms, attrs = NULL) {
 
   if (is.null(nwterms)) {
     return(NULL)
   }
   attr_list <- get_attr_list(dat)
   nwVal <- names(attr_list)
+  if (!is.null(attrs)) {
+    nwVal <- intersect(nwVal, attrs)
+  }
   nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
                             "exitTime", "infTime", "group", "status"))
   out <- list()
@@ -699,7 +706,9 @@ idgroup <- function(nw, ids = NULL) {
 #' @inheritParams recovery.net
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param curr.tab Current proportional distribution of all vertex attributes.
+#' @param curr.tab Current proportional distribution of the vertex attributes,
+#'        as output of [get_attr_prop()]. Only the attributes in `curr.tab`
+#'        are filled in for the incoming nodes.
 #'
 #' @inherit recovery.net return
 #'
@@ -724,7 +733,8 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
       if (is.null(rule)) {
         rule <- "current"
       }
-      if (rule == "current") {
+      # identical() rather than ==, so that a fixed value of NA is a valid rule
+      if (identical(rule, "current")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
@@ -732,12 +742,12 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = curr.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(curr.tab[[i]])),
+          nattr <- sample(as.numeric(names(curr.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = curr.tab[[i]])
+                          prob = curr.tab[[vname]])
         }
-      } else if (rule == "t1") {
+      } else if (identical(rule, "t1")) {
         vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
@@ -745,10 +755,10 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           replace = TRUE,
                           prob = t1.tab[[vname]])
         } else {
-          nattr <- sample(as.numeric(names(t1.tab[[i]])),
+          nattr <- sample(as.numeric(names(t1.tab[[vname]])),
                           size = length(newNodes),
                           replace = TRUE,
-                          prob = t1.tab[[i]])
+                          prob = t1.tab[[vname]])
         }
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
@@ -927,180 +937,6 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
   truncate_sim.icm(x, at = at, reset.time = reset.time)
 }
 
-#' Make a Lightweight Restart Point From a `netsim` Object with tergmLite
-#'
-#' Extract the elements required for re-initializing a `netsim` simulation from
-#' a completed simulation. This function also resets the Unique IDs and Time
-#' values to reduce the size of the simulation. This function only works for
-#' simulations where `control$tergmLite = TRUE`
-#'
-#' @param sim_obj a `netsim` object from an ended `netsim` call.
-#' @param sim_num the number of the simulation to extract from the `netsim`
-#'        object (default = 1).
-#' @param keep_steps The number of simulation steps to keep from the previous
-#'        run. By default only keep one but more is possible if some
-#'        back-history is wanted.
-#' @param time_attrs a `character` vector containing the names of the attributes
-#'        that are expressed in time-steps. These will be offsetted so the last
-#'        step in the original simulation become the step 1 (default) in the new
-#'        ones. If no such attributes exist, pass `c()`.
-#'
-#' @details
-#' The restart point created always contains a single simulation and drops the
-#' `attr.history`, the `raw.records` and `stats` from the initial simulation.
-#'
-#' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
-#' truncated to only contain the last `keep_steps` entries.
-#'
-#' Warning: the `time_attrs` argument is mandatory. Almost all simulation worth
-#' restarting have such attributes (e.g. time.of.hiv.infection). If no such
-#' argument exists, passing `c()` will allow the function to run while ensuring
-#' that this was done on purpose.
-#'
-#' When restarting from the output of this function, it is suggested to express
-#' the time steps in a relative maner in `control.net`:
-#' ```
-#' control.net(
-#'   start = restart_point$control$nsteps + 1),
-#'   nsteps = restart_point$control$nsteps + 1 + 104)
-#' )
-#' ```
-#'
-#' @examples
-#' \dontrun{
-#' # With  pre-existing `sim`, `param` and `init` object (see `netsim`)
-#'
-#' # List all attributes that store a time step
-#' time_attrs <- c(
-#'   "inf.time",
-#'   "stage.time",
-#'   "aids.time",
-#'   "prep.start.last"
-#' )
-#' # Make a restart point a re-run for 10 more timesteps
-#' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
-#' control <- control_msm(
-#'   start = x$control$nsteps + 1,
-#'   nsteps = x$control$nsteps + 1 + 10
-#' )
-#' sim <- netsim(x, param, init, control)
-#' }
-#'
-#' @return a trimed `netsim` object with only one simulation that is ready to be
-#'         used as a restart point.
-#'
-#' @export
-make_restart_point <- function(sim_obj, time_attrs,
-                               sim_num = 1, keep_steps = 1) {
-  if (!inherits(sim_obj, c("netsim"))) {
-    stop("`sim_obj` must be  an object of class `netsim`")
-  }
-  required_names <- c(
-    "control", "param", "nwparam", "epi", "run", "coef.form", "num.nw"
-  )
-  missing_names <- setdiff(required_names, names(sim_obj))
-  if (length(missing_names) > 0) {
-    stop(
-      "`sim_obj` is missing the following elements required for",
-      " re-initialization: ", paste.and(missing_names)
-    )
-  }
-  if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
-    stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
-  }
-  if (!sim_obj$control$tergmLite) {
-    stop("Only `netsim` object with `tergmLite == TRUE` are supported")
-  }
-
-  # Select  the simulation of interest, that renames the selected sim: `sim1`
-  x <- get_sims(sim_obj, sims = sim_num)
-  n_steps <- x$control$nsteps
-  run_ls <- x$run$sim1
-
-  # Keep only the last `keep_steps` rows of each epi
-  if (keep_steps < 1 || keep_steps > n_steps) {
-    stop("`keep_steps` must be >= 1 and <= `sim_obj$control$nsteps`")
-  }
-  keep_rows <- (n_steps - keep_steps + 1):n_steps
-  x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
-
-  # If `nwstats` are saved, keep only the last rows
-  if (x$control$save.nwstats) {
-    x$stats$nwstats$sim1 <- lapply(
-      x$stats$nwstats$sim1,
-      function(d) d[keep_rows, , drop = FALSE]
-    )
-  }
-
-  # Fix UIDs
-  uid_offset <- min(run_ls$attr$unique_id) - 1
-  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
-  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
-
-  # Time correction
-  time_offset <- n_steps - keep_steps
-  x$control$start <- 1
-  x$control$nsteps <- keep_steps
-
-  # Time attributes - offset so last step is now `keep_steps`
-  time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
-  missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
-  if (length(missing_attrs) > 0) {
-    stop(
-      "Some time attributes are not present in the attributes list:",
-      paste.and(missing_names)
-    )
-  }
-  run_ls$attr[time_attrs] <- lapply(
-    run_ls$attr[time_attrs],
-    function(v) v - time_offset
-  )
-
-  # Cumulative Edgelist - fix time and UIDs
-  run_ls$el_cuml_cur <- lapply(
-    run_ls$el_cuml_cur,
-    function(el) {
-      el$head <- el$head - uid_offset
-      el$tail <- el$tail - uid_offset
-      el$start <- el$start - time_offset
-      el
-    }
-  )
-  # For Historical one - truncate to 1 (only edges in the kept history)
-  run_ls$el_cuml_hist <- lapply(
-    run_ls$el_cuml_hist,
-    function(el) {
-      el$head <- el$head - uid_offset
-      el$tail <- el$tail - uid_offset
-      el$start <- el$start - time_offset
-      el$stop <- el$stop - time_offset
-      el[el$stop >= 1, , drop = FALSE]
-    }
-  )
-
-  # the edgelist stores the name of the vertices. We don't use it with
-  # `tergmLite` and it takes a lot of space
-  run_ls$el <- lapply(run_ls$el, function(x) {
-    attr(x, "vnames") <- NULL
-    x
-  })
-
-  # If transmat was saved, trim it and offset the `at` column
-  if (x$control$save.transmat) {
-    tsmt <- x$stats$transmat$sim1
-    tsmt$at <- tsmt$at - time_offset
-    x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
-  }
-
-  # Reset attribute tracking
-  run_ls$tracking_attrs <- FALSE
-
-  x$run$sim1 <- validate_run(run_ls)
-  x$attr.history <- list()
-  x$raw.records <- list()
-  return(x)
-}
-
 #' @title Function to Reduce the Size of a `netest` Object
 #'
 #' @description Trims formula environments from the `netest` object.
@@ -1109,7 +945,8 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'              the `fit` element (if present) from the `netest`
 #'              object.
 #'
-#' @param object A `netest` class object.
+#' @param object A `netest` class object, or a model-free layer of class
+#'        [`netclique`] or [`netcensus`].
 #' @param as.networkLite If `TRUE`, converts `object$newnetwork`
 #'        to a `networkLite`.
 #' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
@@ -1151,10 +988,17 @@ make_restart_point <- function(sim_obj, time_attrs,
 #' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
 #' present) from `object`.
 #'
+#' A model-free layer has no fit and no formulas, and its `summary` describes
+#' the layer rather than a fit, so only its network is converted. A
+#' [netclique()] layer is built as a `networkLite` already. A dynamic
+#' [netcensus()] layer is returned unchanged, since `netsim` reads its edge
+#' spells from the `networkDynamic` object.
+#'
 #' @return
 #' A `netest` object with formula environments trimmed, optionally with the
 #' `newnetwork` element converted to a `networkLite` and the
-#' `fit` element removed.
+#' `fit` element removed; or the model-free layer, with its network
+#' converted to a `networkLite`.
 #'
 #' @export
 #'
@@ -1175,6 +1019,14 @@ make_restart_point <- function(sim_obj, time_attrs,
 #'
 trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
                         keep = character(0)) {
+  if (is_model_free_layer(object)) {
+    if (as.networkLite == TRUE && !isTRUE(object$dynamic) &&
+          !inherits(object$newnetwork, "networkLite")) {
+      object$newnetwork <- as.networkLite(object$newnetwork)
+    }
+    return(object)
+  }
+
   if (object$edapprox == TRUE) {
     object$formula <- trim_env(object$formula, keep = keep)
     if (object$nested.edapprox == TRUE) {

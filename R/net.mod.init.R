@@ -5,17 +5,24 @@
 #'              the networks, and simulates disease status and other attributes.
 #'
 #' @param x If `control$start == 1`, either a fitted network model object
-#'        of class `netest` or a list of such objects. If
-#'        `control$start > 1`, an object of class `netsim`. When
-#'        multiple networks are used, the node sets (including network size
-#'        and nodal attributes) are assumed to be the same for all networks.
+#'        of class `netest`, a clique layer of class [`netclique`], an
+#'        observed network layer of class [`netcensus`], or a list
+#'        of such objects. If `control$start > 1`, an object of class
+#'        `netsim`. When multiple networks are used, the node sets (including
+#'        network size and nodal attributes) are assumed to be the same for
+#'        all networks.
 #' @param param An `EpiModel` object of class [param.net()].
 #' @param init An `EpiModel` object of class [init.net()].
 #' @param control An `EpiModel` object of class [control.net()].
-#' @param s Simulation number, used for restarting dependent simulations.
+#' @param s Simulation number. When restarting, every simulation restarts from
+#'        the first simulation of `x`, and a warning is raised (for `s = 1`)
+#'        if `x` holds more than one.
 #' @details When re-initializing a simulation, the `netsim` object passed
-#'          to `initialize.net` must contain the elements `param`,
-#'          `nwparam`, `epi`, `coef.form`, and `num.nw`.
+#'          to `initialize.net` must contain the elements `nwparam`, `epi`,
+#'          `run`, `coef.form`, and `num.nw`. The parameters are taken from
+#'          `param` alone, which must hold all the parameters of the model:
+#'          the ones of `x` are not used. The internal `groups` parameter is
+#'          restored from the `run` sublist of `x`.
 #'
 #' @return A `netsim_dat` class main data object.
 #'
@@ -49,8 +56,20 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
+    x_ver <- attr(x, "version")
+    pkg_ver <- utils::packageVersion("EpiModel")
+    if (paste0(x_ver$major, ".", x_ver$minor) !=
+          paste0(pkg_ver$major, ".", pkg_ver$minor)) {
+      if (is.null(x_ver)) x_ver <- "(<2.7)"
+      stop(
+        "EpiModel is version v", pkg_ver, " but the restart object comes from ",
+        "version v", x_ver, ". Please rebuild the restart object with the ",
+        "current version"
+      )
+    }
+
     ## check that required names are present
-    required_names <- c("param", "nwparam", "epi", "run", "coef.form", "num.nw")
+    required_names <- c("nwparam", "epi", "run", "coef.form", "num.nw")
     missing_names <- setdiff(required_names, names(x))
     if (length(missing_names) > 0) {
       stop(
@@ -59,41 +78,52 @@ initialize.net <- function(x, param, init, control, s) {
       )
     }
 
-    # recycle sims in the restart object
-    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
-    s <- (s - 1) %% length(x$run) + 1
+    # every simulation restarts from the first simulation of `x`
+    if (length(x$run) > 1 && s == 1) {
+      warning(
+        "`x` holds ", length(x$run), " simulations: every simulation ",
+        "restarts from the first one. Use `get_sims()` or ",
+        "`make_restart_point()` to select the simulation to restart from."
+      )
+    }
 
     dat <- create_dat_object(
       param = param,
       control = control,
-      run = x$run[[s]]
+      run = x$run[[1]]
     )
 
-    missing_params <- setdiff(names(x$param), names(param))
-    for (mp in missing_params) {
-      dat <- set_param(dat, mp, x$param[[mp]])
-    }
+    # `groups` is stored in `run` by `init_nets()`
+    dat <- set_param(dat, "groups", dat$run$groups)
 
     dat$num.nw <- x$num.nw
 
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
-      dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
+      dat$nwparam[[network]]$coef.form <- x$coef.form[[1]][[network]]
     }
-    dat$epi <- sapply(x$epi, function(var) var[s])
+    dat$epi <- sapply(x$epi, function(var) var[1])
     names(dat$epi) <- names(x$epi)
 
-    dat$stats <- lapply(x$stats, function(var) var[[s]])
-    if (get_control(dat, "save.nwstats") == TRUE) {
-      nsteps <- get_control(dat, "nsteps")
-      start <- get_control(dat, "start")
-      dat$stats$nwstats <- lapply(dat$stats$nwstats,
-        function(oldstats) padded_vector(list(oldstats), nsteps - start + 2L)
-      )
+    # The prior stats fill the first steps, the new steps are recorded at `at`
+    nsteps <- get_control(dat, "nsteps")
+    dat$stats <- list()
+    if (get_control(dat, "save.nwstats")) {
+      dat$stats$nwstats <- vector("list", dat$num.nw)
+      for (nw in seq_len(dat$num.nw)) {
+        if (is.data.frame(x$stats$nwstats[[1]][[nw]])) {
+          dat$stats$nwstats[[nw]] <- x$stats$nwstats[[1]][[nw]] |>
+            apply(1, c, simplify = FALSE)
+        } else {
+          dat$stats$nwstats[[nw]] <- list()
+        }
+        dat$stats$nwstats[[nw]] <- padded_vector(dat$stats$nwstats[[nw]], nsteps)
+      }
     }
-    if (is.data.frame(dat$stats$transmat)) {
-      nsteps <- get_control(dat, "nsteps")
-      dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
+
+    if (get_control(dat, "save.transmat") &&
+          is.data.frame(x$stats$transmat[[1]])) {
+      dat$stats$transmat <- padded_vector(list(x$stats$transmat[[1]]), nsteps)
     }
   }
 
@@ -147,7 +177,9 @@ init_status.net <- function(dat) {
   groups <- get_param(dat, "groups")
   status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
   if (type %in% c("SIS", "SIR")) {
-    rec.rate <- get_param(dat, "rec.rate")
+    # a rate by duration of infection enters the backdating below through the
+    # mean of its values per time step
+    rec.rate <- as_duration_vector(get_param(dat, "rec.rate"))
   }
   if (vital == TRUE) {
     di.rate <- get_param(dat, "di.rate")
@@ -284,8 +316,9 @@ init_status.net <- function(dat) {
 #' @param dat A main data object of class `netsim_dat` obtained from
 #'        [create_dat_object()], including the `control`
 #'        argument.
-#' @param x Either a fitted network model object of class `netest`, or a
-#'        list of such objects.
+#' @param x Either a fitted network model object of class `netest`, a clique
+#'        layer of class [`netclique`], an observed network layer of class
+#'        [`netcensus`], or a list of such objects.
 #'
 #' @return A `netsim_dat` class main data object with network data and
 #'         stats initialized.
@@ -294,17 +327,38 @@ init_status.net <- function(dat) {
 #' @keywords internal
 #'
 init_nets <- function(dat, x) {
-  if (inherits(x, "netest")) {
+  if (inherits(x, c("netest", "netclique", "netcensus"))) {
     x <- list(x)
   }
 
   ## initialize network data on dat object
   dat$num.nw <- length(x)
-  dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+  dat$nwparam <- lapply(x, function(y) {
+    out <- y[!(names(y) %in% c("fit", "newnetwork"))]
+    # a model-free layer keeps its class, which is how the per-layer code knows to
+    # skip the network simulation and the edges correction for it
+    if (is_model_free_layer(y)) {
+      class(out) <- class(y)
+    }
+    # a dynamic census is read step by step under tergmLite, so the observed
+    # object stays with the layer's parameters
+    if (is_census_layer(y) && isTRUE(y$dynamic)) {
+      out$census.nw <- y$newnetwork
+    }
+    out
+  })
   nws <- lapply(x, `[[`, "newnetwork")
   nw <- nws[[1]]
   if (get_control(dat, "tergmLite") == TRUE) {
-    dat$run$el <- lapply(nws, as.edgelist)
+    dat$run$el <- lapply(seq_along(nws), function(network) {
+      if (is_census_layer(x[[network]]) && isTRUE(x[[network]]$dynamic)) {
+        census_edgelist_at(nws[[network]], at = 1L)
+      } else {
+        as.edgelist(nws[[network]])
+      }
+    })
+    # modules may read the layers by the names given to them in the list
+    names(dat$run$el) <- names(nws)
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
     dat$run$nw <- nws
@@ -316,14 +370,42 @@ init_nets <- function(dat, x) {
   num <- network.size(nw)
   dat <- append_core_attr(dat, 1, num)
 
-  groups <- length(unique(get_vertex_attribute(nw, "group")))
-  dat <- set_param(dat, "groups", groups)
+  # `groups` is stored in `run` to restore it when restarting
+  dat$run$groups <- length(unique(get_vertex_attribute(nw, "group")))
+  dat <- set_param(dat, "groups", dat$run$groups)
 
-  ## Pull attr on nw to dat$attr
+  ## Pull attr on nw to dat$run$attr
   dat <- copy_nwattr_to_datattr(dat, nw)
 
   ## record names of relevant vertex attributes
   dat$run$nwterms <- get_network_term_attr(nw)
+
+  ## nodal attributes are read from the first layer's network; a clique
+  ## layer's grouping attribute may be set on its own network only, so copy
+  ## it from there for the arrival rules to read. When the first layer has
+  ## it too, the two must agree, or the arrival rules would place new nodes
+  ## by groups the clique edges do not follow. The running maximum of its
+  ## ids, from which the "new" arrival rule draws, starts from the ids here.
+  for (network in seq_len(dat$num.nw)) {
+    group.attr <- dat$nwparam[[network]]$group.attr
+    if (is.null(group.attr)) {
+      next
+    }
+    layer.group <- get_vertex_attribute(nws[[network]], group.attr)
+    group <- get_attr(dat, group.attr, override.null.error = TRUE)
+    if (is.null(group)) {
+      dat <- set_attr(dat, group.attr, layer.group)
+      dat$run$nwterms <- union(dat$run$nwterms, group.attr)
+    } else if (!identical(is.na(group), is.na(layer.group)) ||
+                 any(group != layer.group, na.rm = TRUE)) {
+      stop("The `", group.attr, "` attribute on the network of layer 1 ",
+           "differs from the grouping attribute of clique layer ", network,
+           ". Set the same values on both networks, or remove the attribute ",
+           "from the network of layer 1 so that it is taken from the clique ",
+           "layer.", call. = FALSE)
+    }
+    dat <- record_group_ids(dat, group.attr, get_attr(dat, group.attr))
+  }
 
   ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {
@@ -371,7 +453,7 @@ overwrite_attrs <- function(dat) {
     stop("init_attr should contains the same number of nodes as the model")
   }
 
-  new_attrs <- setdiff(names(init_attr), names(dat$attr))
+  new_attrs <- setdiff(names(init_attr), names(get_attr_list(dat)))
   if (length(new_attrs) > 0) {
     stop(
       "Some attributes in `init_attr` are not present in `dat`: ",

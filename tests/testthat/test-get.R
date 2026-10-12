@@ -105,6 +105,24 @@ test_that("get_transmat error flags", {
   expect_error(get_transmat(mod, 1), "transmat not saved")
 })
 
+test_that("get_transmat returns no rows for a simulation without transmissions", {
+  skip_on_cran()
+  control0 <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE)
+  mod0 <- netsim(est, param.net(inf.prob = 0, inf.prob.g2 = 0), init, control0)
+  for (deduplicate in c(TRUE, FALSE)) {
+    a <- get_transmat(mod0, sim = 2, deduplicate = deduplicate)
+    expect_s3_class(a, "transmat")
+    expect_equal(nrow(a), 0)
+    expect_named(a, c("at", "sus", "inf"))
+  }
+
+  # with transmissions in another simulation, the columns are taken from it
+  mod$stats$transmat[[2]] <- mod0$stats$transmat[[1]]
+  a <- get_transmat(mod, sim = 2)
+  expect_equal(nrow(a), 0)
+  expect_named(a, names(get_transmat(mod, sim = 1)))
+})
+
 
 # get nwstats -------------------------------------------------------------
 
@@ -152,7 +170,6 @@ test_that("get_sims extracts simulations", {
 test_that("get_sims error flags", {
   skip_on_cran()
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
-  expect_error(get_sims(mod), "Specify sims as a vector")
 })
 
 dxs <- netdx(est, dynamic = FALSE, nsims = 5,
@@ -224,4 +241,44 @@ test_that("get_network_attributes functions as intended", {
                                                 multiple = FALSE,
                                                 n = 10,
                                                 newattr = "string"))
+})
+
+test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
+  skip_on_cran()
+  nw <- network_initialize(n = 30)
+  est <- netest(nw, formation = ~edges, target.stats = 10,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 4, nsims = 3,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  expect_named(mod$raw.records, paste0("sim", 1:3))
+
+  s2 <- get_sims(mod, sims = 2)
+  expect_named(s2$cumulative.edgelist, "sim1")
+  expect_equal(s2$cumulative.edgelist$sim1, mod$cumulative.edgelist$sim2)
+
+  # duplicated and unordered sims: each simulation once, in original order
+  s31 <- get_sims(mod, sims = c(3, 1, 3))
+  expect_equal(s31$control$nsims, 2)
+  expect_named(s31$run, c("sim1", "sim2"))
+  expect_equal(s31$run$sim2, mod$run$sim3)
+  expect_equal(ncol(s31$epi$i.num), 2)
+
+  # empty per-simulation elements are left alone
+  mod_empty <- mod
+  mod_empty$attr.history <- list()
+  expect_warning(s23 <- get_sims(mod_empty, sims = 2:3), NA)
+  expect_equal(s23$attr.history, list())
+  expect_named(s23$run, c("sim1", "sim2"))
+
+  # elements not holding one entry per simulation are left alone
+  mod_bad <- mod
+  mod_bad$raw.records <- mod_bad$raw.records[1:2]
+  expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), NA)
+  expect_identical(s23$raw.records, mod_bad$raw.records)
+  expect_equal(s23$run$sim1, mod$run$sim2)
 })

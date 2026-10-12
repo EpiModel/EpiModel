@@ -1,4 +1,3 @@
-
 #' @title Merge Data across Stochastic Individual Contact Model Simulations
 #'
 #' @description Merges epidemiological data from two independent simulations of
@@ -32,12 +31,16 @@
 #' @examples
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.8)
 #' init <- init.icm(s.num = 1000, i.num = 100)
-#' control <- control.icm(type = "SI", nsteps = 10,
-#'                        nsims = 3, verbose = FALSE)
+#' control <- control.icm(
+#'   type = "SI", nsteps = 10,
+#'   nsims = 3, verbose = FALSE
+#' )
 #' x <- icm(param, init, control)
 #'
-#' control <- control.icm(type = "SI", nsteps = 10,
-#'                        nsims = 1, verbose = FALSE)
+#' control <- control.icm(
+#'   type = "SI", nsteps = 10,
+#'   nsims = 1, verbose = FALSE
+#' )
 #' y <- icm(param, init, control)
 #'
 #' z <- merge(x, y)
@@ -48,28 +51,30 @@
 #' as.data.frame(z)
 #'
 merge.icm <- function(x, y, ...) {
-
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
-  if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !identical(sapply(x, class), sapply(y, class))) {
+  if (
+    x$control$nsims > 1 &&
+      y$control$nsims > 1 &&
+      !identical(sapply(x, class), sapply(y, class))
+  ) {
     stop("x and y have different structure")
   }
 
   ## Check params
-  check1 <- identical(x$param, y$param)
-  check2 <- identical(x$control[-which(names(x$control) == "nsims")],
-                      y$control[-which(names(y$control) == "nsims")])
-
-  if (check1 == FALSE) {
+  if (!identical(x$param, y$param)) {
     stop("x and y have different parameters")
   }
-  if (check2 == FALSE) {
+
+  check_controls <- identical(
+    x$control[-which(names(x$control) == "nsims")],
+    y$control[-which(names(y$control) == "nsims")]
+  )
+  if (!check_controls) {
     stop("x and y have different controls")
   }
-
 
   z <- x
   new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
@@ -111,13 +116,26 @@ merge.icm <- function(x, y, ...) {
 #'        the original `x` and `y` elements.
 #' @param keep.other If `TRUE`, keep the other simulation elements (as set
 #'        by the `save.other` parameter in `control.net`) from the
-#'        original `x` and `y` elements.
+#'        original `x` and `y` elements. Elements with their own `keep.*`
+#'        argument (e.g. `run`) follow that argument instead.
 #' @param param.error If `TRUE`, if `x` and `y` have different
 #'        params (in [param.net()]) or controls (passed in
 #'        [control.net()]) an error will prevent the merge. Use
 #'        `FALSE` to override that check.
 #' @param keep.diss.stats If `TRUE`, keep `diss.stats` from the
 #'        original `x` and `y` objects.
+#' @param keep.run If `TRUE`, keep the `run` sublists (as set by the
+#'        `save.run` parameter in `control.net`) from the original `x` and
+#'        `y` elements. These are required to restart from a simulation of the
+#'        merged object in [netsim()], selected with [get_sims()].
+#' @param keep.cumulative.edgelist If `TRUE`, keep the cumulative edgelists
+#'        (as set by the `save.cumulative.edgelist` parameter in
+#'        `control.net`) from the original `x` and `y` elements. `FALSE` by
+#'        default, as these grow with the length of the simulation.
+#' @param keep.attr.history If `TRUE`, keep the attribute histories (as set by
+#'        [record_attr_history()]) from the original `x` and `y` elements.
+#' @param keep.raw.records If `TRUE`, keep the raw records (as set by
+#'        [record_raw_object()]) from the original `x` and `y` elements.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -133,6 +151,9 @@ merge.icm <- function(x, y, ...) {
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
 #'
+#' After dropping the elements not kept (see the `keep.*` arguments), `x` and
+#' `y` must hold the same elements.
+#'
 #' @return An `EpiModel` object of class [netsim()] containing
 #'         the data from both `x` and `y`.
 #'
@@ -144,17 +165,21 @@ merge.icm <- function(x, y, ...) {
 #' \donttest{
 #' # Network model
 #' nw <- network_initialize(n = 100)
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-#' est <- netest(nw, formation = ~edges, target.stats = 25,
-#'               coef.diss = coef.diss, verbose = FALSE)
+#' coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 10)
+#' est <- netest(nw,
+#'   formation = ~edges, target.stats = 25,
+#'   coef.diss = coef.diss, verbose = FALSE
+#' )
 #'
 #' # Epidemic models
 #' param <- param.net(inf.prob = 1)
 #' init <- init.net(i.num = 1)
-#' control <- control.net(type = "SI", nsteps = 20, nsims = 2,
-#'                        save.nwstats = TRUE,
-#'                        nwstats.formula = ~edges + degree(0),
-#'                        verbose = FALSE)
+#' control <- control.net(
+#'   type = "SI", nsteps = 20, nsims = 2,
+#'   save.nwstats = TRUE,
+#'   nwstats.formula = ~ edges + degree(0),
+#'   verbose = FALSE
+#' )
 #' x <- netsim(est, param, init, control)
 #' y <- netsim(est, param, init, control)
 #'
@@ -167,110 +192,249 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(z)
 #' }
 #'
-merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.other = TRUE,
-                         param.error = TRUE, keep.diss.stats = TRUE, ...) {
+merge.netsim <- function(
+  x,
+  y,
+  keep.transmat = TRUE,
+  keep.network = TRUE,
+  keep.nwstats = TRUE,
+  keep.other = TRUE,
+  param.error = TRUE,
+  keep.diss.stats = TRUE,
+  keep.run = TRUE,
+  keep.cumulative.edgelist = FALSE,
+  keep.attr.history = TRUE,
+  keep.raw.records = TRUE,
+  ...
+) {
+  x <- trim_netsim(
+    x,
+    keep.transmat = keep.transmat,
+    keep.network = keep.network,
+    keep.nwstats = keep.nwstats,
+    keep.other = keep.other,
+    keep.diss.stats = keep.diss.stats,
+    keep.run = keep.run,
+    keep.cumulative.edgelist = keep.cumulative.edgelist,
+    keep.attr.history = keep.attr.history,
+    keep.raw.records = keep.raw.records
+  )
 
-  ## Check structure
-  if (length(x) != length(y) || !identical(names(x), names(y))) {
-    stop("x and y have different structure")
-  }
-  x$control$nsims <- as.integer(x$control$nsims)
-  y$control$nsims <- as.integer(y$control$nsims)
-  if (x$control$nsims > 1 && y$control$nsims > 1 &&
-        !all(sapply(x, function(i) class(i)[1]) ==
-               sapply(y, function(i) class(i)[1]))) {
-    stop("x and y have different structure")
-  }
+  y <- trim_netsim(
+    y,
+    keep.transmat = keep.transmat,
+    keep.network = keep.network,
+    keep.nwstats = keep.nwstats,
+    keep.other = keep.other,
+    keep.diss.stats = keep.diss.stats,
+    keep.run = keep.run,
+    keep.cumulative.edgelist = keep.cumulative.edgelist,
+    keep.attr.history = keep.attr.history,
+    keep.raw.records = keep.raw.records
+  )
 
-  ## Check params
-  check1 <- identical(x$param, y$param)
-  check2 <- identical(x$control[-which(names(x$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))],
-                      y$control[-which(names(y$control) %in%
-                                         c("nsims", "monitors",
-                                           "nwstats.formula"))])
+  similar_components <- check_similar_sim(x, y)
 
-  ## handle formulas separately due to environments
-  check2 <- check2 &&
-    isTRUE(all.equal(x$control$monitors, y$control$monitors)) &&
-    isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
+  # Check that `param` and `control` are identical if `param.error == TRUE`
+  if (param.error) {
+    if (!identical(x$param, y$param)) {
+      stop("x and y have different parameters")
+    }
+    fmla_controls <- c(
+      "monitors",
+      "nwstats.formula",
+      "set.control.tergm",
+      "set.control.ergm",
+      "dat.updates",
+      "future.use.plan"
+    )
+    check_controls <- identical(
+      x$control[setdiff(names(x$control), c("nsims", fmla_controls))],
+      y$control[setdiff(names(y$control), c("nsims", fmla_controls))]
+    )
 
-  if (check1 == FALSE && param.error == TRUE) {
-    stop("x and y have different parameters")
-  }
-  if (check2 == FALSE && param.error == TRUE) {
-    stop("x and y have different controls")
-  }
+    ## handle formulas separately due to environments
+    check_controls <- Reduce(
+      function(init, elt) {
+        init && isTRUE(all.equal(x$control[[elt]], y$control[[elt]]))
+      },
+      fmla_controls,
+      init = check_controls
+    )
 
-  z <- x
-  z$control$nsims <- x$control$nsims + y$control$nsims
-  newnames <- paste0("sim", seq_len(z$control$nsims))
-
-  # Merge epi data
-  for (i in seq_along(x$epi)) {
-    z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
-    names(z$epi[[i]]) <- newnames
-  }
-
-  ## Transmission matrix
-  if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
-        !is.null(y$stats$transmat)) {
-    z$stats$transmat <- c(x$stats$transmat, y$stats$transmat)
-    names(z$stats$transmat) <- newnames
-  } else {
-    z$stats$transmat <- NULL
-  }
-
-  ## Network objects
-  if (keep.network == TRUE && !is.null(x$network) && !is.null(y$network)) {
-    z$network <- c(x$network, y$network)
-    names(z$network) <- newnames
-
-  } else {
-    z$network <- NULL
-  }
-
-  ## Network statistics
-  if (keep.nwstats == TRUE && !is.null(x$stats$nwstats) && !is.null(y$stats$nwstats)) {
-    z$stats$nwstats <- c(x$stats$nwstats, y$stats$nwstats)
-    names(z$stats$nwstats) <- newnames
-  } else {
-    z$stats$nwstats <- NULL
-  }
-
-  ## Other
-  if (!is.null(x$control$save.other) && !is.null(y$control$save.other)) {
-    other.x <- x$control$save.other
-    other.y <- y$control$save.other
-    if (keep.other == TRUE) {
-      if (!identical(other.x, other.y)) {
-        stop("Elements in save.other differ between x and y")
-      }
-      new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
-      for (j in seq_along(other.x)) {
-        for (i in new.range) {
-          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
-        }
-        if (!is.null(z[[other.x[j]]])) {
-          names(z[[other.x[j]]]) <- newnames
-        }
-      }
-    } else {
-      for (j in seq_along(other.x)) {
-        z[[other.x[j]]] <- NULL
-      }
+    if (!check_controls) {
+      stop("x and y have different controls")
     }
   }
 
-  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) &&
-        !is.null(y$diss.stats)) {
-    z$diss.stats <- c(x$diss.stats, y$diss.stats)
-    names(z$diss.stats) <- newnames
-  } else {
-    z$diss.stats <- NULL
+  # Perform the merging
+  out <- x
+  out$control$nsims <- sum(similar_components$n_sims)
+  newnames <- get_sim_names(out$control$nsims)
+
+  # Merge epi data, matching the trackers of `y` by name
+  for (i in seq_along(x$epi)) {
+    out$epi[[i]] <- cbind(x$epi[[i]], y$epi[[names(x$epi)[i]]])
+    names(out$epi[[i]]) <- newnames
   }
 
-  return(z)
+  # Merge per simulation elements
+  for (elt in similar_components$per_sim) {
+    out[[elt]] <- c(x[[elt]], y[[elt]])
+    names(out[[elt]]) <- newnames
+  }
+
+  for (elt in similar_components$stats) {
+    out$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
+    names(out$stats[[elt]]) <- newnames
+  }
+
+  return(out)
+}
+
+check_similar_sim <- function(sim1, sim2) {
+  save.other <- union(sim1$control$save.other, sim2$control$save.other)
+
+  # Same top level names
+  if (!setequal(names(sim1), names(sim2))) {
+    stop_mismatch("elements", names(sim1), names(sim2), save.other)
+  }
+
+  sim1_n_sims <- unique(vapply(sim1$epi, ncol, 1L))
+  sim2_n_sims <- unique(vapply(sim2$epi, ncol, 1L))
+
+  # Same per sim elements
+  sim1_per_sim <- get_per_sim_element_names(sim1, sim1_n_sims)
+  sim2_per_sim <- get_per_sim_element_names(sim2, sim2_n_sims)
+
+  if (!setequal(sim1_per_sim, sim2_per_sim)) {
+    stop_mismatch(
+      "per-simulation elements", sim1_per_sim, sim2_per_sim, save.other,
+      problem = "is not per-simulation in"
+    )
+  }
+
+  # similar epi
+  if (!setequal(names(sim1$epi), names(sim2$epi))) {
+    stop("x and y do not hold the same epi trackers", call. = FALSE)
+  }
+  sim1_n_steps <- unique(vapply(sim1$epi, nrow, 1L))
+  sim2_n_steps <- unique(vapply(sim2$epi, nrow, 1L))
+  if (sim1_n_steps != sim2_n_steps) {
+    stop("x and y do not have the same number of steps", call. = FALSE)
+  }
+
+  # same `num.nw`
+  if (sim1$num.nw != sim2$num.nw) {
+    stop("x and y do not have the same number of networks", call. = FALSE)
+  }
+
+  # Do they have `run`
+  sim1_has_run <- "run" %in% sim1_per_sim
+  sim2_has_run <- "run" %in% sim2_per_sim
+
+  # similar `attrs`
+  if (sim1_has_run && sim2_has_run) {
+    sim1_attrs_names <- unique(unlist(lapply(sim1$run, \(x) names(x$attr))))
+    sim2_attrs_names <- unique(unlist(lapply(sim2$run, \(x) names(x$attr))))
+    if (!setequal(sim1_attrs_names, sim2_attrs_names)) {
+      stop("x and y do not store the same attributes", call. = FALSE)
+    }
+  }
+
+  # nwstats and transmat
+  sim1_stats <- get_per_sim_element_names(sim1$stats, sim1_n_sims)
+  sim2_stats <- get_per_sim_element_names(sim2$stats, sim2_n_sims)
+
+  if (!setequal(sim1_stats, sim2_stats)) {
+    stop_mismatch("stats", sim1_stats, sim2_stats, save.other, prefix = "stats$")
+  }
+
+  list(
+    n_sims = c(sim1_n_sims, sim2_n_sims),
+    per_sim = sim1_per_sim,
+    stats = sim1_stats
+  )
+}
+
+# Name of the `keep.*` argument governing each element, NA if none
+keep_arg_name <- function(elts, save.other) {
+  own <- c(
+    "run", "cumulative.edgelist", "attr.history", "raw.records",
+    "network", "diss.stats", "transmat", "nwstats"
+  )
+  ifelse(
+    elts %in% own, paste0("keep.", elts),
+    ifelse(elts %in% save.other, "keep.other", NA_character_)
+  )
+}
+
+# Error listing the elements held by only one of `x` and `y`
+stop_mismatch <- function(what, x_elts, y_elts, save.other,
+                          problem = "is missing from", prefix = "") {
+  elts <- union(setdiff(x_elts, y_elts), setdiff(y_elts, x_elts))
+  side <- ifelse(elts %in% x_elts, "y", "x")
+  arg <- keep_arg_name(elts, save.other)
+  hint <- ifelse(is.na(arg), "", paste0(" (set `", arg, " = FALSE` to drop it)"))
+  stop(
+    "x and y do not hold the same ", what, ":\n",
+    paste0("  - `", prefix, elts, "` ", problem, " ", side, hint, "\n", collapse = ""),
+    call. = FALSE
+  )
+}
+
+trim_netsim <- function(
+  sim,
+  keep.transmat,
+  keep.network,
+  keep.nwstats,
+  keep.other,
+  keep.diss.stats,
+  keep.run,
+  keep.cumulative.edgelist,
+  keep.attr.history,
+  keep.raw.records
+) {
+  top_level <- c(
+    "run",
+    "cumulative.edgelist",
+    "attr.history",
+    "raw.records",
+    "network",
+    "diss.stats"
+  )
+
+  # elements with their own `keep.*` argument are not governed by `keep.other`
+  other <- setdiff(sim$control$save.other, top_level)
+  other_elts <- setNames(rep(keep.other, length(other)), other)
+
+  top_level <- vapply(top_level, \(x) get(paste0("keep.", x)), logical(1))
+  top_level <- c(other_elts, top_level)
+
+  for (elt in names(top_level)) {
+    if (!top_level[elt]) {
+      sim[[elt]] <- NULL
+    }
+  }
+
+  if (!keep.transmat) {
+    sim$stats$transmat <- NULL
+  }
+  if (!keep.nwstats) {
+    sim$stats$nwstats <- NULL
+  }
+  if (!keep.transmat && !keep.nwstats) {
+    sim$stats <- NULL
+  }
+
+  sim
+}
+
+get_per_sim_element_names <- function(obj, n_sims) {
+  sim_names <- get_sim_names(n_sims)
+  names(Filter(function(v) setequal(v, sim_names), lapply(obj, names)))
+}
+
+get_sim_names <- function(n_sims) {
+  paste0("sim", seq_len(n_sims))
 }

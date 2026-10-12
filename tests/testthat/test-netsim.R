@@ -346,23 +346,23 @@ test_that("edges correction behaves as expected", {
           control$start <- nsteps + 1
           nsteps <- 9
           control$nsteps <- nsteps
-          sim2 <- netsim(sim, param, init, control)
+          sim2 <- netsim(get_sims(sim, sims = 1), param, init, control)
 
           for (simno in seq_len(nsims)) {
             if (ngroups == 1) {
               expect_equal(est$coef.form[1] + log(network.size(nw)),
-                          sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$num),
-                          tolerance = 1e-6)
+                           sim2$coef.form[[simno]][[1]][1] + log(sim2$run[[simno]]$num),
+                           tolerance = 1e-6)
             } else {
               n1.old <- sum(est$newnetwork %v% "group" == 1)
               n2.old <- sum(est$newnetwork %v% "group" == 2)
-              n1.new <- sim$run[[simno]]$num
-              n2.new <- sim$run[[simno]]$num.g2
+              n1.new <- sim2$run[[simno]]$num
+              n2.new <- sim2$run[[simno]]$num.g2
 
               expect_equal(est$coef.form[1] + log(2*n1.old*n2.old/(n1.old+n2.old)),
-                          sim$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
-                          tolerance = 1e-6)
-              }
+                           sim2$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
+                           tolerance = 1e-6)
+            }
           }
         }
       }
@@ -581,7 +581,11 @@ test_that("netsim with checkpoint", {
     verbose = FALSE, end.horizon = end_horizon
   )
   sim <- netsim(est, param, init, control)
-  expect_true(nrow(get_nwstats(sim)) == 4)
+  # the steps after the summary module is removed are recorded as `NA`
+  nws <- get_nwstats(sim)
+  expect_equal(nrow(nws), 20)
+  expect_false(anyNA(nws$edges[1:4]))
+  expect_true(all(is.na(nws$edges[5:20])))
 
   # SI module without arrival or departure
   # prevalence stays constant if the infection module is disabled
@@ -630,7 +634,7 @@ test_that("netsim works with faux offset models", {
 
 context("Time-Varying Network Parameters")
 
-test_that("time varying parameters for one-mode", {
+test_that("parameters by duration of infection for one-group models", {
   skip_on_cran()
   nw <- network_initialize(n = 100)
   formation <- ~edges
@@ -639,14 +643,10 @@ test_that("time varying parameters for one-mode", {
 
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  probs <- c(0.25, 0.02)
-  durs <- c(10, 1)
-  inf.probs <- rep(probs, durs)
-
-  acts <- c(0.5, 2)
-  act.rates <- rep(acts, durs)
-
-  rec.rates <- rep(0:1, c(20, 1))
+  durs <- c(10, Inf)
+  inf.probs <- by_infection_duration(c(0.25, 0.02), durations = durs)
+  act.rates <- by_infection_duration(c(0.5, 2), durations = durs)
+  rec.rates <- by_infection_duration(c(0, 1), durations = c(20, Inf))
 
   # Parameters, initial conditions, and controls for model
   param <- param.net(inf.prob = inf.probs, act.rate = act.rates,
@@ -659,7 +659,7 @@ test_that("time varying parameters for one-mode", {
 })
 
 
-test_that("time varying parameters for two-group models", {
+test_that("parameters by duration of infection for two-group models", {
   skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
@@ -669,16 +669,12 @@ test_that("time varying parameters for two-group models", {
 
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  probs <- c(0.25, 0.01)
-  durs <- c(10, 1)
-  inf.probs <- rep(probs, durs)
+  durs <- c(10, Inf)
+  inf.probs <- by_infection_duration(c(0.25, 0.01), durations = durs)
   inf.probs.g2 <- inf.probs * 2
-
-  acts <- c(1, 2)
-  act.rates <- rep(acts, durs)
-
-  rec.rates <- rep(0:1, c(20, 1))
-  rec.rates.g2 <- rep(0:1, c(10, 1))
+  act.rates <- by_infection_duration(c(1, 2), durations = durs)
+  rec.rates <- by_infection_duration(c(0, 1), durations = c(20, Inf))
+  rec.rates.g2 <- by_infection_duration(c(0, 1), durations = c(10, Inf))
 
   param <- param.net(inf.prob = inf.probs,
                      inf.prob.g2 = inf.probs.g2,

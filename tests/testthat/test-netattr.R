@@ -12,8 +12,8 @@ test_that("Updating attributes in open populations", {
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
-  durs <- c(3, 100, 9, 10)
-  inf.probs <- rep(probs, durs)
+  durs <- c(3, 100, 9, Inf)
+  inf.probs <- by_infection_duration(probs, durations = durs)
   inf.probsf <- inf.probs * 2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
@@ -345,7 +345,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
     expect_is(x, "netsim")
     control$start <- 6
     control$nsteps <- 11
-    y <- netsim(x, param, init, control)
+    y <- netsim(get_sims(x, sims = 1), param, init, control)
     expect_is(y, "netsim")
   }
 })
@@ -392,7 +392,7 @@ test_that("reinitialization a truncated netsim object", {
     sim_num = 1
   )
 
-  # In this case, the `restart_point` contains a single timestap
+  # In this case, the `restart_point` contains a single timestep
   control$start <- restart_point$control$nsteps + 1
   control$nsteps <- restart_point$control$nsteps + 1 + 11
   y <- netsim(restart_point, param, init, control)
@@ -412,4 +412,91 @@ test_that("reinitialization a truncated netsim object", {
     sim_num = 1,
     time_attrs = c("infTime")
   ))
+})
+
+test_that("overwrite_attrs sets attributes from init_attr", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "age", rep(30, 50))
+  est <- netest(nw, ~edges, 25, dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init_with_attrs <- function(x, param, init, control, s) {
+    dat <- initialize.net(x, param, init, control, s)
+    overwrite_attrs(dat)
+  }
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, verbose = FALSE,
+                         initialize.FUN = init_with_attrs, save.run = TRUE)
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50))
+  expect_message(sim <- netsim(est, param, init, control), "init_attr used")
+  expect_equal(sim$run[[1]]$attr$age, 1:50)
+
+  # every column must name an attribute the model already has
+  init <- init.net(i.num = 5, init_attr = data.frame(age = 1:50, nope = 1))
+  expect_error(suppressMessages(netsim(est, param, init, control)),
+               "not present in `dat`: nope")
+})
+
+# A tergmLite netsim_dat object at t = 2 whose arrivals module has appended the
+# core attributes for three new nodes, plus status, infTime, and `set`.
+dat_with_arrivals <- function(set) {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rep(1:2, 25))
+  nw <- set_vertex_attribute(nw, "risk", rep(c(10, 20), each = 25))
+  nw <- set_vertex_attribute(nw, "age", 15 + (1:50) / 3)
+  est <- netest(nw, ~edges, 25, dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         attr.rules = list(risk = "t1"))
+  crosscheck.net(est, param, init, control)
+  control <- netsim_validate_control(control)
+  dat <- initialize.net(est, param, init, control, s = 1)
+  dat <- set_current_timestep(dat, 2)
+  dat <- append_core_attr(dat, 2, 3)
+  dat <- append_attr(dat, "status", "s", 3)
+  dat <- append_attr(dat, "infTime", NA, 3)
+  for (a in set) {
+    dat <- append_attr(dat, a, get_attr(dat, a)[1], 3)
+  }
+  dat
+}
+
+test_that("nwupdate.net tables only the attributes the arrivals module left short", {
+  get_attr_prop_orig <- get_attr_prop
+  seen <- list()
+  local_mocked_bindings(
+    get_attr_prop = function(dat, nwterms, attrs = NULL) {
+      seen[[length(seen) + 1]] <<- attrs
+      get_attr_prop_orig(dat, nwterms, attrs)
+    },
+    .package = "EpiModel"
+  )
+
+  # every attribute set by the arrivals module: nothing is tabled
+  set.seed(1)
+  dat <- nwupdate.net(dat_with_arrivals(c("race", "risk", "age")), at = 2)
+  expect_length(seen, 0)
+  expect_equal(get_attr(dat, "risk")[51:53], rep(10, 3))
+  expect_equal(attr(dat$run$el[[1]], "n"), 53)
+
+  # risk left short: only risk is tabled, and its t1 rule draws from the time 1
+  # distribution of risk, not from that of the first tabled attribute
+  set.seed(1)
+  dat <- nwupdate.net(dat_with_arrivals(c("race", "age")), at = 2)
+  expect_equal(seen, list("risk"))
+  expect_length(get_attr(dat, "risk"), 53)
+  expect_true(all(get_attr(dat, "risk")[51:53] %in% c(10, 20)))
+  expect_equal(attr(dat$run$el[[1]], "n"), 53)
+})
+
+test_that("get_attr_prop restricts the tables to attrs", {
+  dat <- dat_with_arrivals(c("race", "risk", "age"))
+  all_tabs <- get_attr_prop(dat, "race")
+  expect_setequal(names(all_tabs), c("race", "risk", "age", "unique_id"))
+  tabs <- get_attr_prop(dat, "race", attrs = c("risk", "status", "nope"))
+  expect_equal(names(tabs), "risk")
+  expect_equal(tabs$risk, all_tabs$risk)
+  expect_null(get_attr_prop(dat, NULL, attrs = "risk"))
 })
