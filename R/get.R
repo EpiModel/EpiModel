@@ -625,7 +625,11 @@ get_attr_history <- function(sims) {
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
     attributes <- vapply(records, function(x) x[["attribute"]], "")
-    attributes_pos <- split(seq_along(attributes), attributes)
+    # keep the attributes in the order they were first recorded
+    attributes_pos <- split(
+      seq_along(attributes),
+      factor(attributes, levels = unique(attributes))
+    )
     for (a in names(attributes_pos)) {
       parts <- records[attributes_pos[[a]]]
       parts <- lapply(parts, dplyr::as_tibble)
@@ -636,9 +640,7 @@ get_attr_history <- function(sims) {
     }
   }
 
-  nms <- names(dfs)
-  dfs <- lapply(dfs, \(x) dplyr::bind_rows(x))
-  names(dfs) <- nms
+  dfs <- lapply(dfs, dplyr::bind_rows)
 
   return(dfs)
 }

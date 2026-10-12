@@ -848,6 +848,12 @@ get_degree <- function(x) {
 #' `b`, where the final time window of interest for data analysis is
 #' `b` to `c` only.
 #'
+#' For `netsim` objects with `reset.time = TRUE`, the times of the attribute
+#' history and of the cumulative edgelist are shifted to the new time steps
+#' as well, so that [get_attr_at()] and [make_networkDynamic()] read them in
+#' the same frame. Their records before `at` are kept, with times of 0 or
+#' less, as the state of the nodes and edges at `at` depends on them.
+#'
 #' @return The updated object of class `dcm`, `netsim`, or `icm`.
 #'
 #' @export
@@ -934,7 +940,28 @@ truncate_sim.icm <- function(x, at, reset.time = TRUE) {
 #' @rdname truncate_sim
 #' @export
 truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
-  truncate_sim.icm(x, at = at, reset.time = reset.time)
+  x <- truncate_sim.icm(x, at = at, reset.time = reset.time)
+  shift <- at - 1
+  if (reset.time && !is.null(x$attr.history)) {
+    # `collections::queue` objects are environments: build new ones rather
+    # than modify the records of the original object
+    x$attr.history <- lapply(x$attr.history, function(records) {
+      if (is.null(records)) return(NULL)
+      collections::queue(lapply(records$as_list(), function(r) {
+        r$time <- r$time - shift
+        r
+      }))
+    })
+  }
+  if (reset.time && !is.null(x$cumulative.edgelist)) {
+    x$cumulative.edgelist <- lapply(x$cumulative.edgelist, function(el) {
+      if (is.null(el)) return(NULL)
+      el$start <- el$start - shift
+      el$stop <- el$stop - shift
+      el
+    })
+  }
+  return(x)
 }
 
 #' @title Function to Reduce the Size of a `netest` Object

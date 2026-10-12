@@ -16,11 +16,14 @@ The updated \code{netsim_dat} main list object.
 }
 \description{
 Captures the current values of all attributes listed in
-\code{control$tracked.attributes} along with their \code{unique_id}s. This snapshot
-is stored in \code{dat$run$tracked_attrs_ref} and used by
-\code{tracked_attrs_record} at the end of the step to compute deltas.
+\code{control$tracked.attributes} and \code{control$tracked.attributes.once} along
+with their \code{unique_id}s. This snapshot is stored in
+\code{dat$run$tracked_attrs_ref} and used by \code{tracked_attrs_record} at the end of
+the step to compute deltas.
 On its first call (when \code{dat$run$tracking_attrs} is \code{FALSE}), records a full
-initial snapshot instead for the step \code{at - 1L}.
+initial snapshot instead for the step \code{at - 1L}. Attributes that do not
+exist yet (e.g., created by a module on its first call) are left out of the
+snapshot and recorded in full at the end of the step in which they appear.
 }
 \seealso{
 \code{\link[=tracked_attrs_record]{tracked_attrs_record()}}, \code{\link[=record_attr_history]{record_attr_history()}}

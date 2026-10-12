@@ -135,8 +135,8 @@ make_restart_point <- function(
     function(v) v - time_offset
   )
 
-  # Fix UIDs
-  uid_offset <- min(run_ls$attr$unique_id) - 1
+  # Fix UIDs (kept integer, as `unique_id` is everywhere else)
+  uid_offset <- as.integer(min(run_ls$attr$unique_id)) - 1L
   run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
   run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
 
@@ -168,6 +168,10 @@ make_restart_point <- function(
     attr(x, "vnames") <- NULL
     x
   })
+
+  # The attribute history is dropped below, so the tracked attributes start
+  # again from a full snapshot when the simulation restarts
+  run_ls$tracking_attrs <- FALSE
 
   x$run[[1]] <- run_ls
 

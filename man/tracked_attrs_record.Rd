@@ -19,15 +19,19 @@ Compares the current attribute values against the reference snapshot taken
 by \code{tracked_attrs_set_ref} and records only the changes via
 \code{record_attr_history}.
 
-Three types of changes are detected:
+Four types of changes are detected:
 \itemize{
+\item \strong{New attributes}: attributes absent from the reference but present now
+(e.g., created by a module on its first call), recorded for all nodes.
 \item \strong{Departures}: nodes present in the reference but absent now (recorded
-as \code{active = 0L} if \code{"active"} is tracked).
+as \code{active = 0L}).
 \item \strong{Arrivals}: nodes absent from the reference but present now (all
 tracked attribute values recorded).
 \item \strong{Value changes}: persisting nodes whose attribute value differs from
 the reference, including \code{NA} transitions.
 }
+
+A tracked attribute that does not exist at the end of a step is an error.
 }
 \seealso{
 \code{\link[=tracked_attrs_set_ref]{tracked_attrs_set_ref()}}, \code{\link[=record_attr_history]{record_attr_history()}}

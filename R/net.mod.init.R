@@ -93,6 +93,10 @@ initialize.net <- function(x, param, init, control, s) {
       run = x$run[[1]]
     )
 
+    # The attribute history of `x` is not carried over, so the tracked
+    # attributes start again from a full snapshot at `start - 1`
+    dat$run$tracking_attrs <- FALSE
+
     # `groups` is stored in `run` by `init_nets()`
     dat <- set_param(dat, "groups", dat$run$groups)
 

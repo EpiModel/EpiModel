@@ -120,13 +120,17 @@ for that many steps after they ended. Only relevant when
 
 \item{tracked.attributes}{A character vector of nodal attribute names whose
 changes should be automatically recorded at each time step. The
-\code{active} attribute is always tracked when this is non-empty. At each
+\code{active} attribute is always tracked when this or
+\code{tracked.attributes.once} is non-empty. At each
 step, only the nodes whose values changed (including \code{NA} transitions),
 plus newly arrived and departed nodes, are recorded via
 \code{\link[=record_attr_history]{record_attr_history()}}. The resulting history can be retrieved with
 \code{\link[=get_attr_history]{get_attr_history()}} and used to reconstruct attribute state at any
 time step with \code{\link[=get_attr_at]{get_attr_at()}} or to build a \code{networkDynamic} object
-with \code{\link[=make_networkDynamic]{make_networkDynamic()}}.}
+with \code{\link[=make_networkDynamic]{make_networkDynamic()}}. A tracked attribute that a module
+creates on its first call is recorded for all nodes from that step
+on; every tracked attribute must exist by the end of the first time
+step.}
 
 \item{tracked.attributes.once}{A character vector of nodal attribute names
 to record only in the initial snapshot and for newly arriving nodes.
