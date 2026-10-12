@@ -487,8 +487,8 @@ test_that("a scenario updater sets single positions of a vector parameter", {
   # Records the value of the vector parameter `x` at each step
   record_x <- function(dat, at) {
     x <- get_param(dat, "x")
-    dat <- set_epi(dat, "x.len", at, length(x))
-    for (i in 1:3) dat <- set_epi(dat, paste0("x", i), at, x[i])
+    dat <- set_epi(dat, "x.len", length(x))
+    for (i in 1:3) dat <- set_epi(dat, paste0("x", i), x[i])
     dat
   }
 
