@@ -235,7 +235,7 @@ test_that("merge.netsim merges the recorded histories", {
 
   # record one value per time step, plus a raw object
   test_logger <- function(dat, at) {
-    dat <- record_attr_history(dat, at, "test.attr", get_posit_ids(dat), at)
+    dat <- record_attr_history(dat, "test.attr", at, posit_ids = get_posit_ids(dat), at = at)
     dat <- record_raw_object(dat, at, "test.obj", at)
     return(dat)
   }

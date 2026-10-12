@@ -96,9 +96,10 @@ record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
 #' `collections::queue` object.
 #'
 #' @inheritParams recovery.net
-#' @param at The time where the recording happens.
 #' @param label The name to give to the recorded object.
 #' @param object The object to be recorded.
+#' @param at The time step at which the recording happens. Defaults to the
+#'   current time step if `NULL`.
 #'
 #' @inherit recovery.net return
 #'
@@ -115,10 +116,13 @@ record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
 #' }
 #'
 #' @export
-record_raw_object <- function(dat, at, label, object) {
+record_raw_object <- function(dat, label, object, at = NULL) {
   if (is.null(dat[["raw.records"]])) {
     dat[["raw.records"]] <- collections::queue()
   }
+
+  if (is.null(at))
+    at <- get_current_timestep(dat)
 
   element <- list(at, label, object)
   names(element) <- c("time", "label", "object")
