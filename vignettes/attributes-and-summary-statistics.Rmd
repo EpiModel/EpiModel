@@ -270,10 +270,11 @@ viral_load_logger_module <- function(dat, at) {
 3. `value`: the values to record. Must match the number of nodes in length,
    unless a single value is provided (which is recycled for all nodes).
 4. `at`: the time step to associate with the recording. Defaults to the
-   current time step if omitted.
+   current time step if omitted, and must be passed by name.
 5. `posit_ids` or `unique_ids`: a vector of node IDs to which the values
-   apply. When `posit_ids` are provided, they are converted internally to
-   `unique_id`s so the history remains valid even after nodes depart.
+   apply, passed by name. When `posit_ids` are provided, they are converted
+   internally to `unique_id`s so the history remains valid even after nodes
+   depart.
 
 Use attribute tracking and histories sparingly---storage can grow large in
 open-population models with many nodes over many time steps. Note that
@@ -304,7 +305,7 @@ aging_track_module <- function(dat, at) {
 
   # Calculate summary statistics
   mean_age <- mean(new_age)
-  prev_mean_age <- get_epi(dat, at - 1, "mean_age")
+  prev_mean_age <- get_epi(dat, "mean_age", at - 1)
   age_change <- mean_age - prev_mean_age
 
   # Update nodal attributes
@@ -320,7 +321,7 @@ aging_track_module <- function(dat, at) {
 
 Key points:
 
-- `set_epi()` returns a modified `dat` that must be assigned back. The value must be a scalar.
+- `set_epi()` returns a modified `dat` that must be assigned back. The value must be a scalar. It is recorded at the current time step; to record it at another one, pass `at` by name (`set_epi(dat, "mean_age", mean_age, at = 10)`).
 - `get_epi()` retrieves the tracker value at a specific time step. Requesting a nonexistent tracker throws an error.
 
 ### Accessing Epidemic Trackers After a Simulation
@@ -490,7 +491,7 @@ introspect_module <- function(dat, at) {
         age = age,
         status = get_attr(dat, "status")
     )
-    dat <- record_raw_object(dat, at, "old pop", obj)
+    dat <- record_raw_object(dat, "old pop", obj)
   }
 
   return(dat)
@@ -502,12 +503,13 @@ After simulation, access recorded objects from the `netsim` output:
 ```{r record-raw-access, eval = FALSE}
 sim <- netsim(est, param, init, control)
 
-# Access raw records for simulation 1
-# Returns a nested list keyed by label, then time step
-raw <- sim[["raw.records"]][[1]]
+# Access raw records for simulation 1, as a list of records with the
+# elements `time`, `label`, and `object`
+raw <- sim[["raw.records"]][[1]]$as_list()
 
 # Access the "old pop" data.frame recorded at step 75
-raw[["old pop"]][[75]]
+old_pop <- Filter(function(r) r$label == "old pop" && r$time == 75, raw)
+old_pop[[1]]$object
 ```
 
 **Use sparingly:** Raw records are not truncated and can consume substantial memory, especially for large attribute vectors recorded at many time steps. This feature is intended for debugging, not routine output collection.
