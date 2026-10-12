@@ -893,6 +893,54 @@ test_that("netsim errors when a custom module returns a plain list", {
   )
 })
 
+test_that("netsim_cond_msg names the condition, module, and step", {
+  expect_equal(netsim_cond_msg("error", "my.FUN", 3),
+               "\n\tAn error occurred in module 'my.FUN' at step 3")
+  expect_equal(netsim_cond_msg("warning", "my.FUN", 3),
+               "\n\tA warning occurred in module 'my.FUN' at step 3")
+  expect_equal(netsim_cond_msg("message", "my.FUN", 3),
+               "\n\tA message occurred in module 'my.FUN' at step 3")
+})
+
+test_that("netsim reports the module and step where an error occurred", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  failing_module <- function(dat, at) {
+    if (at == 3) stop("boom")
+    dat
+  }
+
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_failing.FUN = failing_module,
+                         verbose = FALSE)
+
+  msgs <- character(0)
+  expect_error(
+    withCallingHandlers(
+      netsim(est, param, init, control),
+      message = function(m) {
+        msgs <<- c(msgs, conditionMessage(m))
+        invokeRestart("muffleMessage")
+      }
+    ),
+    "boom"
+  )
+  expect_true(any(grepl("An error occurred in module 'my_failing.FUN' at step 3",
+                        msgs, fixed = TRUE)))
+})
+
 test_that("an attribute first appended mid-simulation covers every node", {
   skip_on_cran()
 
