@@ -663,9 +663,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' the first 2 are finished, then the interruption occurs during the third, `netsim` will only
 #' restart the third one from the last checkpoint.
 #'
-#' A `.checkpoint.compress` argument can be set to overwrite the `compress` argument in `saveRDS`
-#' used to save the checkpointed data. The current default for `saveRDS` is `gunzip (gz)`, which
-#' provides fast compression that usually works well on `netsim` objects.
+#' A `.checkpoint.compress` argument sets the `compress` argument of `saveRDS` used to save the
+#' checkpointed data. It defaults to `TRUE`, which is gzip compression and usually works well on
+#' `netsim` objects. Any value accepted by the `compress` argument of `saveRDS` may be used
+#' instead, such as `"xz"` or `"bzip2"` for smaller but slower files, or `FALSE` for no compression.
 #'
 #' By default, if `netsim` reaches the end of all simulations, the checkpoint data directory and its
 #' content are removed before returning the `netsim` object. The `.checkpoint.keep` argument can be
