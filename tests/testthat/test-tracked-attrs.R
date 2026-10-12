@@ -174,6 +174,40 @@ test_that("get_attr_at validates inputs", {
   expect_error(get_attr_at(sim2, at = 5), "tracked")
 })
 
+test_that("get_attr_at computes age only with a time.unit parameter", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "age", runif(50, 20, 40))
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  aging <- function(dat, at) {
+    dat <- set_attr(dat, "age", get_attr(dat, "age") + 1 / 12)
+    return(dat)
+  }
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 20,
+                         aging.FUN = aging, infection.FUN = infection.net,
+                         tracked.attributes.once = "age",
+                         save.other = "attr", verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 2)
+  expect_null(param$time.unit)
+  sim <- netsim(est, param, init, control)
+  expect_error(get_attr_at(sim, at = 20, compute_age = TRUE), "time.unit")
+  # Without compute_age, age is the last recorded value
+  attrs <- get_attr_at(sim, at = 20)
+  first_age <- get_attr_history(sim)$age
+  expect_equal(attrs$age, first_age$values[match(attrs$unique_id, first_age$uids)])
+
+  # Monthly time steps
+  param <- param.net(inf.prob = 0.3, act.rate = 2, time.unit = 364 / 12)
+  sim <- netsim(est, param, init, control)
+  attrs <- get_attr_at(sim, at = 20, compute_age = TRUE)
+  final <- sim$attr[[1]]
+  expect_equal(attrs$age, final$age[match(attrs$unique_id, final$unique_id)])
+})
+
 test_that("empty tracked.attributes does not create attr.history", {
   skip_on_cran()
   est <- simple_est()

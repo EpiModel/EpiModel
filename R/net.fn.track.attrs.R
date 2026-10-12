@@ -118,8 +118,11 @@ tracked_attrs_record <- function(dat) {
 #' @param sim An `EpiModel` object of class `netsim`.
 #' @param at The time step at which to reconstruct attributes.
 #' @param sim_num The simulation number to use (default 1).
-#' @param compute_age If `age` is recorded even once, compute the age of nodes
-#'        at this time. Assumes `time.unit` is correctly set in `params`.
+#' @param compute_age If `TRUE` and `age` is tracked, compute the age of nodes
+#'        at `at` from their last recorded age, assuming age in years and 364
+#'        days in a year. This needs a `time.unit` parameter (the number of days
+#'        in a time step) in `sim$param`, passed to [`param.net`] or set by the
+#'        initialization module (as EpiModelHIV does from its `epistats`).
 #'
 #' @return A `tibble` with columns `unique_id`, `active`, and one column per
 #'   tracked attribute, containing the most recent value at or before `at`
@@ -127,7 +130,7 @@ tracked_attrs_record <- function(dat) {
 #'
 #' @seealso [record_attr_history()], [get_attr_history()]
 #' @export
-get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
+get_attr_at <- function(sim, at, sim_num = 1, compute_age = FALSE) {
   if (!inherits(sim, "netsim"))
     stop("`sim` must be of class netsim")
   if (length(sim$control$tracked.attributes) == 0 &&
@@ -139,6 +142,9 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
   if (at < sim$control$start || at > sim$control$nsteps)
     stop("Specify at between ", sim$control$start, " and ", sim$control$nsteps)
+  if (compute_age && is.null(sim$param$time.unit))
+    stop("`compute_age = TRUE` needs a `time.unit` parameter (the number of ",
+         "days in a time step) in `param`")
 
   attr_hist <- get_attr_history(sim)
 
@@ -165,7 +171,7 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = TRUE) {
   }
 
   if (compute_age && "age" %in% names(attr_hist)) {
-    year_steps <- (364 / sim$param$time.unit)
+    year_steps <- 364 / sim$param$time.unit
     d <- attr_hist[["age"]] |>
       dplyr::filter(
         .data$sim == sim_num,

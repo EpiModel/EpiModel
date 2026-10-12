@@ -6,7 +6,7 @@
 
 -   `netsim()` restarts every simulation from the first simulation of `x`, with a warning when `x` holds more than one. Simulation `s` restarted from simulation `(s - 1) %% n + 1` of the `n` simulations of `x` before. Use `get_sims()` or `make_restart_point()` to select the simulation to restart from.
 
--   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, `initialize_msm()` in EpiModelHIV-p sets `time.unit` from `param$epistats`, so `time.unit` must now be passed in `param` or set in the reinitialization module.
+-   `netsim()` no longer completes `param` with the parameters saved in `x` when restarting: `param` must hold all the parameters of the model, and `x` (like the `sim_obj` of `make_restart_point()`) no longer needs to hold them. The internal `groups` parameter is now stored in the `run` sublist, from which it is restored. For extension models, any parameter that an initialization module sets with `set_param()` is gone on restart, as that module does not run again. For example, `initialize_msm()` in EpiModelHIV-p sets `time.unit` from `param$epistats`, so `reinit_msm()` sets it again on restart from EpiModelHIV 3.3.3 (EpiModel/EpiModelHIV-p#407).
 
 -   Objects saved with EpiModel 2.6.x or earlier can no longer be restarted. They need to be regenerated with 2.7.0. `netsim()` now stamps its output with the EpiModel version and refuses to restart from an object of another major or minor version.
 
@@ -17,7 +17,7 @@
 ### NEW FEATURES
 
 -   Added automatic attribute history tracking for network simulations. Setting `tracked.attributes` in `control.net()` records delta-compressed attribute changes at each time step. The `active` attribute is always included when tracking is enabled. Only nodes whose values changed (including `NA` transitions), plus newly arrived and departed nodes, are recorded, minimizing memory usage. A companion parameter `tracked.attributes.once` records attributes only in the initial snapshot and for new arrivals, suitable for fixed-at-entry attributes like `"race"` or `"birth.year"`.
--   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node.
+-   Added `get_attr_at()` to reconstruct the state of all tracked attributes at any past time step from the delta-compressed history. Returns a `tibble` with one row per active node. With `compute_age = TRUE`, the age of each node at that step is computed from its last recorded `age`, which needs a `time.unit` parameter (days per time step).
 -   Added `make_networkDynamic()` to reconstruct a `networkDynamic` object from a completed `netsim` simulation, using the cumulative edgelist for edge spells and the tracked attribute history for vertex activity and time-varying attributes. This enables `ndtv` visualization and `tsna` temporal network analysis even when running with `tergmLite = TRUE`.
 
 

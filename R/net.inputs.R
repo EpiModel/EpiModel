@@ -282,10 +282,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     p[["inter.start"]] <- 1
   }
 
-  if (is.null(p[["time.unit"]])) {
-    p[["time.unit"]] <- 1
-  }
-
   ## Output
   class(p) <- c("param.net", "list")
   return(p)
