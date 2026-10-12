@@ -38,3 +38,25 @@ the value for a parameter of size > 1. This means that the parameter names
 cannot contain any underscore "}". (e.g "a.rate", "d.rate_1", "d.rate_2")
 }
 
+\section{Vector parameters}{
+
+A column with a position suffix sets that position of the current value of
+the parameter and leaves the other positions as they are. For example, with
+\code{prep.start.rate = c(0.0055, 0.0042, 0.0066)} in \code{param}, a scenario with
+only a \code{prep.start.rate_1} column of \code{0.5} gives
+\code{prep.start.rate = c(0.5, 0.0042, 0.0066)}, both when it is applied before
+the simulation by \code{\link[=use_scenario]{use_scenario()}} and when it is applied by an updater
+during the simulation. Before EpiModel 2.7.0, the parameter was replaced by
+a vector built from the scenario columns alone (\code{0.5} here), so every
+position had to be given.
+
+A column without a suffix (\code{prep.start.rate}) still replaces the whole
+parameter with its single value. Positions past the end of the current
+vector extend it when they leave no gap: with a vector of length 3,
+\code{prep.start.rate_4} alone extends it to length 4, while
+\code{prep.start.rate_5} alone is an error. A scenario cannot shorten a vector.
+Only plain vectors can be set by position: a parameter given as a
+\code{\link[=multilayer]{multilayer()}} or \code{\link[=by_infection_duration]{by_infection_duration()}} object, or as a list, is an
+error. Use a parameter updater that sets the whole value instead.
+}
+
