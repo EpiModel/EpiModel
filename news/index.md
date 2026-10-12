@@ -348,6 +348,25 @@
   place. Such values now replace the old value whole, and named lists
   are still merged by name. A `multilayer` value whose length does not
   match the number of network layers now stops with an error.
+- Fix scenarios that set some positions of a vector parameter. A
+  scenario column with a position suffix now sets only that position of
+  the current value and leaves the others as they are, both in
+  [`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md)
+  and when an updater applies the scenario during the simulation. The
+  columns of a scenario used to replace the whole vector, so a scenario
+  setting only `prep.start.rate_1 = 0.5` turned
+  `prep.start.rate = c(0.0055, 0.0042, 0.0066)` into `0.5`, and one
+  setting only `prep.start.rate_2 = 0.5` into `c(NA, 0.5)`, which failed
+  later in the modules that read the parameter. It now gives
+  `c(0.5, 0.0042, 0.0066)`. A column without a suffix still replaces the
+  whole parameter. Positions past the end of the current vector extend
+  it when they leave no gap and are an error otherwise, a scenario can
+  no longer shorten a vector, and setting by position a parameter that
+  is not a plain vector (a
+  [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
+  or
+  [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
+  object, or a list) is an error.
 - Fix
   [`overwrite_attrs()`](https://epimodel.github.io/EpiModel/reference/overwrite_attrs.md),
   which stopped with “Some attributes in `init_attr` are not present in
@@ -387,6 +406,13 @@
   layers (the observation window, the fixed node set, and how the layer
   is read in each storage mode). The Multi-Layer Networks chapter of the
   Network Modeling for Epidemics course remains the full worked example.
+- The message
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  prints when a module raises a condition now reads “An error occurred
+  in module ‘x.FUN’ at step 10” (with “A warning” and “A message” for
+  the other conditions), where it read “A ERROR occured in module …”.
+  Scripts that search simulation logs for the old text, or for the
+  upper-case `ERROR`, `WARNING`, or `MESSAGE`, need updating.
 - [`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
   now tables only the nodal attributes that the arrivals module left
   without values for the arriving nodes, which are the only ones

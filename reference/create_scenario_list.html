@@ -81,6 +81,28 @@ parameter with "_1", "_2", "<em>N" with the second part being the position of
 the value for a parameter of size &gt; 1. This means that the parameter names
 cannot contain any underscore "</em>". (e.g "a.rate", "d.rate_1", "d.rate_2")</p>
     </div>
+    <div class="section level2">
+    <h2 id="vector-parameters">Vector parameters<a class="anchor" aria-label="anchor" href="#vector-parameters"></a></h2>
+
+
+<p>A column with a position suffix sets that position of the current value of
+the parameter and leaves the other positions as they are. For example, with
+<code>prep.start.rate = c(0.0055, 0.0042, 0.0066)</code> in <code>param</code>, a scenario with
+only a <code>prep.start.rate_1</code> column of <code>0.5</code> gives
+<code>prep.start.rate = c(0.5, 0.0042, 0.0066)</code>, both when it is applied before
+the simulation by <code><a href="use_scenario.html">use_scenario()</a></code> and when it is applied by an updater
+during the simulation. Before EpiModel 2.7.0, the parameter was replaced by
+a vector built from the scenario columns alone (<code>0.5</code> here), so every
+position had to be given.</p>
+<p>A column without a suffix (<code>prep.start.rate</code>) still replaces the whole
+parameter with its single value. Positions past the end of the current
+vector extend it when they leave no gap: with a vector of length 3,
+<code>prep.start.rate_4</code> alone extends it to length 4, while
+<code>prep.start.rate_5</code> alone is an error. A scenario cannot shorten a vector.
+Only plain vectors can be set by position: a parameter given as a
+<code><a href="multilayer.html">multilayer()</a></code> or <code><a href="by_infection_duration.html">by_infection_duration()</a></code> object, or as a list, is an
+error. Use a parameter updater that sets the whole value instead.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

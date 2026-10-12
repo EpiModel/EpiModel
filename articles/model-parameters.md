@@ -178,13 +178,13 @@ for (scenario in scenarios.list) {
 #> [1] "initial_change"
 #> [1] "multiple_changes"
 #> 
-#>  A MESSAGE occured in module 'epimodel.internal' at step 100
+#>  A message occurred in module 'epimodel.internal' at step 100
 #> 
 #> 
 #> At timestep = 100 the following parameters were modified:
 #> 'inf.prob', 'rec.rate'
 #> 
-#>  A MESSAGE occured in module 'epimodel.internal' at step 200
+#>  A message occurred in module 'epimodel.internal' at step 200
 #> 
 #> 
 #> At timestep = 200 the following parameters were modified:
@@ -237,8 +237,8 @@ example, `hiv.test.rate` might be a vector of length 3 containing weekly
 HIV screening probabilities for Black, Hispanic, and White persons.
 
 To use vectors in scenarios, create a separate column for each element
-using the naming convention `paramname_N`, where `N` is the position in
-the vector:
+to set, using the naming convention `paramname_N`, where `N` is the
+position in the vector:
 
 ``` r
 
@@ -261,9 +261,17 @@ knitr::kable(scenarios.df)
 | multiple_changes | 100 |           0.004 |           0.001 |           0.004 |
 | multiple_changes | 200 |           0.008 |           0.001 |           0.008 |
 
-All elements of a vector parameter must be specified in the
-`data.frame`, even if some values do not change across scenarios (e.g.,
-`hiv.test.rate_2` is constant here but must still be included).
+A column sets only its own position: the positions of a vector parameter
+without a column keep their current value, both before the simulation
+and when an updater applies the row during it. Here, `hiv.test.rate_2`
+could be left out if the base parameter object already holds 0.001 in
+that position. A column without a position suffix (`hiv.test.rate`)
+replaces the whole vector with its single value. Positions past the end
+of the current vector extend it when they leave no gap
+(`hiv.test.rate_4` alone extends a vector of length 3, while
+`hiv.test.rate_5` alone is an error), and a scenario cannot shorten a
+vector. Before EpiModel 2.7.0, the columns of a scenario replaced the
+whole vector, so every position had to be given.
 
 When working with many parameters, we recommend storing the
 `scenarios.df` as a CSV, RDS or Excel file for easier sharing and
@@ -681,13 +689,13 @@ est <- netest(
 #> Finished MPLE.
 mod <- netsim(est, param, init, control)
 #> 
-#>  A MESSAGE occured in module 'epimodel.internal' at step 100
+#>  A message occurred in module 'epimodel.internal' at step 100
 #> 
 #> 
 #> At timestep = 100 the following parameters were modified:
 #> 'inf.prob', 'act.rate'
 #> 
-#>  A MESSAGE occured in module 'epimodel.internal' at step 125
+#>  A message occurred in module 'epimodel.internal' at step 125
 #> 
 #> 
 #> At timestep = 125 the following parameters were modified:

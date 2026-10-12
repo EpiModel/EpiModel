@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.7.0</h4>
             
-            <h4 data-toc-skip class="date">2026-10-11</h4>
+            <h4 data-toc-skip class="date">2026-10-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/model-parameters.Rmd" class="external-link"><code>vignettes/model-parameters.Rmd</code></a></small>
       <div class="d-none name"><code>model-parameters.Rmd</code></div>
@@ -276,13 +276,13 @@ designated time steps.</p>
 <span><span class="co">#&gt; [1] "initial_change"</span></span>
 <span><span class="co">#&gt; [1] "multiple_changes"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  A MESSAGE occured in module 'epimodel.internal' at step 100</span></span>
+<span><span class="co">#&gt;  A message occurred in module 'epimodel.internal' at step 100</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 100 the following parameters were modified:</span></span>
 <span><span class="co">#&gt; 'inf.prob', 'rec.rate'</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  A MESSAGE occured in module 'epimodel.internal' at step 200</span></span>
+<span><span class="co">#&gt;  A message occurred in module 'epimodel.internal' at step 200</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 200 the following parameters were modified:</span></span>
@@ -328,8 +328,8 @@ example, <code>hiv.test.rate</code> might be a vector of length 3
 containing weekly HIV screening probabilities for Black, Hispanic, and
 White persons.</p>
 <p>To use vectors in scenarios, create a separate column for each
-element using the naming convention <code>paramname_N</code>, where
-<code>N</code> is the position in the vector:</p>
+element to set, using the naming convention <code>paramname_N</code>,
+where <code>N</code> is the position in the vector:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">.scenario.id</span>, <span class="op">~</span><span class="va">.at</span>, <span class="op">~</span><span class="va">hiv.test.rate_1</span>, <span class="op">~</span><span class="va">hiv.test.rate_2</span>, <span class="op">~</span><span class="va">hiv.test.rate_3</span>,</span>
@@ -393,10 +393,18 @@ element using the naming convention <code>paramname_N</code>, where
 </tr>
 </tbody>
 </table>
-<p>All elements of a vector parameter must be specified in the
-<code>data.frame</code>, even if some values do not change across
-scenarios (e.g., <code>hiv.test.rate_2</code> is constant here but must
-still be included).</p>
+<p>A column sets only its own position: the positions of a vector
+parameter without a column keep their current value, both before the
+simulation and when an updater applies the row during it. Here,
+<code>hiv.test.rate_2</code> could be left out if the base parameter
+object already holds 0.001 in that position. A column without a position
+suffix (<code>hiv.test.rate</code>) replaces the whole vector with its
+single value. Positions past the end of the current vector extend it
+when they leave no gap (<code>hiv.test.rate_4</code> alone extends a
+vector of length 3, while <code>hiv.test.rate_5</code> alone is an
+error), and a scenario cannot shorten a vector. Before EpiModel 2.7.0,
+the columns of a scenario replaced the whole vector, so every position
+had to be given.</p>
 <p>When working with many parameters, we recommend storing the
 <code>scenarios.df</code> as a CSV, RDS or Excel file for easier sharing
 and editing.</p>
@@ -954,13 +962,13 @@ list:</p>
 <span><span class="co">#&gt; Finished MPLE.</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  A MESSAGE occured in module 'epimodel.internal' at step 100</span></span>
+<span><span class="co">#&gt;  A message occurred in module 'epimodel.internal' at step 100</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 100 the following parameters were modified:</span></span>
 <span><span class="co">#&gt; 'inf.prob', 'act.rate'</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  A MESSAGE occured in module 'epimodel.internal' at step 125</span></span>
+<span><span class="co">#&gt;  A message occurred in module 'epimodel.internal' at step 125</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; At timestep = 125 the following parameters were modified:</span></span>

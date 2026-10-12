@@ -427,9 +427,10 @@ arguments to restart a set of simulations that were interrupted.</p>
 <p>Simulations are checkpointed individually: for example, if 3 simulations are run on a single core,
 the first 2 are finished, then the interruption occurs during the third, <code>netsim</code> will only
 restart the third one from the last checkpoint.</p>
-<p>A <code>.checkpoint.compress</code> argument can be set to overwrite the <code>compress</code> argument in <code>saveRDS</code>
-used to save the checkpointed data. The current default for <code>saveRDS</code> is <code>gunzip (gz)</code>, which
-provides fast compression that usually works well on <code>netsim</code> objects.</p>
+<p>A <code>.checkpoint.compress</code> argument sets the <code>compress</code> argument of <code>saveRDS</code> used to save the
+checkpointed data. It defaults to <code>TRUE</code>, which is gzip compression and usually works well on
+<code>netsim</code> objects. Any value accepted by the <code>compress</code> argument of <code>saveRDS</code> may be used
+instead, such as <code>"xz"</code> or <code>"bzip2"</code> for smaller but slower files, or <code>FALSE</code> for no compression.</p>
 <p>By default, if <code>netsim</code> reaches the end of all simulations, the checkpoint data directory and its
 content are removed before returning the <code>netsim</code> object. The <code>.checkpoint.keep</code> argument can be
 set to <code>TRUE</code> to prevent this removal to inspect the raw simulation objects.</p>

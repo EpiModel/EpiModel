@@ -32,5 +32,9 @@ A scenario is a list containing an "id" field, the name of the scenario
 and a ".param.updater.list" containing a list of updaters that modifies
 the parameters of the model at given time steps. If a scenario contains
 a parameter not defined in the `param` object, an error will be
-produced. See the vignette "model-parameters" for the technical detail
-of their implementation.
+produced. A scenario column with a position suffix (`x_2`) sets only
+that position of a vector parameter; see the "Vector parameters" section
+of
+[`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md).
+See the vignette "model-parameters" for the technical detail of their
+implementation.
