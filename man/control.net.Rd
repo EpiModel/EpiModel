@@ -307,9 +307,10 @@ Simulations are checkpointed individually: for example, if 3 simulations are run
 the first 2 are finished, then the interruption occurs during the third, \code{netsim} will only
 restart the third one from the last checkpoint.
 
-A \code{.checkpoint.compress} argument can be set to overwrite the \code{compress} argument in \code{saveRDS}
-used to save the checkpointed data. The current default for \code{saveRDS} is \code{gunzip (gz)}, which
-provides fast compression that usually works well on \code{netsim} objects.
+A \code{.checkpoint.compress} argument sets the \code{compress} argument of \code{saveRDS} used to save the
+checkpointed data. It defaults to \code{TRUE}, which is gzip compression and usually works well on
+\code{netsim} objects. Any value accepted by the \code{compress} argument of \code{saveRDS} may be used
+instead, such as \code{"xz"} or \code{"bzip2"} for smaller but slower files, or \code{FALSE} for no compression.
 
 By default, if \code{netsim} reaches the end of all simulations, the checkpoint data directory and its
 content are removed before returning the \code{netsim} object. The \code{.checkpoint.keep} argument can be

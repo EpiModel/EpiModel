@@ -13,7 +13,9 @@
 #'
 #' @keywords internal
 netsim_cond_msg <- function(cond, module, at, msg) {
-  paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
+  article <- if (grepl("^[aeiou]", cond, ignore.case = TRUE)) "An" else "A"
+  paste0("\n\t", article, " ", cond, " occurred in module '", module,
+         "' at step ", at)
 }
 
 #'  Handle the Logging of Traceback and Dumping of Frames on Error

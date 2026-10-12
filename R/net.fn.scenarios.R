@@ -27,6 +27,26 @@
 #' the value for a parameter of size > 1. This means that the parameter names
 #' cannot contain any underscore "_". (e.g "a.rate", "d.rate_1", "d.rate_2")
 #'
+#' @section Vector parameters:
+#' A column with a position suffix sets that position of the current value of
+#' the parameter and leaves the other positions as they are. For example, with
+#' `prep.start.rate = c(0.0055, 0.0042, 0.0066)` in `param`, a scenario with
+#' only a `prep.start.rate_1` column of `0.5` gives
+#' `prep.start.rate = c(0.5, 0.0042, 0.0066)`, both when it is applied before
+#' the simulation by [use_scenario()] and when it is applied by an updater
+#' during the simulation. Before EpiModel 2.7.0, the parameter was replaced by
+#' a vector built from the scenario columns alone (`0.5` here), so every
+#' position had to be given.
+#'
+#' A column without a suffix (`prep.start.rate`) still replaces the whole
+#' parameter with its single value. Positions past the end of the current
+#' vector extend it when they leave no gap: with a vector of length 3,
+#' `prep.start.rate_4` alone extends it to length 4, while
+#' `prep.start.rate_5` alone is an error. A scenario cannot shorten a vector.
+#' Only plain vectors can be set by position: a parameter given as a
+#' [multilayer()] or [by_infection_duration()] object, or as a list, is an
+#' error. Use a parameter updater that sets the whole value instead.
+#'
 #' @export
 create_scenario_list <- function(scenarios.df) {
   check_scenarios_df(scenarios.df)
@@ -52,6 +72,11 @@ create_scenario_list <- function(scenarios.df) {
 #' when running "use_scenario", if any updater has an `at` value < 2, it is
 #' applied immediatly (so before netsim)
 #'
+#' An updater made from columns with a position suffix (`x_2`) also holds a
+#' `positions` list, giving for each such parameter the positions the row
+#' sets (`list(x = 2)`). Only these positions of the current value are
+#' changed when the updater is applied (see `merge_param_positions`).
+#'
 #' @noRd
 make_scenario <- function(scenario.rows) {
   scenario <- list(
@@ -63,11 +88,18 @@ make_scenario <- function(scenario.rows) {
   # ensures that `scenario.rows` is a `tibble`
   scenario.rows <- dplyr::select(scenario.rows, - c(".at", ".scenario.id"))
 
+  check_params_names(names(scenario.rows))
+  positions <- flat_params_positions(names(scenario.rows))
+
   for (i in seq_along(elements.at)) {
-    scenario[[".param.updater.list"]][[i]] <- list(
+    updater <- list(
       at = elements.at[[i]],
       param = unflatten_params(scenario.rows[i, , drop = FALSE])
     )
+    if (length(positions) > 0) {
+      updater[["positions"]] <- positions
+    }
+    scenario[[".param.updater.list"]][[i]] <- updater
   }
 
   return(scenario)
@@ -84,6 +116,9 @@ make_scenario <- function(scenario.rows) {
 #' a ".param.updater.list" containing a list of updaters that modifies the
 #' parameters of the model at given time steps. If a scenario contains a
 #' parameter not defined in the `param` object, an error will be produced.
+#' A scenario column with a position suffix (`x_2`) sets only that position of
+#' a vector parameter; see the "Vector parameters" section of
+#' [create_scenario_list()].
 #' See the vignette "model-parameters" for the technical detail of their
 #' implementation.
 #'
@@ -110,8 +145,10 @@ use_scenario <- function(param, scenario) {
   )
 
   for (i in which(elements.at < 2)) {
-    param <- update_params(param,
-                           scenario[[".param.updater.list"]][[i]][["param"]])
+    updater <- scenario[[".param.updater.list"]][[i]]
+    new.param <- merge_param_positions(param, updater[["param"]],
+                                       updater[["positions"]])
+    param <- update_params(param, new.param)
   }
 
   param[[".param.updater.list"]] <- c(
@@ -179,6 +216,75 @@ remove_special_params <- function(params) {
   params[!names(params) %in% special.params.names]
 }
 
+#' helper function to split flat parameter names into the parameter name, the
+#' position (1 when the name has no position suffix), and whether the name has
+#' a position suffix
+#' @noRd
+split_flat_names <- function(flat.names) {
+  elts <- strsplit(flat.names, "_")
+  list(
+    name = vapply(elts, function(x) x[1], ""),
+    pos = vapply(elts, function(x) {
+      as.numeric(if (length(x) == 2) x[2] else 1)
+    }, numeric(1)),
+    suffixed = lengths(elts) == 2
+  )
+}
+
+#' helper function listing, for each parameter set by position in a flat
+#' parameter list, the positions set. A name without a suffix next to suffixed
+#' names of the same parameter counts as position 1, as in `unflatten_params`.
+#' Returns an empty list when no name has a position suffix.
+#' @noRd
+flat_params_positions <- function(flat.names) {
+  flat <- split_flat_names(flat.names)
+  by.position <- unique(flat$name[flat$suffixed])
+  positions <- lapply(by.position, function(nm) flat$pos[flat$name == nm])
+  names(positions) <- by.position
+  positions
+}
+
+#' helper function merging the values of parameters set by position into
+#' their current values
+#'
+#' `current` and `new` are named lists of parameters, and `positions` a named
+#' list giving for some parameters of `new` the positions it sets (see
+#' `make_scenario`). For each of these parameters, the positions set are copied
+#' from `new` into the current value, leaving its other positions as they
+#' are, and the result replaces the value in `new`. A parameter missing from
+#' `current` keeps its value in `new`, as before positions were merged.
+#' @noRd
+merge_param_positions <- function(current, new, positions) {
+  for (nm in intersect(names(positions), names(new))) {
+    if (is.null(current[[nm]])) next
+    new[[nm]] <- merge_positions(current[[nm]], new[[nm]], positions[[nm]], nm)
+  }
+  new
+}
+
+#' helper function setting positions `pos` of a plain vector `current` to
+#' the same positions of `value`. Positions past the end of `current` extend
+#' it when they leave no gap.
+#' @noRd
+merge_positions <- function(current, value, pos, name) {
+  if (!is.atomic(current) || is.object(current)) {
+    stop("A scenario sets `", name, "` by position (`", name, "_",
+         min(pos), "`), but `", name, "` is a ", class(current)[1],
+         " object rather than a plain vector. Only plain vectors can be set ",
+         "by position. Use a parameter updater that sets the whole value ",
+         "instead.", call. = FALSE)
+  }
+  gaps <- setdiff(seq_len(max(pos)), c(seq_along(current), pos))
+  if (length(gaps) > 0) {
+    stop("A scenario sets `", name, "_", max(pos), "`, but `", name,
+         "` has length ", length(current), " and the scenario gives no value ",
+         "for position ", paste(gaps, collapse = ", "), ". Positions past the ",
+         "end of a vector parameter must leave no gap.", call. = FALSE)
+  }
+  current[pos] <- value[pos]
+  current
+}
+
 #' helper function to make a flat param list into a ragged one
 #' @noRd
 unflatten_params <- function(params.flat) {
@@ -187,11 +293,9 @@ unflatten_params <- function(params.flat) {
 
   # get the param name and position for each element.
   # With pos == 1 if none provided
-  elts <- strsplit(names(params.flat), "_")
-  set.elements.names <- vapply(elts, function(x) x[1], "")
-  set.elements.pos <- vapply(elts, function(x) {
-    as.numeric(if (length(x) == 2) x[2] else 1)
-  }, numeric(1))
+  flat <- split_flat_names(names(params.flat))
+  set.elements.names <- flat$name
+  set.elements.pos <- flat$pos
 
   params.names <- unique(set.elements.names)
   params <- vector(mode = "list", length = length(params.names))

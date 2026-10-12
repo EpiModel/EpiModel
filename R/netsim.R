@@ -457,10 +457,10 @@ netsim_run_modules <- function(dat, s) {
 
       dat
     },
-    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
-    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
+    message = function(e) message(netsim_cond_msg("message", current_mod, at)),
+    warning = function(e) message(netsim_cond_msg("warning", current_mod, at)),
     error = function(e) {
-      message(netsim_cond_msg("ERROR", current_mod, at))
+      message(netsim_cond_msg("error", current_mod, at))
       netsim_error_logger(dat, s)
     }
   )
