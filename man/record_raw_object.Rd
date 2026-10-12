@@ -4,18 +4,19 @@
 \alias{record_raw_object}
 \title{Record an Arbitrary Object During a Simulation}
 \usage{
-record_raw_object(dat, at, label, object)
+record_raw_object(dat, label, object, at = NULL)
 }
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
 \code{\link[=netsim]{netsim()}}.}
 
-\item{at}{The time where the recording happens.}
-
 \item{label}{The name to give to the recorded object.}
 
 \item{object}{The object to be recorded.}
+
+\item{at}{The time step at which the recording happens. Defaults to the
+current time step if \code{NULL}.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
