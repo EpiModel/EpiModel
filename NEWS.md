@@ -12,7 +12,19 @@
 
 -   Do not restart from merged objects made with EpiModel 2.6.2 or earlier. Their `run` and `coef.form` elements hold the simulations of `x` alone, as `merge.netsim()` only binds them from 2.7.0 on. `get_sims()` now leaves such elements as is, as they cannot be matched to the simulations, so `make_restart_point()` with any `sim_num` other than 1 pairs the epi trackers of that simulation with the run state and formation coefficients of the first one. Merge the original objects again with 2.7.0 instead.
 
--   `set_epi()` has a new signature: `set_epi(dat, item, value, at = NULL)`. The `at` argument has moved after `value` and is now optional (defaults to the current time step). Positional calls of the form `set_epi(dat, "i.num", at, value)` will silently invert the meaning of the last two arguments. Update by dropping `at` when recording at the current step, or by passing it named (`at = <value>`) otherwise.
+-   `set_epi()`, `record_attr_history()` and `record_raw_object()` have new signatures, with the time step moved last and made optional: `set_epi(dat, item, value, at = NULL)`, `record_attr_history(dat, item, value, at = NULL, posit_ids = NULL, unique_ids = NULL)` and `record_raw_object(dat, label, object, at = NULL)`. When `at` is `NULL`, the value is recorded at the current time step, `get_current_timestep(dat)`. `record_attr_history()` also renames `attribute` to `item` and `values` to `value`. A call written for the old argument order would still match the new positional slots and silently record the time step as the value, so `at`, `posit_ids` and `unique_ids` must now be passed by name, and an old positional call such as `set_epi(dat, "i.num", at, value)` stops with an error that gives the new signature. The three functions also check that `item` or `label` is a single string and that a given `at` is a single number. To update, drop `at` when recording at the current time step, or pass it by name otherwise. Code that has to run on both 2.6.x and 2.7.0 can pass `at` (and `posit_ids` or `unique_ids`) by name and the other arguments by position: `set_epi(dat, "i.num", value, at = at)`, `record_attr_history(dat, "vl", vl, posit_ids = ids, at = at)` and `record_raw_object(dat, "pop", obj, at = at)` work on both. The renamed arguments of `record_attr_history()` cannot be passed by name on both (#1006, #1007).
+
+    ``` r
+    # EpiModel 2.6.x
+    dat <- set_epi(dat, "i.num", at, value)
+    dat <- record_attr_history(dat, at, "vl", ids, vl)
+    dat <- record_raw_object(dat, at, "pop", obj)
+
+    # EpiModel 2.7.0
+    dat <- set_epi(dat, "i.num", value)
+    dat <- record_attr_history(dat, "vl", vl, posit_ids = ids)
+    dat <- record_raw_object(dat, "pop", obj)
+    ```
 
 ### NEW FEATURES
 

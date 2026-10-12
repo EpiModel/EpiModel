@@ -14,6 +14,10 @@
 #' @param value The values to be recorded. Must be of length 1 (recycled for
 #'   all nodes) or the same length as the number of nodes identified by
 #'   `posit_ids` or `unique_ids`.
+#' @param ... Must be empty. It makes `at`, `posit_ids` and `unique_ids`
+#'   named-only arguments, so that calls written for the EpiModel 2.6
+#'   signature, `record_attr_history(dat, at, attribute, posit_ids, values)`,
+#'   error instead of silently recording the wrong values.
 #' @param at The time step at which the recording happens. Defaults to the
 #'   current time step if `NULL`.
 #' @param posit_ids A numeric vector of positional IDs to which the values
@@ -31,8 +35,9 @@
 #' when unique IDs are already known (e.g., from the automatic tracking
 #' system).
 #'
-#' See the "Time-Varying Parameters" section of the "Working With Model
-#' Parameters" vignette.
+#' See the "Historical Nodal Attributes" section of the "Working with Custom
+#' Attributes and Summary Statistics" vignette
+#' (`vignette("attributes-and-summary-statistics", package = "EpiModel")`).
 #'
 #' @examples
 #' \dontrun{
@@ -47,8 +52,21 @@
 #' }
 #'
 #' @export
-record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
-                                unique_ids = NULL) {
+record_attr_history <- function(dat, item, value, ..., at = NULL,
+                                posit_ids = NULL, unique_ids = NULL) {
+  if (...length() > 0L) {
+    stop_old_signature(
+      "record_attr_history",
+      new_usage = paste0("record_attr_history(dat, item, value, at = NULL, ",
+                         "posit_ids = NULL, unique_ids = NULL)"),
+      old_usage = "record_attr_history(dat, at, attribute, posit_ids, values)",
+      fix = "record_attr_history(dat, item, value, posit_ids = posit_ids)",
+      dots_names = ...names()
+    )
+  }
+  check_record_name(item, "item")
+  at <- resolve_record_at(dat, at)
+
   if (is.null(dat[["attr.history"]]))
     dat[["attr.history"]] <- collections::queue()
 
@@ -59,9 +77,6 @@ record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
       unique_ids <- get_unique_ids(dat, posit_ids)
     }
   }
-
-  if (is.null(at))
-    at <- get_current_timestep(dat)
 
   if (length(value) != 1 && length(value) != length(unique_ids)) {
     stop(
@@ -98,31 +113,45 @@ record_attr_history <- function(dat, item, value, at = NULL, posit_ids = NULL,
 #' @inheritParams recovery.net
 #' @param label The name to give to the recorded object.
 #' @param object The object to be recorded.
+#' @param ... Must be empty. It makes `at` a named-only argument, so that
+#'   calls written for the EpiModel 2.6 signature,
+#'   `record_raw_object(dat, at, label, object)`, error instead of silently
+#'   recording the wrong object.
 #' @param at The time step at which the recording happens. Defaults to the
 #'   current time step if `NULL`.
 #'
 #' @inherit recovery.net return
 #'
 #' @details
-#' See the "Time-Varying Parameters" section of the "Working With Model
-#' Parameters" vignette.
+#' See the "Recording Arbitrary Objects (Advanced Debugging)" section of the
+#' "Working with Custom Attributes and Summary Statistics" vignette
+#' (`vignette("attributes-and-summary-statistics", package = "EpiModel")`).
 #'
 #' @examples
 #' \dontrun{
 #'
-#' dat <- record_raw_object(dat, at, "a.df", data.frame(x = 2:200))
-#' dat <- record_raw_object(dat, at, "a.message", "I recorded something")
+#' dat <- record_raw_object(dat, "a.df", data.frame(x = 2:200))
+#' dat <- record_raw_object(dat, "a.message", "I recorded something")
 #'
 #' }
 #'
 #' @export
-record_raw_object <- function(dat, label, object, at = NULL) {
+record_raw_object <- function(dat, label, object, ..., at = NULL) {
+  if (...length() > 0L) {
+    stop_old_signature(
+      "record_raw_object",
+      new_usage = "record_raw_object(dat, label, object, at = NULL)",
+      old_usage = "record_raw_object(dat, at, label, object)",
+      fix = "record_raw_object(dat, label, object)",
+      dots_names = ...names()
+    )
+  }
+  check_record_name(label, "label")
+  at <- resolve_record_at(dat, at)
+
   if (is.null(dat[["raw.records"]])) {
     dat[["raw.records"]] <- collections::queue()
   }
-
-  if (is.null(at))
-    at <- get_current_timestep(dat)
 
   element <- list(at, label, object)
   names(element) <- c("time", "label", "object")

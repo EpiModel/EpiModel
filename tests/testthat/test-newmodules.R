@@ -487,6 +487,39 @@ test_that("Time varying elements", {
   expect_setequal(
     names(attr_history),
     c("attr_norm", "attr_unif", "attr_fix", "attr_none"))
+  # `attr_fix` records the time step as its value, at the default `at`
+  expect_equal(attr_history$attr_fix$values, attr_history$attr_fix$time)
+  expect_setequal(attr_history$attr_fix$time, 2:20)
+})
+
+test_that("the module `at` matches the current step used by set_epi", {
+  skip_on_cran()
+  step_logger <- function(dat, at) {
+    dat <- set_epi(dat, "at_arg", at)
+    dat <- set_epi(dat, "flow_like", at * 10)
+    return(dat)
+  }
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = NULL, nsteps = 5, nsims = 1, verbose = FALSE,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, infection.FUN = infection.net,
+                         logger.FUN = step_logger,
+                         .tracker.list = list(cur = get_current_timestep))
+  sim <- netsim(est, param, init, control)
+  expect_equal(sim$epi$at_arg[, 1], c(NA, 2:5))
+  expect_equal(sim$epi$flow_like[, 1], c(NA, 2:5) * 10)
+  expect_equal(sim$epi$cur[, 1], c(NA, 2:5))
+
+  control$start <- 6
+  control$nsteps <- 8
+  rs <- netsim(sim, param, init, control)
+  expect_equal(rs$epi$at_arg[, 1], c(NA, 2:8))
+  expect_equal(rs$epi$cur[, 1], c(NA, 2:8))
 })
 
 context("Custom Trackers")
