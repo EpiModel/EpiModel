@@ -73,12 +73,12 @@ When the diagnostics miss their targets, or the estimation fails, the cause usua
 
 ### Step 3: Epidemic Simulation
 
-With a validated network model, we layer on the epidemic. This SIS model uses a per-act transmission probability of 0.4, 2 acts per partnership per time step, and a recovery rate of 0.05. We seed 10 infections and run 5 stochastic simulations for 500 time steps.
+With a validated network model, we layer on the epidemic. This SIS model uses a per-act transmission probability of 0.4, 2 acts per partnership per time step, and a recovery rate of 0.05. We seed 10 infections and run 3 stochastic simulations for 500 time steps.
 
 ```{r step3, results = "hide"}
 param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.05)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SIS", nsims = 5, nsteps = 500, verbose = FALSE)
+control <- control.net(type = "SIS", nsims = 3, nsteps = 500, verbose = FALSE)
 
 sim <- netsim(est, param, init, control)
 ```
