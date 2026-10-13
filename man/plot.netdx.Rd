@@ -244,7 +244,7 @@ plot(dx2, method = "b", col = "bisque", grid = TRUE)
 plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
-par(mfrow = c(1, 2))
+oldpar <- par(mfrow = c(1, 2))
 # With duration imputed
 plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
      targ.lty = 1, targ.lwd = 0.5)
@@ -286,7 +286,7 @@ plot(dx.lo, type = "cumldeg", momentary = TRUE, xlim = c(0, 25),
 
 # As bars, with the tail of the distribution collapsed into one category
 # and the inter-simulation range shown
-par(mfrow = c(1, 1))
+par(oldpar)
 plot(dx.hi, type = "cumldeg", method = "b", maxdeg = 15, qnts = 0.95)
 
 # Partners accumulated over the last 100 steps only

@@ -9,7 +9,12 @@ get_attr_at(sim, at, sim_num = 1, compute_age = FALSE)
 \arguments{
 \item{sim}{An \code{EpiModel} object of class \code{netsim}.}
 
-\item{at}{The time step at which to reconstruct attributes.}
+\item{at}{The time step at which to reconstruct attributes, on the time
+step labels of \code{sim} (see \code{\link[=truncate_sim]{truncate_sim()}}). It must lie between the
+start of the attribute history and the last time step. The history
+starts at the first time step for a new simulation, and at
+\code{start - 1} for a restarted one, whose history starts again from a
+full snapshot of the state it restarted from.}
 
 \item{sim_num}{The simulation number to use (default 1).}
 
@@ -28,6 +33,23 @@ for each active node.
 Reconstructs the state of all tracked attributes at a specific time step
 from the delta-compressed attribute history. Returns a \code{tibble} with one
 row per active node and one column per tracked attribute.
+}
+\examples{
+\donttest{
+nw <- network_initialize(n = 100)
+est <- netest(nw, formation = ~edges, target.stats = 50,
+              coef.diss = dissolution_coefs(~offset(edges), 10),
+              verbose = FALSE)
+control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+                       tracked.attributes = "status", verbose = FALSE)
+sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+              init.net(i.num = 10), control)
+
+# The status of every node at time step 10
+at10 <- get_attr_at(sim, at = 10)
+head(at10)
+table(at10$status)
+}
 }
 \seealso{
 \code{\link[=record_attr_history]{record_attr_history()}}, \code{\link[=get_attr_history]{get_attr_history()}}

@@ -7,12 +7,15 @@
 make_restart_point(sim_obj, time_attrs, sim_num = 1, keep_steps = 1)
 }
 \arguments{
-\item{sim_obj}{a \code{netsim} object from an ended \code{netsim} call.}
+\item{sim_obj}{a \code{netsim} object from an ended \code{netsim} call, run with
+\code{tergmLite = TRUE} and \code{save.run = TRUE}.}
 
 \item{time_attrs}{a \code{character} vector containing the names of the attributes
 that are expressed in time-steps. These will be offset so the last
 step in the original simulation become the step 1 (default) in the new
-ones. If no such attributes exist, pass \code{c()}.}
+ones. The core attributes \code{entrTime}, \code{exitTime}, and \code{infTime} (when
+present) are always offset. If the model has no other such
+attributes, pass \code{c()}.}
 
 \item{sim_num}{the number of the simulation to extract from the \code{netsim}
 object (default = 1).}
@@ -29,7 +32,8 @@ be used as a restart point.
 Extract the elements required for re-initializing a \code{netsim} simulation from
 a completed simulation. This function also resets the Unique IDs and Time
 values to reduce the size of the simulation. This function only works for
-simulations where \code{control$tergmLite = TRUE}
+simulations run with \code{tergmLite = TRUE} and \code{save.run = TRUE} in
+\code{\link[=control.net]{control.net()}}.
 }
 \details{
 The restart point created always contains a single simulation and drops the
@@ -43,10 +47,18 @@ The epi trackers, cumulative edgelists, transmission matrix and \code{nwstats} a
 truncated to only contain the last \code{keep_steps} entries. The unique IDs in
 the transmission matrix are re-based like the ones of the attributes.
 
-Warning: the \code{time_attrs} argument is mandatory. Almost all simulations worth
-restarting have such attributes (e.g. time.of.hiv.infection). If no such
-argument exists, passing \code{c()} will allow the function to run while ensuring
-that this was done on purpose.
+Warning: the \code{time_attrs} argument is mandatory. Almost all extension models
+have such attributes (e.g. the time of HIV diagnosis). If no such attribute
+exists beyond the core ones, passing \code{c()} will allow the function to run
+while ensuring that this was done on purpose. An attribute holding a time
+step that is not offset puts the events it records in the future of the
+restarted simulation: for example, a duration of infection computed from an
+\code{infTime} that was not offset would be negative.
+
+A dynamic \code{\link[=netcensus]{netcensus()}} layer reads the observed network on the simulation
+clock, which this function re-bases, so it stops on such a layer. Restart
+those simulations from the \code{netsim} object itself, selecting a simulation
+with \code{\link[=get_sims]{get_sims()}}.
 
 When restarting from the output of this function, it is suggested to express
 the time steps in a relative manner in \code{control.net}:
@@ -58,23 +70,28 @@ the time steps in a relative manner in \code{control.net}:
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontrun{
-# With  pre-existing `sim`, `param` and `init` object (see `netsim`)
+\donttest{
+nw <- network_initialize(n = 100)
+est <- netest(nw, formation = ~edges, target.stats = 50,
+              coef.diss = dissolution_coefs(~offset(edges), 20),
+              verbose = FALSE)
+param <- param.net(inf.prob = 0.3, act.rate = 1)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsteps = 20, nsims = 2,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       save.run = TRUE, verbose = FALSE)
+sim <- netsim(est, param, init, control)
 
-# List all attributes that store a time step
-time_attrs <- c(
-  "inf.time",
-  "stage.time",
-  "aids.time",
-  "prep.start.last"
-)
-# Make a restart point from simulation 1, re-run for 10 more timesteps
-x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
-control <- control_msm(
-  start = x$control$nsteps + 1,
-  nsteps = x$control$nsteps + 1 + 10
-)
-sim <- netsim(x, param, init, control)
+# Make a restart point from simulation 2. The built-in SI model has no time
+# attribute beyond the core ones, which are offset by default.
+x <- make_restart_point(sim, time_attrs = c(), sim_num = 2)
+
+# Run it for 10 more time steps
+control <- control.net(type = "SI", start = x$control$nsteps + 1,
+                       nsteps = x$control$nsteps + 10,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       verbose = FALSE)
+sim2 <- netsim(x, param, init, control)
 }
 
 }

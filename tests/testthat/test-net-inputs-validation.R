@@ -293,3 +293,24 @@ test_that("crosscheck.net validates restart inputs (start > 1)", {
                       control_restart),
                "x must be a netsim object")
 })
+
+test_that("netsim refuses random.params set outside param.net()", {
+  nw <- network_initialize(n = 20)
+  est <- netest(nw, formation = ~edges, target.stats = 10,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  init <- init.net(i.num = 2)
+  control <- control.net(type = "SI", nsteps = 2, nsims = 1, verbose = FALSE)
+  p <- update_params(param.net(inf.prob = 0.3),
+                     list(random.params = list(act.rate = function() 5)))
+  expect_error(netsim(est, p, init, control),
+               "random.params parameter has been removed")
+
+  # a param.net object saved under 2.6.x, run in an extension model
+  p2 <- param.net(inf.prob = 0.3)
+  p2$random.params <- list(act.rate = function() 5)
+  control2 <- control.net(type = NULL, nsteps = 2, nsims = 1,
+                          infection.FUN = infection.net, verbose = FALSE)
+  expect_error(netsim(est, p2, init, control2),
+               "random.params parameter has been removed")
+})

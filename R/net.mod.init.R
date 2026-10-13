@@ -78,6 +78,25 @@ initialize.net <- function(x, param, init, control, s) {
       )
     }
 
+    # The run state must end at the step before `start`: an earlier `start`
+    # would replay steps from a later state, and `truncate_sim()` cuts the epi
+    # rows but leaves `run` at the last simulated step
+    last_step <- x$run[[1]]$current_timestep
+    if (!is.null(last_step) && last_step != control$start - 1) {
+      stop(
+        "The run state of `x` ended at step ", last_step, ", so the restart ",
+        "must have `start = ", last_step + 1, "` (it has ", control$start, ")",
+        if (last_step != x$control$nsteps) {
+          paste0(
+            ". `x` holds ", x$control$nsteps, " steps, as after ",
+            "`truncate_sim()`: restart from the object before truncating it"
+          )
+        },
+        ".",
+        call. = FALSE
+      )
+    }
+
     # every simulation restarts from the first simulation of `x`
     if (length(x$run) > 1 && s == 1) {
       warning(
@@ -388,8 +407,18 @@ init_nets <- function(dat, x) {
   ## record names of relevant vertex attributes
   dat$run$nwterms <- get_network_term_attr(nw)
 
-  ## nodal attributes are read from the first layer's network; a clique
-  ## layer's grouping attribute may be set on its own network only, so copy
+  ## nodal attributes are read from the first layer's network; a census
+  ## layer's vertex attributes are part of the observed data, so those it
+  ## holds that the first layer lacks are copied from it, wherever it sits in
+  ## the layer list. An attribute on both must agree.
+  for (network in seq_len(dat$num.nw)[-1]) {
+    if (!is_census_layer(x[[network]])) {
+      next
+    }
+    dat <- copy_census_attrs(dat, nws[[network]], network)
+  }
+
+  ## a clique layer's grouping attribute may be set on its own network only, so copy
   ## it from there for the arrival rules to read. When the first layer has
   ## it too, the two must agree, or the arrival rules would place new nodes
   ## by groups the clique edges do not follow. The running maximum of its

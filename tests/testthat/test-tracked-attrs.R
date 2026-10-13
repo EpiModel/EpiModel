@@ -501,3 +501,64 @@ test_that("make_networkDynamic after a restart activates only tracked nodes", {
   }, 0)
   expect_equal(n_active, sim2$epi$num[11:20, 1])
 })
+
+test_that("get_attr_at refuses steps before the attribute history begins", {
+  skip_on_cran()
+  f <- open_pop_fixture(nsteps = 10)
+  ctrl2 <- f$control
+  ctrl2$start <- 11
+  ctrl2$nsteps <- 20
+  sim2 <- netsim(f$sim, f$param, f$init, ctrl2)
+  # the history starts again from the state at the step before the restart
+  expect_equal(nrow(get_attr_at(sim2, at = 10)), sim2$epi$num[10, 1])
+  expect_error(get_attr_at(sim2, at = 9), "between 10 and 20")
+
+  tr <- truncate_sim(sim2, at = 5)
+  expect_error(get_attr_at(tr, at = 1), "between 6 and 16")
+  expect_equal(nrow(get_attr_at(tr, at = 6)), tr$epi$num[6, 1])
+  tr2 <- truncate_sim(sim2, at = 5, reset.time = FALSE)
+  expect_error(get_attr_at(tr2, at = 5), "between 10 and 20")
+})
+
+test_that("make_networkDynamic keeps edges within vertex activity, one per tie and layer", {
+  skip_on_cran()
+  set.seed(21)
+  est <- simple_est()
+  control <- control.net(type = "SI", nsims = 1, nsteps = 15,
+                         cumulative.edgelist = TRUE,
+                         save.cumulative.edgelist = TRUE,
+                         truncate.el.cuml = Inf, tracked.attributes = "status",
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  sim <- netsim(list(est, est), param.net(inf.prob = 0.1, act.rate = 1),
+                init.net(i.num = 5), control)
+  cel <- sim$cumulative.edgelist[[1]]
+  active_rows <- function(at) {
+    sum(cel$start <= at & (is.na(cel$stop) | cel$stop >= at))
+  }
+
+  nd <- make_networkDynamic(sim)
+  expect_true(network::is.multiplex(nd))
+  expect_true(all(networkDynamic::network.dynamic.check(nd, verbose = FALSE)$dyad.checks))
+  expect_equal(network.edgecount(nd),
+               nrow(unique(data.frame(pmin(cel$head, cel$tail),
+                                      pmax(cel$head, cel$tail), cel$network))))
+  for (at in c(0, 5, 15)) {
+    expect_equal(network.edgecount(network.collapse(nd, at = at)),
+                 active_rows(at))
+  }
+
+  # one layer: no multiple edges, and the edge count matches the statistic
+  nd1 <- make_networkDynamic(sim, network = 1)
+  expect_false(network::is.multiplex(nd1))
+  x <- network.collapse(nd1, at = 10)
+  expect_equal(network.edgecount(x), unname(summary(x ~ edges)))
+
+  # after a restart, the edges from before it start with the history
+  control$start <- 16
+  control$nsteps <- 20
+  sim2 <- netsim(sim, param.net(inf.prob = 0.1, act.rate = 1),
+                 init.net(i.num = 5), control)
+  nd2 <- make_networkDynamic(sim2)
+  expect_true(all(networkDynamic::network.dynamic.check(nd2, verbose = FALSE)$dyad.checks))
+})

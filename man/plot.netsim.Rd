@@ -271,14 +271,15 @@ plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 
 # Plot static networks
+oldpar <- par(no.readonly = TRUE)
 par(mar = c(0, 0, 0, 0))
 plot(mod, type = "network", vertex.cex = 1.5)
 
 # Automatic coloring of infected nodes as red
 par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
-plot(mod, type = "network", main = "Min Prev | Time 50",
+plot(mod, type = "network", main = "Min Prev | Time 20",
      col.status = TRUE, at = 20, sims = "min", vertex.cex = 1.25)
-plot(mod, type = "network", main = "Max Prev | Time 50",
+plot(mod, type = "network", main = "Max Prev | Time 20",
      col.status = TRUE, at = 20, sims = "max", vertex.cex = 1.25)
 
 # Automatic shape by group number (circle = group 1)
@@ -297,6 +298,7 @@ plot(mod, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(mod, type = "formation", stats = "meandeg",
      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
+par(oldpar)
 }
 
 }

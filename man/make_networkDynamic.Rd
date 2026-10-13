@@ -31,9 +31,41 @@ The simulation must be run with \code{cumulative.edgelist = TRUE},
 \code{\link{control.net}}, so that the cumulative edgelist holds every edge, and with
 at least one attribute in \code{tracked.attributes} or \code{tracked.attributes.once},
 so that the activity of the nodes is recorded. The vertex ids of the
-\code{networkDynamic} object are the \code{unique_id}s of the nodes. The edges of all
-the network layers are merged into one network, with the layer of each edge
-in the \code{network} edge attribute.
+\code{networkDynamic} object are the \code{unique_id}s of the nodes. Each pair of
+nodes tied on a layer has one edge, with one activity spell per period the
+tie was active, and the layer in the \code{network} edge attribute. With
+\code{network = NULL} and more than one layer, the layers are merged into one
+network that allows multiple edges (\code{multiple = TRUE}), so that a pair of
+nodes tied on two layers has one edge per layer.
+
+The nodes are active from the first record of the attribute history: for a
+new simulation from time 0, as in the \code{networkDynamic} objects that
+\code{\link[=netsim]{netsim()}} saves without \code{tergmLite}, and for a restarted one from
+\code{start - 1}, the snapshot its history starts from. An edge that formed
+before the activity spell of one of its nodes starts is active from the
+start of that spell, so that no edge is active between inactive vertices.
+}
+\examples{
+\donttest{
+nw <- network_initialize(n = 100)
+est <- netest(nw, formation = ~edges, target.stats = 50,
+              coef.diss = dissolution_coefs(~offset(edges), 10),
+              verbose = FALSE)
+control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       cumulative.edgelist = TRUE,
+                       save.cumulative.edgelist = TRUE,
+                       truncate.el.cuml = Inf,
+                       tracked.attributes = "status", verbose = FALSE)
+sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+              init.net(i.num = 10), control)
+
+# The full network history of a tergmLite run, with each node's status
+nd <- make_networkDynamic(sim)
+nd
+x10 <- network.collapse(nd, at = 10)
+table(get_vertex_attribute(x10, "status"))
+}
 }
 \seealso{
 \code{\link[=get_attr_at]{get_attr_at()}}, \code{\link[=get_attr_history]{get_attr_history()}}

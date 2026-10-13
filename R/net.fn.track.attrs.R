@@ -146,7 +146,12 @@ tracked_attrs_record <- function(dat) {
 #' row per active node and one column per tracked attribute.
 #'
 #' @param sim An `EpiModel` object of class `netsim`.
-#' @param at The time step at which to reconstruct attributes.
+#' @param at The time step at which to reconstruct attributes, on the time
+#'        step labels of `sim` (see [truncate_sim()]). It must lie between the
+#'        start of the attribute history and the last time step. The history
+#'        starts at the first time step for a new simulation, and at
+#'        `start - 1` for a restarted one, whose history starts again from a
+#'        full snapshot of the state it restarted from.
 #' @param sim_num The simulation number to use (default 1).
 #' @param compute_age If `TRUE` and `age` is tracked, compute the age of nodes
 #'        at `at` from their last recorded age, assuming age in years and 364
@@ -159,6 +164,22 @@ tracked_attrs_record <- function(dat) {
 #'   for each active node.
 #'
 #' @seealso [record_attr_history()], [get_attr_history()]
+#' @examples
+#' \donttest{
+#' nw <- network_initialize(n = 100)
+#' est <- netest(nw, formation = ~edges, target.stats = 50,
+#'               coef.diss = dissolution_coefs(~offset(edges), 10),
+#'               verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+#'                        tracked.attributes = "status", verbose = FALSE)
+#' sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+#'               init.net(i.num = 10), control)
+#'
+#' # The status of every node at time step 10
+#' at10 <- get_attr_at(sim, at = 10)
+#' head(at10)
+#' table(at10$status)
+#' }
 #' @export
 get_attr_at <- function(sim, at, sim_num = 1, compute_age = FALSE) {
   if (!inherits(sim, "netsim"))
@@ -170,18 +191,22 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = FALSE) {
   }
   if (sim_num > sim$control$nsims || sim_num < 1)
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
-  # the history holds the time steps labeled from `epi_start(sim)`, from the
-  # first step simulated (`control$start` in a restarted simulation) on
-  first <- max(sim$control$start, epi_start(sim))
+
+  attr_hist <- get_attr_history(sim)
+  check_attr_history(attr_hist, sim_num)
+
+  # the steps are labeled from `epi_start(sim)`, and the state can be
+  # rebuilt from the first record of the history on: the first step of a new
+  # simulation, `start - 1` for a restarted one (whose history starts again
+  # from a full snapshot), shifted with the labels by `truncate_sim()`
+  first <- max(epi_start(sim),
+               min(attr_hist$active$time[attr_hist$active$sim == sim_num]))
   last <- epi_start(sim) + sim$control$nsteps - 1
   if (length(at) != 1 || !is.numeric(at) || at < first || at > last)
     stop("Specify a single at between ", first, " and ", last)
   if (compute_age && is.null(sim$param$time.unit))
     stop("`compute_age = TRUE` needs a `time.unit` parameter (the number of ",
          "days in a time step) in `param`")
-
-  attr_hist <- get_attr_history(sim)
-  check_attr_history(attr_hist, sim_num)
 
   # Get active UIDs at that time
   spells <- get_nodes_spell(attr_hist$active[attr_hist$active$sim == sim_num, ])
@@ -277,6 +302,23 @@ get_nodes_spell <- function(d_active) {
     onset = as.numeric(d$time[on]),
     terminus = as.numeric(ifelse(ends, d$time[nxt], Inf))
   )
+}
+
+# The onset of the activity spell of each node `uid` that holds time `at`, or
+# of its first spell when `at` is before it, from the output of
+# `get_nodes_spell()`; `NA` for a node without a spell.
+# @noRd
+get_spell_onset <- function(spells, uid, at) {
+  pos <- match(uid, spells$uid)
+  onset <- spells$onset[pos]
+  multi <- unique(spells$uid[duplicated(spells$uid)])
+  for (u in multi) {
+    idx <- which(uid == u)
+    s <- spells[spells$uid == u, ]
+    k <- findInterval(at[idx], s$onset)
+    onset[idx] <- s$onset[pmax(k, 1L)]
+  }
+  onset
 }
 
 # The terminus of the activity spell of each node `uid` that holds time `at`,

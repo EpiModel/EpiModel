@@ -151,7 +151,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Households as cliques under a community TERGM layer
 #' hh <- sample_groups(500, c("adult" = 0.3, "adult adult" = 0.4,
 #'                            "adult adult child" = 0.2,
@@ -611,7 +611,8 @@ remove_clique_edges <- function(dat, network, ids) {
 #'        isolate on the layer.
 #' @param network Index of the clique layer in the list of layers passed to
 #'        [netsim()]. It may be omitted when the model has exactly one clique
-#'        layer.
+#'        layer. Every other clique layer built on the same grouping attribute
+#'        is rewired as well.
 #'
 #' @details
 #' The clique edges are built from the grouping attribute once, when the
@@ -622,6 +623,13 @@ remove_clique_edges <- function(dat, network, ids) {
 #' edges together, in either network storage mode (`tergmLite = TRUE` or
 #' `FALSE`), so that the layer stays exactly the union of the cliques of the
 #' current groups.
+#'
+#' Nodes that arrive in a time step join the layer when [nwupdate.net()]
+#' runs, which places them by the layer's arrival rule (see [netclique()]), so
+#' they cannot be moved before then. To place arriving nodes in chosen groups,
+#' set the grouping attribute in the arrivals module and use
+#' `arrivals = "join"` with an `arrivals.FUN` that returns that attribute for
+#' the new nodes.
 #'
 #' A node moved to its own current group keeps its edges. When the moves leave
 #' a group without members, the group ceases to exist, as when its last member
@@ -645,21 +653,43 @@ remove_clique_edges <- function(dat, network, ids) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # A module in which people aged 18 to 29 leave home with a monthly
-#' # probability of 0.01, each starting a household of their own
+#' \donttest{
+#' # A module in which people aged 18 to 29 leave home with a probability of
+#' # 0.05 per time step, each starting a household of their own
 #' leave_home <- function(dat, at) {
 #'   active <- get_attr(dat, "active")
 #'   age <- get_attr(dat, "age")
 #'   hh_id <- get_attr(dat, "hh_id")
 #'   elig <- which(active == 1 & age >= 18 & age < 30)
-#'   movers <- elig[runif(length(elig)) < 0.01]
+#'   movers <- elig[runif(length(elig)) < 0.05]
 #'   if (length(movers) > 0) {
 #'     new_ids <- max(hh_id, na.rm = TRUE) + seq_along(movers)
 #'     dat <- move_to_group(dat, ids = movers, group = new_ids)
 #'   }
 #'   return(dat)
 #' }
+#'
+#' # 50 households of 4 under a community layer
+#' set.seed(12)
+#' nw <- network_initialize(n = 200)
+#' nw <- set_vertex_attribute(nw, "age", sample(0:79, 200, replace = TRUE))
+#' nw <- set_vertex_attribute(nw, "hh_id", rep(1:50, each = 4))
+#' hh <- netclique(nw, group.attr = "hh_id")
+#' est <- netest(nw, formation = ~edges, target.stats = 100,
+#'               coef.diss = dissolution_coefs(~offset(edges), 20),
+#'               verbose = FALSE)
+#'
+#' param <- param.net(inf.prob = multilayer(0.2, 0.05), act.rate = 1)
+#' init <- init.net(i.num = 10)
+#' control <- control.net(type = NULL, nsteps = 20, nsims = 1,
+#'                        infection.FUN = infection.net,
+#'                        leave_home.FUN = leave_home,
+#'                        tergmLite = TRUE, resimulate.network = TRUE,
+#'                        save.run = TRUE, verbose = FALSE)
+#' sim <- netsim(list(hh, est), param, init, control)
+#'
+#' # More households at the end than at the start
+#' length(unique(sim$run[[1]]$attr$hh_id))
 #' }
 #'
 move_to_group <- function(dat, ids, group, network = NULL) {
@@ -695,6 +725,30 @@ move_to_group <- function(dat, ids, group, network = NULL) {
 
   group.attr <- get_nwparam(dat, network = network)$group.attr
   grp <- get_attr(dat, group.attr)
+
+  ## a node that an arrivals module has just created joins the layer when
+  ## arrive_nodes() runs in nwupdate.net(), which places it by the layer's
+  ## arrival rule; moving it before then would leave the layer out of step
+  if (get_control(dat, "tergmLite") == TRUE) {
+    n_layer <- dat$run$net_attr[[network]][["n"]]
+  } else {
+    n_layer <- network.size(get_network(dat, network = network))
+  }
+  if (any(ids > n_layer) || length(grp) < length(active)) {
+    stop("Nodes that arrived in this time step cannot be moved before ",
+         "nwupdate.net() has placed them on clique layer ", network, " by ",
+         "its arrival rule. To place arriving nodes in chosen groups, set the `",
+         group.attr, "` attribute in the arrivals module and use ",
+         "arrivals = \"join\" with an arrivals.FUN that returns ",
+         "get_attr(dat, \"", group.attr, "\")[new_ids]; or move them in a ",
+         "later time step.", call. = FALSE)
+  }
+
+  ## every clique layer built on the same grouping attribute is rewired, so
+  ## that they all stay the union of the cliques of the current groups
+  layers <- clique[vapply(clique, function(k) {
+    identical(get_nwparam(dat, network = k)$group.attr, group.attr)
+  }, logical(1))]
   if (!all(is.na(group)) && is.numeric(grp) != is.numeric(group)) {
     stop("`group` must be of the same type as the `", group.attr,
          "` attribute (numeric or character).")
@@ -723,29 +777,41 @@ move_to_group <- function(dat, ids, group, network = NULL) {
     cbind(pmin(i, m), pmax(i, m))
   }))
 
-  dat <- remove_clique_edges(dat, network, ids)
   if (!is.null(el_new)) {
     el_new <- unique(el_new)
-    if (get_control(dat, "tergmLite") == TRUE) {
-      dat <- add_clique_edges(dat, network, el_new)
-    } else {
-      ## reactivate a dyad's earlier edge rather than add a second one
-      nw <- get_network(dat, network = network)
-      eid <- vapply(seq_len(nrow(el_new)), function(r) {
-        e <- network::get.edgeIDs(nw, v = el_new[r, 1], alter = el_new[r, 2])
-        if (length(e) == 0) NA_integer_ else as.integer(e[1])
-      }, integer(1))
-      if (any(!is.na(eid))) {
-        at <- get_current_timestep(dat)
-        nw <- networkDynamic::activate.edges(nw, onset = at, terminus = Inf,
-                                             e = eid[!is.na(eid)])
-        dat <- set_network(dat, nw = nw, network = network)
-      }
-      dat <- add_clique_edges(dat, network, el_new[is.na(eid), , drop = FALSE])
-    }
+  }
+  for (layer in layers) {
+    dat <- rewire_clique_layer(dat, layer, ids, el_new)
   }
 
   return(dat)
+}
+
+# Remove the clique-layer edges of the nodes ids and add the edges el_new, in
+# either storage mode.
+rewire_clique_layer <- function(dat, network, ids, el_new) {
+  dat <- remove_clique_edges(dat, network, ids)
+  if (is.null(el_new)) {
+    return(dat)
+  }
+  if (get_control(dat, "tergmLite") == TRUE) {
+    dat <- add_clique_edges(dat, network, el_new)
+  } else {
+    ## reactivate a dyad's earlier edge rather than add a second one
+    nw <- get_network(dat, network = network)
+    eid <- vapply(seq_len(nrow(el_new)), function(r) {
+      e <- network::get.edgeIDs(nw, v = el_new[r, 1], alter = el_new[r, 2])
+      if (length(e) == 0) NA_integer_ else as.integer(e[1])
+    }, integer(1))
+    if (any(!is.na(eid))) {
+      at <- get_current_timestep(dat)
+      nw <- networkDynamic::activate.edges(nw, onset = at, terminus = Inf,
+                                           e = eid[!is.na(eid)])
+      dat <- set_network(dat, nw = nw, network = network)
+    }
+    dat <- add_clique_edges(dat, network, el_new[is.na(eid), , drop = FALSE])
+  }
+  dat
 }
 
 
@@ -908,7 +974,7 @@ sample_groups <- function(n, types, prob = NULL, attr.name = "member",
   truncate <- 0L
   remaining <- n - total
   while (remaining > 0) {
-    fit <- which(sizes <= remaining)
+    fit <- which(sizes <= remaining & prob > 0)
     if (length(fit) == 0) {
       message("No group type fits the ", remaining, " remaining slots; the ",
               "last group is truncated.")
@@ -1113,7 +1179,7 @@ assign_groups <- function(size.dist, role = NULL, anchor = NULL,
         open <- open - used
       }
       if (length(deps) > n.fit) {
-        surplus <- deps[-seq_len(n.fit)]
+        surplus <- deps[seq.int(n.fit + 1L, length(deps))]
         message(length(surplus), " dependents exceed the open slots of ",
                 "anchored groups and are added to random anchored groups.")
         group[surplus] <- anchored[sample.int(length(anchored),
@@ -1131,7 +1197,7 @@ assign_groups <- function(size.dist, role = NULL, anchor = NULL,
       group[rest[seq_len(n.fit)]] <- slots[sample.int(length(slots), n.fit)]
     }
     if (length(rest) > n.fit) {
-      surplus <- rest[-seq_len(n.fit)]
+      surplus <- rest[seq.int(n.fit + 1L, length(rest))]
       group[surplus] <- sample.int(G, length(surplus), replace = TRUE)
     }
   }

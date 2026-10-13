@@ -193,6 +193,15 @@ test_that("sample_groups accepts templates with prob, and data.frame types", {
   expect_equal(nrow(p3), 7)
   expect_silent(p4 <- sample_groups(7, c("a", "a a a a")))
   expect_equal(nrow(p4), 7)
+
+  # a type with zero weight never fills the last slots
+  for (seed in 1:5) {
+    set.seed(seed)
+    expect_message(p5 <- sample_groups(7, c("a" = 0, "a a" = 1)),
+                   "fits the 1 remaining slots")
+    expect_equal(nrow(p5), 7)
+    expect_true(all(p5$type == 2))
+  }
 })
 
 test_that("sample_groups validates its inputs", {
@@ -275,6 +284,25 @@ test_that("assign_groups handles too many dependents and no anchors", {
                                      anchor = "adult", dependent = "child"),
                  "No anchors")
   expect_length(g2, 20)
+
+  # when no anchored group has an open slot, the dependents still join an
+  # anchored group
+  set.seed(1)
+  role3 <- c("adult", rep("child", 4))
+  expect_message(g3 <- assign_groups(c("1" = 1), role = role3,
+                                     anchor = "adult", dependent = "child"),
+                 "4 dependents exceed the open slots")
+  expect_false(anyNA(g3))
+  expect_true(all(g3 == g3[1]))
+  role4 <- c("adult", "child", "child", rep("other", 4))
+  for (seed in 1:30) {
+    set.seed(seed)
+    g4 <- suppressMessages(assign_groups(c("1" = 0.3, "2" = 0.4, "3" = 0.3),
+                                         role = role4, anchor = "adult",
+                                         dependent = "child"))
+    expect_false(anyNA(g4))
+    expect_true(all(g4[role4 == "child"] == g4[1]))
+  }
 })
 
 test_that("assign_groups validates its inputs", {
@@ -1078,7 +1106,55 @@ test_that("move_to_group validates its inputs", {
   dat_off <- set_attr(dat, "active", replace(get_attr(dat, "active"), 1, 0))
   expect_error(move_to_group(dat_off, 1, 2), "Only active nodes")
 
-  dat2 <- dat_at_start(list(est_hh, est_hh), control)
+  est_iso <- netclique(nw, group.attr = "hh_id", arrivals = "isolate")
+  dat2 <- dat_at_start(list(est_iso, est_iso), control)
   expect_error(move_to_group(dat2, 1, 2), "2 clique layers")
   expect_silent(move_to_group(dat2, 1, 2, network = 2))
+})
+
+test_that("move_to_group rewires every clique layer on the same attribute", {
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  est_iso <- netclique(nw, group.attr = "hh_id", arrivals = "isolate")
+  set.seed(36)
+  dat <- dat_at_start(list(est_iso, est_com, est_iso), control)
+  hh <- get_attr(dat, "hh_id")
+  dat <- move_to_group(dat, ids = 1, group = hh[N], network = 1)
+  hh <- get_attr(dat, "hh_id")
+  expect_equal(hh[1], hh[N])
+  expect_clique_layer(dat$run$el[[1]], hh)
+  expect_clique_layer(dat$run$el[[3]], hh)
+  expect_identical(dat$run$el[[1]][, 1:2], dat$run$el[[3]][, 1:2])
+})
+
+test_that("clique layers sharing a grouping attribute refuse join arrivals", {
+  control <- control.net(type = "SI", nsteps = 2, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = 0.1, act.rate = 1)
+  expect_error(crosscheck.net(list(est_hh, est_hh), param, init, control),
+               "share the grouping attribute `hh_id`")
+  est_iso <- netclique(nw, group.attr = "hh_id", arrivals = "isolate")
+  expect_error(crosscheck.net(list(est_iso, est_hh), param, init, control),
+               "layer 2 uses the \"join\" arrival rule")
+  expect_silent(crosscheck.net(list(est_iso, est_iso), param, init, control))
+})
+
+test_that("move_to_group refuses nodes not yet placed on the layer", {
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  set.seed(37)
+  dat <- dat_at_start(list(est_hh, est_com), control)
+  dat <- set_current_timestep(dat, 2)
+  # what a custom arrivals module does before nwupdate.net() runs
+  dat <- append_core_attr(dat, 2, 1)
+  dat <- append_attr(dat, "hh_id", NA, 1)
+  dat <- append_attr(dat, "age", "adult", 1)
+  hh <- get_attr(dat, "hh_id")
+  expect_error(move_to_group(dat, N + 1, hh[1]),
+               "cannot be moved before nwupdate.net\\(\\) has placed them")
+  dat <- arrive_nodes(dat, 1)
+  dat <- move_to_group(dat, N + 1, hh[1])
+  hh <- get_attr(dat, "hh_id")
+  expect_equal(hh[N + 1], hh[1])
+  expect_clique_layer(dat$run$el[[1]], hh)
 })

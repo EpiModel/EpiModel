@@ -27,10 +27,9 @@ supporting them are \code{inf.prob}, \code{inf.prob.g2}, and
 per layer.
 }
 \examples{
-\dontrun{
 # A household layer that transmits more per contact than the community layer
 param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
-}
+param
 
 }
 \seealso{
