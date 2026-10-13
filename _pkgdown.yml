@@ -209,6 +209,9 @@ reference:
       internal dat simulation state object.
     contents:
       - net-accessor
+      - get_attr
+      - get_epi
+      - get_param
       - get_attr_prop
       - auto_update_attr
       - overwrite_attrs

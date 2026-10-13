@@ -167,7 +167,8 @@ with options of \code{"l"} for line plots and \code{"b"} for box plots.}
 
 \item{xlab}{a label for the x axis, defaults to a description of \code{x}.}
 
-\item{ylim}{the y limits of the plot.}
+\item{ylim}{The y limits (y1, y2) of the plot. The default, \code{NULL}, sets
+the limits from the range of the values plotted.}
 
 \item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
 
