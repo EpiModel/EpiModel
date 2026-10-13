@@ -91,7 +91,8 @@ to existing plot window.}
     The default value, \code{NULL}, indicates that the range of the
     \link{finite} values to be plotted should be used.}
 
-\item{ylim}{the y limits of the plot.}
+\item{ylim}{The y limits (y1, y2) of the plot. The default, \code{NULL}, sets
+the limits from the range of the values plotted.}
 
 \item{main}{a main title for the plot, see also \code{\link[graphics]{title}}.}
 
