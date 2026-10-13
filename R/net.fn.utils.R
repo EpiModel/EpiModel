@@ -848,11 +848,18 @@ get_degree <- function(x) {
 #' `b`, where the final time window of interest for data analysis is
 #' `b` to `c` only.
 #'
-#' For `netsim` objects with `reset.time = TRUE`, the times of the attribute
-#' history and of the cumulative edgelist are shifted to the new time steps
-#' as well, so that [get_attr_at()] and [make_networkDynamic()] read them in
-#' the same frame. Their records before `at` are kept, with times of 0 or
-#' less, as the state of the nodes and edges at `at` depends on them.
+#' For `netsim` objects, the network statistics are truncated along with the
+#' epi trackers, as both hold one row per time step. With `reset.time = TRUE`,
+#' the times of the attribute history, the raw records, the transmission
+#' matrix, and the cumulative edgelist are shifted to the new time steps as
+#' well, so that [get_attr_at()], [get_transmat()] and [make_networkDynamic()]
+#' read them in the same frame. Their records before `at` are kept, with times
+#' of 0 or less, as the state of the nodes and edges at `at` depends on them
+#' and the transmissions before `at` remain part of the transmission chains.
+#'
+#' The saved networks and the `run` sublists, which hold the state needed to
+#' restart a simulation, keep their original time steps. Build a restart point
+#' with [make_restart_point()] from the object before truncating it.
 #'
 #' @return The updated object of class `dcm`, `netsim`, or `icm`.
 #'
@@ -940,20 +947,42 @@ truncate_sim.icm <- function(x, at, reset.time = TRUE) {
 #' @rdname truncate_sim
 #' @export
 truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
+  rows <- at:(x$control$nsteps)
   x <- truncate_sim.icm(x, at = at, reset.time = reset.time)
-  shift <- at - 1
-  if (reset.time && !is.null(x$attr.history)) {
-    # `collections::queue` objects are environments: build new ones rather
-    # than modify the records of the original object
-    x$attr.history <- lapply(x$attr.history, function(records) {
-      if (is.null(records)) return(NULL)
-      collections::queue(lapply(records$as_list(), function(r) {
-        r$time <- r$time - shift
-        r
-      }))
+
+  # the network statistics hold one row per time step, like the epi trackers
+  if (!is.null(x$stats$nwstats)) {
+    x$stats$nwstats <- lapply(x$stats$nwstats, function(nwstats) {
+      if (is.null(nwstats)) return(NULL)
+      lapply(nwstats, function(d) {
+        if (is.null(d)) return(NULL)
+        d <- d[intersect(rows, seq_len(nrow(d))), , drop = FALSE]
+        structure(d, ess = ess(d))
+      })
     })
   }
-  if (reset.time && !is.null(x$cumulative.edgelist)) {
+
+  if (!reset.time) {
+    return(x)
+  }
+
+  shift <- at - 1
+  for (elt in c("attr.history", "raw.records")) {
+    if (!is.null(x[[elt]])) {
+      x[[elt]] <- lapply(x[[elt]], shift_record_times, shift = shift)
+    }
+  }
+  if (!is.null(x$stats$transmat)) {
+    # `[] <-` keeps the `transmat` class of the list; a simulation without
+    # transmissions holds a `tibble` without columns
+    x$stats$transmat[] <- lapply(x$stats$transmat, function(tm) {
+      if ("at" %in% names(tm)) {
+        tm$at <- tm$at - shift
+      }
+      tm
+    })
+  }
+  if (!is.null(x$cumulative.edgelist)) {
     x$cumulative.edgelist <- lapply(x$cumulative.edgelist, function(el) {
       if (is.null(el)) return(NULL)
       el$start <- el$start - shift
@@ -962,6 +991,19 @@ truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
     })
   }
   return(x)
+}
+
+# Shift the times of a queue of records (attribute history or raw records).
+# `collections::queue` objects are environments: build a new one rather than
+# modify the records of the original object
+shift_record_times <- function(records, shift) {
+  if (is.null(records)) {
+    return(NULL)
+  }
+  collections::queue(lapply(records$as_list(), function(r) {
+    r$time <- r$time - shift
+    r
+  }))
 }
 
 #' @title Function to Reduce the Size of a `netest` Object

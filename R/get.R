@@ -447,6 +447,12 @@ get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
+#' @details
+#' On a `netsim` object, the `coef.form` element returned holds the formation
+#' coefficients of its first simulation at the last time step, which the edges
+#' correction may have moved away from the fitted ones. Those of every
+#' simulation are in `x$coef.form`.
+#'
 #' @keywords extract internal
 #' @export
 #'
@@ -549,6 +555,14 @@ get_sims <- function(x, sims, var = NULL) {
     for (elt in elts_name) {
       out[[elt]][delsim] <- NULL
       names(out[[elt]]) <- newnames
+    }
+
+    # `nwparam` holds the formation coefficients of the first simulation, as
+    # `netsim()` saves them, so it follows the new first simulation
+    if ("coef.form" %in% elts_name) {
+      for (network in seq_along(out$nwparam)) {
+        out$nwparam[[network]]$coef.form <- out$coef.form[[1]][[network]]
+      }
     }
 
     # Subset per-sim stats elements

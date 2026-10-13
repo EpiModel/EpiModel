@@ -58,11 +58,17 @@
 
 -   `get_sims()` now stops with a clear error when `sims` holds a value that is not a whole number of at least 1 (e.g. `0`, `1.5` or `NA`), which failed with an unrelated error about the length of a `names` attribute. Its documentation now states that each simulation is returned once, in ascending order, whatever the order of `sims`.
 
+-   Fix `get_sims()`, and so `make_restart_point()`, to keep the formation coefficients in `nwparam` in step with the first simulation returned. `netsim()` saves the coefficients of its first simulation there, and a subset starting from another simulation kept them, so that `get_nwparam()` disagreed with the `coef.form` element of the same object. Restarts were not affected, as they read `coef.form`.
+
+-   `merge.netsim()` no longer requires `x` and `y` to share the controls for how they were run rather than what they simulated: `ncores`, `verbose`, `verbose.int`, and the checkpoint settings, besides `nsims`. A batch of one simulation could not be merged with a batch of several run on more than one core, since `netsim()` sets `ncores` to 1 for a single simulation and turns `verbose` off for several, nor could batches run with different `ncores` or checkpointed to different directories. All failed with "x and y have different controls".
+
 -   Fix `make_restart_point()` to re-base the unique IDs in the `sus` and `inf` columns of the transmission matrix, like the ones of the attributes. They kept the IDs of the prior simulation.
 
 -   Fix `make_restart_point()` to keep the unique IDs integer. Re-basing them made them double.
 
--   Fix `truncate_sim()` for `netsim` objects with `reset.time = TRUE` to shift the times of the attribute history and of the cumulative edgelist to the new time steps, as it does for the epi trackers. They kept the original times, so that `get_attr_at()` and `make_networkDynamic()` read them in the wrong frame. Their records before `at` are kept, with times of 0 or less.
+-   Fix `truncate_sim()` for `netsim` objects with `reset.time = TRUE` to shift the times of the attribute history, the raw records, the transmission matrix, and the cumulative edgelist to the new time steps, as it does for the epi trackers. They kept the original times, so that `get_attr_at()`, `get_transmat()` and `make_networkDynamic()` read them in the wrong frame. Their records before `at` are kept, with times of 0 or less.
+
+-   Fix `truncate_sim()` for `netsim` objects to truncate the network statistics along with the epi trackers. They kept every time step, so `get_nwstats()` failed on the truncated object with a "replacement has N rows" error, and `make_restart_point()` kept a row from the middle of the run as the last one. `make_restart_point()` now also stops on a truncated object: its `run` state ends at a later step than its epi trackers, so the time attributes were re-based by the wrong offset. Make the restart point before truncating.
 
 -   Fix `get_attr_history()` for a `netsim` object with a simulation that recorded nothing, which failed with "attempt to apply non-function".
 

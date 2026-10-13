@@ -338,6 +338,10 @@ test_that("get_sims keeps every per-simulation element of an open population run
   expect_s3_class(s2$stats$transmat, "transmat")
   expect_equal(s2$epi$num$sim1, mod$epi$num$sim2)
 
+  # `nwparam` holds the coefficients of the first simulation, before and after
+  expect_identical(mod$nwparam[[1]]$coef.form, mod$coef.form$sim1[[1]])
+  expect_identical(s2$nwparam[[1]]$coef.form, mod$coef.form$sim2[[1]])
+
   # sims come back in ascending order
   s31 <- get_sims(mod, sims = c(3, 1))
   for (elt in per_sim) {

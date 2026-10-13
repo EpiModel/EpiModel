@@ -455,6 +455,37 @@ test_that("merge.netsim binds the epi trackers of y by name", {
   expect_equal(z$epi, mod$epi, check.attributes = FALSE)
 })
 
+test_that("merge.netsim accepts runs that differ only in how they were executed", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  run <- function(nsims, verbose) {
+    control <- control.net(type = "SI", nsteps = 3, nsims = nsims,
+                           verbose = verbose)
+    netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  }
+  # `netsim()` turns `verbose` off for several simulations
+  x <- run(nsims = 2, verbose = TRUE)
+  invisible(capture.output(y <- run(nsims = 1, verbose = TRUE)))
+  expect_false(identical(x$control$verbose, y$control$verbose))
+  expect_equal(merge(x, y)$control$nsims, 3)
+
+  # as run on another number of cores, or checkpointed elsewhere
+  y$control$ncores <- 4
+  y$control$verbose.int <- 10
+  y$control$.checkpoint.dir <- tempfile()
+  y$control$.checkpoint.steps <- 2L
+  y$control$.checkpointed <- TRUE
+  z <- merge(x, y)
+  expect_equal(z$control$nsims, 3)
+  expect_equal(z$control$ncores, x$control$ncores)
+
+  # a control of the model itself still has to match
+  y$control$truncate.el.cuml <- 5
+  expect_error(merge(x, y), "x and y have different controls")
+})
+
 test_that("merge.netsim binds open population runs with independent controls and splits back", {
   skip_on_cran()
   # arrivals and departures make `edges_correct()` move the formation
