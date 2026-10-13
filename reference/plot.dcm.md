@@ -111,7 +111,8 @@ plot(
 
 - ylim:
 
-  the y limits of the plot.
+  The y limits (y1, y2) of the plot. The default, `NULL`, sets the
+  limits from the range of the values plotted.
 
 - xlab:
 

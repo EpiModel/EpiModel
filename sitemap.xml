@@ -72,6 +72,8 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/geom_bands.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_adj_list.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_args.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_attr.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_attr_at.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_attr_history.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_attr_prop.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_connected_nodes.html</loc></url>
@@ -84,6 +86,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_edgelists_df.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_epi.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_formula_term_attr.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_modules.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_network.html</loc></url>
@@ -91,6 +94,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_network_term_attr.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_nwparam.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_nwstats.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_param.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_partners.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_sims.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.html</loc></url>
@@ -115,6 +119,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/is_active_posit_ids.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/is_active_unique_ids.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_module_list.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/make_networkDynamic.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_restart_point.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_stats_table.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/mcat.html</loc></url>
@@ -189,6 +194,8 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/test_icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/test_net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/toggles_to_diss_stats.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/tracked_attrs_record.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/tracked_attrs_set_ref.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/trigger_end_horizon.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/trim_netest.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/truncate_sim.html</loc></url>

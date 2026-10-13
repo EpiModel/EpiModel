@@ -293,7 +293,7 @@ gives the first layer a probability of 0.5 in the first time step of an
 infection and 0.2 after.
 
 In a custom infection module,
-[`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
 returns the `multilayer` object, a list with one element per layer, and
 the `network` column of the discordant edgelist selects the element that
 applies to each edge:
@@ -557,7 +557,7 @@ so that the new nodes are connected to the members of their groups.
 
 The clique edges are built from the grouping attribute once, when the
 simulation starts. Setting the attribute with
-[`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 afterward does not rewire the layer: the old edges remain and the layer
 no longer matches the groups.
 [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md)

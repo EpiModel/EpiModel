@@ -52,7 +52,7 @@ object, and in the <code>netsim</code> object under the <code>raw.records</code>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">label</span>, <span class="va">object</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="va">label</span>, <span class="va">object</span>, <span class="va">...</span>, at <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,16 +65,24 @@ object and other initialization information passed from
 <code><a href="netsim.html">netsim()</a></code>.</p></dd>
 
 
-<dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
-<dd><p>The time where the recording happens.</p></dd>
-
-
 <dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
 <dd><p>The name to give to the recorded object.</p></dd>
 
 
 <dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>The object to be recorded.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Must be empty. It makes <code>at</code> a named-only argument, so that
+calls written for the EpiModel 2.6 signature,
+<code>record_raw_object(dat, at, label, object)</code>, error instead of silently
+recording the wrong object.</p></dd>
+
+
+<dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
+<dd><p>The time step at which the recording happens. Defaults to the
+current time step if <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -83,16 +91,17 @@ object and other initialization information passed from
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>See the "Time-Varying Parameters" section of the "Working With Model
-Parameters" vignette.</p>
+    <p>See the "Recording Arbitrary Objects (Advanced Debugging)" section of the
+"Working with Custom Attributes and Summary Statistics" vignette
+(<code><a href="../articles/attributes-and-summary-statistics.html">vignette("attributes-and-summary-statistics", package = "EpiModel")</a></code>).</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="st">"a.df"</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="st">"a.message"</span>, <span class="st">"I recorded something"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"a.df"</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">record_raw_object</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"a.message"</span>, <span class="st">"I recorded something"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

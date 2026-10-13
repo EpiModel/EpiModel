@@ -49,7 +49,7 @@ The updated `netsim_dat` object.
 The clique edges are built from the grouping attribute once, when the
 simulation starts, and are afterwards changed only by arrivals,
 departures, and this function. Setting the grouping attribute with
-[`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 alone therefore does not rewire the layer: the old edges remain and the
 layer no longer matches the groups. `move_to_group()` sets the attribute
 and the edges together, in either network storage mode

@@ -44,6 +44,26 @@ This function would be used when running a follow-up simulation from
 time steps `b` to `c` after a burn-in period from time `a` to `b`, where
 the final time window of interest for data analysis is `b` to `c` only.
 
+For `netsim` objects, the network statistics are truncated along with
+the epi trackers, as both hold one row per time step. With
+`reset.time = TRUE`, the times of the attribute history, the raw
+records, the transmission matrix, and the cumulative edgelist are
+shifted to the new time steps as well, so that
+[`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md),
+[`get_transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
+and
+[`make_networkDynamic()`](https://epimodel.github.io/EpiModel/reference/make_networkDynamic.md)
+read them in the same frame. Their records before `at` are kept, with
+times of 0 or less, as the state of the nodes and edges at `at` depends
+on them and the transmissions before `at` remain part of the
+transmission chains.
+
+The saved networks and the `run` sublists, which hold the state needed
+to restart a simulation, keep their original time steps. Build a restart
+point with
+[`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+from the object before truncating it.
+
 ## Examples
 
 ``` r
@@ -94,12 +114,12 @@ plot(mod2a)
 
 head(as.data.frame(mod2a))
 #>   sim time s.num i.num num si.flow
-#> 1   1    1   329   172 501       5
-#> 2   1    2   322   179 501       7
-#> 3   1    3   318   183 501       4
-#> 4   1    4   309   192 501       9
-#> 5   1    5   302   199 501       7
-#> 6   1    6   295   206 501       7
+#> 1   1    1   109   392 501       4
+#> 2   1    2   106   395 501       3
+#> 3   1    3   101   400 501       5
+#> 4   1    4    92   409 501       9
+#> 5   1    5    89   412 501       3
+#> 6   1    6    87   414 501       2
 
 # Do not reset time
 mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
@@ -107,11 +127,11 @@ plot(mod2b)
 
 head(as.data.frame(mod2b))
 #>   sim time s.num i.num num si.flow
-#> 1   1  150   329   172 501       5
-#> 2   1  151   322   179 501       7
-#> 3   1  152   318   183 501       4
-#> 4   1  153   309   192 501       9
-#> 5   1  154   302   199 501       7
-#> 6   1  155   295   206 501       7
+#> 1   1  150   109   392 501       4
+#> 2   1  151   106   395 501       3
+#> 3   1  152   101   400 501       5
+#> 4   1  153    92   409 501       9
+#> 5   1  154    89   412 501       3
+#> 6   1  155    87   414 501       2
 # }
 ```

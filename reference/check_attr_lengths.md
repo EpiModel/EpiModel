@@ -5,7 +5,7 @@ of nodes being the length of the `active` attribute. This is checked at
 the end of each time step of
 [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 An attribute of the wrong length is usually created by an
-[`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 call that does not cover every new node, or by direct assignment into
 `dat$run$attr` in place of the accessors.
 

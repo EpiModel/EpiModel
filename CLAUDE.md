@@ -401,6 +401,27 @@ or
 [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
 values (#1092).
 
+v2.7.0 (#1006, \#1007) moved the time step last in
+[`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md),
+[`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md),
+and
+[`record_raw_object()`](https://epimodel.github.io/EpiModel/reference/record_raw_object.md)
+and made it optional: `set_epi(dat, item, value, at = NULL)`,
+`record_attr_history(dat, item, value, at = NULL, posit_ids = NULL, unique_ids = NULL)`,
+and `record_raw_object(dat, label, object, at = NULL)`. `at` defaults to
+`get_current_timestep(dat)` and must be passed by name, as must
+`posit_ids` and `unique_ids`, so an old positional call such as
+`set_epi(dat, "x", at, value)` hard-errors with the new signature.
+[`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+also renamed `attribute` → `item` and `values` → `value`. In examples,
+docs, and tests, write `set_epi(dat, "x", value)`, and pass `at` by name
+only when recording at another step. Downstream packages that still
+support 2.6.x pass `at`, `posit_ids`, and `unique_ids` by name and the
+rest by position, which works on both:
+`set_epi(dat, "x", value, at = at)`,
+`record_attr_history(dat, "x", value, posit_ids = ids, at = at)`,
+`record_raw_object(dat, "x", object, at = at)`.
+
 ### Feedback Mechanisms
 
 Network models can incorporate bidirectional feedback: demography
@@ -455,7 +476,7 @@ Other exported accessors and helpers worth knowing:
 - **Attribute utilities**:
   [`overwrite_attrs()`](https://epimodel.github.io/EpiModel/reference/overwrite_attrs.md)
   applies an `init_attr` data frame at initialization;
-  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   lists the core attributes and their types (#969).
 - **Parameter tables**:
   [`param.net_from_table()`](https://epimodel.github.io/EpiModel/reference/param.net_from_table.md)

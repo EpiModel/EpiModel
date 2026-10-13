@@ -8,9 +8,23 @@ simulation, not for editing the user-facing param.net,
 init.net, or control.net inputs before a run or the
 output object returned by netsim(). See the Intended
 Usage section below for details and alternatives.
-This function returns an exhaustive named list of the attributes managed by
-EpiModel itself. It can be used to check the validity of an attributes list
-and of its types."><meta property="og:description" content="These get_, set_, append_, and add_
+The accessors are documented on three pages, by the part of dat they act
+on:
+Nodal attributes, with one value per node (get_attr()):
+get_attr(), get_attr_list(), set_attr(), add_attr(),
+append_attr(), append_core_attr(), remove_node_attr(), and
+get_core_attributes().
+Epidemic outputs, with one value per time step (get_epi()):
+get_epi(), get_epi_list(), set_epi(), and add_epi().
+Parameters, control settings, and initial conditions
+(get_param()): get_param(), get_param_list(), set_param(),
+add_param(), the same four functions for control and init, and
+get_network_control().
+
+
+Nodes are referred to by their positional identifiers; see
+get_unique_ids() and get_posit_ids() to convert them to and from
+their unique identifiers."><meta property="og:description" content="These get_, set_, append_, and add_
 functions allow a safe and efficient way to retrieve and mutate
 the main netsim_dat class object of network models
 (typical variable name dat). They are intended for use
@@ -19,9 +33,23 @@ simulation, not for editing the user-facing param.net,
 init.net, or control.net inputs before a run or the
 output object returned by netsim(). See the Intended
 Usage section below for details and alternatives.
-This function returns an exhaustive named list of the attributes managed by
-EpiModel itself. It can be used to check the validity of an attributes list
-and of its types."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.gif" type="image/gif"></head><body>
+The accessors are documented on three pages, by the part of dat they act
+on:
+Nodal attributes, with one value per node (get_attr()):
+get_attr(), get_attr_list(), set_attr(), add_attr(),
+append_attr(), append_core_attr(), remove_node_attr(), and
+get_core_attributes().
+Epidemic outputs, with one value per time step (get_epi()):
+get_epi(), get_epi_list(), set_epi(), and add_epi().
+Parameters, control settings, and initial conditions
+(get_param()): get_param(), get_param_list(), set_param(),
+add_param(), the same four functions for control and init, and
+get_network_control().
+
+
+Nodes are referred to by their positional identifiers; see
+get_unique_ids() and get_posit_ids() to convert them to and from
+their unique identifiers."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.gif" type="image/gif"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -66,125 +94,23 @@ simulation, not for editing the user-facing <code>param.net</code>,
 <code>init.net</code>, or <code>control.net</code> inputs before a run or the
 output object returned by <code><a href="netsim.html">netsim()</a></code>. See the <strong>Intended
 Usage</strong> section below for details and alternatives.</p>
-<p>This function returns an exhaustive named list of the attributes managed by
-EpiModel itself. It can be used to check the validity of an attributes list
-and of its types.</p>
+<p>The accessors are documented on three pages, by the part of <code>dat</code> they act
+on:</p><ul><li><p><strong>Nodal attributes</strong>, with one value per node (<code><a href="get_attr.html">get_attr()</a></code>):
+<code><a href="get_attr.html">get_attr()</a></code>, <code><a href="get_attr.html">get_attr_list()</a></code>, <code><a href="get_attr.html">set_attr()</a></code>, <code><a href="get_attr.html">add_attr()</a></code>,
+<code><a href="get_attr.html">append_attr()</a></code>, <code><a href="get_attr.html">append_core_attr()</a></code>, <code><a href="get_attr.html">remove_node_attr()</a></code>, and
+<code><a href="get_attr.html">get_core_attributes()</a></code>.</p></li>
+<li><p><strong>Epidemic outputs</strong>, with one value per time step (<code><a href="get_epi.html">get_epi()</a></code>):
+<code><a href="get_epi.html">get_epi()</a></code>, <code><a href="get_epi.html">get_epi_list()</a></code>, <code><a href="get_epi.html">set_epi()</a></code>, and <code><a href="get_epi.html">add_epi()</a></code>.</p></li>
+<li><p><strong>Parameters, control settings, and initial conditions</strong>
+(<code><a href="get_param.html">get_param()</a></code>): <code><a href="get_param.html">get_param()</a></code>, <code><a href="get_param.html">get_param_list()</a></code>, <code><a href="get_param.html">set_param()</a></code>,
+<code><a href="get_param.html">add_param()</a></code>, the same four functions for <code>control</code> and <code>init</code>, and
+<code><a href="get_param.html">get_network_control()</a></code>.</p></li>
+</ul><p>Nodes are referred to by their positional identifiers; see
+<code><a href="unique_id-tools.html">get_unique_ids()</a></code> and <code><a href="unique_id-tools.html">get_posit_ids()</a></code> to convert them to and from
+their unique identifiers.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_attr_list</span><span class="op">(</span><span class="va">dat</span>, item <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, posit_ids <span class="op">=</span> <span class="cn">NULL</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">value</span>, posit_ids <span class="op">=</span> <span class="cn">NULL</span>, override.length.check <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">append_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">value</span>, <span class="va">n.new</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">remove_node_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">posit_ids</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_epi_list</span><span class="op">(</span><span class="va">dat</span>, item <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, at <span class="op">=</span> <span class="cn">NULL</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">at</span>, <span class="va">value</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_param_list</span><span class="op">(</span><span class="va">dat</span>, item <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_param</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_param</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set_param</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">value</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_control_list</span><span class="op">(</span><span class="va">dat</span>, item <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_control</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_network_control</span><span class="op">(</span><span class="va">dat</span>, <span class="va">network</span>, <span class="va">item</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_control</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set_control</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">value</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_init_list</span><span class="op">(</span><span class="va">dat</span>, item <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_init</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, override.null.error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_init</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set_init</span><span class="op">(</span><span class="va">dat</span>, <span class="va">item</span>, <span class="va">value</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_core_attributes</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">append_core_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">n.new</span><span class="op">)</span></span></code></pre></div>
-    </div>
 
-    <div class="section level2">
-    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-
-
-<dl><dt id="arg-dat">dat<a class="anchor" aria-label="anchor" href="#arg-dat"></a></dt>
-<dd><p>Main <code>netsim_dat</code> object containing a <code>networkDynamic</code>
-object and other initialization information passed from
-<code><a href="netsim.html">netsim()</a></code>.</p></dd>
-
-
-<dt id="arg-item">item<a class="anchor" aria-label="anchor" href="#arg-item"></a></dt>
-<dd><p>A character vector containing the name of the element to access
-(for <code>get_</code> functions), create (for <code>add_</code> functions), or
-edit (for <code>set_</code> and <code>append_</code> functions). Can be of length greater
-than 1 for <code>get_*_list</code> functions.</p></dd>
-
-
-<dt id="arg-posit-ids">posit_ids<a class="anchor" aria-label="anchor" href="#arg-posit-ids"></a></dt>
-<dd><p>For <code>set_attr</code> and <code>get_attr</code>, a numeric vector of
-posit_ids to subset the desired <code>item</code>.</p></dd>
-
-
-<dt id="arg-override-null-error">override.null.error<a class="anchor" aria-label="anchor" href="#arg-override-null-error"></a></dt>
-<dd><p>If TRUE, <code>get_</code> will return NULL if the
-<code>item</code> does not exist instead of throwing an error.
-(default = FALSE).</p></dd>
-
-
-<dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>New value to be attributed in the <code>set_</code> and <code>append_</code>
-functions.</p></dd>
-
-
-<dt id="arg-override-length-check">override.length.check<a class="anchor" aria-label="anchor" href="#arg-override-length-check"></a></dt>
-<dd><p>If TRUE, <code>set_attr</code> allows the modification
-of the <code>item</code> size. (default = FALSE).</p></dd>
-
-
-<dt id="arg-n-new">n.new<a class="anchor" aria-label="anchor" href="#arg-n-new"></a></dt>
-<dd><p>For <code>append_core_attr</code>, the number of new nodes to initiate
-with core attributes; for <code>append_attr</code>, the number of new
-elements to append at the end of <code>item</code>.</p></dd>
-
-
-<dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
-<dd><p>For <code>get_epi</code>, the timestep at which to access the specified
-<code>item</code>; for <code>set_epi</code>, the timestep at which to add the new
-value for the epi output <code>item</code>; for <code>append_core_attr</code>, the
-current time step.</p></dd>
-
-
-<dt id="arg-network">network<a class="anchor" aria-label="anchor" href="#arg-network"></a></dt>
-<dd><p>index of network for which to get control</p></dd>
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A vector or a list of vectors for <code>get_</code> functions; the main
-list object for <code>set_</code>, <code>append_</code>, and <code>add_</code>
-functions.</p>
-    </div>
     <div class="section level2">
     <h2 id="intended-usage">Intended Usage<a class="anchor" aria-label="anchor" href="#intended-usage"></a></h2>
 
@@ -218,17 +144,6 @@ to <code><a href="control.net.html">control.net()</a></code>. See the "model-par
 underlying updater module and the scenario API built on top of it.</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="core-attribute">Core Attribute<a class="anchor" aria-label="anchor" href="#core-attribute"></a></h2>
-
-
-<p>The <code>append_core_attr</code> function initializes the attributes necessary for
-EpiModel to work (the four core attributes are: "active", "unique_id",
-"entrTime", and "exitTime"). These attributes are used in the initialization
-phase of the simulation, to create the nodes (see
-<code><a href="initialize.net.html">initialize.net()</a></code>); and also used when adding nodes during the
-simulation (see <code><a href="arrivals.net.html">arrivals.net()</a></code>).</p>
-    </div>
-    <div class="section level2">
     <h2 id="mutability">Mutability<a class="anchor" aria-label="anchor" href="#mutability"></a></h2>
 
 
@@ -245,231 +160,12 @@ create a new one if it does not exist already by calling the <code>add_</code>
 functions internally.</p>
     </div>
     <div class="section level2">
-    <h2 id="one-value-per-node">One Value Per Node<a class="anchor" aria-label="anchor" href="#one-value-per-node"></a></h2>
-
-
-<p>Every nodal attribute holds exactly one value per node, and <code><a href="netsim.html">netsim()</a></code>
-checks this at the end of each time step. When <code>set_attr</code> and <code>append_attr</code>
-create an attribute, the nodes they do not write to are filled with <code>NA</code> to
-preserve that: <code>set_attr</code> with <code>posit_ids</code> fills the unselected nodes, and
-<code>append_attr</code> fills the nodes that predate the ones being appended. This
-means <code>append_core_attr</code> must be called before <code>append_attr</code> when adding new
-nodes, as it is what makes those nodes known to the rest of the object.</p>
-    </div>
-    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="update_params.html">update_params()</a></code> for editing a <code>param.net</code> object outside a
 simulation; <code><a href="param.net.html">param.net()</a></code>, <code><a href="init.net.html">init.net()</a></code>, <code><a href="control.net.html">control.net()</a></code> for input
 constructors; <code><a href="netsim.html">netsim()</a></code> for running a simulation.</p></div>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_dat_object.html">create_dat_object</a></span><span class="op">(</span>control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nsteps <span class="op">=</span> <span class="fl">150</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">append_core_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">append_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">append_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="cn">NA</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">get_attr_list</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $active</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $entrTime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $exitTime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $unique_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19]  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55]  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73]  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91]  91  92  93  94  95  96  97  98  99 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $age</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.794723696 0.079009692 0.994147693 0.333935289 0.092798396 0.118813677</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.814425972 0.902433855 0.626641747 0.848945338 0.528402529 0.148639226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.426021027 0.833002899 0.402158567 0.747636655 0.783656693 0.644317521</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.232141421 0.517684197 0.838909269 0.593803046 0.246336028 0.240527395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.235886996 0.654152293 0.838277736 0.251922707 0.665510750 0.151081642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.225265846 0.094681246 0.823617215 0.175607729 0.230003665 0.304878073</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.582349576 0.917549005 0.907157657 0.857565414 0.414115999 0.371066698</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.675518590 0.005220825 0.456325933 0.436814286 0.422702053 0.257331764</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.403097231 0.047443524 0.173852789 0.786053162 0.537042114 0.414580266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.511543171 0.520385041 0.677273601 0.752910193 0.750365018 0.246252101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.478001623 0.994308035 0.322863226 0.556724218 0.210162415 0.154073077</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.090549808 0.525575908 0.240835476 0.341524981 0.605908218 0.317186866</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.864370837 0.297693344 0.533690562 0.911750742 0.158485555 0.984418668</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.213457823 0.095546803 0.432033776 0.102071220 0.936309566 0.286762381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.913731117 0.385140918 0.024500575 0.136184629 0.487673842 0.115797226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.866911953 0.692078316 0.792277329 0.621852847 0.837726101 0.634371946</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.884076100 0.407352951 0.404075008 0.750559513          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103]          NA          NA          NA          NA          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [109]          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1 1 0 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_attr_list</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"active"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $age</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.794723696 0.079009692 0.994147693 0.333935289 0.092798396 0.118813677</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.814425972 0.902433855 0.626641747 0.848945338 0.528402529 0.148639226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.426021027 0.833002899 0.402158567 0.747636655 0.783656693 0.644317521</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.232141421 0.517684197 0.838909269 0.593803046 0.246336028 0.240527395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.235886996 0.654152293 0.838277736 0.251922707 0.665510750 0.151081642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.225265846 0.094681246 0.823617215 0.175607729 0.230003665 0.304878073</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.582349576 0.917549005 0.907157657 0.857565414 0.414115999 0.371066698</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.675518590 0.005220825 0.456325933 0.436814286 0.422702053 0.257331764</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.403097231 0.047443524 0.173852789 0.786053162 0.537042114 0.414580266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.511543171 0.520385041 0.677273601 0.752910193 0.750365018 0.246252101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.478001623 0.994308035 0.322863226 0.556724218 0.210162415 0.154073077</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.090549808 0.525575908 0.240835476 0.341524981 0.605908218 0.317186866</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.864370837 0.297693344 0.533690562 0.911750742 0.158485555 0.984418668</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.213457823 0.095546803 0.432033776 0.102071220 0.936309566 0.286762381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.913731117 0.385140918 0.024500575 0.136184629 0.487673842 0.115797226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.866911953 0.692078316 0.792277329 0.621852847 0.837726101 0.634371946</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.884076100 0.407352951 0.404075008 0.750559513          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103]          NA          NA          NA          NA          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [109]          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $active</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1 1 0 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-in"><span><span class="fu">get_attr</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span>, <span class="fl">150</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"s.num"</span>, <span class="fl">150</span>, <span class="fl">90</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">get_epi_list</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $i.num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $s.num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 90</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_epi_list</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i.num"</span>, <span class="st">"s.num"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $i.num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $s.num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 90</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 10</span>
-<span class="r-in"><span><span class="fu">get_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA NA</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span>, <span class="fl">0.4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"y"</span>, <span class="fl">0.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">get_param_list</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_param_list</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_init</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_init</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span>, <span class="fl">0.4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_init</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"y"</span>, <span class="fl">0.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">get_init_list</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_init_list</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_init</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_control</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_control</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span>, <span class="fl">0.4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_control</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"y"</span>, <span class="fl">0.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">get_control_list</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nsteps</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_control_list</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">get_control</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

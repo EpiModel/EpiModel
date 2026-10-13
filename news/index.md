@@ -42,11 +42,11 @@
   no longer needs to hold them. The internal `groups` parameter is now
   stored in the `run` sublist, from which it is restored. For extension
   models, any parameter that an initialization module sets with
-  [`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
   is gone on restart, as that module does not run again. For example,
   `initialize_msm()` in EpiModelHIV-p sets `time.unit` from
-  `param$epistats`, so `time.unit` must now be passed in `param` or set
-  in the reinitialization module.
+  `param$epistats`, so `reinit_msm()` sets it again on restart from
+  EpiModelHIV 3.3.3 (EpiModel/EpiModelHIV-p#407).
 
 - Objects saved with EpiModel 2.6.x or earlier can no longer be
   restarted. They need to be regenerated with 2.7.0.
@@ -67,7 +67,88 @@
   simulation with the run state and formation coefficients of the first
   one. Merge the original objects again with 2.7.0 instead.
 
+- [`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md),
+  [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+  and
+  [`record_raw_object()`](https://epimodel.github.io/EpiModel/reference/record_raw_object.md)
+  have new signatures, with the time step moved last and made optional:
+  `set_epi(dat, item, value, at = NULL)`,
+  `record_attr_history(dat, item, value, at = NULL, posit_ids = NULL, unique_ids = NULL)`
+  and `record_raw_object(dat, label, object, at = NULL)`. When `at` is
+  `NULL`, the value is recorded at the current time step,
+  `get_current_timestep(dat)`.
+  [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+  also renames `attribute` to `item` and `values` to `value`. A call
+  written for the old argument order would still match the new
+  positional slots and silently record the time step as the value, so
+  `at`, `posit_ids` and `unique_ids` must now be passed by name, and an
+  old positional call such as `set_epi(dat, "i.num", at, value)` stops
+  with an error that gives the new signature. The three functions also
+  check that `item` or `label` is a single string and that a given `at`
+  is a single number. To update, drop `at` when recording at the current
+  time step, or pass it by name otherwise. Code that has to run on both
+  2.6.x and 2.7.0 can pass `at` (and `posit_ids` or `unique_ids`) by
+  name and the other arguments by position:
+  `set_epi(dat, "i.num", value, at = at)`,
+  `record_attr_history(dat, "vl", vl, posit_ids = ids, at = at)` and
+  `record_raw_object(dat, "pop", obj, at = at)` work on both. The
+  renamed arguments of
+  [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+  cannot be passed by name on both
+  ([\#1006](https://github.com/EpiModel/EpiModel/issues/1006),
+  [\#1007](https://github.com/EpiModel/EpiModel/issues/1007)).
+
+  ``` r
+
+  # EpiModel 2.6.x
+  dat <- set_epi(dat, "i.num", at, value)
+  dat <- record_attr_history(dat, at, "vl", ids, vl)
+  dat <- record_raw_object(dat, at, "pop", obj)
+
+  # EpiModel 2.7.0
+  dat <- set_epi(dat, "i.num", value)
+  dat <- record_attr_history(dat, "vl", vl, posit_ids = ids)
+  dat <- record_raw_object(dat, "pop", obj)
+  ```
+
 ### NEW FEATURES
+
+- Added automatic attribute history tracking for network simulations.
+  Setting `tracked.attributes` in
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  records delta-compressed attribute changes at each time step. The
+  `active` attribute is always included when tracking is enabled. Only
+  nodes whose values changed (including `NA` transitions), plus newly
+  arrived and departed nodes, are recorded, minimizing memory usage. A
+  companion parameter `tracked.attributes.once` records attributes only
+  in the initial snapshot and for new arrivals, suitable for
+  fixed-at-entry attributes like `"race"` or `"birth.year"`. Attributes
+  that a module creates on its first call are recorded for every node
+  from the step they appear, and a tracked attribute that does not exist
+  at the end of a step is an error. On restart, the history starts again
+  from a full snapshot at `start - 1`, as the history of `x` is not
+  carried over.
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  checks that both arguments are character vectors of attribute names,
+  without `"unique_id"`.
+
+- Added
+  [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md)
+  to reconstruct the state of all tracked attributes at any past time
+  step from the delta-compressed history. Returns a `tibble` with one
+  row per active node. With `compute_age = TRUE`, the age of each node
+  at that step is computed from its last recorded `age`, which needs a
+  `time.unit` parameter (days per time step).
+
+- Added
+  [`make_networkDynamic()`](https://epimodel.github.io/EpiModel/reference/make_networkDynamic.md)
+  to reconstruct a `networkDynamic` object from a completed `netsim`
+  simulation, using the cumulative edgelist for edge spells and the
+  tracked attribute history for vertex activity and time-varying
+  attributes. This enables `ndtv` visualization and `tsna` temporal
+  network analysis even when running with `tergmLite = TRUE`. It needs
+  every edge of the simulation, so it stops unless the simulation ran
+  with `truncate.el.cuml = Inf`.
 
 - [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
   gains `keep.run`, `keep.cumulative.edgelist`, `keep.attr.history` and
@@ -152,10 +233,89 @@
   position before.
 
 - Fix
+  [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
+  to keep the `transmat` class of the `stats$transmat` list, which
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  and
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+  set and [`c()`](https://rdrr.io/r/base/c.html) dropped. Splitting an
+  object with
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+  and merging the parts back now returns the original object.
+
+- [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+  now stops with a clear error when `sims` holds a value that is not a
+  whole number of at least 1 (e.g. `0`, `1.5` or `NA`), which failed
+  with an unrelated error about the length of a `names` attribute. Its
+  documentation now states that each simulation is returned once, in
+  ascending order, whatever the order of `sims`.
+
+- Fix
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md),
+  and so
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md),
+  to keep the formation coefficients in `nwparam` in step with the first
+  simulation returned.
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  saves the coefficients of its first simulation there, and a subset
+  starting from another simulation kept them, so that
+  [`get_nwparam()`](https://epimodel.github.io/EpiModel/reference/get_nwparam.md)
+  disagreed with the `coef.form` element of the same object. Restarts
+  were not affected, as they read `coef.form`.
+
+- [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
+  no longer requires `x` and `y` to share the controls for how they were
+  run rather than what they simulated: `ncores`, `verbose`,
+  `verbose.int`, and the checkpoint settings, besides `nsims`. A batch
+  of one simulation could not be merged with a batch of several run on
+  more than one core, since
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  sets `ncores` to 1 for a single simulation and turns `verbose` off for
+  several, nor could batches run with different `ncores` or checkpointed
+  to different directories. All failed with “x and y have different
+  controls”.
+
+- Fix
   [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
   to re-base the unique IDs in the `sus` and `inf` columns of the
   transmission matrix, like the ones of the attributes. They kept the
   IDs of the prior simulation.
+
+- Fix
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  to keep the unique IDs integer. Re-basing them made them double.
+
+- Fix
+  [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
+  for `netsim` objects with `reset.time = TRUE` to shift the times of
+  the attribute history, the raw records, the transmission matrix, and
+  the cumulative edgelist to the new time steps, as it does for the epi
+  trackers. They kept the original times, so that
+  [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md),
+  [`get_transmat()`](https://epimodel.github.io/EpiModel/reference/get_transmat.md)
+  and
+  [`make_networkDynamic()`](https://epimodel.github.io/EpiModel/reference/make_networkDynamic.md)
+  read them in the wrong frame. Their records before `at` are kept, with
+  times of 0 or less.
+
+- Fix
+  [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
+  for `netsim` objects to truncate the network statistics along with the
+  epi trackers. They kept every time step, so
+  [`get_nwstats()`](https://epimodel.github.io/EpiModel/reference/get_nwstats.md)
+  failed on the truncated object with a “replacement has N rows” error,
+  and
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  kept a row from the middle of the run as the last one.
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  now also stops on a truncated object: its `run` state ends at a later
+  step than its epi trackers, so the time attributes were re-based by
+  the wrong offset. Make the restart point before truncating.
+
+- Fix
+  [`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
+  for a `netsim` object with a simulation that recorded nothing, which
+  failed with “attempt to apply non-function”.
 
 - Fix
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
@@ -434,6 +594,22 @@
   now finds each attribute’s time 1 table by name rather than by
   position, since the positions in a restricted table no longer match
   those in the time 1 table.
+- Split the shared help page of the `netsim_dat` accessors into one page
+  per group: nodal attributes
+  ([`?get_attr`](https://epimodel.github.io/EpiModel/reference/get_attr.md)),
+  epidemic outputs
+  ([`?get_epi`](https://epimodel.github.io/EpiModel/reference/get_epi.md)),
+  and parameters, control settings, and initial conditions
+  ([`?get_param`](https://epimodel.github.io/EpiModel/reference/get_param.md)).
+  Each page documents the arguments and return values of its own
+  functions, repeats the Intended Usage and Mutability sections, and has
+  its own examples. `?net-accessor` remains as an overview of the three
+  pages. The example of adding nodes now calls
+  [`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  before
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md),
+  as the documentation requires. Closes
+  [\#991](https://github.com/EpiModel/EpiModel/issues/991).
 
 ## EpiModel 2.6.2
 
@@ -522,17 +698,17 @@ CRAN release: 2026-09-16
   collapse of the network rather than as an error.
 
 - Fix
-  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   and
-  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   so that a nodal attribute they create always holds one value per node.
-  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   with `posit_ids` on an attribute that did not exist yet wrote into a
   snapshot of the attribute list taken before the attribute was created,
   so the result was as long as the highest selected position (length 2
   for `posit_ids = c(1, 2)`, length 7 for `c(4, 7)`) rather than one
   entry per node.
-  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   on an attribute that did not exist yet returned the appended values
   alone, so an arrivals module creating a custom attribute on the first
   step with any arrival left that attribute covering only the new nodes.

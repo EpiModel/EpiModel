@@ -68,6 +68,9 @@ merge(
   or controls (passed in
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md))
   an error will prevent the merge. Use `FALSE` to override that check.
+  The controls for how the runs were executed rather than what they
+  simulated (`nsims`, `ncores`, `verbose`, `verbose.int`, and the
+  checkpoint settings) may differ.
 
 - keep.diss.stats:
 
@@ -117,8 +120,9 @@ This merge function combines the results of two independent simulations
 of [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 class models, simulated under separate function calls. The model
 parameterization between the two calls must be exactly the same, except
-for the number of simulations in each call. This allows for manual
-parallelization of model simulations.
+for the number of simulations in each call and the execution settings
+listed under `param.error`. This allows for manual parallelization of
+model simulations.
 
 This merge function does not work the same as the default merge, which
 allows for a combined object where the structure differs between the

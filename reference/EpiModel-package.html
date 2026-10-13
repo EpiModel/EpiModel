@@ -143,9 +143,9 @@ the built-in modules. A module is a function with the signature
 <code>function(dat, at)</code> that reads from and returns the <code>netsim_dat</code> object
 holding all simulation state.</p>
 <p>Modules should use the accessor functions rather than manipulating that
-object directly. These include <code><a href="net-accessor.html">get_attr()</a></code> and <code><a href="net-accessor.html">set_attr()</a></code> for nodal
-attributes, <code><a href="net-accessor.html">get_param()</a></code> for parameters, <code><a href="net-accessor.html">get_epi()</a></code> and <code><a href="net-accessor.html">set_epi()</a></code> for
-epidemic summary statistics, <code><a href="net-accessor.html">append_core_attr()</a></code> and <code><a href="net-accessor.html">append_attr()</a></code> for
+object directly. These include <code><a href="get_attr.html">get_attr()</a></code> and <code><a href="get_attr.html">set_attr()</a></code> for nodal
+attributes, <code><a href="get_param.html">get_param()</a></code> for parameters, <code><a href="get_epi.html">get_epi()</a></code> and <code><a href="get_epi.html">set_epi()</a></code> for
+epidemic summary statistics, <code><a href="get_attr.html">append_core_attr()</a></code> and <code><a href="get_attr.html">append_attr()</a></code> for
 new arrivals, <code><a href="discord_edgelist.html">discord_edgelist()</a></code> for serodiscordant pairs, and
 <code><a href="set_transmat.html">set_transmat()</a></code> for recording transmission events.</p>
 <p>Extension support is specific to the network class. ICMs support the

@@ -119,7 +119,7 @@ memory low.</p>
 <span class="r-in"><span><span class="co"># Inside a custom module, after editing the network outside the TERGM:</span></span></span>
 <span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">num.nw</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">update_cumulative_edgelist</span><span class="op">(</span><span class="va">dat</span>, <span class="va">n</span>,</span></span>
-<span class="r-in"><span>    truncate <span class="op">=</span> <span class="fu"><a href="net-accessor.html">get_control</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"truncate.el.cuml"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    truncate <span class="op">=</span> <span class="fu"><a href="get_param.html">get_control</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"truncate.el.cuml"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

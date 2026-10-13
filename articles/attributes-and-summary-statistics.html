@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.7.0</h4>
             
-            <h4 data-toc-skip class="date">2026-10-12</h4>
+            <h4 data-toc-skip class="date">2026-10-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/attributes-and-summary-statistics.Rmd" class="external-link"><code>vignettes/attributes-and-summary-statistics.Rmd</code></a></small>
       <div class="d-none name"><code>attributes-and-summary-statistics.Rmd</code></div>
@@ -124,9 +124,9 @@ population.</li>
 reused).</li>
 </ul>
 <p>You can retrieve the list of core attributes and their default types
-with <code><a href="../reference/net-accessor.html">get_core_attributes()</a></code>:</p>
+with <code><a href="../reference/get_attr.html">get_core_attributes()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/net-accessor.html">get_core_attributes</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_attr.html">get_core_attributes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $active</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -280,9 +280,9 @@ conversion functions.</p>
 <div class="section level4">
 <h4 id="accessing-attributes">Accessing Attributes<a class="anchor" aria-label="anchor" href="#accessing-attributes"></a>
 </h4>
-<p>Use <code><a href="../reference/net-accessor.html">get_attr()</a></code> to extract an attribute vector:</p>
+<p>Use <code><a href="../reference/get_attr.html">get_attr()</a></code> to extract an attribute vector:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span></code></pre></div>
 <p>This returns a vector of length equal to the current number of nodes.
 Requesting a nonexistent attribute throws an error.</p>
 </div>
@@ -295,17 +295,17 @@ Requesting a nonexistent attribute throws an error.</p>
 <code class="sourceCode R"><span><span class="va">aging_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Extract current attribute</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Aging process</span></span>
 <span>  <span class="va">new_age</span> <span class="op">&lt;-</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span></span>
 <span>  <span class="co"># Output updated attributes</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Key points about <code><a href="../reference/net-accessor.html">set_attr()</a></code>:</p>
+<p>Key points about <code><a href="../reference/get_attr.html">set_attr()</a></code>:</p>
 <ul>
 <li>It returns a modified copy of <code>dat</code>, which must be
 assigned back. (This does not cause performance issues due to R’s
@@ -320,14 +320,14 @@ nodes, or the function throws an error.</li>
 <p>The recommended workflow for attribute manipulation in modules:</p>
 <ol style="list-style-type: decimal">
 <li>Extract attributes into local vectors with
-<code><a href="../reference/net-accessor.html">get_attr()</a></code>.</li>
+<code><a href="../reference/get_attr.html">get_attr()</a></code>.</li>
 <li>Modify the local vectors with your dynamic process.</li>
 <li>Update <code>dat</code> with the revised vectors using
-<code><a href="../reference/net-accessor.html">set_attr()</a></code>.</li>
+<code><a href="../reference/get_attr.html">set_attr()</a></code>.</li>
 <li>Return <code>dat</code> at the end of the function.</li>
 </ol>
 <p>These functions have additional arguments described in
-<code><a href="../reference/net-accessor.html">help("net-accessor", package = "EpiModel")</a></code>.</p>
+<code><a href="../reference/get_attr.html">help("get_attr", package = "EpiModel")</a></code>.</p>
 </div>
 </div>
 </div>
@@ -337,95 +337,146 @@ nodes, or the function throws an error.</li>
 <p>Current attributes reflect the state of each node at the present time
 step. Sometimes you need to track what happened to specific nodes over
 time. Because saving the full history of all attributes would consume
-too much memory, EpiModel provides a selective recording mechanism: you
-choose which attributes, for which nodes, at which time steps to
-record.</p>
-<p>This is useful for diagnostics (verifying that a dynamic process is
-coded correctly) or for tracking a limited set of individual-level
-outcomes for further analysis.</p>
+too much memory, EpiModel provides two complementary mechanisms:
+<strong>automatic tracking</strong> via <code>control.net</code> and
+<strong>manual recording</strong> inside custom modules. Both write to
+the same <code>attr.history</code> storage, accessible after the
+simulation with <code><a href="../reference/get_attr_history.html">get_attr_history()</a></code>.</p>
 <div class="section level3">
-<h3 id="recording-attribute-histories">Recording Attribute Histories<a class="anchor" aria-label="anchor" href="#recording-attribute-histories"></a>
+<h3 id="automatic-attribute-tracking">Automatic Attribute Tracking<a class="anchor" aria-label="anchor" href="#automatic-attribute-tracking"></a>
 </h3>
+<p>The simplest way to record attribute histories is to declare the
+attributes you want tracked in <code>control.net</code>. EpiModel will
+then automatically record changes at each time step using delta
+compression—only nodes whose values actually changed (including
+<code>NA</code> transitions), plus newly arrived and departed nodes, are
+stored. The <code>active</code> attribute is always tracked when any
+tracked attributes are specified.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"SIS"</span>,</span>
+<span>  nsteps <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  nsims <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  tracked.attributes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span>,</span>
+<span>  tracked.attributes.once <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"race"</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Attributes listed in <code>tracked.attributes</code> are
+diff-tracked: at each step, only nodes whose values changed are
+recorded. Attributes listed in <code>tracked.attributes.once</code> are
+recorded only in the initial snapshot and for newly arriving nodes—they
+are not compared at each step. Use <code>tracked.attributes.once</code>
+for attributes that are fixed at entry and never change during the
+simulation (e.g., <code>"race"</code>, <code>"birth.year"</code>).</p>
+<p>After the simulation completes, you can reconstruct the tracked
+attribute state at any time step with <code><a href="../reference/get_attr_at.html">get_attr_at()</a></code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Reconstruct attributes at time step 200</span></span>
+<span><span class="va">attrs_200</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr_at.html">get_attr_at</a></span><span class="op">(</span><span class="va">sim</span>, at <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">attrs_200</span></span>
+<span><span class="co"># # A tibble: 500 x 4</span></span>
+<span><span class="co">#   unique_id active status race</span></span>
+<span><span class="co">#       &lt;int&gt;  &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;</span></span>
+<span><span class="co"># 1         1      1 s      W</span></span>
+<span><span class="co"># 2         2      1 i      W</span></span>
+<span><span class="co"># 3         3      1 s      W</span></span>
+<span><span class="co"># # ... with 497 more rows</span></span></code></pre></div>
+<p>The raw delta-compressed history is also available via
+<code><a href="../reference/get_attr_history.html">get_attr_history()</a></code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">attr_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">attr_history</span><span class="op">)</span></span>
+<span><span class="co"># [1] "active" "status" "race"</span></span>
+<span></span>
+<span><span class="va">attr_history</span><span class="op">$</span><span class="va">status</span></span>
+<span><span class="co"># # A tibble: 11,812 x 5</span></span>
+<span><span class="co">#     sim  time attribute  uids values</span></span>
+<span><span class="co">#   &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;</span></span>
+<span><span class="co"># 1     1     1 status        1 s</span></span>
+<span><span class="co"># 2     1     1 status        2 s</span></span>
+<span><span class="co"># 3     1     1 status        3 s</span></span>
+<span><span class="co"># # ... with 11,809 more rows</span></span>
+<span></span>
+<span><span class="co"># After the initial snapshot of the 500 nodes, only the changes are recorded</span></span>
+<span><span class="va">attr_history</span><span class="op">$</span><span class="va">status</span><span class="op">[</span><span class="fl">501</span><span class="op">:</span><span class="fl">503</span>, <span class="op">]</span></span>
+<span><span class="co"># # A tibble: 3 x 5</span></span>
+<span><span class="co">#     sim  time attribute  uids values</span></span>
+<span><span class="co">#   &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;</span></span>
+<span><span class="co"># 1     1     2 status       97 i</span></span>
+<span><span class="co"># 2     1     2 status      123 i</span></span>
+<span><span class="co"># 3     1     3 status       13 i</span></span></code></pre></div>
+<p>Each element is a <code>tibble</code> with columns <code>sim</code>
+(simulation number), <code>time</code> (time step),
+<code>attribute</code> (the label), <code>uids</code> (unique IDs), and
+<code>values</code> (the recorded values). The initial time step
+contains the full snapshot; subsequent steps contain only the
+changes.</p>
+</div>
+<div class="section level3">
+<h3 id="manual-attribute-recording">Manual Attribute Recording<a class="anchor" aria-label="anchor" href="#manual-attribute-recording"></a>
+</h3>
+<p>For finer-grained control—recording specific subsets of nodes, at
+specific intervals, or attributes not listed in
+<code>tracked.attributes</code>—you can call
+<code><a href="../reference/record_attr_history.html">record_attr_history()</a></code> directly inside a custom module. This
+writes to the same <code>attr.history</code> storage as automatic
+tracking.</p>
 <p>The following module records the viral load of infected nodes every
 10 time steps. It assumes the model defines a <code>status</code>
 attribute (with values <code>"s"</code> for susceptible,
 <code>"i"</code> for infected) and a <code>viral_load</code> attribute
 (continuous for infected nodes, <code>NA</code> otherwise).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">viral_load_logger_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Run every 10 time steps</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">at</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">10</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>    <span class="co"># Attributes</span></span>
-<span>    <span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
-<span>    <span class="va">viral_load</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"viral_load"</span><span class="op">)</span></span>
+<span>    <span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
+<span>    <span class="va">viral_load</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"viral_load"</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="va">infected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/record_attr_history.html">record_attr_history</a></span><span class="op">(</span></span>
-<span>      <span class="va">dat</span>, <span class="va">at</span>,</span>
-<span>      <span class="st">"viral_load"</span>,</span>
-<span>      <span class="va">infected</span>,</span>
-<span>      <span class="va">viral_load</span><span class="op">[</span><span class="va">infected</span><span class="op">]</span></span>
+<span>      <span class="va">dat</span>, <span class="st">"viral_load"</span>,</span>
+<span>      <span class="va">viral_load</span><span class="op">[</span><span class="va">infected</span><span class="op">]</span>,</span>
+<span>      posit_ids <span class="op">=</span> <span class="va">infected</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><code><a href="../reference/record_attr_history.html">record_attr_history()</a></code> takes five arguments:</p>
+<p><code><a href="../reference/record_attr_history.html">record_attr_history()</a></code> takes the following arguments:</p>
 <ol style="list-style-type: decimal">
 <li>
 <code>dat</code>: the main list object.</li>
 <li>
-<code>at</code>: the time step to associate with the recording
-(usually the current step).</li>
-<li>A label for the attribute (here <code>"viral_load"</code>).</li>
-<li>A vector of <code>posit_id</code>s for the nodes of interest.
-Internally, these are converted to <code>unique_id</code>s so the
-history remains valid even after nodes depart.</li>
-<li>The values to record for those IDs. The number of values must match
-the number of IDs, unless a single value is provided (which is recycled
-for all IDs, using less memory).</li>
+<code>item</code>: a label for the attribute (here
+<code>"viral_load"</code>).</li>
+<li>
+<code>value</code>: the values to record. Must match the number of
+nodes in length, unless a single value is provided (which is recycled
+for all nodes).</li>
+<li>
+<code>at</code>: the time step to associate with the recording.
+Defaults to the current time step if omitted, and must be passed by
+name.</li>
+<li>
+<code>posit_ids</code> or <code>unique_ids</code>: a vector of node
+IDs to which the values apply, passed by name. When
+<code>posit_ids</code> are provided, they are converted internally to
+<code>unique_id</code>s so the history remains valid even after nodes
+depart.</li>
 </ol>
-<p>Use attribute histories sparingly—storage can grow large in
-open-population models with many nodes over many time steps.</p>
-</div>
-<div class="section level3">
-<h3 id="accessing-attribute-histories">Accessing Attribute Histories<a class="anchor" aria-label="anchor" href="#accessing-attribute-histories"></a>
-</h3>
-<p>Attribute histories are accessed after the simulation is
-complete:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
-<span><span class="va">attr_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p>The result is a named list of <code>data.frame</code>s, one for each
-recorded attribute label. Suppose we recorded <code>"viral_load"</code>
-(as above) and also <code>"status"</code> transitions in another module.
-The output would look like:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_attr_history.html">get_attr_history</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># $viral_load</span></span>
-<span><span class="co">#    sim step attribute    uids values</span></span>
-<span><span class="co"># 1    1   10 viral_load   1001   2000</span></span>
-<span><span class="co"># 2    1   10 viral_load   1002   1878</span></span>
-<span><span class="co"># 3    1   20 viral_load   1001   1500</span></span>
-<span><span class="co"># 4    1   20 viral_load   1002    300</span></span>
-<span><span class="co"># ...</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># $status</span></span>
-<span><span class="co">#    sim step attribute  uids  values</span></span>
-<span><span class="co"># 1    1   22 status     1001       i</span></span>
-<span><span class="co"># 2    1   64 status     1002       i</span></span>
-<span><span class="co"># 3    1  110 status     1001       r</span></span>
-<span><span class="co"># 4    1  220 status     1002       r</span></span>
-<span><span class="co"># ...</span></span></code></pre></div>
-<p>Each <code>data.frame</code> has columns <code>sim</code> (simulation
-number), <code>step</code> (time step), <code>attribute</code> (the
-label), <code>uids</code> (unique IDs), and <code>values</code> (the
-recorded values). The list structure allows each history to have
-different dimensions.</p>
+<p>Use attribute tracking and histories sparingly—storage can grow large
+in open-population models with many nodes over many time steps. Note
+that automatic tracking with <code>tracked.attributes</code> also
+records all nodes in the initial snapshot, but subsequent steps only
+store the changes, making it more memory-efficient for attributes that
+change infrequently relative to the population size.</p>
 </div>
 </div>
 <div class="section level2">
@@ -441,38 +492,40 @@ population size at each step, while <code>s.num</code>,
 <h3 id="working-with-epidemic-trackers-in-modules">Working With Epidemic Trackers in Modules<a class="anchor" aria-label="anchor" href="#working-with-epidemic-trackers-in-modules"></a>
 </h3>
 <p>Inside a module, access and modify epidemic trackers with
-<code><a href="../reference/net-accessor.html">get_epi()</a></code> and <code><a href="../reference/net-accessor.html">set_epi()</a></code>. Here is an extended
+<code><a href="../reference/get_epi.html">get_epi()</a></code> and <code><a href="../reference/get_epi.html">set_epi()</a></code>. Here is an extended
 aging module that also tracks mean age and its change over time:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aging_track_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Attributes</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Aging process</span></span>
 <span>  <span class="va">new_age</span> <span class="op">&lt;-</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span></span>
 <span>  <span class="co"># Calculate summary statistics</span></span>
 <span>  <span class="va">mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">new_age</span><span class="op">)</span></span>
-<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span>, <span class="st">"mean_age"</span><span class="op">)</span></span>
+<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epi.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">age_change</span> <span class="op">&lt;-</span> <span class="va">mean_age</span> <span class="op">-</span> <span class="va">prev_mean_age</span></span>
 <span></span>
 <span>  <span class="co"># Update nodal attributes</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Update epidemic trackers</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">at</span>, <span class="va">mean_age</span><span class="op">)</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age_change"</span>, <span class="va">at</span>, <span class="va">age_change</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epi.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">mean_age</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epi.html">set_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age_change"</span>, <span class="va">age_change</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Key points:</p>
 <ul>
 <li>
-<code><a href="../reference/net-accessor.html">set_epi()</a></code> returns a modified <code>dat</code> that must
-be assigned back. The value must be a scalar.</li>
+<code><a href="../reference/get_epi.html">set_epi()</a></code> returns a modified <code>dat</code> that must
+be assigned back. The value must be a scalar. It is recorded at the
+current time step; to record it at another one, pass <code>at</code> by
+name (<code>set_epi(dat, "mean_age", mean_age, at = 10)</code>).</li>
 <li>
-<code><a href="../reference/net-accessor.html">get_epi()</a></code> retrieves the tracker value at a specific
+<code><a href="../reference/get_epi.html">get_epi()</a></code> retrieves the tracker value at a specific
 time step. Requesting a nonexistent tracker throws an error.</li>
 </ul>
 </div>
@@ -483,7 +536,7 @@ time step. Requesting a nonexistent tracker throws an error.</li>
 simulation. Access them by calling <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> on a
 <code>netsim</code> object, or use <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and
 <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Raw per-simulation data</span></span>
@@ -503,7 +556,7 @@ simulation. Access them by calling <code><a href="https://rdrr.io/r/base/as.data
 without re-running the model. <code><a href="../reference/mutate_epi.html">mutate_epi()</a></code> works like
 <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> but operates on the <code>epi</code>
 list:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add incidence rate and prevalence</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, prev <span class="op">=</span> <span class="va">i.num</span> <span class="op">/</span> <span class="va">num</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, ir <span class="op">=</span> <span class="op">(</span><span class="va">si.flow</span> <span class="op">/</span> <span class="va">s.num</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -518,7 +571,7 @@ list:</p>
 automatically generates stratified compartment counts by a nodal
 attribute. For example, to track infection by a <code>"risk"</code>
 attribute:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -542,7 +595,7 @@ attribute:</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
 <p>With <code>epi.by = "risk"</code>, the output includes stratified
 columns automatically:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "sim"         "time"        "s.num"       "s.num.risk0" "s.num.risk1"</span></span>
@@ -566,20 +619,20 @@ calculations.</p>
 (<code>dat</code>) and return a <strong>scalar</strong> value (numeric,
 logical, or character). It is called automatically at the end of each
 time step, after all modules have run.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">epi_s_num</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">needed_attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span></span>
-<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/net-accessor.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_attr.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"s"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Here is a tracker that computes the proportion of the population
 infected:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">epi_prop_infected</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">needed_attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span>, <span class="st">"active"</span><span class="op">)</span></span>
-<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/net-accessor.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_attr.html">get_attr_list</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">needed_attributes</span><span class="op">)</span>, <span class="op">{</span></span>
 <span>    <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">active</span> <span class="op">==</span> <span class="fl">1</span></span>
 <span>    <span class="va">infected</span> <span class="op">&lt;-</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"i"</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">infected</span> <span class="op">&amp;</span> <span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -604,7 +657,7 @@ work in a clean environment.</li>
 <p>Pass tracker functions as a named list via <code>.tracker.list</code>
 in <code><a href="../reference/control.net.html">control.net()</a></code>. The names become column names in the
 output <code>data.frame</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">some.trackers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  prop_infected <span class="op">=</span> <span class="va">epi_prop_infected</span>,</span>
 <span>  s_num         <span class="op">=</span> <span class="va">epi_s_num</span></span>
@@ -843,31 +896,32 @@ step. The values they output reflect the state of the simulation
 state of an object during simulation without stopping it.
 <code><a href="../reference/record_raw_object.html">record_raw_object()</a></code> saves any R object at a given time step
 for later inspection.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">introspect_module</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">age</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>        age <span class="op">=</span> <span class="va">age</span>,</span>
-<span>        status <span class="op">=</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
+<span>        status <span class="op">=</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/record_raw_object.html">record_raw_object</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="st">"old pop"</span>, <span class="va">obj</span><span class="op">)</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/record_raw_object.html">record_raw_object</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"old pop"</span>, <span class="va">obj</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>After simulation, access recorded objects from the
 <code>netsim</code> output:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Access raw records for simulation 1</span></span>
-<span><span class="co"># Returns a nested list keyed by label, then time step</span></span>
-<span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">[[</span><span class="st">"raw.records"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co"># Access raw records for simulation 1, as a list of records with the</span></span>
+<span><span class="co"># elements `time`, `label`, and `object`</span></span>
+<span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">[[</span><span class="st">"raw.records"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">as_list</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Access the "old pop" data.frame recorded at step 75</span></span>
-<span><span class="va">raw</span><span class="op">[[</span><span class="st">"old pop"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">75</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">old_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="va">r</span><span class="op">$</span><span class="va">label</span> <span class="op">==</span> <span class="st">"old pop"</span> <span class="op">&amp;&amp;</span> <span class="va">r</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">75</span>, <span class="va">raw</span><span class="op">)</span></span>
+<span><span class="va">old_pop</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">object</span></span></code></pre></div>
 <p><strong>Use sparingly:</strong> Raw records are not truncated and can
 consume substantial memory, especially for large attribute vectors
 recorded at many time steps. This feature is intended for debugging, not

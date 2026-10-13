@@ -10,7 +10,7 @@ object.
 ## Usage
 
 ``` r
-record_raw_object(dat, at, label, object)
+record_raw_object(dat, label, object, ..., at = NULL)
 ```
 
 ## Arguments
@@ -21,10 +21,6 @@ record_raw_object(dat, at, label, object)
   other initialization information passed from
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
-- at:
-
-  The time where the recording happens.
-
 - label:
 
   The name to give to the recorded object.
@@ -33,22 +29,35 @@ record_raw_object(dat, at, label, object)
 
   The object to be recorded.
 
+- ...:
+
+  Must be empty. It makes `at` a named-only argument, so that calls
+  written for the EpiModel 2.6 signature,
+  `record_raw_object(dat, at, label, object)`, error instead of silently
+  recording the wrong object.
+
+- at:
+
+  The time step at which the recording happens. Defaults to the current
+  time step if `NULL`.
+
 ## Value
 
 The updated `netsim_dat` main list object.
 
 ## Details
 
-See the "Time-Varying Parameters" section of the "Working With Model
-Parameters" vignette.
+See the "Recording Arbitrary Objects (Advanced Debugging)" section of
+the "Working with Custom Attributes and Summary Statistics" vignette
+([`vignette("attributes-and-summary-statistics", package = "EpiModel")`](https://epimodel.github.io/EpiModel/articles/attributes-and-summary-statistics.md)).
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 
-dat <- record_raw_object(dat, at, "a.df", data.frame(x = 2:200))
-dat <- record_raw_object(dat, at, "a.message", "I recorded something")
+dat <- record_raw_object(dat, "a.df", data.frame(x = 2:200))
+dat <- record_raw_object(dat, "a.message", "I recorded something")
 
 } # }
 ```

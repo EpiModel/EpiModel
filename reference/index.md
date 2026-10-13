@@ -148,6 +148,12 @@ restart checkpoints.
 - [`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md)
   : Extract the Attributes History from Network Simulations
 
+- [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md)
+  : Get Tracked Attributes at a Given Time Step
+
+- [`make_networkDynamic()`](https://epimodel.github.io/EpiModel/reference/make_networkDynamic.md)
+  : Build a networkDynamic Object from Simulation Output
+
 - [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
   :
 
@@ -311,32 +317,40 @@ Get, set, and manage node-level attributes, epidemic trackers,
 parameters, control settings, and initial conditions on the internal dat
 simulation state object.
 
-- [`get_attr_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_epi_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_param_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_control_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_network_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_control()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_init_list()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`add_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`set_init()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
-  [`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+- [`net-accessor`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
   : Functions to Access and Edit the Main netsim_dat Object in Network
+  Models
+
+- [`get_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`get_attr_list()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`add_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  [`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  : Get and Set Nodal Attributes in Network Models
+
+- [`get_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
+  [`get_epi_list()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
+  [`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
+  [`add_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
+  : Get and Set Epidemic Outputs in Network Models
+
+- [`get_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_param_list()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`set_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`add_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_control()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_control_list()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_network_control()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`set_control()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`add_control()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_init()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`get_init_list()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`set_init()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  [`add_init()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
+  : Get and Set Parameters, Controls, and Initial Conditions in Network
   Models
 
 - [`get_attr_prop()`](https://epimodel.github.io/EpiModel/reference/get_attr_prop.md)

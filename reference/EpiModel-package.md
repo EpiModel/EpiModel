@@ -161,19 +161,19 @@ holding all simulation state.
 
 Modules should use the accessor functions rather than manipulating that
 object directly. These include
-[`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 and
-[`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 for nodal attributes,
-[`get_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
 for parameters,
-[`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
 and
-[`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
 for epidemic summary statistics,
-[`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 and
-[`append_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 for new arrivals,
 [`discord_edgelist()`](https://epimodel.github.io/EpiModel/reference/discord_edgelist.md)
 for serodiscordant pairs, and

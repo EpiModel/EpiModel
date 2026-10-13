@@ -54,6 +54,8 @@ netsim."><link rel="icon" href="https://epimodel.github.io/sismid/images/movie.g
 <span>  edges.correct.attr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cumulative.edgelist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  truncate.el.cuml <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  tracked.attributes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tracked.attributes.once <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">attr.rules</span>,</span>
 <span>  <span class="va">epi.by</span>,</span>
 <span>  initialize.FUN <span class="op">=</span> <span class="va">initialize.net</span>,</span>
@@ -177,6 +179,31 @@ only currently active edges; use <code>Inf</code> to retain the full history
 (memory permitting) or a positive integer to keep dissolved edges
 for that many steps after they ended. Only relevant when
 <code>cumulative.edgelist = TRUE</code>.</p></dd>
+
+
+<dt id="arg-tracked-attributes">tracked.attributes<a class="anchor" aria-label="anchor" href="#arg-tracked-attributes"></a></dt>
+<dd><p>A character vector of nodal attribute names whose
+changes should be automatically recorded at each time step. The
+<code>active</code> attribute is always tracked when this or
+<code>tracked.attributes.once</code> is non-empty. At each
+step, only the nodes whose values changed (including <code>NA</code> transitions),
+plus newly arrived and departed nodes, are recorded via
+<code><a href="record_attr_history.html">record_attr_history()</a></code>. The resulting history can be retrieved with
+<code><a href="get_attr_history.html">get_attr_history()</a></code> and used to reconstruct attribute state at any
+time step with <code><a href="get_attr_at.html">get_attr_at()</a></code> or to build a <code>networkDynamic</code> object
+with <code><a href="make_networkDynamic.html">make_networkDynamic()</a></code>. A tracked attribute that a module
+creates on its first call is recorded for all nodes from that step
+on; every tracked attribute must exist by the end of the first time
+step.</p></dd>
+
+
+<dt id="arg-tracked-attributes-once">tracked.attributes.once<a class="anchor" aria-label="anchor" href="#arg-tracked-attributes-once"></a></dt>
+<dd><p>A character vector of nodal attribute names
+to record only in the initial snapshot and for newly arriving nodes.
+Unlike <code>tracked.attributes</code>, these are not diff-tracked at every step,
+so subsequent changes are <strong>not</strong> captured. Use this for attributes
+that are fixed at entry and never change during the simulation (e.g.,
+<code>"race"</code>, <code>"birth.year"</code>).</p></dd>
 
 
 <dt id="arg-attr-rules">attr.rules<a class="anchor" aria-label="anchor" href="#arg-attr-rules"></a></dt>

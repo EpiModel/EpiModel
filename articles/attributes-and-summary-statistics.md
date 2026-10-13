@@ -45,7 +45,7 @@ Every node has four core attributes, managed automatically by EpiModel:
 
 You can retrieve the list of core attributes and their default types
 with
-[`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md):
+[`get_core_attributes()`](https://epimodel.github.io/EpiModel/reference/get_attr.md):
 
 ``` r
 
@@ -127,7 +127,7 @@ for conversion functions.
 #### Accessing Attributes
 
 Use
-[`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 to extract an attribute vector:
 
 ``` r
@@ -160,7 +160,7 @@ aging_module <- function(dat, at) {
 ```
 
 Key points about
-[`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md):
+[`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md):
 
 - It returns a modified copy of `dat`, which must be assigned back.
   (This does not cause performance issues due to R’s shallow copy
@@ -173,28 +173,116 @@ Key points about
 The recommended workflow for attribute manipulation in modules:
 
 1.  Extract attributes into local vectors with
-    [`get_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
+    [`get_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md).
 2.  Modify the local vectors with your dynamic process.
 3.  Update `dat` with the revised vectors using
-    [`set_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
+    [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md).
 4.  Return `dat` at the end of the function.
 
 These functions have additional arguments described in
-[`help("net-accessor", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
+[`help("get_attr", package = "EpiModel")`](https://epimodel.github.io/EpiModel/reference/get_attr.md).
 
 ## Historical Nodal Attributes
 
 Current attributes reflect the state of each node at the present time
 step. Sometimes you need to track what happened to specific nodes over
 time. Because saving the full history of all attributes would consume
-too much memory, EpiModel provides a selective recording mechanism: you
-choose which attributes, for which nodes, at which time steps to record.
+too much memory, EpiModel provides two complementary mechanisms:
+**automatic tracking** via `control.net` and **manual recording** inside
+custom modules. Both write to the same `attr.history` storage,
+accessible after the simulation with
+[`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md).
 
-This is useful for diagnostics (verifying that a dynamic process is
-coded correctly) or for tracking a limited set of individual-level
-outcomes for further analysis.
+### Automatic Attribute Tracking
 
-### Recording Attribute Histories
+The simplest way to record attribute histories is to declare the
+attributes you want tracked in `control.net`. EpiModel will then
+automatically record changes at each time step using delta
+compression—only nodes whose values actually changed (including `NA`
+transitions), plus newly arrived and departed nodes, are stored. The
+`active` attribute is always tracked when any tracked attributes are
+specified.
+
+``` r
+
+control <- control.net(
+  type = "SIS",
+  nsteps = 500,
+  nsims = 1,
+  tracked.attributes = c("status"),
+  tracked.attributes.once = c("race"),
+  verbose = FALSE
+)
+```
+
+Attributes listed in `tracked.attributes` are diff-tracked: at each
+step, only nodes whose values changed are recorded. Attributes listed in
+`tracked.attributes.once` are recorded only in the initial snapshot and
+for newly arriving nodes—they are not compared at each step. Use
+`tracked.attributes.once` for attributes that are fixed at entry and
+never change during the simulation (e.g., `"race"`, `"birth.year"`).
+
+After the simulation completes, you can reconstruct the tracked
+attribute state at any time step with
+[`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md):
+
+``` r
+
+sim <- netsim(est, param, init, control)
+
+# Reconstruct attributes at time step 200
+attrs_200 <- get_attr_at(sim, at = 200)
+attrs_200
+# # A tibble: 500 x 4
+#   unique_id active status race
+#       <int>  <int> <chr>  <chr>
+# 1         1      1 s      W
+# 2         2      1 i      W
+# 3         3      1 s      W
+# # ... with 497 more rows
+```
+
+The raw delta-compressed history is also available via
+[`get_attr_history()`](https://epimodel.github.io/EpiModel/reference/get_attr_history.md):
+
+``` r
+
+attr_history <- get_attr_history(sim)
+names(attr_history)
+# [1] "active" "status" "race"
+
+attr_history$status
+# # A tibble: 11,812 x 5
+#     sim  time attribute  uids values
+#   <dbl> <int> <chr>     <int> <chr>
+# 1     1     1 status        1 s
+# 2     1     1 status        2 s
+# 3     1     1 status        3 s
+# # ... with 11,809 more rows
+
+# After the initial snapshot of the 500 nodes, only the changes are recorded
+attr_history$status[501:503, ]
+# # A tibble: 3 x 5
+#     sim  time attribute  uids values
+#   <dbl> <int> <chr>     <int> <chr>
+# 1     1     2 status       97 i
+# 2     1     2 status      123 i
+# 3     1     3 status       13 i
+```
+
+Each element is a `tibble` with columns `sim` (simulation number),
+`time` (time step), `attribute` (the label), `uids` (unique IDs), and
+`values` (the recorded values). The initial time step contains the full
+snapshot; subsequent steps contain only the changes.
+
+### Manual Attribute Recording
+
+For finer-grained control—recording specific subsets of nodes, at
+specific intervals, or attributes not listed in `tracked.attributes`—you
+can call
+[`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
+directly inside a custom module. This writes to the same `attr.history`
+storage as automatic tracking.
 
 The following module records the viral load of infected nodes every 10
 time steps. It assumes the model defines a `status` attribute (with
@@ -215,10 +303,9 @@ viral_load_logger_module <- function(dat, at) {
     infected <- which(status == "i")
 
     dat <- record_attr_history(
-      dat, at,
-      "viral_load",
-      infected,
-      viral_load[infected]
+      dat, "viral_load",
+      viral_load[infected],
+      posit_ids = infected
     )
   }
 
@@ -227,61 +314,26 @@ viral_load_logger_module <- function(dat, at) {
 ```
 
 [`record_attr_history()`](https://epimodel.github.io/EpiModel/reference/record_attr_history.md)
-takes five arguments:
+takes the following arguments:
 
 1.  `dat`: the main list object.
-2.  `at`: the time step to associate with the recording (usually the
-    current step).
-3.  A label for the attribute (here `"viral_load"`).
-4.  A vector of `posit_id`s for the nodes of interest. Internally, these
-    are converted to `unique_id`s so the history remains valid even
-    after nodes depart.
-5.  The values to record for those IDs. The number of values must match
-    the number of IDs, unless a single value is provided (which is
-    recycled for all IDs, using less memory).
+2.  `item`: a label for the attribute (here `"viral_load"`).
+3.  `value`: the values to record. Must match the number of nodes in
+    length, unless a single value is provided (which is recycled for all
+    nodes).
+4.  `at`: the time step to associate with the recording. Defaults to the
+    current time step if omitted, and must be passed by name.
+5.  `posit_ids` or `unique_ids`: a vector of node IDs to which the
+    values apply, passed by name. When `posit_ids` are provided, they
+    are converted internally to `unique_id`s so the history remains
+    valid even after nodes depart.
 
-Use attribute histories sparingly—storage can grow large in
-open-population models with many nodes over many time steps.
-
-### Accessing Attribute Histories
-
-Attribute histories are accessed after the simulation is complete:
-
-``` r
-
-sim <- netsim(est, param, init, control)
-attr_history <- get_attr_history(sim)
-```
-
-The result is a named list of `data.frame`s, one for each recorded
-attribute label. Suppose we recorded `"viral_load"` (as above) and also
-`"status"` transitions in another module. The output would look like:
-
-``` r
-
-get_attr_history(sim)
-
-# $viral_load
-#    sim step attribute    uids values
-# 1    1   10 viral_load   1001   2000
-# 2    1   10 viral_load   1002   1878
-# 3    1   20 viral_load   1001   1500
-# 4    1   20 viral_load   1002    300
-# ...
-#
-# $status
-#    sim step attribute  uids  values
-# 1    1   22 status     1001       i
-# 2    1   64 status     1002       i
-# 3    1  110 status     1001       r
-# 4    1  220 status     1002       r
-# ...
-```
-
-Each `data.frame` has columns `sim` (simulation number), `step` (time
-step), `attribute` (the label), `uids` (unique IDs), and `values` (the
-recorded values). The list structure allows each history to have
-different dimensions.
+Use attribute tracking and histories sparingly—storage can grow large in
+open-population models with many nodes over many time steps. Note that
+automatic tracking with `tracked.attributes` also records all nodes in
+the initial snapshot, but subsequent steps only store the changes,
+making it more memory-efficient for attributes that change infrequently
+relative to the population size.
 
 ## Epidemic Trackers
 
@@ -296,9 +348,9 @@ compartment sizes.
 ### Working With Epidemic Trackers in Modules
 
 Inside a module, access and modify epidemic trackers with
-[`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`get_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
 and
-[`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md).
+[`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md).
 Here is an extended aging module that also tracks mean age and its
 change over time:
 
@@ -314,15 +366,15 @@ aging_track_module <- function(dat, at) {
 
   # Calculate summary statistics
   mean_age <- mean(new_age)
-  prev_mean_age <- get_epi(dat, at - 1, "mean_age")
+  prev_mean_age <- get_epi(dat, "mean_age", at - 1)
   age_change <- mean_age - prev_mean_age
 
   # Update nodal attributes
   dat <- set_attr(dat, "age", new_age)
 
   # Update epidemic trackers
-  dat <- set_epi(dat, "mean_age", at, mean_age)
-  dat <- set_epi(dat, "age_change", at, age_change)
+  dat <- set_epi(dat, "mean_age", mean_age)
+  dat <- set_epi(dat, "age_change", age_change)
 
   return(dat)
 }
@@ -330,10 +382,12 @@ aging_track_module <- function(dat, at) {
 
 Key points:
 
-- [`set_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+- [`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
   returns a modified `dat` that must be assigned back. The value must be
-  a scalar.
-- [`get_epi()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+  a scalar. It is recorded at the current time step; to record it at
+  another one, pass `at` by name
+  (`set_epi(dat, "mean_age", mean_age, at = 10)`).
+- [`get_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
   retrieves the tracker value at a specific time step. Requesting a
   nonexistent tracker throws an error.
 
@@ -571,7 +625,7 @@ introspect_module <- function(dat, at) {
         age = age,
         status = get_attr(dat, "status")
     )
-    dat <- record_raw_object(dat, at, "old pop", obj)
+    dat <- record_raw_object(dat, "old pop", obj)
   }
 
   return(dat)
@@ -584,12 +638,13 @@ After simulation, access recorded objects from the `netsim` output:
 
 sim <- netsim(est, param, init, control)
 
-# Access raw records for simulation 1
-# Returns a nested list keyed by label, then time step
-raw <- sim[["raw.records"]][[1]]
+# Access raw records for simulation 1, as a list of records with the
+# elements `time`, `label`, and `object`
+raw <- sim[["raw.records"]][[1]]$as_list()
 
 # Access the "old pop" data.frame recorded at step 75
-raw[["old pop"]][[75]]
+old_pop <- Filter(function(r) r$label == "old pop" && r$time == 75, raw)
+old_pop[[1]]$object
 ```
 
 **Use sparingly:** Raw records are not truncated and can consume

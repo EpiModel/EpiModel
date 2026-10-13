@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.7.0</h4>
             
-            <h4 data-toc-skip class="date">2026-10-12</h4>
+            <h4 data-toc-skip class="date">2026-10-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/network-objects.Rmd" class="external-link"><code>vignettes/network-objects.Rmd</code></a></small>
       <div class="d-none name"><code>network-objects.Rmd</code></div>
@@ -313,12 +313,12 @@ with the duration of infection, given as a
 <code>inf.prob = multilayer(by_infection_duration(c(0.5, 0.2)), 0.1)</code>
 gives the first layer a probability of 0.5 in the first time step of an
 infection and 0.2 after.</p>
-<p>In a custom infection module, <code><a href="../reference/net-accessor.html">get_param()</a></code> returns the
+<p>In a custom infection module, <code><a href="../reference/get_param.html">get_param()</a></code> returns the
 <code>multilayer</code> object, a list with one element per layer, and
 the <code>network</code> column of the discordant edgelist selects the
 element that applies to each edge:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">inf.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_param</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"inf.prob"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">inf.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param.html">get_param</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"inf.prob"</span><span class="op">)</span></span>
 <span><span class="va">del</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_discordant_edgelist.html">get_discordant_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, status.attr <span class="op">=</span> <span class="st">"status"</span>,</span>
 <span>                               head.status <span class="op">=</span> <span class="st">"i"</span>, tail.status <span class="op">=</span> <span class="st">"s"</span><span class="op">)</span></span>
 <span><span class="va">del</span><span class="op">$</span><span class="va">transProb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">inf.prob</span><span class="op">)</span><span class="op">[</span><span class="va">del</span><span class="op">$</span><span class="va">network</span><span class="op">]</span>  <span class="co"># one fixed value per layer</span></span></code></pre></div>
@@ -369,7 +369,7 @@ partnerships depends on whether a node has a main partner:</p>
 <span><span class="va">update_deg_main</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">network</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">network</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_degree.html">get_degree</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_edgelist.html">get_edgelist</a></span><span class="op">(</span><span class="va">dat</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"deg.main"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">deg</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"deg.main"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">deg</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -529,9 +529,9 @@ child:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est_hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netclique.html">netclique</a></span><span class="op">(</span><span class="va">nw</span>, group.attr <span class="op">=</span> <span class="st">"hh_id"</span>, arrivals <span class="op">=</span> <span class="st">"join"</span>,</span>
 <span>  arrivals.FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span>, <span class="va">new_ids</span>, <span class="va">network</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
-<span>    <span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
-<span>    <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>    <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
+<span>    <span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
+<span>    <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span>    <span class="va">existing</span> <span class="op">&lt;-</span> <span class="va">active</span> <span class="op">==</span> <span class="fl">1</span></span>
 <span>    <span class="va">existing</span><span class="op">[</span><span class="va">new_ids</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span>    <span class="va">pool</span> <span class="op">&lt;-</span> <span class="va">hh</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">existing</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">==</span> <span class="st">"child"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">hh</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
@@ -557,7 +557,7 @@ so that the new nodes are connected to the members of their groups.</p>
 <h3 id="moving-nodes-between-groups">Moving Nodes Between Groups<a class="anchor" aria-label="anchor" href="#moving-nodes-between-groups"></a>
 </h3>
 <p>The clique edges are built from the grouping attribute once, when the
-simulation starts. Setting the attribute with <code><a href="../reference/net-accessor.html">set_attr()</a></code>
+simulation starts. Setting the attribute with <code><a href="../reference/get_attr.html">set_attr()</a></code>
 afterward does not rewire the layer: the old edges remain and the layer
 no longer matches the groups. <code><a href="../reference/move_to_group.html">move_to_group()</a></code> sets the
 attribute and the edges together, in either storage mode. Each moved
@@ -567,9 +567,9 @@ is in years, a module in which young adults leave home to start
 households of their own is:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">leave_home</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
-<span>  <span class="va">hh_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net-accessor.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
+<span>  <span class="va">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"active"</span><span class="op">)</span></span>
+<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span><span class="op">)</span></span>
+<span>  <span class="va">hh_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">get_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"hh_id"</span><span class="op">)</span></span>
 <span>  <span class="va">elig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">active</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">&gt;=</span> <span class="fl">18</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">&lt;</span> <span class="fl">30</span><span class="op">)</span></span>
 <span>  <span class="va">movers</span> <span class="op">&lt;-</span> <span class="va">elig</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">elig</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">]</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">movers</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>

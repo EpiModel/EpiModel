@@ -46,7 +46,7 @@ case new parameters will be added to `param`).
 it is the recommended helper for tweaking parameters outside of a
 running simulation. To modify parameters from *inside* a module function
 during a simulation, use
-[`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
 on the live `dat` object instead. There is no analogous
 `update_controls()` or `update_inits()` helper: for a `control.net` or
 `init.net` object, edit the list directly (e.g., `ctrl$nsteps <- 1000`)
@@ -59,7 +59,7 @@ and the `.control.updater.list` argument to
 
 ## See also
 
-[`set_param()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`set_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
 for editing parameters inside a module function during a simulation;
 [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
 for the parameter constructor;

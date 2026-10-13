@@ -1,7 +1,7 @@
 # Create the Unique Identifiers for New Nodes
 
 This function is called by
-[`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/net-accessor.md)
+[`append_core_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
 and appends new `unique_ids` to the created nodes. It also keeps track
 of the already used `unique_ids` with the `dat$run$last_unique_id`
 variable.

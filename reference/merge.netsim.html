@@ -103,7 +103,9 @@ argument (e.g. <code>run</code>) follow that argument instead.</p></dd>
 <dd><p>If <code>TRUE</code>, if <code>x</code> and <code>y</code> have different
 params (in <code><a href="param.net.html">param.net()</a></code>) or controls (passed in
 <code><a href="control.net.html">control.net()</a></code>) an error will prevent the merge. Use
-<code>FALSE</code> to override that check.</p></dd>
+<code>FALSE</code> to override that check. The controls for how the runs were
+executed rather than what they simulated (<code>nsims</code>, <code>ncores</code>,
+<code>verbose</code>, <code>verbose.int</code>, and the checkpoint settings) may differ.</p></dd>
 
 
 <dt id="arg-keep-diss-stats">keep.diss.stats<a class="anchor" aria-label="anchor" href="#arg-keep-diss-stats"></a></dt>
@@ -149,7 +151,8 @@ the data from both <code>x</code> and <code>y</code>.</p>
     <p>This merge function combines the results of two independent simulations of
 <code><a href="netsim.html">netsim()</a></code> class models, simulated under separate function calls.
 The model parameterization between the two calls must be exactly the same,
-except for the number of simulations in each call. This allows for manual
+except for the number of simulations in each call and the execution
+settings listed under <code>param.error</code>. This allows for manual
 parallelization of model simulations.</p>
 <p>This merge function does not work the same as the default merge, which allows
 for a combined object where the structure differs between the input elements.
