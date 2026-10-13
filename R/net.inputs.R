@@ -612,12 +612,15 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        `netsim`; this can be useful for distributed computation (HPC).
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
 #'        simulations. Supports [`multilayer`] specification.
-#' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`. In `netsim`,
-#'        this is only used when initializing the network with `edapprox = TRUE`. All other
-#'        simulations in `netsim` use `tergm`. Supports [`multilayer`] specification.
-#' @param set.control.tergm Control arguments passed to `tergm::simulate_formula.network`. See the
-#'        help file for [`netdx`] for details and examples on specifying this parameter. Supports
-#'        [`multilayer`] specification.
+#' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`, built with
+#'        [ergm::control.simulate.formula()]. In `netsim`, this is only used when initializing the
+#'        network with `edapprox = TRUE`. All other simulations in `netsim` use `tergm`. Supports
+#'        [`multilayer`] specification. See [`net-controls`].
+#' @param set.control.tergm Control arguments passed to `tergm::simulate_formula.network`, built with
+#'        [tergm::control.simulate.formula.tergm()], for each time step of the network simulation. Use
+#'        the same settings that brought the [`netdx`] diagnostics on target, and restate the default
+#'        `MCMC.maxchanges = .Machine$integer.max` when passing other settings. Supports [`multilayer`]
+#'        specification. See [`net-controls`].
 #' @param save.diss.stats If `TRUE`, `netsim` will compute and save duration and dissolution
 #'        statistics for plotting and printing, provided `save.network` is `TRUE`, `tergmLite` is
 #'        `FALSE`, and the dissolution model is homogeneous.
