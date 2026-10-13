@@ -12,7 +12,8 @@ get_sims(x, sims, var = NULL)
 \item{sims}{Either a numeric vector of simulation numbers to retain in the
 output object, or \code{"mean"}, which selects the one simulation with
 the value of the variable specified in \code{var} closest to the mean
-of \code{var} across all simulations at the final step.}
+of \code{var} across all simulations at the final step. Each simulation
+is returned once, in ascending order, whatever the order of \code{sims}.}
 
 \item{var}{A character vector of variables to retain from \code{x} if
 \code{sims} is a numeric vector, or a single variable name for

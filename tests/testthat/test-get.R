@@ -170,6 +170,10 @@ test_that("get_sims extracts simulations", {
 test_that("get_sims error flags", {
   skip_on_cran()
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
+  expect_error(get_sims(mod, sims = 4), "Maximum sims value for this object is 3")
+  for (bad in list(0, -1, 1.5, c(1, NA), numeric(0))) {
+    expect_error(get_sims(mod, sims = bad), "whole numbers between 1 and 3")
+  }
 })
 
 dxs <- netdx(est, dynamic = FALSE, nsims = 5,
@@ -281,4 +285,76 @@ test_that("get_sims subsets the cumulative edgelists and handles duplicates", {
   expect_warning(s23 <- get_sims(mod_bad, sims = 2:3), NA)
   expect_identical(s23$raw.records, mod_bad$raw.records)
   expect_equal(s23$run$sim1, mod$run$sim2)
+})
+
+test_that("get_sims keeps every per-simulation element of an open population run aligned", {
+  skip_on_cran()
+  # arrivals and departures make `edges_correct()` move the formation
+  # coefficients apart across simulations, so a misaligned `coef.form` shows
+  set.seed(1059)
+  nw <- network_initialize(n = 80)
+  est <- netest(nw, formation = ~edges, target.stats = 40,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.03),
+                verbose = FALSE)
+  # runs first in each step, so it records the coefficient carried over from
+  # the previous step
+  logger <- function(dat, at) {
+    dat <- record_attr_history(dat, "n.active", length(get_posit_ids(dat)),
+                               posit_ids = get_posit_ids(dat)[1])
+    dat <- record_raw_object(dat, "coef", dat$nwparam[[1]]$coef.form[[1]])
+    dat$last.coef <- dat$nwparam[[1]]$coef.form[[1]]
+    dat
+  }
+  param <- param.net(inf.prob = 0.3, act.rate = 1, a.rate = 0.03,
+                     ds.rate = 0.03, di.rate = 0.03)
+  init <- init.net(i.num = 10)
+  open_control <- function(nsims, start = 1, nsteps = 8) {
+    control.net(type = NULL, nsteps = nsteps, start = start, nsims = nsims,
+                infection.FUN = infection.net, departures.FUN = departures.net,
+                arrivals.FUN = arrivals.net, logger.FUN = logger,
+                tergmLite = TRUE, resimulate.network = TRUE,
+                cumulative.edgelist = TRUE, save.cumulative.edgelist = TRUE,
+                save.run = TRUE, save.network = TRUE, save.nwstats = TRUE,
+                save.transmat = TRUE, save.other = "last.coef",
+                verbose = FALSE)
+  }
+  mod <- netsim(est, param, init, open_control(nsims = 3))
+
+  coefs <- vapply(mod$coef.form, function(cf) cf[[1]][[1]], numeric(1))
+  # the checks below need simulations 1 and 2 to have drifted apart
+  expect_false(isTRUE(all.equal(coefs[[1]], coefs[[2]])))
+
+  per_sim <- c("run", "coef.form", "cumulative.edgelist", "attr.history",
+               "raw.records", "network", "last.coef")
+  s2 <- get_sims(mod, sims = 2)
+  for (elt in per_sim) {
+    expect_named(s2[[elt]], "sim1")
+    expect_identical(s2[[elt]][[1]], mod[[elt]][[2]], info = elt)
+  }
+  for (elt in c("nwstats", "transmat")) {
+    expect_named(s2$stats[[elt]], "sim1")
+    expect_identical(s2$stats[[elt]][[1]], mod$stats[[elt]][[2]], info = elt)
+  }
+  expect_s3_class(s2$stats$transmat, "transmat")
+  expect_equal(s2$epi$num$sim1, mod$epi$num$sim2)
+
+  # `nwparam` holds the coefficients of the first simulation, before and after
+  expect_identical(mod$nwparam[[1]]$coef.form, mod$coef.form$sim1[[1]])
+  expect_identical(s2$nwparam[[1]]$coef.form, mod$coef.form$sim2[[1]])
+
+  # sims come back in ascending order
+  s31 <- get_sims(mod, sims = c(3, 1))
+  for (elt in per_sim) {
+    expect_identical(unname(s31[[elt]]), unname(mod[[elt]][c(1, 3)]),
+                     info = elt)
+  }
+
+  # a restart reads the first `run` and `coef.form` of `x`, which must both
+  # come from the simulation kept: the first coefficient the restarted run
+  # sees is the final one of simulation 2
+  rs <- netsim(s2, param, init, open_control(nsims = 1, start = 9, nsteps = 10))
+  expect_equal(rs$epi$num[1:8, 1], mod$epi$num[, 2])
+  first_coef <- rs$raw.records$sim1$as_list()[[1]]$object
+  expect_equal(first_coef, coefs[[2]])
+  expect_false(isTRUE(all.equal(first_coef, coefs[[1]])))
 })

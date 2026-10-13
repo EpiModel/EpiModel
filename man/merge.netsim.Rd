@@ -46,7 +46,9 @@ argument (e.g. \code{run}) follow that argument instead.}
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
 params (in \code{\link[=param.net]{param.net()}}) or controls (passed in
 \code{\link[=control.net]{control.net()}}) an error will prevent the merge. Use
-\code{FALSE} to override that check.}
+\code{FALSE} to override that check. The controls for how the runs were
+executed rather than what they simulated (\code{nsims}, \code{ncores},
+\code{verbose}, \code{verbose.int}, and the checkpoint settings) may differ.}
 
 \item{keep.diss.stats}{If \code{TRUE}, keep \code{diss.stats} from the
 original \code{x} and \code{y} objects.}
@@ -81,7 +83,8 @@ stochastic network models from \code{netsim}.
 This merge function combines the results of two independent simulations of
 \code{\link[=netsim]{netsim()}} class models, simulated under separate function calls.
 The model parameterization between the two calls must be exactly the same,
-except for the number of simulations in each call. This allows for manual
+except for the number of simulations in each call and the execution
+settings listed under \code{param.error}. This allows for manual
 parallelization of model simulations.
 
 This merge function does not work the same as the default merge, which allows

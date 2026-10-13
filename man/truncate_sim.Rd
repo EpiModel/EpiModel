@@ -37,11 +37,18 @@ steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 \code{b}, where the final time window of interest for data analysis is
 \code{b} to \code{c} only.
 
-For \code{netsim} objects with \code{reset.time = TRUE}, the times of the attribute
-history and of the cumulative edgelist are shifted to the new time steps
-as well, so that \code{\link[=get_attr_at]{get_attr_at()}} and \code{\link[=make_networkDynamic]{make_networkDynamic()}} read them in
-the same frame. Their records before \code{at} are kept, with times of 0 or
-less, as the state of the nodes and edges at \code{at} depends on them.
+For \code{netsim} objects, the network statistics are truncated along with the
+epi trackers, as both hold one row per time step. With \code{reset.time = TRUE},
+the times of the attribute history, the raw records, the transmission
+matrix, and the cumulative edgelist are shifted to the new time steps as
+well, so that \code{\link[=get_attr_at]{get_attr_at()}}, \code{\link[=get_transmat]{get_transmat()}} and \code{\link[=make_networkDynamic]{make_networkDynamic()}}
+read them in the same frame. Their records before \code{at} are kept, with times
+of 0 or less, as the state of the nodes and edges at \code{at} depends on them
+and the transmissions before \code{at} remain part of the transmission chains.
+
+The saved networks and the \code{run} sublists, which hold the state needed to
+restart a simulation, keep their original time steps. Build a restart point
+with \code{\link[=make_restart_point]{make_restart_point()}} from the object before truncating it.
 }
 \examples{
 # DCM examples
