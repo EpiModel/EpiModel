@@ -626,6 +626,33 @@
   now finds each attribute’s time 1 table by name rather than by
   position, since the positions in a restricted table no longer match
   those in the time 1 table.
+- Add a `?net-controls` help page for the control settings that
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md),
+  and
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  pass to `ergm` and `tergm`. It lists the control function each
+  `set.control.*` argument takes at each stage, the defaults EpiModel
+  sets, including `MCMC.maxchanges = .Machine$integer.max` in the
+  `tergm` controls, which a control object passed in place of the
+  default drops unless it is restated, how to use static and dynamic
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
+  diagnostics to tell whether the estimation, the edges dissolution
+  approximation, or the per-step simulation burn-in needs adjusting, and
+  the settings most often changed.
+  [`?set.control.ergm`](https://epimodel.github.io/EpiModel/reference/net-controls.md),
+  [`?set.control.tergm`](https://epimodel.github.io/EpiModel/reference/net-controls.md),
+  and
+  [`?set.control.ergm.ego`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+  now open this page. The
+  [`netest()`](https://epimodel.github.io/EpiModel/reference/netest.md),
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md),
+  and
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  pages and the Intro vignette link to it and to the Improving Model
+  Estimation and Simulation appendix of the Network Modeling for
+  Epidemics course, which holds the worked examples. Closes
+  [\#743](https://github.com/EpiModel/EpiModel/issues/743).
 - Split the shared help page of the `netsim_dat` accessors into one page
   per group: nodal attributes
   ([`?get_attr`](https://epimodel.github.io/EpiModel/reference/get_attr.md)),

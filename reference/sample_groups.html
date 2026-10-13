@@ -133,25 +133,25 @@ ids to a population whose attributes already exist.</p></div>
 <span class="r-in"><span>              <span class="st">"adult adult child elderly"</span> <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu">sample_groups</span><span class="op">(</span><span class="fl">1000</span>, <span class="va">hh_types</span>, attr.name <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    group type     age</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1    4 elderly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1    4 elderly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      2    1   adult</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      3    6   adult</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      3    6   child</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      4    1   adult</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      5    3 elderly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      6    2   adult</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      6    2   adult</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     7    4 elderly</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    group type   age</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1    8 adult</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1    8 adult</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1    8 child</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      1    8 child</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      2    6 adult</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      2    6 child</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      3    6 adult</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      3    6 child</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      4    2 adult</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     4    2 adult</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tabulate.html" class="external-link">tabulate</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>                 <span class="co"># household size distribution</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   2   3   4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116 154  60  99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117 159  67  91 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/proportions.html" class="external-link">prop.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span>                 <span class="co"># person-level age distribution</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   adult   child elderly </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.598   0.253   0.149 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.592   0.245   0.163 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Every child shares a household with an adult</span></span></span>
 <span class="r-in"><span><span class="va">has_adult</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">age</span> <span class="op">==</span> <span class="st">"adult"</span>, <span class="va">pop</span><span class="op">$</span><span class="va">group</span>, <span class="va">any</span><span class="op">)</span></span></span>
@@ -167,12 +167,12 @@ ids to a population whose attributes already exist.</p></div>
 <span class="r-in"><span><span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu">sample_groups</span><span class="op">(</span><span class="fl">100</span>, <span class="va">types</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pop2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   group type   age sex</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1    1 adult   F</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2    1 adult   F</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3    3 adult   F</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     3    3 adult   M</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     3    3 child   F</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     4    3 adult   F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1    2 adult   F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1    2 adult   M</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     2    2 adult   F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     2    2 adult   M</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     3    3 adult   F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     3    3 adult   M</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

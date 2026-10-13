@@ -92,6 +92,15 @@ plot(dx, type = "duration")
 
 ![](Intro_files/figure-html/step2_plot2-1.png)
 
+When the diagnostics miss their targets, or the estimation fails, the
+cause usually lies in the control settings that `netest`, `netdx`, and
+`control.net` pass to the `ergm` and `tergm` packages, or in the edges
+dissolution approximation at short partnership durations. The
+`?net-controls` help page covers which settings to adjust at each stage,
+and the [Improving Model Estimation and
+Simulation](https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html)
+appendix of the NME course works through examples.
+
 ### Step 3: Epidemic Simulation
 
 With a validated network model, we layer on the epidemic. This SIS model
@@ -293,21 +302,22 @@ interested in stochastic network models, the primary focus of EpiModel.
   *Journal of Statistical Software*, provides the mathematical and
   computational foundations for all three model classes. See citation
   below.
-- **NME Course, Section I (Chapters 3–35):** Lecture slides and
-  tutorials covering network science, ERGM specification, model
-  diagnostics, and built-in epidemic models
-  (<https://epimodel.github.io/sismid/>).
+- **NME Course, Part I (Modules 1–8):** Lecture slides and tutorials
+  covering network science, ERGM specification, model diagnostics, and
+  built-in epidemic models (<https://epimodel.github.io/sismid/>).
 
 ### Intermediate
 
-- **NME Course, Section II (Chapters 36–49):** [Extending
+- **NME Course, Part II (Modules 9–13):** [Extending
   EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html)
   materials covering the extension API for building custom models with
   new disease states, demographics, and interventions, along with
   advanced topics including [multi-layer
-  networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html)
-  and [epidemics over observed
-  networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html).
+  networks](https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html),
+  [epidemics over observed
+  networks](https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html),
+  and [improving model estimation and
+  simulation](https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html).
 - **EpiModel Gallery:** A library of worked extension model templates
   demonstrating custom disease states, demographics, interventions, and
   cost-effectiveness analysis

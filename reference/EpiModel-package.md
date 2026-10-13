@@ -130,7 +130,10 @@ With the model parameterized, the simulation functions are:
   2.  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
       runs diagnostics on the fitted model by simulating the network
       forward in time without disease, to check that the simulated
-      network recovers the formation and dissolution targets.
+      network recovers the formation and dissolution targets. The
+      [net-controls](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+      page covers the estimation and simulation settings to adjust when
+      it does not.
 
   3.  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
       simulates the stochastic network epidemic model, given the fitted

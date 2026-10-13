@@ -85,24 +85,37 @@ netest(
   If `TRUE`, use the indirect edges dissolution approximation method for
   the dynamic model fit, otherwise use the more time-intensive full
   STERGM estimation (see details). The approximation is recommended for
-  most use cases, especially when average partnership durations are
-  moderate to long (\> 25 time steps). Direct STERGM estimation
-  (`edapprox = FALSE`) is slower but may be preferred for very short
-  durations or when inferential quantities (standard errors, p-values)
-  on formation coefficients are needed. For `nw` of class `egor`, only
-  `edapprox = TRUE` is supported.
+  most use cases, and works best when average partnership durations are
+  long or density is low, so that few partnerships form or dissolve at
+  each time step. With short durations it can bias the formation
+  statistics in the dynamic diagnostics of
+  [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) (see
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
+  Direct STERGM estimation (`edapprox = FALSE`) is slower but may be
+  preferred for short durations or when inferential quantities (standard
+  errors, p-values) on formation coefficients are needed. For `nw` of
+  class `egor`, only `edapprox = TRUE` is supported.
 
 - set.control.ergm:
 
-  Control arguments passed to `ergm` (see details).
+  Control arguments passed to `ergm`, built with
+  [`ergm::control.ergm()`](https://rdrr.io/pkg/ergm/man/control.ergm.html)
+  (see
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
 
 - set.control.tergm:
 
-  Control arguments passed to `tergm` (see details).
+  Control arguments passed to `tergm`, built with
+  [`tergm::control.tergm()`](https://rdrr.io/pkg/tergm/man/control.tergm.html)
+  (see
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
 
 - set.control.ergm.ego:
 
-  Control arguments passed to `ergm.ego` (see details).
+  Control arguments passed to `ergm.ego`, built with
+  [`ergm.ego::control.ergm.ego()`](https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html)
+  (see
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
 
 - verbose:
 
@@ -234,6 +247,17 @@ help page in the `ergm` package and the
 [`ergm.ego::control.ergm.ego`](https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html)
 help page in the `ergm.ego` package. An example is below.
 
+The
+[`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+help page lists the settings most often changed when a fit fails,
+stalls, or does not reproduce its targets, and how to use
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) to
+find whether the estimation or the simulation needs adjusting. The
+[Improving Model Estimation and
+Simulation](https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html)
+appendix of the Network Modeling for Epidemics course materials works
+through examples.
+
 ## Typical Workflow
 
 The network modeling pipeline in EpiModel typically follows these steps:
@@ -316,11 +340,10 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Finished MPLE.
 #> Starting Monte Carlo maximum likelihood estimation (MCMLE):
 #> Iteration 1 of at most 60:
-#> Warning: ‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0321.
-#> Convergence test p-value: < 0.0001. 
+#> The log-likelihood improved by 0.0970.
+#> Convergence test p-value: 0.0011. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
@@ -335,7 +358,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55593b9375c8>
+#> <environment: 0x55cc9fe2a5e8>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
@@ -352,8 +375,8 @@ summary(est)
 #> Monte Carlo Maximum Likelihood Results:
 #> 
 #>            Estimate Std. Error MCMC % z value Pr(>|z|)    
-#> edges       -4.4207     0.3513      0 -12.583   <1e-04 ***
-#> concurrent  -0.2201     0.4272      0  -0.515    0.606    
+#> edges       -4.4358     0.3220      0 -13.774   <1e-04 ***
+#> concurrent  -0.2043     0.4230      0  -0.483    0.629    
 #> ---
 #> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #> 

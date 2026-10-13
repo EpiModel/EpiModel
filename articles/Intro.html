@@ -147,6 +147,15 @@ specified target of 50 time steps:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span>, type <span class="op">=</span> <span class="st">"duration"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Intro_files/figure-html/step2_plot2-1.png" class="r-plt" alt="" width="700"></p>
+<p>When the diagnostics miss their targets, or the estimation fails, the
+cause usually lies in the control settings that <code>netest</code>,
+<code>netdx</code>, and <code>control.net</code> pass to the
+<code>ergm</code> and <code>tergm</code> packages, or in the edges
+dissolution approximation at short partnership durations. The
+<code>?net-controls</code> help page covers which settings to adjust at
+each stage, and the <a href="https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html" class="external-link">Improving
+Model Estimation and Simulation</a> appendix of the NME course works
+through examples.</p>
 </div>
 <div class="section level3">
 <h3 id="step-3-epidemic-simulation">Step 3: Epidemic Simulation<a class="anchor" aria-label="anchor" href="#step-3-epidemic-simulation"></a>
@@ -327,8 +336,8 @@ in the <em>Journal of Statistical Software</em>, provides the
 mathematical and computational foundations for all three model classes.
 See citation below.</li>
 <li>
-<strong>NME Course, Section I (Chapters 3–35):</strong> Lecture
-slides and tutorials covering network science, ERGM specification, model
+<strong>NME Course, Part I (Modules 1–8):</strong> Lecture slides
+and tutorials covering network science, ERGM specification, model
 diagnostics, and built-in epidemic models (<a href="https://epimodel.github.io/sismid/" class="external-link uri">https://epimodel.github.io/sismid/</a>).</li>
 </ul>
 </div>
@@ -337,12 +346,13 @@ diagnostics, and built-in epidemic models (<a href="https://epimodel.github.io/s
 </h3>
 <ul>
 <li>
-<strong>NME Course, Section II (Chapters 36–49):</strong> <a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending
+<strong>NME Course, Part II (Modules 9–13):</strong> <a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending
 EpiModel</a> materials covering the extension API for building custom
 models with new disease states, demographics, and interventions, along
 with advanced topics including <a href="https://epimodel.github.io/sismid/11_advanced/mod11-Tutorial.html" class="external-link">multi-layer
-networks</a> and <a href="https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html" class="external-link">epidemics
-over observed networks</a>.</li>
+networks</a>, <a href="https://epimodel.github.io/sismid/11_advanced/mod11-ObservedNets.html" class="external-link">epidemics
+over observed networks</a>, and <a href="https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html" class="external-link">improving
+model estimation and simulation</a>.</li>
 <li>
 <strong>EpiModel Gallery:</strong> A library of worked extension
 model templates demonstrating custom disease states, demographics,

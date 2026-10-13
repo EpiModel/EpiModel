@@ -92,25 +92,25 @@ hh_types <- c("adult"                    = 0.15,
               "adult adult child elderly" = 0.05)
 pop <- sample_groups(1000, hh_types, attr.name = "age")
 head(pop, 10)
-#>    group type     age
-#> 1      1    4 elderly
-#> 2      1    4 elderly
-#> 3      2    1   adult
-#> 4      3    6   adult
-#> 5      3    6   child
-#> 6      4    1   adult
-#> 7      5    3 elderly
-#> 8      6    2   adult
-#> 9      6    2   adult
-#> 10     7    4 elderly
+#>    group type   age
+#> 1      1    8 adult
+#> 2      1    8 adult
+#> 3      1    8 child
+#> 4      1    8 child
+#> 5      2    6 adult
+#> 6      2    6 child
+#> 7      3    6 adult
+#> 8      3    6 child
+#> 9      4    2 adult
+#> 10     4    2 adult
 table(tabulate(pop$group))                 # household size distribution
 #> 
 #>   1   2   3   4 
-#> 116 154  60  99 
+#> 117 159  67  91 
 prop.table(table(pop$age))                 # person-level age distribution
 #> 
 #>   adult   child elderly 
-#>   0.598   0.253   0.149 
+#>   0.592   0.245   0.163 
 
 # Every child shares a household with an adult
 has_adult <- tapply(pop$age == "adult", pop$group, any)
@@ -126,10 +126,10 @@ types <- list(
 pop2 <- sample_groups(100, types, prob = c(0.3, 0.4, 0.3))
 head(pop2)
 #>   group type   age sex
-#> 1     1    1 adult   F
-#> 2     2    1 adult   F
-#> 3     3    3 adult   F
-#> 4     3    3 adult   M
-#> 5     3    3 child   F
-#> 6     4    3 adult   F
+#> 1     1    2 adult   F
+#> 2     1    2 adult   M
+#> 3     2    2 adult   F
+#> 4     2    2 adult   M
+#> 5     3    3 adult   F
+#> 6     3    3 adult   M
 ```

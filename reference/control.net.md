@@ -362,22 +362,31 @@ control.net(
 - set.control.ergm:
 
   Control arguments passed to
-  [`ergm::simulate_formula.network`](https://rdrr.io/pkg/ergm/man/simulate.ergm.html).
+  [`ergm::simulate_formula.network`](https://rdrr.io/pkg/ergm/man/simulate.ergm.html),
+  built with
+  [`ergm::control.simulate.formula()`](https://rdrr.io/pkg/ergm/man/control.simulate.ergm.html).
   In `netsim`, this is only used when initializing the network with
   `edapprox = TRUE`. All other simulations in `netsim` use `tergm`.
   Supports
   [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
-  specification.
+  specification. See
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md).
 
 - set.control.tergm:
 
   Control arguments passed to
-  [`tergm::simulate_formula.network`](https://rdrr.io/pkg/tergm/man/simulate.tergm.html).
-  See the help file for
-  [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) for
-  details and examples on specifying this parameter. Supports
+  [`tergm::simulate_formula.network`](https://rdrr.io/pkg/tergm/man/simulate.tergm.html),
+  built with
+  [`tergm::control.simulate.formula.tergm()`](https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html),
+  for each time step of the network simulation. Use the same settings
+  that brought the
+  [`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md)
+  diagnostics on target, and restate the default
+  `MCMC.maxchanges = .Machine$integer.max` when passing other settings.
+  Supports
   [`multilayer`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
-  specification.
+  specification. See
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md).
 
 - save.diss.stats:
 

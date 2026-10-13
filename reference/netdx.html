@@ -121,12 +121,17 @@ features that were not directly targeted in the formation model.</p></dd>
 
 <dt id="arg-set-control-ergm">set.control.ergm<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm"></a></dt>
 <dd><p>Control arguments passed to <code>ergm</code>'s
-<code>simulate_formula.network</code> (see details).</p></dd>
+<code>simulate_formula.network</code>, built with
+<code><a href="https://rdrr.io/pkg/ergm/man/control.simulate.ergm.html" class="external-link">ergm::control.simulate.formula()</a></code> (see details and
+<code><a href="net-controls.html">net-controls</a></code>).</p></dd>
 
 
 <dt id="arg-set-control-tergm">set.control.tergm<a class="anchor" aria-label="anchor" href="#arg-set-control-tergm"></a></dt>
 <dd><p>Control arguments passed to <code>tergm</code>'s
-<code>simulate_formula.network</code> (see details).</p></dd>
+<code>simulate_formula.network</code>, built with
+<code><a href="https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html" class="external-link">tergm::control.simulate.formula.tergm()</a></code> (see details and
+<code><a href="net-controls.html">net-controls</a></code>). The default sets <code>MCMC.maxchanges</code> to
+<code>.Machine$integer.max</code>; restate it when passing other settings.</p></dd>
 
 
 <dt id="arg-sequential">sequential<a class="anchor" aria-label="anchor" href="#arg-sequential"></a></dt>
@@ -214,6 +219,9 @@ page in the <code>ergm</code> package. For the second, parameters should be inpu
 through the <code><a href="https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html" class="external-link">control.simulate.formula.tergm()</a></code> function, with the
 available parameters listed in the <code><a href="https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html" class="external-link">tergm::control.simulate.formula.tergm</a></code>
 help page in the <code>tergm</code> package. An example is shown below.</p>
+<p>Pass the same <code>set.control.tergm</code> settings to <code><a href="control.net.html">control.net</a></code> for the
+epidemic simulation, which steps the network forward in the same way. See
+<code><a href="net-controls.html">net-controls</a></code> for the settings most often changed.</p>
     </div>
     <div class="section level2">
     <h2 id="static-vs-dynamic-diagnostics">Static vs. Dynamic Diagnostics<a class="anchor" aria-label="anchor" href="#static-vs-dynamic-diagnostics"></a></h2>
@@ -240,10 +248,21 @@ indicate good fit.</p></li>
 durations should match the values passed to <code><a href="dissolution_coefs.html">dissolution_coefs</a></code>.</p></li>
 <li><p><strong>Dissolution statistics</strong> (dynamic only): The simulated dissolution
 rates should be approximately <code>1 / duration</code>.</p></li>
-</ul><p>Common problems: If formation statistics are off, the ERGM may need
-increased burn-in (via <code>set.control.ergm</code>), or the target statistics
-may be incompatible (e.g., specifying more edges than the network can
-support). If durations are off but formation is correct, verify that
+</ul><p>The Z score scales with the effective sample size of the simulated
+statistics, so read it together with the percent difference: many static
+draws can make a small difference statistically significant, while the
+autocorrelation between time steps keeps the Z scores of dynamic
+diagnostics smaller.</p>
+<p>Common problems: If the dynamic formation statistics are off, compare them
+with static diagnostics (<code>dynamic = FALSE</code>). Static diagnostics on target
+point to the dynamic simulation: either its per-step burn-in, which can be
+fixed with <code>MCMC.burnin.min</code> and <code>MCMC.burnin.max</code> in <code>set.control.tergm</code>,
+or the edges dissolution approximation, which loses accuracy at short
+partnership durations. Static diagnostics that are also off point to the
+ERGM fit or to too short a burn-in in <code>set.control.ergm</code>. The target
+statistics may also be incompatible (e.g., specifying more edges than the
+network can support). See <code><a href="net-controls.html">net-controls</a></code> for the settings to adjust at
+each stage. If durations are off but formation is correct, verify that
 <code>d.rate</code> was correctly specified in <code><a href="dissolution_coefs.html">dissolution_coefs</a></code> for models
 with vital dynamics.</p>
     </div>
@@ -284,7 +303,7 @@ simulate the epidemic with <code><a href="netsim.html">netsim</a></code>.</p></d
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges     50   49.921   -0.158  0.067  -1.177            NA          6.97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges     50    50.04     0.08  0.069   0.579            NA         6.913</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="netdx-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>

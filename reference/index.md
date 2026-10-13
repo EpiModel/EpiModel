@@ -85,6 +85,12 @@ netsim().
 - [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md) :
   Dynamic Network Model Diagnostics
 
+- [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+  [`set.control.ergm`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+  [`set.control.tergm`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+  [`set.control.ergm.ego`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+  : Control Settings for Network Model Estimation and Simulation
+
 - [`get_degree_dist()`](https://epimodel.github.io/EpiModel/reference/get_degree_dist.md)
   : Extract Degree Distributions from Network Diagnostics
 

@@ -125,25 +125,30 @@ formula.</p></dd>
 <dd><p>If <code>TRUE</code>, use the indirect edges dissolution
 approximation method for the dynamic model fit, otherwise use the
 more time-intensive full STERGM estimation (see details). The
-approximation is recommended for most use cases, especially when
-average partnership durations are moderate to long (&gt; 25 time steps).
-Direct STERGM estimation (<code>edapprox = FALSE</code>) is slower but may be
-preferred for very short durations or when inferential quantities
-(standard errors, p-values) on formation coefficients are needed.
-For <code>nw</code> of class <code>egor</code>, only <code>edapprox = TRUE</code> is supported.</p></dd>
+approximation is recommended for most use cases, and works best when
+average partnership durations are long or density is low, so that few
+partnerships form or dissolve at each time step. With short durations
+it can bias the formation statistics in the dynamic diagnostics of
+<code><a href="netdx.html">netdx</a></code> (see <code><a href="net-controls.html">net-controls</a></code>). Direct STERGM estimation
+(<code>edapprox = FALSE</code>) is slower but may be preferred for short
+durations or when inferential quantities (standard errors, p-values)
+on formation coefficients are needed. For <code>nw</code> of class <code>egor</code>, only
+<code>edapprox = TRUE</code> is supported.</p></dd>
 
 
 <dt id="arg-set-control-ergm">set.control.ergm<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm"></a></dt>
-<dd><p>Control arguments passed to <code>ergm</code> (see details).</p></dd>
+<dd><p>Control arguments passed to <code>ergm</code>, built with
+<code><a href="https://rdrr.io/pkg/ergm/man/control.ergm.html" class="external-link">ergm::control.ergm()</a></code> (see <code><a href="net-controls.html">net-controls</a></code>).</p></dd>
 
 
 <dt id="arg-set-control-tergm">set.control.tergm<a class="anchor" aria-label="anchor" href="#arg-set-control-tergm"></a></dt>
-<dd><p>Control arguments passed to <code>tergm</code> (see details).</p></dd>
+<dd><p>Control arguments passed to <code>tergm</code>, built with
+<code><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">tergm::control.tergm()</a></code> (see <code><a href="net-controls.html">net-controls</a></code>).</p></dd>
 
 
 <dt id="arg-set-control-ergm-ego">set.control.ergm.ego<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm-ego"></a></dt>
-<dd><p>Control arguments passed to <code>ergm.ego</code> (see
-details).</p></dd>
+<dd><p>Control arguments passed to <code>ergm.ego</code>, built
+with <code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">ergm.ego::control.ergm.ego()</a></code> (see <code><a href="net-controls.html">net-controls</a></code>).</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -264,6 +269,12 @@ functions, respectively, with the available parameters listed in the
 <code><a href="https://rdrr.io/pkg/ergm/man/control.ergm.html" class="external-link">ergm::control.ergm</a></code> help page in the <code>ergm</code> package and the
 <code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">ergm.ego::control.ergm.ego</a></code> help page in the <code>ergm.ego</code>
 package. An example is below.</p>
+<p>The <code><a href="net-controls.html">net-controls</a></code> help page lists the settings most often changed when a
+fit fails, stalls, or does not reproduce its targets, and how to use
+<code><a href="netdx.html">netdx</a></code> to find whether the estimation or the simulation needs adjusting.
+The <a href="https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html" class="external-link">Improving Model Estimation and Simulation</a>
+appendix of the Network Modeling for Epidemics course materials works
+through examples.</p>
     </div>
     <div class="section level2">
     <h2 id="typical-workflow">Typical Workflow<a class="anchor" aria-label="anchor" href="#typical-workflow"></a></h2>
@@ -327,11 +338,10 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting Monte Carlo maximum likelihood estimation (MCMLE):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 60:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0321.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Convergence test p-value: &lt; 0.0001. </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0970.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Convergence test p-value: 0.0011. </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Converged with 99% confidence.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MCMLE.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This model was fit using MCMC.  To examine model diagnostics and check</span>
@@ -346,7 +356,7 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55593b9375c8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55cc9fe2a5e8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -363,8 +373,8 @@ epidemic simulation with <code><a href="param.net.html">param.net</a></code>, <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> Monte Carlo Maximum Likelihood Results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Estimate Std. Error MCMC % z value Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges       -4.4207     0.3513      0 -12.583   &lt;1e-04 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> concurrent  -0.2201     0.4272      0  -0.515    0.606    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges       -4.4358     0.3220      0 -13.774   &lt;1e-04 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> concurrent  -0.2043     0.4230      0  -0.483    0.629    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

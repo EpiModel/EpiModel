@@ -364,15 +364,18 @@ simulations. Supports <code><a href="multilayer.html">multilayer</a></code> spec
 
 
 <dt id="arg-set-control-ergm">set.control.ergm<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm"></a></dt>
-<dd><p>Control arguments passed to <code><a href="https://rdrr.io/pkg/ergm/man/simulate.ergm.html" class="external-link">ergm::simulate_formula.network</a></code>. In <code>netsim</code>,
-this is only used when initializing the network with <code>edapprox = TRUE</code>. All other
-simulations in <code>netsim</code> use <code>tergm</code>. Supports <code><a href="multilayer.html">multilayer</a></code> specification.</p></dd>
+<dd><p>Control arguments passed to <code><a href="https://rdrr.io/pkg/ergm/man/simulate.ergm.html" class="external-link">ergm::simulate_formula.network</a></code>, built with
+<code><a href="https://rdrr.io/pkg/ergm/man/control.simulate.ergm.html" class="external-link">ergm::control.simulate.formula()</a></code>. In <code>netsim</code>, this is only used when initializing the
+network with <code>edapprox = TRUE</code>. All other simulations in <code>netsim</code> use <code>tergm</code>. Supports
+<code><a href="multilayer.html">multilayer</a></code> specification. See <code><a href="net-controls.html">net-controls</a></code>.</p></dd>
 
 
 <dt id="arg-set-control-tergm">set.control.tergm<a class="anchor" aria-label="anchor" href="#arg-set-control-tergm"></a></dt>
-<dd><p>Control arguments passed to <code><a href="https://rdrr.io/pkg/tergm/man/simulate.tergm.html" class="external-link">tergm::simulate_formula.network</a></code>. See the
-help file for <code><a href="netdx.html">netdx</a></code> for details and examples on specifying this parameter. Supports
-<code><a href="multilayer.html">multilayer</a></code> specification.</p></dd>
+<dd><p>Control arguments passed to <code><a href="https://rdrr.io/pkg/tergm/man/simulate.tergm.html" class="external-link">tergm::simulate_formula.network</a></code>, built with
+<code><a href="https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html" class="external-link">tergm::control.simulate.formula.tergm()</a></code>, for each time step of the network simulation. Use
+the same settings that brought the <code><a href="netdx.html">netdx</a></code> diagnostics on target, and restate the default
+<code>MCMC.maxchanges = .Machine$integer.max</code> when passing other settings. Supports <code><a href="multilayer.html">multilayer</a></code>
+specification. See <code><a href="net-controls.html">net-controls</a></code>.</p></dd>
 
 
 <dt id="arg-save-diss-stats">save.diss.stats<a class="anchor" aria-label="anchor" href="#arg-save-diss-stats"></a></dt>

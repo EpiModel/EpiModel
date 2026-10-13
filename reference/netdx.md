@@ -75,13 +75,21 @@ netdx(
 
 - set.control.ergm:
 
-  Control arguments passed to `ergm`'s `simulate_formula.network` (see
-  details).
+  Control arguments passed to `ergm`'s `simulate_formula.network`, built
+  with
+  [`ergm::control.simulate.formula()`](https://rdrr.io/pkg/ergm/man/control.simulate.ergm.html)
+  (see details and
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
 
 - set.control.tergm:
 
-  Control arguments passed to `tergm`'s `simulate_formula.network` (see
-  details).
+  Control arguments passed to `tergm`'s `simulate_formula.network`,
+  built with
+  [`tergm::control.simulate.formula.tergm()`](https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html)
+  (see details and
+  [`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)).
+  The default sets `MCMC.maxchanges` to `.Machine$integer.max`; restate
+  it when passing other settings.
 
 - sequential:
 
@@ -178,6 +186,13 @@ function, with the available parameters listed in the
 [`tergm::control.simulate.formula.tergm`](https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html)
 help page in the `tergm` package. An example is shown below.
 
+Pass the same `set.control.tergm` settings to
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+for the epidemic simulation, which steps the network forward in the same
+way. See
+[`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+for the settings most often changed.
+
 ## Static vs. Dynamic Diagnostics
 
 Static diagnostics (`dynamic = FALSE`) draw many independent networks
@@ -207,11 +222,24 @@ to inspect the results. Key indicators of a good model fit include:
 - **Dissolution statistics** (dynamic only): The simulated dissolution
   rates should be approximately `1 / duration`.
 
-Common problems: If formation statistics are off, the ERGM may need
-increased burn-in (via `set.control.ergm`), or the target statistics may
-be incompatible (e.g., specifying more edges than the network can
-support). If durations are off but formation is correct, verify that
-`d.rate` was correctly specified in
+The Z score scales with the effective sample size of the simulated
+statistics, so read it together with the percent difference: many static
+draws can make a small difference statistically significant, while the
+autocorrelation between time steps keeps the Z scores of dynamic
+diagnostics smaller.
+
+Common problems: If the dynamic formation statistics are off, compare
+them with static diagnostics (`dynamic = FALSE`). Static diagnostics on
+target point to the dynamic simulation: either its per-step burn-in,
+which can be fixed with `MCMC.burnin.min` and `MCMC.burnin.max` in
+`set.control.tergm`, or the edges dissolution approximation, which loses
+accuracy at short partnership durations. Static diagnostics that are
+also off point to the ERGM fit or to too short a burn-in in
+`set.control.ergm`. The target statistics may also be incompatible
+(e.g., specifying more edges than the network can support). See
+[`net-controls`](https://epimodel.github.io/EpiModel/reference/net-controls.md)
+for the settings to adjust at each stage. If durations are off but
+formation is correct, verify that `d.rate` was correctly specified in
 [`dissolution_coefs`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
 for models with vital dynamics.
 
@@ -258,7 +286,7 @@ dx
 #> Formation Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50   49.921   -0.158  0.067  -1.177            NA          6.97
+#> edges     50    50.04     0.08  0.069   0.579            NA         6.913
 plot(dx)
 
 # }
