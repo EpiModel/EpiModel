@@ -10,35 +10,23 @@
 #'              output object returned by [netsim()]. See the **Intended
 #'              Usage** section below for details and alternatives.
 #'
-#' @inheritParams recovery.net
-#' @param item A character vector containing the name of the element to access
-#'        (for `get_` functions), create (for `add_` functions), or
-#'        edit (for `set_` and `append_` functions). Can be of length greater
-#'        than 1 for `get_*_list` functions.
-#' @param posit_ids For `set_attr` and `get_attr`, a numeric vector of
-#'        posit_ids to subset the desired `item`.
-#' @param value New value to be attributed in the `set_` and `append_`
-#'        functions.
-#' @param override.null.error If TRUE, `get_` will return NULL if the
-#'         `item` does not exist instead of throwing an error.
-#'         (default = FALSE).
-#' @param override.length.check If TRUE, `set_attr` allows the modification
-#'        of the `item` size. (default = FALSE).
-#' @param n.new For `append_core_attr`, the number of new nodes to initiate
-#'        with core attributes; for `append_attr`, the number of new
-#'        elements to append at the end of `item`.
-#' @param at For `get_epi`, the timestep at which to access the specified
-#'        `item`; for `set_epi`, the timestep at which to add the new
-#'        value for the epi output `item`, which defaults to the current
-#'        time step ([get_current_timestep()]) when `NULL`; for
-#'        `append_core_attr`, the current time step.
-#' @param ... For `set_epi`, must be empty. It makes `at` a named-only
-#'        argument, so that calls written for the `set_epi(dat, item, at,
-#'        value)` signature of EpiModel 2.6 and earlier error instead of
-#'        silently swapping `at` and `value`.
-#' @return A vector or a list of vectors for `get_` functions; the main
-#'         list object for `set_`, `append_`, and `add_`
-#'         functions.
+#' The accessors are documented on three pages, by the part of `dat` they act
+#' on:
+#'
+#'  * **Nodal attributes**, with one value per node ([get_attr()]):
+#'    `get_attr()`, `get_attr_list()`, `set_attr()`, `add_attr()`,
+#'    `append_attr()`, `append_core_attr()`, `remove_node_attr()`, and
+#'    `get_core_attributes()`.
+#'  * **Epidemic outputs**, with one value per time step ([get_epi()]):
+#'    `get_epi()`, `get_epi_list()`, `set_epi()`, and `add_epi()`.
+#'  * **Parameters, control settings, and initial conditions**
+#'    ([get_param()]): `get_param()`, `get_param_list()`, `set_param()`,
+#'    `add_param()`, the same four functions for `control` and `init`, and
+#'    `get_network_control()`.
+#'
+#' Nodes are referred to by their positional identifiers; see
+#' [get_unique_ids()] and [get_posit_ids()] to convert them to and from
+#' their unique identifiers.
 #'
 #' @section Intended Usage:
 #' These accessors operate on the live `netsim_dat` object that EpiModel
@@ -75,14 +63,6 @@
 #'    to [control.net()]. See the "model-parameters" vignette for the
 #'    underlying updater module and the scenario API built on top of it.
 #'
-#' @section Core Attribute:
-#' The `append_core_attr` function initializes the attributes necessary for
-#' EpiModel to work (the four core attributes are: "active", "unique_id",
-#' "entrTime", and "exitTime"). These attributes are used in the initialization
-#' phase of the simulation, to create the nodes (see
-#' [initialize.net()]); and also used when adding nodes during the
-#' simulation (see [arrivals.net()]).
-#'
 #' @section Mutability:
 #' The `set_`, `append_`, and `add_` functions DO NOT modify the
 #' `netsim_dat` object in place. The result must be assigned back to
@@ -92,58 +72,6 @@
 #' The `set_` and `append_` functions edit a pre-existing element or
 #' create a new one if it does not exist already by calling the `add_`
 #' functions internally.
-#'
-#' @section One Value Per Node:
-#' Every nodal attribute holds exactly one value per node, and [netsim()]
-#' checks this at the end of each time step. When `set_attr` and `append_attr`
-#' create an attribute, the nodes they do not write to are filled with `NA` to
-#' preserve that: `set_attr` with `posit_ids` fills the unselected nodes, and
-#' `append_attr` fills the nodes that predate the ones being appended. This
-#' means `append_core_attr` must be called before `append_attr` when adding new
-#' nodes, as it is what makes those nodes known to the rest of the object.
-#'
-#' @examples
-#' dat <- create_dat_object(control = list(nsteps = 150))
-#' dat <- append_core_attr(dat, 1, 100)
-#'
-#' dat <- add_attr(dat, "age")
-#' dat <- set_attr(dat, "age", runif(100))
-#' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
-#' dat <- append_attr(dat, "status", 1, 10)
-#' dat <- append_attr(dat, "age", NA, 10)
-#' get_attr_list(dat)
-#' get_attr_list(dat, c("age", "active"))
-#' get_attr(dat, "status")
-#' get_attr(dat, "status", c(1, 4))
-#'
-#' dat <- add_epi(dat, "i.num")
-#' dat <- set_epi(dat, "i.num", 10, at = 150)
-#' dat <- set_epi(dat, "s.num", 90, at = 150)
-#' get_epi_list(dat)
-#' get_epi_list(dat, c("i.num", "s.num"))
-#' get_epi(dat, "i.num")
-#' get_epi(dat, "i.num", c(1, 4))
-#'
-#' dat <- add_param(dat, "x")
-#' dat <- set_param(dat, "x", 0.4)
-#' dat <- set_param(dat, "y", 0.8)
-#' get_param_list(dat)
-#' get_param_list(dat, c("x", "y"))
-#' get_param(dat, "x")
-#'
-#' dat <- add_init(dat, "x")
-#' dat <- set_init(dat, "x", 0.4)
-#' dat <- set_init(dat, "y", 0.8)
-#' get_init_list(dat)
-#' get_init_list(dat, c("x", "y"))
-#' get_init(dat, "x")
-#'
-#' dat <- add_control(dat, "x")
-#' dat <- set_control(dat, "x", 0.4)
-#' dat <- set_control(dat, "y", 0.8)
-#' get_control_list(dat)
-#' get_control_list(dat, c("x", "y"))
-#' get_control(dat, "x")
 #'
 #' @seealso [update_params()] for editing a `param.net` object outside a
 #'   simulation; [param.net()], [init.net()], [control.net()] for input
@@ -162,7 +90,10 @@ raw_set_attr <- function(dat, item, val) {
   return(dat)
 }
 
-#' @rdname net-accessor
+# Nodal attributes -------------------------------------------------------------
+
+#' @rdname get_attr
+#' @order 2
 #' @export
 get_attr_list <- function(dat, item = NULL) {
   attr_list <- raw_get_attr_list(dat)
@@ -182,7 +113,106 @@ get_attr_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname net-accessor
+#' @title Get and Set Nodal Attributes in Network Models
+#'
+#' @description Retrieve, create, and edit the nodal attributes of the main
+#'              `netsim_dat` object of network models, from inside module
+#'              functions. Each nodal attribute is a vector with one value per
+#'              node, indexed by the positional identifiers of the nodes
+#'              (`posit_ids`).
+#'
+#'  * `get_attr()` returns one attribute, for all nodes or for the nodes in
+#'    `posit_ids`. `get_attr_list()` returns several attributes as a named
+#'    list.
+#'  * `set_attr()` replaces the values of an attribute, for all nodes or for
+#'    the nodes in `posit_ids`, and creates the attribute if it does not
+#'    exist. `add_attr()` creates an attribute set to `NA` for all nodes.
+#'  * `append_core_attr()` adds `n.new` nodes and sets their core
+#'    attributes. `append_attr()` then adds the values of each other
+#'    attribute for the same nodes.
+#'  * `remove_node_attr()` removes the nodes in `posit_ids` from every
+#'    attribute.
+#'  * `get_core_attributes()` lists the core attributes with their types.
+#'
+#' See [net-accessor] for an overview of the accessors.
+#'
+#' @inheritParams recovery.net
+#' @param item Name of the nodal attribute. For `get_attr_list()`, a
+#'        character vector of names, or `NULL` (default) for all attributes.
+#' @param posit_ids Positional identifiers of the nodes. For `get_attr()` and
+#'        `set_attr()`, the nodes to get or edit, with `NULL` (default) for all
+#'        nodes; for `remove_node_attr()`, the nodes to remove.
+#' @param value New values of the attribute. For `set_attr()`, one value per
+#'        node, or with `posit_ids`, one value per selected node or a single
+#'        value for all of them. For `append_attr()`, one value per new node
+#'        or a single value for all of them.
+#' @param override.null.error If `TRUE`, return `NULL` instead of an error
+#'        when `item` does not exist (default = `FALSE`).
+#' @param override.length.check If `TRUE`, `set_attr()` accepts a `value`
+#'        whose length differs from the number of nodes (default = `FALSE`).
+#'        Every attribute must again hold one value per node by the end of
+#'        the time step.
+#' @param n.new Number of new nodes: for `append_core_attr()`, the nodes to
+#'        add; for `append_attr()`, the number of values to append at the end
+#'        of `item`.
+#' @param at Current time step, recorded as the entry time (`entrTime`) of
+#'        the new nodes.
+#'
+#' @return For `get_attr()`, the attribute vector, or its values for the
+#'         nodes in `posit_ids`; for `get_attr_list()`, a named list of
+#'         attribute vectors; for `get_core_attributes()`, a named list with a
+#'         value of the correct type for each core attribute. The other
+#'         functions return the updated `netsim_dat` object.
+#'
+#' @section Core Attributes:
+#' The `append_core_attr` function initializes the attributes necessary for
+#' EpiModel to work (the four core attributes are: "active", "unique_id",
+#' "entrTime", and "exitTime"). These attributes are used in the initialization
+#' phase of the simulation, to create the nodes (see
+#' [initialize.net()]); and also used when adding nodes during the
+#' simulation (see [arrivals.net()]).
+#'
+#' @section One Value Per Node:
+#' Every nodal attribute holds exactly one value per node, and [netsim()]
+#' checks this at the end of each time step. When `set_attr` and `append_attr`
+#' create an attribute, the nodes they do not write to are filled with `NA` to
+#' preserve that: `set_attr` with `posit_ids` fills the unselected nodes, and
+#' `append_attr` fills the nodes that predate the ones being appended. This
+#' means `append_core_attr` must be called before `append_attr` when adding new
+#' nodes, as it is what makes those nodes known to the rest of the object.
+#'
+#' @inheritSection net-accessor Intended Usage
+#' @inheritSection net-accessor Mutability
+#'
+#' @seealso [net-accessor] for an overview of the accessors, and [get_epi()]
+#'   and [get_param()] for the other groups; [arrive_nodes()] and
+#'   [depart_nodes()] for adding and removing nodes from the networks;
+#'   [get_unique_ids()] and [get_posit_ids()] for converting node identifiers.
+#'
+#' @examples
+#' dat <- create_dat_object(control = list(nsteps = 150))
+#' dat <- append_core_attr(dat, at = 1, n.new = 10)
+#'
+#' dat <- add_attr(dat, "age")
+#' dat <- set_attr(dat, "age", runif(10, 15, 65))
+#' dat <- set_attr(dat, "status", rep(c("s", "i"), c(8, 2)))
+#' get_attr_list(dat)
+#' get_attr_list(dat, c("age", "active"))
+#' get_attr(dat, "status")
+#' get_attr(dat, "status", posit_ids = c(1, 9))
+#'
+#' # Edit selected nodes
+#' dat <- set_attr(dat, "status", "i", posit_ids = 3)
+#' get_attr(dat, "status")
+#'
+#' # Add 5 nodes: core attributes first, then the others
+#' dat <- append_core_attr(dat, at = 2, n.new = 5)
+#' dat <- append_attr(dat, "status", "s", 5)
+#' dat <- append_attr(dat, "age", 15, 5)
+#' get_attr(dat, "age")
+#' get_attr(dat, "entrTime")
+#'
+#' @order 1
 #' @export
 get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
   attr_list <- raw_get_attr_list(dat)
@@ -204,7 +234,8 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
   return(attr[posit_ids])
 }
 
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 4
 #' @export
 add_attr <- function(dat, item) {
   attr_list <- get_attr_list(dat)
@@ -215,7 +246,8 @@ add_attr <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 3
 #' @export
 set_attr <- function(dat, item, value, posit_ids = NULL,
                      override.length.check = FALSE) {
@@ -258,7 +290,8 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 5
 #' @export
 append_attr <- function(dat, item, value, n.new) {
   if (!is.numeric(n.new) || n.new < 0L) {
@@ -289,7 +322,8 @@ append_attr <- function(dat, item, value, n.new) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 7
 #' @export
 remove_node_attr <- function(dat, posit_ids) {
   if (is.null(posit_ids)) {
@@ -302,7 +336,10 @@ remove_node_attr <- function(dat, posit_ids) {
   return(dat)
 }
 
-#' @rdname net-accessor
+# Epidemic outputs -------------------------------------------------------------
+
+#' @rdname get_epi
+#' @order 2
 #' @export
 get_epi_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -319,7 +356,68 @@ get_epi_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname net-accessor
+#' @title Get and Set Epidemic Outputs in Network Models
+#'
+#' @description Retrieve, create, and edit the epidemic outputs of the main
+#'              `netsim_dat` object of network models, from inside module
+#'              functions. Each epidemic output is a vector with one value per
+#'              time step, which becomes a column of the data frame returned by
+#'              [as.data.frame.netsim()] after the simulation.
+#'
+#'  * `get_epi()` returns one output, for all time steps or for the time
+#'    steps in `at`. `get_epi_list()` returns several outputs as a named
+#'    list.
+#'  * `set_epi()` records `value` at one time step, the current one by
+#'    default, and creates the output if it does not exist. `add_epi()`
+#'    creates an output set to `NA` at every time step.
+#'
+#' Unlike the other `set_` functions, `set_epi()` takes a time step `at`,
+#' which comes last and must be passed by name.
+#'
+#' See [net-accessor] for an overview of the accessors.
+#'
+#' @inheritParams get_attr
+#' @param item Name of the epidemic output. For `get_epi_list()`, a
+#'        character vector of names, or `NULL` (default) for all outputs.
+#' @param value Value of the output at time step `at`.
+#' @param at For `get_epi()`, the time steps at which to return the output,
+#'        with `NULL` (default) for all time steps. For `set_epi()`, the time
+#'        step at which to record `value`, which defaults to the current time
+#'        step ([get_current_timestep()]) when `NULL`.
+#' @param ... Must be empty. It makes `at` a named-only argument of
+#'        `set_epi()`, so that calls written for the `set_epi(dat, item, at,
+#'        value)` signature of EpiModel 2.6 and earlier error instead of
+#'        silently swapping `at` and `value`.
+#'
+#' @return For `get_epi()`, the output vector, or its values at the time
+#'         steps in `at`; for `get_epi_list()`, a named list of output
+#'         vectors. The other functions return the updated `netsim_dat`
+#'         object.
+#'
+#' @inheritSection net-accessor Intended Usage
+#' @inheritSection net-accessor Mutability
+#'
+#' @seealso [net-accessor] for an overview of the accessors, and [get_attr()]
+#'   and [get_param()] for the other groups; [epi_trackers()] for outputs
+#'   computed by tracker functions at each time step; [mutate_epi()] for
+#'   outputs derived after the simulation.
+#'
+#' @examples
+#' dat <- create_dat_object(control = list(nsteps = 5))
+#' dat <- set_current_timestep(dat, 1)
+#'
+#' dat <- add_epi(dat, "i.num")
+#' dat <- set_epi(dat, "i.num", 10)
+#' dat <- set_epi(dat, "s.num", 90)
+#' get_epi_list(dat)
+#'
+#' # Record at a time step other than the current one
+#' dat <- set_epi(dat, "i.num", 12, at = 2)
+#' get_epi_list(dat, c("i.num", "s.num"))
+#' get_epi(dat, "i.num")
+#' get_epi(dat, "i.num", at = c(1, 2))
+#'
+#' @order 1
 #' @export
 get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat$epi)) {
@@ -338,7 +436,8 @@ get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
   return(dat$epi[[item]][at])
 }
 
-#' @rdname net-accessor
+#' @rdname get_epi
+#' @order 4
 #' @export
 add_epi <- function(dat, item) {
   if (item %in% names(dat$epi)) {
@@ -348,7 +447,8 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_epi
+#' @order 3
 #' @export
 set_epi <- function(dat, item, value, ..., at = NULL) {
   if (...length() > 0L) {
@@ -377,7 +477,10 @@ set_epi <- function(dat, item, value, ..., at = NULL) {
   return(dat)
 }
 
-#' @rdname net-accessor
+# Parameters, controls, and initial conditions ---------------------------------
+
+#' @rdname get_param
+#' @order 2
 #' @export
 get_param_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -393,7 +496,76 @@ get_param_list <- function(dat, item = NULL) {
   return(dat$param[item])
 }
 
-#' @rdname net-accessor
+#' @title Get and Set Parameters, Controls, and Initial Conditions in Network
+#'        Models
+#'
+#' @description Retrieve, create, and edit the parameters, control settings,
+#'              and initial conditions of the main `netsim_dat` object of
+#'              network models, from inside module functions. They start as
+#'              the [param.net()], [control.net()], and [init.net()] inputs of
+#'              [netsim()], and the three share one set of accessors:
+#'
+#'  * `get_param()`, `get_control()`, and `get_init()` return one element.
+#'    `get_param_list()`, `get_control_list()`, and `get_init_list()` return
+#'    several elements as a named list.
+#'  * `set_param()`, `set_control()`, and `set_init()` replace the value of an
+#'    element, and create the element if it does not exist. `add_param()`,
+#'    `add_control()`, and `add_init()` create an element set to `NA`.
+#'  * `get_network_control()` returns the entry for one network layer of a
+#'    control setting given as a [multilayer()] object.
+#'
+#' Unlike [set_attr()] and [set_epi()], these `set_` functions take neither
+#' nodes nor a time step: the new value is used from then on, until it is set
+#' again.
+#'
+#' See [net-accessor] for an overview of the accessors.
+#'
+#' @inheritParams get_attr
+#' @param item Name of the parameter, control setting, or initial condition.
+#'        For the `get_*_list()` functions, a character vector of names, or
+#'        `NULL` (default) for all elements.
+#' @param value New value of the element.
+#' @param network Index of the network layer.
+#'
+#' @return For `get_param()`, `get_control()`, and `get_init()`, the value of
+#'         the element; for `get_network_control()`, its entry for layer
+#'         `network`; for the `get_*_list()` functions, a named list of
+#'         elements. The other functions return the updated `netsim_dat`
+#'         object.
+#'
+#' @inheritSection net-accessor Intended Usage
+#' @inheritSection net-accessor Mutability
+#'
+#' @seealso [net-accessor] for an overview of the accessors, and [get_attr()]
+#'   and [get_epi()] for the other groups; [update_params()] for editing a
+#'   `param.net` object outside a simulation.
+#'
+#' @examples
+#' dat <- create_dat_object(control = list(nsteps = 150))
+#'
+#' dat <- add_param(dat, "x")
+#' get_param(dat, "x")
+#' dat <- set_param(dat, "x", 0.4)
+#' dat <- set_param(dat, "y", 0.8)
+#' get_param_list(dat)
+#' get_param(dat, "x")
+#'
+#' # The control and init accessors work the same way
+#' dat <- add_control(dat, "x")
+#' dat <- set_control(dat, "x", 0.4)
+#' get_control_list(dat, c("nsteps", "x"))
+#' get_control(dat, "nsteps")
+#'
+#' dat <- add_init(dat, "x")
+#' dat <- set_init(dat, "x", 0.4)
+#' get_init_list(dat)
+#' get_init(dat, "x")
+#'
+#' # A control setting with one entry per network layer
+#' dat <- set_control(dat, "z", multilayer(0.1, 0.2))
+#' get_network_control(dat, network = 2, "z")
+#'
+#' @order 1
 #' @export
 get_param <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat$param)) {
@@ -407,7 +579,8 @@ get_param <- function(dat, item, override.null.error = FALSE) {
   return(dat$param[[item]])
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 4
 #' @export
 add_param <- function(dat, item) {
   if (item %in% names(dat$param)) {
@@ -417,7 +590,8 @@ add_param <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 3
 #' @export
 set_param <- function(dat, item, value) {
   if (!item %in% names(dat$param)) {
@@ -427,7 +601,8 @@ set_param <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 6
 #' @export
 get_control_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -444,7 +619,8 @@ get_control_list <- function(dat, item = NULL) {
   return(dat$control[item])
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 5
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat$control)) {
@@ -457,8 +633,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
   return(dat$control[[item]])
 }
 
-#' @rdname net-accessor
-#' @param network index of network for which to get control
+#' @rdname get_param
+#' @order 7
 #' @export
 get_network_control <- function(dat, network, item, override.null.error = FALSE) {
   if (!item %in% names(dat$control)) {
@@ -477,7 +653,8 @@ get_network_control <- function(dat, network, item, override.null.error = FALSE)
   return(out[[network]])
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 9
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat$control)) {
@@ -488,7 +665,8 @@ add_control <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 8
 #' @export
 set_control <- function(dat, item, value) {
   if (!item %in% names(dat$control)) {
@@ -498,7 +676,8 @@ set_control <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 11
 #' @export
 get_init_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -514,7 +693,8 @@ get_init_list <- function(dat, item = NULL) {
   return(dat$init[item])
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 10
 #' @export
 get_init <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat$init)) {
@@ -527,7 +707,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
   return(dat$init[[item]])
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 13
 #' @export
 add_init <- function(dat, item) {
   if (item %in% names(dat$init)) {
@@ -538,7 +719,8 @@ add_init <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname net-accessor
+#' @rdname get_param
+#' @order 12
 #' @export
 set_init <- function(dat, item, value) {
   if (!item %in% names(dat$init)) {
@@ -550,13 +732,8 @@ set_init <- function(dat, item, value) {
 
 # Core Attributes --------------------------------------------------------------
 
-#' Return the List of Core EpiModel Attributes with Correct Types
-#'
-#' This function returns an exhaustive named list of the attributes managed by
-#' EpiModel itself. It can be used to check the validity of an attributes list
-#' and of its types.
-#'
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 8
 #' @export
 get_core_attributes <- function() {
   list(
@@ -567,7 +744,8 @@ get_core_attributes <- function() {
   )
 }
 
-#' @rdname net-accessor
+#' @rdname get_attr
+#' @order 6
 #' @export
 append_core_attr <- function(dat, at, n.new) {
   dat <- append_attr(dat, "active", 1L, n.new)

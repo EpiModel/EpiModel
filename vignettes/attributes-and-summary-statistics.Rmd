@@ -141,7 +141,7 @@ The recommended workflow for attribute manipulation in modules:
 3. Update `dat` with the revised vectors using `set_attr()`.
 4. Return `dat` at the end of the function.
 
-These functions have additional arguments described in `help("net-accessor", package = "EpiModel")`.
+These functions have additional arguments described in `help("get_attr", package = "EpiModel")`.
 
 
 ## Historical Nodal Attributes
