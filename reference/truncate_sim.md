@@ -44,6 +44,19 @@ This function would be used when running a follow-up simulation from
 time steps `b` to `c` after a burn-in period from time `a` to `b`, where
 the final time window of interest for data analysis is `b` to `c` only.
 
+For `icm` and `netsim` objects, `at` is a time step as labeled by
+[`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md).
+With `reset.time = FALSE`, the time step of the first row kept is stored
+in `control$epi.start`, from which
+[`as.data.frame.icm()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md),
+the `plot` and `summary` methods, and
+[`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md)
+label the time steps. Without it, the rows are labeled from 1, as in the
+output of
+[`icm()`](https://epimodel.github.io/EpiModel/reference/icm.md) and
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+including restarted simulations.
+
 For `netsim` objects, the network statistics are truncated along with
 the epi trackers, as both hold one row per time step. With
 `reset.time = TRUE`, the times of the attribute history, the raw

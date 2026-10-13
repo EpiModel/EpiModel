@@ -237,7 +237,10 @@ matrix records the layer of every transmission in its <code>network</code> colum
 automatic checkpointing. To restart a simulation from a prior <code>netsim</code>
 output, pass the <code>netsim</code> object as <code>x</code> and set <code>control$start</code> to one
 greater than the final time step of the prior simulation. See the
-Checkpointing Simulations section of <code><a href="control.net.html">control.net</a></code> for full details.</p>
+Checkpointing Simulations section of <code><a href="control.net.html">control.net</a></code> for full details. The
+epi trackers and network statistics of the output hold every time step from
+1 to <code>nsteps</code>, those of <code>x</code> followed by the new ones, and
+<code><a href="as.data.frame.icm.html">as.data.frame.netsim</a></code> and <code><a href="plot.netsim.html">plot.netsim</a></code> label them 1 to <code>nsteps</code>.</p>
 <p>When restarting, every simulation restarts from the first simulation of <code>x</code>,
 with a warning if <code>x</code> holds more than one. <code><a href="make_restart_point.html">make_restart_point</a></code> makes a
 lightweight <code>x</code> holding the single simulation to restart from (<code><a href="get_sims.html">get_sims</a></code>

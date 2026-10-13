@@ -83,6 +83,12 @@ values will be preserved. Default is <code>TRUE</code>.</p></dd>
 steps <code>b</code> to <code>c</code> after a burn-in period from time <code>a</code> to
 <code>b</code>, where the final time window of interest for data analysis is
 <code>b</code> to <code>c</code> only.</p>
+<p>For <code>icm</code> and <code>netsim</code> objects, <code>at</code> is a time step as labeled by
+<code><a href="as.data.frame.icm.html">as.data.frame.icm()</a></code>. With <code>reset.time = FALSE</code>, the time step of the first
+row kept is stored in <code>control$epi.start</code>, from which <code><a href="as.data.frame.icm.html">as.data.frame.icm()</a></code>,
+the <code>plot</code> and <code>summary</code> methods, and <code><a href="comp_plot.html">comp_plot()</a></code> label the time steps.
+Without it, the rows are labeled from 1, as in the output of <code><a href="icm.html">icm()</a></code> and
+<code><a href="netsim.html">netsim()</a></code>, including restarted simulations.</p>
 <p>For <code>netsim</code> objects, the network statistics are truncated along with the
 epi trackers, as both hold one row per time step. With <code>reset.time = TRUE</code>,
 the times of the attribute history, the raw records, the transmission

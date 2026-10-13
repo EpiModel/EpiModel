@@ -331,6 +331,38 @@
   to name the per-simulation `raw.records` (`sim1`, `sim2`, …) like the
   other per-simulation elements. A typo (`".records"`) skipped them.
 
+- Fix the time steps of a restarted
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  simulation in
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html),
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html),
+  [`summary()`](https://rdrr.io/r/base/summary.html) and
+  [`comp_plot()`](https://epimodel.github.io/EpiModel/reference/comp_plot.md).
+  Its epi trackers hold every step from 1 to `nsteps`, those of `x`
+  followed by the new ones, but since 2.6.0 these methods labeled them
+  from `control$start`: each step was labeled `start - 1` steps too
+  late, the labels ran past the last simulated step, and
+  `summary(at = )` and `comp_plot(at = )` reported another step than the
+  one asked for. The steps are now labeled 1 to `nsteps`, in line with
+  the network statistics, the transmission matrix and the cumulative
+  edgelist. `truncate_sim(reset.time = FALSE)` now stores the time step
+  of the first row it keeps in `control$epi.start`, from which these
+  methods label the steps, rather than in `control$start`, which it now
+  sets to 1 in both cases. Its `at`, like that of
+  [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md),
+  is read on these labels, so an object truncated without reset can be
+  truncated again, network statistics included, and an `at` outside the
+  time steps of the object is now an error. Objects truncated without
+  reset by EpiModel 2.6.x are labeled from 1. Closes
+  [\#1085](https://github.com/EpiModel/EpiModel/issues/1085).
+
+- Fix the “Setting row names on a tibble is deprecated” warning when
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  restarted from a simulation without transmissions. The empty
+  transmission matrix of `x` is no longer carried into the restarted
+  simulation, whose transmission matrix is now a data frame, as in any
+  other simulation, rather than a tibble.
+
 - The `inf.prob`, `inf.prob.g2`, `act.rate`, `rec.rate`, and
   `rec.rate.g2` arguments of
   [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)

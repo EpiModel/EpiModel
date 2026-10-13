@@ -249,7 +249,13 @@ to enable automatic checkpointing. To restart a simulation from a prior
 to one greater than the final time step of the prior simulation. See the
 Checkpointing Simulations section of
 [`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
-for full details.
+for full details. The epi trackers and network statistics of the output
+hold every time step from 1 to `nsteps`, those of `x` followed by the
+new ones, and
+[`as.data.frame.netsim`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+and
+[`plot.netsim`](https://epimodel.github.io/EpiModel/reference/plot.netsim.md)
+label them 1 to `nsteps`.
 
 When restarting, every simulation restarts from the first simulation of
 `x`, with a warning if `x` holds more than one.
