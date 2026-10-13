@@ -55,15 +55,6 @@
 #' Also, as long as the size of the `nodes` set is greater than 5, theses
 #' functions are faster than iterating over `tsna::tPath`.
 #'
-#' @section Displaying Progress:
-#' These functions are using the
-#' [progressr package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
-#' to display its progression. Use
-#' \code{progressr::with_progress({ fwd_reach <- get_forward_reachable(el, from = 1, to = 260) })}
-#' to display the progress bar. Or see the
-#' [progressr package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
-#' for more information and customization.
-#'
 #' @family cumulative_edgelist
 #' @seealso [get_cumulative_edgelist()] / [get_cumulative_edgelists_df()]
 #'   for the typical input source from a `netsim` run;
@@ -100,14 +91,14 @@
 #'
 #'   t_fwd_set <- which(t_fwd$tdist < Inf)
 #'   if(!setequal(el_fwd[[i]], t_fwd_set))
-#'     stop("Missmatch on node: ", node)
+#'     stop("Mismatch on node: ", node)
 #' }
 #'
 #' # Backward:
 #' el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
 #' nodes <- strsplit(names(el_bkwd), "_")
 #' t_bkwd <- tsna::tPath(
-#'   nd, v = nodes[i][2],
+#'   nd, v = as.integer(nodes[[1]][2]),
 #'   start = 1, end = 52 + 1,
 #'   direction = "bkwd", type = "latest.depart"
 #' )
@@ -163,11 +154,7 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
   reach_lengths <- matrix(0, ncol = n_steps + 1, nrow = length(nodes))
   reach_lengths[, 1] <- 1
 
-  p <- progressr::progressor(length(change_times))
-
   for (cur_step in change_times) {
-    p()
-
     # IN EL_CUML: duration is [start, stop] (inclusive)
     # all active edges a time `cur_step` are needed (not only start).
     # This is because getting connected to a node X means also indirectly

@@ -1,6 +1,6 @@
 Package: EpiModel
 Version: 2.7.0
-Date: 2026-10-10
+Date: 2026-10-13
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics.
     Epidemic model classes include deterministic compartmental models, stochastic
@@ -33,7 +33,7 @@ Depends:
     tergm (>= 4.2.1),
     statnet.common (>= 4.10.0)
 Imports:
-    future,
+    future (>= 1.40.0),
     future.apply,
     graphics,
     grDevices,
@@ -49,9 +49,10 @@ Imports:
     tibble,
     methods,
     rlang,
-    dplyr,
+    dplyr (>= 1.1.0),
     coda,
-    networkLite (>= 1.0.5)
+    networkLite (>= 1.0.5),
+    Rcpp
 Suggests:
     bslib (>= 0.6.0),
     DT,
@@ -63,7 +64,6 @@ Suggests:
     rmarkdown,
     shiny,
     testthat (>= 3.1.8),
-    progressr,
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm

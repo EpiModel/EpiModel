@@ -237,6 +237,7 @@ importFrom(RColorBrewer,
   brewer.pal,
   brewer.pal.info
 )
+importFrom(Rcpp,evalCpp)
 importFrom(ape,
   as.phylo,
   collapse.singles

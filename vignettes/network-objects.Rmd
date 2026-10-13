@@ -563,12 +563,4 @@ el_cuml <- dedup_cumulative_edgelist(rbind(el_run1, el_run2))
 
 ### Performance Notes
 
-Both reachability functions use the [progressr](https://progressr.futureverse.org/) package for progress reporting. Wrap calls in `progressr::with_progress()` to display a progress bar:
-
-```{r, eval = FALSE}
-progressr::with_progress({
-  fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 260)
-})
-```
-
-These functions are efficient for large networks because they operate on cumulative edgelists (much smaller than full `networkDynamic` objects). For sets of more than 5 nodes, they are faster than iterating over `tsna::tPath()`. The `dense_optim` argument controls an adjacency-list optimization that helps with dense networks; `"auto"` enables it when the number of edges exceeds the number of nodes.
+The reachability functions are efficient for large networks because they operate on cumulative edgelists (much smaller than full `networkDynamic` objects). For sets of more than 5 nodes, they are faster than iterating over `tsna::tPath()`. The `dense_optim` argument controls an adjacency-list optimization that helps with dense networks; `"auto"` enables it when the number of edges exceeds the number of nodes.
