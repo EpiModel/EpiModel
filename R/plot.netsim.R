@@ -344,8 +344,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
                             ...) {
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
-  start <- if (is.null(x$control$start)) 1 else x$control$start
-  offset <- start - 1
+  offset <- epi_start(x) - 1
   nsims <- x$control$nsims
   sims <- if (is.null(sims)) seq_len(nsims) else sims
   if (max(sims) > nsims || min(sims) < 1) {

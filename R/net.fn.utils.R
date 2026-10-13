@@ -848,6 +848,13 @@ get_degree <- function(x) {
 #' `b`, where the final time window of interest for data analysis is
 #' `b` to `c` only.
 #'
+#' For `icm` and `netsim` objects, `at` is a time step as labeled by
+#' [as.data.frame.icm()]. With `reset.time = FALSE`, the time step of the first
+#' row kept is stored in `control$epi.start`, from which [as.data.frame.icm()],
+#' the `plot` and `summary` methods, and [comp_plot()] label the time steps.
+#' Without it, the rows are labeled from 1, as in the output of [icm()] and
+#' [netsim()], including restarted simulations.
+#'
 #' @return The updated object of class `dcm`, `netsim`, or `icm`.
 #'
 #' @export
@@ -917,16 +924,18 @@ truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
 #' @rdname truncate_sim
 #' @export
 truncate_sim.icm <- function(x, at, reset.time = TRUE) {
-  rows <- at:(x$control$nsteps)
+  first <- epi_start(x)
+  last <- first + x$control$nsteps - 1
+  if (length(at) != 1 || !at %in% first:last) {
+    stop("`at` must be a time step between ", first, " and ", last)
+  }
+  rows <- (at - first + 1):(x$control$nsteps)
   # epi
   x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
   # control settings
-  x$control$nsteps <- max(seq_along(rows))
-  if (reset.time) {
-    x$control$start <- 1
-  } else {
-    x$control$start <- at
-  }
+  x$control$nsteps <- length(rows)
+  x$control$start <- 1
+  x$control$epi.start <- if (reset.time) NULL else at
   return(x)
 }
 
@@ -935,6 +944,14 @@ truncate_sim.icm <- function(x, at, reset.time = TRUE) {
 #' @export
 truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
   truncate_sim.icm(x, at = at, reset.time = reset.time)
+}
+
+# Time step of the first epi row of an `icm` or `netsim` object. It is 1 unless
+# `truncate_sim(reset.time = FALSE)` kept the original time steps. A restarted
+# simulation starts at `control$start` but its epi rows start at 1, as they hold
+# the steps of the simulation it restarted from.
+epi_start <- function(x) {
+  if (is.null(x$control$epi.start)) 1L else x$control$epi.start
 }
 
 #' @title Function to Reduce the Size of a `netest` Object

@@ -42,9 +42,54 @@ test_that("truncate_sim.icm trims epi and resets start", {
   tr <- truncate_sim(mod, at = 10)
   expect_equal(nrow(tr$epi[[1]]), 20 - 10 + 1)
   expect_equal(tr$control$start, 1)
+  expect_null(tr$control$epi.start)
+  expect_equal(as.data.frame(tr, out = "mean")$time, 1:11)
 
   tr2 <- truncate_sim(mod, at = 10, reset.time = FALSE)
-  expect_equal(tr2$control$start, 10)
+  expect_equal(tr2$control$epi.start, 10)
+  df <- as.data.frame(mod)
+  df2 <- as.data.frame(tr2)
+  expect_equal(df2$time, rep(10:20, 2))
+  expect_equal(df2$i.num, df$i.num[df$time >= 10])
+})
+
+test_that("truncate_sim.icm reads `at` on the time steps of a truncated object", {
+  skip_on_cran()
+  param <- param.icm(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.1)
+  init <- init.icm(s.num = 50, i.num = 2)
+  control <- control.icm(type = "SIS", nsteps = 20, nsims = 2,
+                         verbose = FALSE)
+  mod <- icm(param, init, control)
+  tr <- truncate_sim(mod, at = 10, reset.time = FALSE)
+
+  expect_equal(truncate_sim(tr, at = 15, reset.time = FALSE),
+               truncate_sim(mod, at = 15, reset.time = FALSE))
+  expect_equal(truncate_sim(tr, at = 15), truncate_sim(mod, at = 15))
+
+  expect_error(truncate_sim(tr, at = 9), "between 10 and 20")
+  expect_error(truncate_sim(tr, at = 21), "between 10 and 20")
+  expect_error(truncate_sim(mod, at = 0), "between 1 and 20")
+  expect_error(truncate_sim(mod, at = c(5, 6)), "between 1 and 20")
+})
+
+test_that("plot, summary and comp_plot read the time steps of an icm truncated without reset", {
+  skip_on_cran()
+  param <- param.icm(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.1)
+  init <- init.icm(s.num = 50, i.num = 2)
+  control <- control.icm(type = "SIS", nsteps = 20, nsims = 2,
+                         verbose = FALSE)
+  mod <- icm(param, init, control)
+  tr <- truncate_sim(mod, at = 10, reset.time = FALSE)
+
+  pdf(NULL)
+  on.exit(dev.off(), add = TRUE)
+  plot(tr, y = "i.num")
+  expect_equal(par("usr")[1:2], extendrange(c(9, 20), f = 0.04))
+
+  expect_output(summary(tr, at = 15), "Time: 15")
+  expect_error(summary(tr, at = 5), "Specify a time step between 10 and 20")
+  expect_silent(comp_plot(tr, at = 15))
+  expect_error(comp_plot(tr, at = 5), "Specify a timestep between 10 and 20")
 })
 
 test_that("truncate_sim.netsim delegates to the icm method", {
@@ -267,6 +312,7 @@ test_that("simulations restarted from make_restart_point keep nwstats and transm
   nws <- get_nwstats(mod2)
   expect_equal(nws$time, rep(1:8, 2))
   expect_equal(nws$sim, rep(1:2, each = 8))
+  expect_equal(as.data.frame(mod2)$time, nws$time)
 
   rp2 <- make_restart_point(mod2, time_attrs = "infTime", keep_steps = 2)
   expect_equal(
@@ -276,6 +322,79 @@ test_that("simulations restarted from make_restart_point keep nwstats and transm
   )
   tm2 <- mod2$stats$transmat$sim1
   expect_equal(rp2$stats$transmat$sim1$at, tm2$at[tm2$at > 8 - 2] - (8 - 2))
+})
+
+test_that("restarted simulations label their time steps from 1", {
+  skip_on_cran()
+  set.seed(1)
+  mod <- build_restart_sim(nsteps = 5)
+  control <- control.net(type = "SI", start = 6, nsteps = 10, nsims = 2,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         verbose = FALSE)
+  mod2 <- netsim(mod, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+
+  # the epi trackers hold the steps of `x` followed by the new ones, in line
+  # with the network statistics
+  df <- as.data.frame(mod2)
+  expect_equal(df$time, rep(1:10, 2))
+  expect_equal(df$i.num[df$sim == 2 & df$time <= 5], mod$epi$i.num$sim1)
+  expect_equal(get_nwstats(mod2)$time, df$time)
+  df_mean <- as.data.frame(mod2, out = "mean")
+  expect_equal(df_mean$time, 1:10)
+
+  # truncating at a new step without reset keeps its label
+  tr <- truncate_sim(mod2, at = 6, reset.time = FALSE)
+  df_tr <- as.data.frame(tr)
+  expect_equal(df_tr$time, rep(6:10, 2))
+  expect_equal(df_tr$i.num, df$i.num[df$time >= 6])
+
+  pdf(NULL)
+  on.exit(dev.off(), add = TRUE)
+  plot(mod2, y = "i.num")
+  expect_equal(par("usr")[1:2], extendrange(c(0, 10), f = 0.04))
+  plot(tr, y = "i.num")
+  expect_equal(par("usr")[1:2], extendrange(c(5, 10), f = 0.04))
+  plot(df_tr, y = "i.num")
+  expect_equal(par("usr")[1:2], extendrange(c(5, 10), f = 0.04))
+
+  # summary and comp_plot report the step asked for
+  summary_i_num <- function(x, at) {
+    out <- capture.output(summary(x, at = at))
+    as.numeric(strsplit(grep("^Infect", out, value = TRUE), " +")[[1]][2])
+  }
+  expect_equal(summary_i_num(mod2, at = 8), round(df_mean$i.num[8], 3))
+  expect_equal(summary_i_num(tr, at = 8), round(df_mean$i.num[8], 3))
+  expect_error(summary(tr, at = 5), "Specify at between 6 and 10")
+  expect_silent(comp_plot(mod2, at = 8))
+})
+
+test_that("restarting from a simulation without transmissions keeps the transmission matrix a data frame", {
+  skip_on_cran()
+  set.seed(2)
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  init <- init.net(i.num = 25)
+  control <- control.net(type = "SI", nsteps = 3, tergmLite = TRUE,
+                         resimulate.network = TRUE, save.run = TRUE,
+                         verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0), init, control)
+  expect_equal(mod$stats$transmat$sim1, dplyr::tibble())
+
+  control$start <- 4
+  control$nsteps <- 6
+
+  # no transmissions after the restart either
+  expect_silent(mod2 <- netsim(mod, param.net(inf.prob = 0), init, control))
+  expect_equal(mod2$stats$transmat$sim1, dplyr::tibble())
+
+  # transmissions after the restart
+  expect_silent(mod3 <- netsim(mod, param.net(inf.prob = 1), init, control))
+  tm <- mod3$stats$transmat$sim1
+  expect_gt(nrow(tm), 0)
+  expect_false(inherits(tm, "tbl_df"))
+  expect_true(all(tm$at >= 4))
 })
 
 test_that("restarting from x without nwstats records the earlier steps as NA", {

@@ -43,7 +43,7 @@ plot.epi.data.frame <- function(x, y = NULL, sims = NULL, legend = NULL,
     epi = df2epi(x),
     control = list(
       nsteps = max(x$time) - min(x$time) + 1L,
-      start = min(x$time),
+      epi.start = min(x$time),
       nsims = max(x$sim)
     )
   )

@@ -81,8 +81,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
-  start <- if (is.null(x$control$start)) 1 else x$control$start
-  offset <- start - 1
+  offset <- epi_start(x) - 1
   nsims <- x$control$nsims
   if (is.null(sims)) {
     sims <- seq_len(nsims)
