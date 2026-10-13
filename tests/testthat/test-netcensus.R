@@ -51,6 +51,15 @@ active_at <- function(nd, at) {
 
 init <- init.net(i.num = 5)
 
+# networkDynamic() prints the observation period it creates
+quiet_nd <- function(...) {
+  out <- NULL
+  utils::capture.output(out <- suppressMessages(
+    networkDynamic::networkDynamic(...)
+  ))
+  out
+}
+
 
 # Constructor ------------------------------------------------------------------
 
@@ -109,8 +118,7 @@ test_that("netcensus finds a finite window when net.obs.period is infinite", {
   base <- network::network.initialize(10, directed = FALSE)
   spells <- data.frame(onset = c(1, 3, -Inf), terminus = c(5, Inf, 4),
                        tail = c(1, 2, 3), head = c(2, 3, 4))
-  nd <- suppressMessages(networkDynamic::networkDynamic(base.net = base,
-                                                        edge.spells = spells))
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
   expect_false(all(is.finite(unlist((nd %n% "net.obs.period")$observations))))
   obs <- netcensus(nd)
   expect_equal(obs$window, c(1, 5))
@@ -124,16 +132,16 @@ test_that("netcensus finds a finite window when net.obs.period is infinite", {
   expect_error(netcensus(nd, window = c(1.2, 1.8)), "no whole time step")
 
   # a census without any finite spell time needs an explicit window
-  nd2 <- suppressMessages(networkDynamic::networkDynamic(
+  nd2 <- quiet_nd(
     base.net = base,
     edge.spells = data.frame(onset = -Inf, terminus = Inf, tail = 1, head = 2)
-  ))
+  )
   expect_error(netcensus(nd2), "Set `window`")
   expect_equal(netcensus(nd2, window = c(0, 10))$summary$steps, c(0, 9))
 
   # a dynamic census without edges is refused like a static one
-  nd3 <- networkDynamic::networkDynamic(base.net = base,
-                                        edge.spells = spells[0, ])
+  nd3 <- networkDynamic::as.networkDynamic(base)
+  expect_true(networkDynamic::is.networkDynamic(nd3))
   expect_error(netcensus(nd3), "no edges")
 })
 
@@ -439,8 +447,7 @@ test_that("a dynamic census with empty steps runs without tergmLite", {
   # step must still be a matrix for the cumulative edgelist
   base <- network::network.initialize(20, directed = FALSE)
   spells <- data.frame(onset = 2, terminus = 6, tail = 1:5, head = 6:10)
-  nd <- suppressMessages(networkDynamic::networkDynamic(base.net = base,
-                                                        edge.spells = spells))
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
   obs <- netcensus(nd, window = c(0, 10))
   for (tergmLite in c(TRUE, FALSE)) {
     control <- control.net(type = "SI", nsteps = 8, nsims = 1,
@@ -460,8 +467,7 @@ test_that("a dynamic census with empty steps runs without tergmLite", {
 test_that("netsim warns when the simulation ends before a census window", {
   base <- network::network.initialize(20, directed = FALSE)
   spells <- data.frame(onset = 100, terminus = 130, tail = 1:5, head = 6:10)
-  nd <- suppressMessages(networkDynamic::networkDynamic(base.net = base,
-                                                        edge.spells = spells))
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
   obs <- netcensus(nd, window = c(100, 130))
   control <- control.net(type = "SI", nsteps = 20, nsims = 1, tergmLite = TRUE,
                          resimulate.network = TRUE, verbose = FALSE)
