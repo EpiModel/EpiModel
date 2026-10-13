@@ -85,8 +85,10 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   }
 
   # Time
-  if (at > nsteps || at < 1) {
-    stop("Specify a timestep between 1 and ", nsteps)
+  first <- epi_start(x)
+  last <- first + nsteps - 1
+  if (at > last || at < first) {
+    stop("Specify a timestep between ", first, " and ", last)
   }
 
   ## Dataframe subsets for plots

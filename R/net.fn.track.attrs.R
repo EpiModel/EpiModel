@@ -170,10 +170,12 @@ get_attr_at <- function(sim, at, sim_num = 1, compute_age = FALSE) {
   }
   if (sim_num > sim$control$nsims || sim_num < 1)
     stop("Specify a single sim_num between 1 and ", sim$control$nsims)
-  if (length(at) != 1 || !is.numeric(at) ||
-        at < sim$control$start || at > sim$control$nsteps)
-    stop("Specify a single at between ", sim$control$start, " and ",
-         sim$control$nsteps)
+  # the history holds the time steps labeled from `epi_start(sim)`, from the
+  # first step simulated (`control$start` in a restarted simulation) on
+  first <- max(sim$control$start, epi_start(sim))
+  last <- epi_start(sim) + sim$control$nsteps - 1
+  if (length(at) != 1 || !is.numeric(at) || at < first || at > last)
+    stop("Specify a single at between ", first, " and ", last)
   if (compute_age && is.null(sim$param$time.unit))
     stop("`compute_age = TRUE` needs a `time.unit` parameter (the number of ",
          "days in a time step) in `param`")

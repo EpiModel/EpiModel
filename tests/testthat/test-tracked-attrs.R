@@ -456,6 +456,11 @@ test_that("truncate_sim keeps get_attr_at aligned with the new time steps", {
   expect_equal(min(get_attr_history(tr)$active$time), -9)
   expect_identical(truncate_sim(f$sim, at = 11, reset.time = FALSE)$attr.history,
                    f$sim$attr.history)
+  # without reset, `at` is read on the original time steps
+  tr2 <- truncate_sim(f$sim, at = 11, reset.time = FALSE)
+  expect_identical(get_attr_at(tr2, 11), get_attr_at(f$sim, 11))
+  expect_identical(get_attr_at(tr2, 20), get_attr_at(f$sim, 20))
+  expect_error(get_attr_at(tr2, 10), "between 11 and 20")
 })
 
 test_that("get_attr_at errors clearly without an attribute history", {

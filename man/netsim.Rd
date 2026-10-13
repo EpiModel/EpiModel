@@ -194,7 +194,10 @@ Simulations can be checkpointed and restarted if interrupted. Set
 automatic checkpointing. To restart a simulation from a prior \code{netsim}
 output, pass the \code{netsim} object as \code{x} and set \code{control$start} to one
 greater than the final time step of the prior simulation. See the
-Checkpointing Simulations section of \code{\link{control.net}} for full details.
+Checkpointing Simulations section of \code{\link{control.net}} for full details. The
+epi trackers and network statistics of the output hold every time step from
+1 to \code{nsteps}, those of \code{x} followed by the new ones, and
+\code{\link{as.data.frame.netsim}} and \code{\link{plot.netsim}} label them 1 to \code{nsteps}.
 
 When restarting, every simulation restarts from the first simulation of \code{x},
 with a warning if \code{x} holds more than one. \code{\link{make_restart_point}} makes a

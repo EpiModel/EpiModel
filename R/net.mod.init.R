@@ -125,8 +125,12 @@ initialize.net <- function(x, param, init, control, s) {
       }
     }
 
+    # A simulation without transmissions holds an empty `tibble`, which is not
+    # carried over: binding it first would make the transmission matrix a
+    # `tibble` too
     if (get_control(dat, "save.transmat") &&
-          is.data.frame(x$stats$transmat[[1]])) {
+          is.data.frame(x$stats$transmat[[1]]) &&
+          nrow(x$stats$transmat[[1]]) > 0) {
       dat$stats$transmat <- padded_vector(list(x$stats$transmat[[1]]), nsteps)
     }
   }

@@ -255,9 +255,11 @@ summary.icm <- function(object, at, digits = 3, ...) {
   groups <- object$param$groups
   vital <- object$param$vital
   nsteps <- object$control$nsteps
+  first <- epi_start(object)
+  last <- first + nsteps - 1
 
-  if (at > nsteps || at < 1) {
-    stop("Specify a time step between 1 and ", nsteps)
+  if (at > last || at < first) {
+    stop("Specify a time step between ", first, " and ", last)
   }
 
   df.mn <- as.data.frame(object, out = "mean")
@@ -502,9 +504,11 @@ summary.netsim <- function(object, at, digits = 3, ...) {
   groups <- object$param$groups
   vital <- object$param$vital
   nsteps <- object$control$nsteps
+  first <- epi_start(object)
+  last <- first + nsteps - 1
 
-  if (at > nsteps || at < 1) {
-    stop("Specify at between 1 and ", nsteps)
+  if (at > last || at < first) {
+    stop("Specify at between ", first, " and ", last)
   }
 
   df.mn <- as.data.frame(object, out = "mean")

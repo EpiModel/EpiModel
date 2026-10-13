@@ -95,7 +95,7 @@ Prefer the accessor API (`get_attr`/`set_attr`, `get_network`/`set_network`, `ge
 ### Time Handling Differences Across Model Classes
 
 - **DCM**: `control$timesteps` stores the explicit time vector (may be non-integer when `dt < 1`). `control$nsteps` is the max time value. `control$nruns` is the number of sensitivity runs, derived from the longest vector-valued argument in `param.dcm()` or `init.dcm()` (initial-condition sensitivity was added in #408). Default ODE solver is `"lsoda"` (changed from `"rk4"` in v2.6.0 for numerical stability).
-- **ICM/netsim**: Time is implicit via row indices. `control$nsteps` is both the number of rows and the max time step. `control$nsims` is the number of stochastic simulations. `control$start` provides a time offset (default 1).
+- **ICM/netsim**: Time is implicit via row indices. `control$nsteps` is the number of epi rows, and the max time step unless the object was truncated. `control$nsims` is the number of stochastic simulations. `control$start` is the first step a `netsim` run simulates (`> 1` on a restart), not a label: a restarted run's epi rows still hold steps 1 to `nsteps`. The label of the first epi row is `control$epi.start`, set only by `truncate_sim(reset.time = FALSE)` and read through the internal `epi_start()` (default 1) by `as.data.frame`, the plot and summary methods, `comp_plot`, and `truncate_sim` itself (#1085).
 
 When modifying functions that touch time or epi structure, verify behavior across all three classes.
 

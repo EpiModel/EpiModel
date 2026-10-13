@@ -145,7 +145,10 @@
 #' automatic checkpointing. To restart a simulation from a prior `netsim`
 #' output, pass the `netsim` object as `x` and set `control$start` to one
 #' greater than the final time step of the prior simulation. See the
-#' Checkpointing Simulations section of [`control.net`] for full details.
+#' Checkpointing Simulations section of [`control.net`] for full details. The
+#' epi trackers and network statistics of the output hold every time step from
+#' 1 to `nsteps`, those of `x` followed by the new ones, and
+#' [`as.data.frame.netsim`] and [`plot.netsim`] label them 1 to `nsteps`.
 #'
 #' When restarting, every simulation restarts from the first simulation of `x`,
 #' with a warning if `x` holds more than one. [`make_restart_point`] makes a

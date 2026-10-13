@@ -37,6 +37,13 @@ steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 \code{b}, where the final time window of interest for data analysis is
 \code{b} to \code{c} only.
 
+For \code{icm} and \code{netsim} objects, \code{at} is a time step as labeled by
+\code{\link[=as.data.frame.icm]{as.data.frame.icm()}}. With \code{reset.time = FALSE}, the time step of the first
+row kept is stored in \code{control$epi.start}, from which \code{\link[=as.data.frame.icm]{as.data.frame.icm()}},
+the \code{plot} and \code{summary} methods, and \code{\link[=comp_plot]{comp_plot()}} label the time steps.
+Without it, the rows are labeled from 1, as in the output of \code{\link[=icm]{icm()}} and
+\code{\link[=netsim]{netsim()}}, including restarted simulations.
+
 For \code{netsim} objects, the network statistics are truncated along with the
 epi trackers, as both hold one row per time step. With \code{reset.time = TRUE},
 the times of the attribute history, the raw records, the transmission
