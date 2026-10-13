@@ -447,6 +447,12 @@ get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
+#' @details
+#' On a `netsim` object, the `coef.form` element returned holds the formation
+#' coefficients of its first simulation at the last time step, which the edges
+#' correction may have moved away from the fitted ones. Those of every
+#' simulation are in `x$coef.form`.
+#'
 #' @keywords extract internal
 #' @export
 #'
@@ -465,7 +471,8 @@ get_nwparam <- function(x, network = 1) {
 #' @param sims Either a numeric vector of simulation numbers to retain in the
 #'        output object, or `"mean"`, which selects the one simulation with
 #'        the value of the variable specified in `var` closest to the mean
-#'        of `var` across all simulations at the final step.
+#'        of `var` across all simulations at the final step. Each simulation
+#'        is returned once, in ascending order, whatever the order of `sims`.
 #' @param var A character vector of variables to retain from `x` if
 #'        `sims` is a numeric vector, or a single variable name for
 #'        selecting the average simulation from the set if `sims = "mean"`.
@@ -521,6 +528,10 @@ get_sims <- function(x, sims, var = NULL) {
     sims <- which.min(abs(d - md))
   }
 
+  if (!is.numeric(sims) || length(sims) == 0 || anyNA(sims) ||
+        any(sims < 1) || any(sims != round(sims))) {
+    stop("`sims` must hold whole numbers between 1 and ", nsims)
+  }
   if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims)
   }
@@ -544,6 +555,14 @@ get_sims <- function(x, sims, var = NULL) {
     for (elt in elts_name) {
       out[[elt]][delsim] <- NULL
       names(out[[elt]]) <- newnames
+    }
+
+    # `nwparam` holds the formation coefficients of the first simulation, as
+    # `netsim()` saves them, so it follows the new first simulation
+    if ("coef.form" %in% elts_name) {
+      for (network in seq_along(out$nwparam)) {
+        out$nwparam[[network]]$coef.form <- out$coef.form[[1]][[network]]
+      }
     }
 
     # Subset per-sim stats elements
@@ -619,21 +638,28 @@ get_attr_history <- function(sims) {
 
   for (name in simnames) {
     records <- sims[["attr.history"]][[name]]
+    if (is.null(records)) next
     records <- records$as_list()
-    attributes <- vapply(records, function(x) x[["attribute"]], "")
-    attributes.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
-    for (a in attributes.names) {
-      parts <- Filter(function(x) x[["attribute"]] == a, records)
+    attributes <- vapply(records, function(x) x[["attribute"]], "")
+    # keep the attributes in the order they were first recorded
+    attributes_pos <- split(
+      seq_along(attributes),
+      factor(attributes, levels = unique(attributes))
+    )
+    for (a in names(attributes_pos)) {
+      parts <- records[attributes_pos[[a]]]
       parts <- lapply(parts, dplyr::as_tibble)
       d <- dplyr::bind_rows(parts)
       d[["sim"]] <- simnum
       d <- dplyr::select(d, "sim", "time", "attribute", "uids", "values")
-      dfs[[a]] <- dplyr::bind_rows(dfs[[a]], d)
+      dfs[[a]] <- c(dfs[[a]], list(d))
     }
   }
+
+  dfs <- lapply(dfs, dplyr::bind_rows)
 
   return(dfs)
 }

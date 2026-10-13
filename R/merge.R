@@ -121,7 +121,9 @@ merge.icm <- function(x, y, ...) {
 #' @param param.error If `TRUE`, if `x` and `y` have different
 #'        params (in [param.net()]) or controls (passed in
 #'        [control.net()]) an error will prevent the merge. Use
-#'        `FALSE` to override that check.
+#'        `FALSE` to override that check. The controls for how the runs were
+#'        executed rather than what they simulated (`nsims`, `ncores`,
+#'        `verbose`, `verbose.int`, and the checkpoint settings) may differ.
 #' @param keep.diss.stats If `TRUE`, keep `diss.stats` from the
 #'        original `x` and `y` objects.
 #' @param keep.run If `TRUE`, keep the `run` sublists (as set by the
@@ -142,7 +144,8 @@ merge.icm <- function(x, y, ...) {
 #' This merge function combines the results of two independent simulations of
 #' [netsim()] class models, simulated under separate function calls.
 #' The model parameterization between the two calls must be exactly the same,
-#' except for the number of simulations in each call. This allows for manual
+#' except for the number of simulations in each call and the execution
+#' settings listed under `param.error`. This allows for manual
 #' parallelization of model simulations.
 #'
 #' This merge function does not work the same as the default merge, which allows
@@ -248,9 +251,26 @@ merge.netsim <- function(
       "dat.updates",
       "future.use.plan"
     )
+    # How a run was executed rather than what it simulated: separate jobs can
+    # differ in these, and `netsim()` itself sets `ncores` to 1 for a single
+    # simulation and turns `verbose` off for several
+    exec_controls <- c(
+      "nsims",
+      "ncores",
+      "verbose",
+      "verbose.int",
+      ".checkpoint.dir",
+      ".checkpoint.steps",
+      ".checkpoint.compress",
+      ".checkpoint.keep",
+      ".checkpointed",
+      ".traceback.on.error",
+      ".dump.frame.on.error"
+    )
+    skip_controls <- c(exec_controls, fmla_controls)
     check_controls <- identical(
-      x$control[setdiff(names(x$control), c("nsims", fmla_controls))],
-      y$control[setdiff(names(y$control), c("nsims", fmla_controls))]
+      x$control[setdiff(names(x$control), skip_controls)],
+      y$control[setdiff(names(y$control), skip_controls)]
     )
 
     ## handle formulas separately due to environments
@@ -278,15 +298,18 @@ merge.netsim <- function(
     names(out$epi[[i]]) <- newnames
   }
 
-  # Merge per simulation elements
+  # Merge per simulation elements. `c()` drops the class of the list (e.g.
+  # `transmat`), which is restored from `x`
   for (elt in similar_components$per_sim) {
     out[[elt]] <- c(x[[elt]], y[[elt]])
     names(out[[elt]]) <- newnames
+    oldClass(out[[elt]]) <- oldClass(x[[elt]])
   }
 
   for (elt in similar_components$stats) {
     out$stats[[elt]] <- c(x$stats[[elt]], y$stats[[elt]])
     names(out$stats[[elt]]) <- newnames
+    oldClass(out$stats[[elt]]) <- oldClass(x$stats[[elt]])
   }
 
   return(out)

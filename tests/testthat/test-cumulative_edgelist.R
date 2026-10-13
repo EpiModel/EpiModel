@@ -317,6 +317,47 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
 
 })
 
+test_that("make_networkDynamic matches the networkDynamic of netsim", {
+  skip_on_cran()
+  set.seed(11)
+  nw <- network_initialize(100)
+  est <- netest(nw, ~edges, 60, dissolution_coefs(~offset(edges), 10, 0.02),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1, rec.rate = 0.05,
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     dr.rate = 0.02)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 40,
+                         resimulate.network = TRUE, tergmLite = FALSE,
+                         cumulative.edgelist = TRUE, truncate.el.cuml = Inf,
+                         save.cumulative.edgelist = TRUE,
+                         tracked.attributes = "status", verbose = FALSE)
+  sim <- netsim(est, param, init.net(i.num = 10, r.num = 0), control)
+  orig <- get_network(sim, collapse = FALSE)
+  made <- make_networkDynamic(sim)
+
+  dyads <- function(x) {
+    el <- as.matrix(x, matrix.type = "edgelist")
+    sort(paste(pmin(el[, 1], el[, 2]), pmax(el[, 1], el[, 2])))
+  }
+  n <- network.size(orig)
+  expect_equal(network.size(made), n)
+  for (at in 1:40) {
+    act <- is.active(orig, at = at, v = seq_len(n))
+    expect_identical(is.active(made, at = at, v = seq_len(n)), act)
+    expect_identical(
+      get.vertex.attribute.active(made, "status", at = at)[act],
+      get.vertex.attribute.active(orig, "testatus", at = at)[act]
+    )
+    expect_identical(
+      dyads(network.extract(made, at = at, retain.all.vertices = TRUE)),
+      dyads(network.extract(orig, at = at, retain.all.vertices = TRUE))
+    )
+  }
+  # no edge spell ends where it starts
+  spells <- as.data.frame(made)
+  expect_true(all(spells$onset < spells$terminus))
+})
+
 context("Cumulative Edgelist: head/tail orientation")
 
 # (t)ergm edgelists carry the tail in column 1 and the head in column 2. The

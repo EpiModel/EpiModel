@@ -574,6 +574,25 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        [`get_cumulative_edgelists_df`]). Requires `cumulative.edgelist =
 #'        TRUE`; without it, no history is collected to save. Off by default
 #'        to keep output objects small.
+#' @param tracked.attributes A character vector of nodal attribute names whose
+#'        changes should be automatically recorded at each time step. The
+#'        `active` attribute is always tracked when this or
+#'        `tracked.attributes.once` is non-empty. At each
+#'        step, only the nodes whose values changed (including `NA` transitions),
+#'        plus newly arrived and departed nodes, are recorded via
+#'        [record_attr_history()]. The resulting history can be retrieved with
+#'        [get_attr_history()] and used to reconstruct attribute state at any
+#'        time step with [get_attr_at()] or to build a `networkDynamic` object
+#'        with [make_networkDynamic()]. A tracked attribute that a module
+#'        creates on its first call is recorded for all nodes from that step
+#'        on; every tracked attribute must exist by the end of the first time
+#'        step.
+#' @param tracked.attributes.once A character vector of nodal attribute names
+#'        to record only in the initial snapshot and for newly arriving nodes.
+#'        Unlike `tracked.attributes`, these are not diff-tracked at every step,
+#'        so subsequent changes are **not** captured. Use this for attributes
+#'        that are fixed at entry and never change during the simulation (e.g.,
+#'        `"race"`, `"birth.year"`).
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.
@@ -717,6 +736,8 @@ control.net <- function(type,
                         edges.correct.attr = NULL,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
+                        tracked.attributes = NULL,
+                        tracked.attributes.once = NULL,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,
@@ -898,6 +919,19 @@ control.net <- function(type,
       stop("Length of epi.by currently limited to 1")
     } else {
       p[["epi.by"]] <- epi.by
+    }
+  }
+
+  for (arg in c("tracked.attributes", "tracked.attributes.once")) {
+    val <- p[[arg]]
+    if (is.null(val)) next
+    if (!is.character(val) || anyNA(val) || any(val == "")) {
+      stop("`", arg, "` must be a character vector of nodal attribute names",
+           call. = FALSE)
+    }
+    if ("unique_id" %in% val) {
+      stop("`", arg, "` cannot include \"unique_id\": the attribute ",
+           "history records it for every node already", call. = FALSE)
     }
   }
 

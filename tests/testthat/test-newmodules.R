@@ -45,7 +45,7 @@ test_that("New network models vignette example", {
     }
 
     # Output
-    dat <- set_epi(dat, "d.flow", at, nDepartures)
+    dat <- set_epi(dat, "d.flow", nDepartures)
     return(dat)
   }
 
@@ -71,7 +71,7 @@ test_that("New network models vignette example", {
     dat <- append_attr(dat, "age", 0, nArrivals)
 
     # Output
-    dat <- set_epi(dat, "a.flow", at, nArrivals)
+    dat <- set_epi(dat, "a.flow", nArrivals)
 
     return(dat)
   }
@@ -487,8 +487,8 @@ test_that("a scenario updater sets single positions of a vector parameter", {
   # Records the value of the vector parameter `x` at each step
   record_x <- function(dat, at) {
     x <- get_param(dat, "x")
-    dat <- set_epi(dat, "x.len", at, length(x))
-    for (i in 1:3) dat <- set_epi(dat, paste0("x", i), at, x[i])
+    dat <- set_epi(dat, "x.len", length(x))
+    for (i in 1:3) dat <- set_epi(dat, paste0("x", i), x[i])
     dat
   }
 
@@ -529,35 +529,31 @@ test_that("Time varying elements", {
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_norm",
-      some_nodes,
-      rnorm(length(some_nodes))
+      dat, "attr_norm",
+      rnorm(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_unif",
-      some_nodes,
-      runif(length(some_nodes))
+      dat, "attr_unif",
+      runif(length(some_nodes)),
+      posit_ids = some_nodes
     )
 
     some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
-      dat, at,
-      "attr_fix",
-      some_nodes,
-      at
+      dat, "attr_fix",
+      at,
+      posit_ids = some_nodes
     )
 
     # test when 0 nodes selected
     some_nodes <- integer(0)
     dat <- record_attr_history(
-      dat, at,
-      "attr_none",
-      some_nodes,
-      at
+      dat, "attr_none",
+      at,
+      posit_ids = some_nodes
     )
 
     return(dat)
@@ -594,9 +590,42 @@ test_that("Time varying elements", {
   attr_history <- get_attr_history(mod)
   expect_is(attr_history, "list")
   expect_is(attr_history[[1]], "data.frame")
-  expect_equal(
+  expect_setequal(
     names(attr_history),
     c("attr_norm", "attr_unif", "attr_fix", "attr_none"))
+  # `attr_fix` records the time step as its value, at the default `at`
+  expect_equal(attr_history$attr_fix$values, attr_history$attr_fix$time)
+  expect_setequal(attr_history$attr_fix$time, 2:20)
+})
+
+test_that("the module `at` matches the current step used by set_epi", {
+  skip_on_cran()
+  step_logger <- function(dat, at) {
+    dat <- set_epi(dat, "at_arg", at)
+    dat <- set_epi(dat, "flow_like", at * 10)
+    return(dat)
+  }
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = NULL, nsteps = 5, nsims = 1, verbose = FALSE,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, infection.FUN = infection.net,
+                         logger.FUN = step_logger,
+                         .tracker.list = list(cur = get_current_timestep))
+  sim <- netsim(est, param, init, control)
+  expect_equal(sim$epi$at_arg[, 1], c(NA, 2:5))
+  expect_equal(sim$epi$flow_like[, 1], c(NA, 2:5) * 10)
+  expect_equal(sim$epi$cur[, 1], c(NA, 2:5))
+
+  control$start <- 6
+  control$nsteps <- 8
+  rs <- netsim(sim, param, init, control)
+  expect_equal(rs$epi$at_arg[, 1], c(NA, 2:8))
+  expect_equal(rs$epi$cur[, 1], c(NA, 2:8))
 })
 
 context("Custom Trackers")
@@ -1058,7 +1087,7 @@ test_that("an attribute first appended mid-simulation covers every node", {
     dat <- append_attr(dat, "status", "s", n.new)
     dat <- append_attr(dat, "infTime", NA, n.new)
     dat <- append_attr(dat, "arrival.step", at, n.new)
-    dat <- set_epi(dat, "a.flow", at, n.new)
+    dat <- set_epi(dat, "a.flow", n.new)
     return(dat)
   }
 

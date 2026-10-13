@@ -115,7 +115,7 @@ test_that("custom modules keep their own reading of plain vectors", {
   # a custom infection module that reads inf.prob by layer, as EpiModelCOVID
   # does, is not affected
   by_layer <- function(dat, at) {
-    dat <- set_epi(dat, "p2", at, get_param(dat, "inf.prob")[2])
+    dat <- set_epi(dat, "p2", get_param(dat, "inf.prob")[2])
     return(dat)
   }
   control <- control.net(type = NULL, nsteps = 3, nsims = 1,

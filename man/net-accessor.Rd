@@ -2,122 +2,7 @@
 % Please edit documentation in R/net.fn.accessor.R
 \name{net-accessor}
 \alias{net-accessor}
-\alias{get_attr_list}
-\alias{get_attr}
-\alias{add_attr}
-\alias{set_attr}
-\alias{append_attr}
-\alias{remove_node_attr}
-\alias{get_epi_list}
-\alias{get_epi}
-\alias{add_epi}
-\alias{set_epi}
-\alias{get_param_list}
-\alias{get_param}
-\alias{add_param}
-\alias{set_param}
-\alias{get_control_list}
-\alias{get_control}
-\alias{get_network_control}
-\alias{add_control}
-\alias{set_control}
-\alias{get_init_list}
-\alias{get_init}
-\alias{add_init}
-\alias{set_init}
-\alias{get_core_attributes}
-\alias{append_core_attr}
 \title{Functions to Access and Edit the Main netsim_dat Object in Network Models}
-\usage{
-get_attr_list(dat, item = NULL)
-
-get_attr(dat, item, posit_ids = NULL, override.null.error = FALSE)
-
-add_attr(dat, item)
-
-set_attr(dat, item, value, posit_ids = NULL, override.length.check = FALSE)
-
-append_attr(dat, item, value, n.new)
-
-remove_node_attr(dat, posit_ids)
-
-get_epi_list(dat, item = NULL)
-
-get_epi(dat, item, at = NULL, override.null.error = FALSE)
-
-add_epi(dat, item)
-
-set_epi(dat, item, at, value)
-
-get_param_list(dat, item = NULL)
-
-get_param(dat, item, override.null.error = FALSE)
-
-add_param(dat, item)
-
-set_param(dat, item, value)
-
-get_control_list(dat, item = NULL)
-
-get_control(dat, item, override.null.error = FALSE)
-
-get_network_control(dat, network, item, override.null.error = FALSE)
-
-add_control(dat, item)
-
-set_control(dat, item, value)
-
-get_init_list(dat, item = NULL)
-
-get_init(dat, item, override.null.error = FALSE)
-
-add_init(dat, item)
-
-set_init(dat, item, value)
-
-get_core_attributes()
-
-append_core_attr(dat, at, n.new)
-}
-\arguments{
-\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
-object and other initialization information passed from
-\code{\link[=netsim]{netsim()}}.}
-
-\item{item}{A character vector containing the name of the element to access
-(for \code{get_} functions), create (for \code{add_} functions), or
-edit (for \code{set_} and \code{append_} functions). Can be of length greater
-than 1 for \verb{get_*_list} functions.}
-
-\item{posit_ids}{For \code{set_attr} and \code{get_attr}, a numeric vector of
-posit_ids to subset the desired \code{item}.}
-
-\item{override.null.error}{If TRUE, \code{get_} will return NULL if the
-\code{item} does not exist instead of throwing an error.
-(default = FALSE).}
-
-\item{value}{New value to be attributed in the \code{set_} and \code{append_}
-functions.}
-
-\item{override.length.check}{If TRUE, \code{set_attr} allows the modification
-of the \code{item} size. (default = FALSE).}
-
-\item{n.new}{For \code{append_core_attr}, the number of new nodes to initiate
-with core attributes; for \code{append_attr}, the number of new
-elements to append at the end of \code{item}.}
-
-\item{at}{For \code{get_epi}, the timestep at which to access the specified
-\code{item}; for \code{set_epi}, the timestep at which to add the new
-value for the epi output \code{item}; for \code{append_core_attr}, the
-current time step.}
-
-\item{network}{index of network for which to get control}
-}
-\value{
-A vector or a list of vectors for \code{get_} functions; the main
-list object for \code{set_}, \code{append_}, and \code{add_}
-functions.
-}
 \description{
 These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 functions allow a safe and efficient way to retrieve and mutate
@@ -129,9 +14,24 @@ simulation, not for editing the user-facing \code{param.net},
 output object returned by \code{\link[=netsim]{netsim()}}. See the \strong{Intended
 Usage} section below for details and alternatives.
 
-This function returns an exhaustive named list of the attributes managed by
-EpiModel itself. It can be used to check the validity of an attributes list
-and of its types.
+The accessors are documented on three pages, by the part of \code{dat} they act
+on:
+\itemize{
+\item \strong{Nodal attributes}, with one value per node (\code{\link[=get_attr]{get_attr()}}):
+\code{get_attr()}, \code{get_attr_list()}, \code{set_attr()}, \code{add_attr()},
+\code{append_attr()}, \code{append_core_attr()}, \code{remove_node_attr()}, and
+\code{get_core_attributes()}.
+\item \strong{Epidemic outputs}, with one value per time step (\code{\link[=get_epi]{get_epi()}}):
+\code{get_epi()}, \code{get_epi_list()}, \code{set_epi()}, and \code{add_epi()}.
+\item \strong{Parameters, control settings, and initial conditions}
+(\code{\link[=get_param]{get_param()}}): \code{get_param()}, \code{get_param_list()}, \code{set_param()},
+\code{add_param()}, the same four functions for \code{control} and \code{init}, and
+\code{get_network_control()}.
+}
+
+Nodes are referred to by their positional identifiers; see
+\code{\link[=get_unique_ids]{get_unique_ids()}} and \code{\link[=get_posit_ids]{get_posit_ids()}} to convert them to and from
+their unique identifiers.
 }
 \section{Intended Usage}{
 
@@ -172,16 +72,6 @@ underlying updater module and the scenario API built on top of it.
 }
 }
 
-\section{Core Attribute}{
-
-The \code{append_core_attr} function initializes the attributes necessary for
-EpiModel to work (the four core attributes are: "active", "unique_id",
-"entrTime", and "exitTime"). These attributes are used in the initialization
-phase of the simulation, to create the nodes (see
-\code{\link[=initialize.net]{initialize.net()}}); and also used when adding nodes during the
-simulation (see \code{\link[=arrivals.net]{arrivals.net()}}).
-}
-
 \section{Mutability}{
 
 The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
@@ -196,61 +86,6 @@ create a new one if it does not exist already by calling the \code{add_}
 functions internally.
 }
 
-\section{One Value Per Node}{
-
-Every nodal attribute holds exactly one value per node, and \code{\link[=netsim]{netsim()}}
-checks this at the end of each time step. When \code{set_attr} and \code{append_attr}
-create an attribute, the nodes they do not write to are filled with \code{NA} to
-preserve that: \code{set_attr} with \code{posit_ids} fills the unselected nodes, and
-\code{append_attr} fills the nodes that predate the ones being appended. This
-means \code{append_core_attr} must be called before \code{append_attr} when adding new
-nodes, as it is what makes those nodes known to the rest of the object.
-}
-
-\examples{
-dat <- create_dat_object(control = list(nsteps = 150))
-dat <- append_core_attr(dat, 1, 100)
-
-dat <- add_attr(dat, "age")
-dat <- set_attr(dat, "age", runif(100))
-dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
-dat <- append_attr(dat, "status", 1, 10)
-dat <- append_attr(dat, "age", NA, 10)
-get_attr_list(dat)
-get_attr_list(dat, c("age", "active"))
-get_attr(dat, "status")
-get_attr(dat, "status", c(1, 4))
-
-dat <- add_epi(dat, "i.num")
-dat <- set_epi(dat, "i.num", 150, 10)
-dat <- set_epi(dat, "s.num", 150, 90)
-get_epi_list(dat)
-get_epi_list(dat, c("i.num", "s.num"))
-get_epi(dat, "i.num")
-get_epi(dat, "i.num", c(1, 4))
-
-dat <- add_param(dat, "x")
-dat <- set_param(dat, "x", 0.4)
-dat <- set_param(dat, "y", 0.8)
-get_param_list(dat)
-get_param_list(dat, c("x", "y"))
-get_param(dat, "x")
-
-dat <- add_init(dat, "x")
-dat <- set_init(dat, "x", 0.4)
-dat <- set_init(dat, "y", 0.8)
-get_init_list(dat)
-get_init_list(dat, c("x", "y"))
-get_init(dat, "x")
-
-dat <- add_control(dat, "x")
-dat <- set_control(dat, "x", 0.4)
-dat <- set_control(dat, "y", 0.8)
-get_control_list(dat)
-get_control_list(dat, c("x", "y"))
-get_control(dat, "x")
-
-}
 \seealso{
 \code{\link[=update_params]{update_params()}} for editing a \code{param.net} object outside a
 simulation; \code{\link[=param.net]{param.net()}}, \code{\link[=init.net]{init.net()}}, \code{\link[=control.net]{control.net()}} for input

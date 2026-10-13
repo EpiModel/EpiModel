@@ -1,5 +1,76 @@
 context("Accessors: Getters and Setters")
 
+test_that("set_epi and the record functions default `at` to the current step", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 5)
+  dat <- set_current_timestep(dat, 4)
+
+  dat <- set_epi(dat, "x", 7)
+  expect_equal(which(!is.na(get_epi(dat, "x"))), 4)
+  expect_equal(get_epi(dat, "x", 4), 7)
+  dat <- set_epi(dat, "x", 8, at = 6)
+  expect_equal(get_epi(dat, "x", c(4, 6)), c(7, 8))
+
+  dat <- record_attr_history(dat, "a", 1, posit_ids = 1:2)
+  dat <- record_attr_history(dat, "a", 2, at = 6, unique_ids = 3)
+  rec <- dat$attr.history$as_list()
+  expect_equal(vapply(rec, `[[`, 0, "time"), c(4, 6))
+  expect_equal(rec[[1]]$uids, get_unique_ids(dat, 1:2))
+  expect_equal(rec[[2]]$uids, 3)
+
+  dat <- record_raw_object(dat, "obj", "a")
+  dat <- record_raw_object(dat, "obj", "b", at = 6)
+  rec <- dat$raw.records$as_list()
+  expect_equal(vapply(rec, `[[`, 0, "time"), c(4, 6))
+  expect_equal(vapply(rec, `[[`, "", "label"), c("obj", "obj"))
+  expect_equal(vapply(rec, `[[`, "", "object"), c("a", "b"))
+})
+
+test_that("the record functions check their inputs", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 5)
+
+  expect_error(record_attr_history(dat, "a", 1), "must be non NULL")
+  expect_error(record_attr_history(dat, "a", 1:3, posit_ids = 1:2),
+               "Given: 3")
+  expect_error(record_attr_history(dat, "a", 1, at = 1:2, posit_ids = 1),
+               "`at` must be numeric")
+  expect_error(record_raw_object(dat, "a", 1, at = "1"),
+               "`at` must be numeric")
+  expect_error(set_epi(dat, 1, 7), "`item` must be a single")
+  expect_error(record_attr_history(dat, 1, 7, posit_ids = 1),
+               "`item` must be a single")
+  expect_error(record_raw_object(dat, 1, 7), "`label` must be a single")
+
+  # a `dat` built without `create_dat_object()` has no current time step
+  bare <- structure(list(epi = list(), control = list(nsteps = 5)),
+                    class = c("netsim_dat", "list"))
+  expect_error(set_epi(bare, "x", 1), "no current time step")
+  expect_error(record_raw_object(bare, "x", 1), "no current time step")
+  expect_equal(get_epi(set_epi(bare, "x", 1, at = 2), "x", 2), 1)
+})
+
+test_that("calls written for the EpiModel 2.6 signatures error", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 5)
+  at <- 2
+
+  expect_error(set_epi(dat, "x", at, 7), "signature changed")
+  expect_error(record_raw_object(dat, at, "obj", 7), "signature changed")
+  expect_error(record_attr_history(dat, at, "a", 1:2, 1), "signature changed")
+  expect_error(
+    record_attr_history(dat, at, attribute = "a", posit_ids = 1:2, values = 1),
+    "`attribute` is now `item`"
+  )
+  # `at` must be named
+  expect_error(set_epi(dat, "x", 7, 2), "signature changed")
+  # the named forms work on both versions
+  expect_equal(get_epi(set_epi(dat, "x", at = 2, value = 7), "x", 2), 7)
+  rec <- record_raw_object(dat, at = 2, "obj", 7)$raw.records$as_list()[[1]]
+  expect_equal(rec[c("time", "label", "object")],
+               list(time = 2, label = "obj", object = 7))
+})
+
 test_that("`dat` getters and setter", {
 
   n_nodes <- 100
@@ -59,12 +130,12 @@ test_that("`dat` getters and setter", {
   dat <- add_epi(dat, "i")
   expect_equal(dat$epi$i, rep(NA_integer_, get_control(dat, "nsteps")))
 
-  expect_error(set_epi(dat, "i", c(1, 4), 4))
+  expect_error(set_epi(dat, "i", 4, at = c(1, 4)))
 
-  dat <- set_epi(dat, "i", 150, 10)
+  dat <- set_epi(dat, "i", 10, at = 150)
   expect_equal(get_epi(dat, "i")[150], 10)
 
-  dat <- set_epi(dat, "s", 110, 10)
+  dat <- set_epi(dat, "s", 10, at = 110)
   expect_equal(get_epi(dat, "s")[110], 10)
 
   expect_equal(get_epi(dat, "i", c(1, 100)), dat$epi$i[c(1, 100)])
@@ -75,7 +146,7 @@ test_that("`dat` getters and setter", {
   expect_error(get_epi(dat, "i", c(TRUE, FALSE)))
 
   dat$control$nsteps <- 200
-  dat <- set_epi(dat, "i", 160, 8)
+  dat <- set_epi(dat, "i", 8, at = 160)
   expect_length(dat$epi$i, 200)
 
   expect_equal(get_epi_list(dat, c("i", "s")), get_epi_list(dat)[c("i", "s")])

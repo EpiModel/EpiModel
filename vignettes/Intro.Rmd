@@ -162,8 +162,8 @@ progress_module <- function(dat, at) {
   status[ids.ItoR] <- "r"
 
   dat <- set_attr(dat, "status", status)
-  dat <- set_epi(dat, "ei.flow", at, length(ids.EtoI))
-  dat <- set_epi(dat, "ir.flow", at, length(ids.ItoR))
+  dat <- set_epi(dat, "ei.flow", length(ids.EtoI))
+  dat <- set_epi(dat, "ir.flow", length(ids.ItoR))
   return(dat)
 }
 ```
