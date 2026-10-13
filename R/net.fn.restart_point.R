@@ -109,6 +109,18 @@ make_restart_point <- function(
   n_steps <- x$control$nsteps
   run_ls <- x$run[[1]]
 
+  # The time attributes are re-based on the number of epi rows, which must be
+  # the step the `run` state ended at. `truncate_sim()` cuts the rows but
+  # leaves `run` as is.
+  last_step <- run_ls$current_timestep
+  if (!is.null(last_step) && last_step != n_steps) {
+    stop(
+      "The run state of simulation ", sim_num, " ended at step ", last_step,
+      " but `sim_obj` holds ", n_steps, " steps, as after `truncate_sim()`. ",
+      "Make the restart point from the object before truncating it."
+    )
+  }
+
   # Keep only the last `keep_steps` rows of each epi
   if (keep_steps < 1 || keep_steps > n_steps) {
     stop("`keep_steps` must be >= 1 and <= `sim_obj$control$nsteps`")
@@ -134,9 +146,10 @@ make_restart_point <- function(
     run_ls$attr[time_attrs],
     function(v) v - time_offset
   )
+  run_ls$current_timestep <- as.integer(keep_steps)
 
-  # Fix UIDs
-  uid_offset <- min(run_ls$attr$unique_id) - 1
+  # Fix UIDs (kept integer, as `unique_id` is everywhere else)
+  uid_offset <- as.integer(min(run_ls$attr$unique_id)) - 1L
   run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
   run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
 
@@ -168,6 +181,10 @@ make_restart_point <- function(
     attr(x, "vnames") <- NULL
     x
   })
+
+  # The attribute history is dropped below, so the tracked attributes start
+  # again from a full snapshot when the simulation restarts
+  run_ls$tracking_attrs <- FALSE
 
   x$run[[1]] <- run_ls
 

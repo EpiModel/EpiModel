@@ -4,18 +4,24 @@
 \alias{record_raw_object}
 \title{Record an Arbitrary Object During a Simulation}
 \usage{
-record_raw_object(dat, at, label, object)
+record_raw_object(dat, label, object, ..., at = NULL)
 }
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
 \code{\link[=netsim]{netsim()}}.}
 
-\item{at}{The time where the recording happens.}
-
 \item{label}{The name to give to the recorded object.}
 
 \item{object}{The object to be recorded.}
+
+\item{...}{Must be empty. It makes \code{at} a named-only argument, so that
+calls written for the EpiModel 2.6 signature,
+\code{record_raw_object(dat, at, label, object)}, error instead of silently
+recording the wrong object.}
+
+\item{at}{The time step at which the recording happens. Defaults to the
+current time step if \code{NULL}.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
@@ -28,14 +34,15 @@ object, and in the \code{netsim} object under the \code{raw.records}
 \code{collections::queue} object.
 }
 \details{
-See the "Time-Varying Parameters" section of the "Working With Model
-Parameters" vignette.
+See the "Recording Arbitrary Objects (Advanced Debugging)" section of the
+"Working with Custom Attributes and Summary Statistics" vignette
+(\code{vignette("attributes-and-summary-statistics", package = "EpiModel")}).
 }
 \examples{
 \dontrun{
 
-dat <- record_raw_object(dat, at, "a.df", data.frame(x = 2:200))
-dat <- record_raw_object(dat, at, "a.message", "I recorded something")
+dat <- record_raw_object(dat, "a.df", data.frame(x = 2:200))
+dat <- record_raw_object(dat, "a.message", "I recorded something")
 
 }
 

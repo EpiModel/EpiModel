@@ -41,7 +41,8 @@ validate_run <- function(run) {
   defaults <- list(
     attr = list(),
     current_timestep = 1L,
-    last_unique_id = 0L
+    last_unique_id = 0L,
+    tracking_attrs = FALSE
   )
 
   for (elt_name in names(defaults)) {
@@ -104,4 +105,71 @@ set_current_timestep <- function(dat, timestep) {
 increment_timestep <- function(dat) {
   dat$run$current_timestep <- dat$run$current_timestep + 1L
   return(dat)
+}
+
+# Guards for the recording functions whose signatures changed in v2.7.0
+#
+# `set_epi()`, `record_attr_history()` and `record_raw_object()` moved `at`
+# last and made it optional. A call written for the old argument order still
+# matches the new positional slots, so instead of failing it would silently
+# store the time step as the value (or the value at the wrong time step). The
+# three functions take `...` before `at` so that `at` must be named, and any
+# argument captured by `...` is an error pointing to the new signature.
+#
+# @param fun The name of the calling function.
+# @param new_usage,old_usage The v2.7.0 and v2.6.x signatures.
+# @param fix The recommended call for the most common case.
+# @param dots_names The names of the arguments captured by `...`.
+# @noRd
+stop_old_signature <- function(fun, new_usage, old_usage, fix,
+                               dots_names = NULL) {
+  renamed <- c(attribute = "item", values = "value")
+  hits <- intersect(dots_names, names(renamed))
+  msg <- paste0(
+    "`", fun, "()` got unexpected arguments. Its signature changed in ",
+    "EpiModel 2.7.0 from `", old_usage, "` to `", new_usage, "`: `at` now ",
+    "comes last, defaults to the current time step, and must be passed by ",
+    "name. Use `", fix, "` to record at the current time step."
+  )
+  if (length(hits) > 0) {
+    msg <- paste0(
+      msg, " Renamed arguments: ",
+      paste0("`", hits, "` is now `", renamed[hits], "`", collapse = ", "),
+      "."
+    )
+  }
+  stop(simpleError(msg, call = sys.call(-1)))
+}
+
+# Check that `x` is a single string, as the name or label of a record
+# @noRd
+check_record_name <- function(x, arg) {
+  if (!is.character(x) || length(x) != 1L || is.na(x)) {
+    stop(simpleError(
+      paste0("`", arg, "` must be a single character string"),
+      call = sys.call(-1)
+    ))
+  }
+  invisible(x)
+}
+
+# Default `at` to the current time step, or check a user-provided one
+# @noRd
+resolve_record_at <- function(dat, at) {
+  if (is.null(at)) {
+    at <- get_current_timestep(dat)
+    if (length(at) != 1L || is.na(at)) {
+      stop(simpleError(
+        paste0("`at` is NULL and `dat` holds no current time step ",
+               "(`dat$run$current_timestep`); pass `at` explicitly"),
+        call = sys.call(-1)
+      ))
+    }
+    return(at)
+  }
+  if (length(at) != 1L || !is.numeric(at) || is.na(at)) {
+    stop(simpleError("`at` must be numeric and of length one",
+                     call = sys.call(-1)))
+  }
+  at
 }

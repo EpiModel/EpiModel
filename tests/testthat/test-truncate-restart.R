@@ -108,6 +108,54 @@ test_that("truncate_sim.netsim delegates to the icm method", {
   expect_equal(tr$control$start, 1)
 })
 
+test_that("truncate_sim.netsim truncates the network statistics and shifts the transmissions and records", {
+  skip_on_cran()
+  set.seed(5)
+  nw <- network_initialize(n = 40)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  logger <- function(dat, at) {
+    record_raw_object(dat, "i", sum(get_attr(dat, "status") == "i"))
+  }
+  control <- control.net(type = NULL, nsteps = 12, nsims = 2,
+                         infection.FUN = infection.net, logger.FUN = logger,
+                         resimulate.network = TRUE, save.transmat = TRUE,
+                         verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.5, act.rate = 2),
+                init.net(i.num = 5), control)
+  times <- function(records) {
+    vapply(records$as_list(), function(r) r$time, numeric(1))
+  }
+
+  tr <- truncate_sim(mod, at = 6)
+  for (s in 1:2) {
+    nws <- tr$stats$nwstats[[s]][[1]]
+    expect_equal(nrow(nws), nrow(tr$epi$num))
+    expect_equal(as.matrix(nws),
+                 as.matrix(mod$stats$nwstats[[s]][[1]])[6:12, , drop = FALSE],
+                 check.attributes = FALSE)
+    expect_false(is.null(attr(nws, "ess")))
+
+    # the transmissions and records before `at` are kept, shifted with the rest
+    tm <- mod$stats$transmat[[s]]
+    expect_gt(nrow(tm), 0)
+    expect_equal(tr$stats$transmat[[s]]$at, tm$at - 5)
+    expect_equal(times(tr$raw.records[[s]]), times(mod$raw.records[[s]]) - 5)
+  }
+  expect_s3_class(tr$stats$transmat, "transmat")
+  nws <- get_nwstats(tr)
+  expect_equal(nrow(nws), 2 * 7)
+  expect_equal(nws$time, rep(1:7, 2))
+  # the original object is left as is
+  expect_equal(min(times(mod$raw.records[[1]])), 2)
+
+  tr2 <- truncate_sim(mod, at = 6, reset.time = FALSE)
+  expect_equal(nrow(tr2$stats$nwstats[[1]][[1]]), 7)
+  expect_identical(tr2$stats$transmat, mod$stats$transmat)
+  expect_identical(times(tr2$raw.records[[1]]), times(mod$raw.records[[1]]))
+})
+
 context("make_restart_point validation and roundtrip")
 
 build_restart_sim <- function(nsteps = 5, nsims = 1, inf.prob = 0.3) {
@@ -195,6 +243,18 @@ test_that("make_restart_point keeps multiple history steps when requested", {
   expect_equal(nrow(rp$epi[[1]]), 3)
 })
 
+test_that("make_restart_point refuses a truncated simulation", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6)
+  rp <- make_restart_point(mod, time_attrs = c())
+  expect_equal(rp$run[[1]]$current_timestep, 1)
+
+  # the run state ends at step 6, while the epi trackers now hold 4 steps
+  tr <- truncate_sim(mod, at = 3)
+  expect_error(make_restart_point(tr, time_attrs = c()),
+               "ended at step 6 but `sim_obj` holds 4 steps")
+})
+
 test_that("make_restart_point reports missing time attributes by name", {
   skip_on_cran()
   mod <- build_restart_sim(nsteps = 5)
@@ -238,6 +298,37 @@ test_that("make_restart_point extracts and trims the requested simulation", {
   kept <- tm$at > 6 - 2
   expect_true(any(kept) && !all(kept))
   expect_equal(rp$stats$transmat$sim1$at, tm$at[kept] - (6 - 2))
+})
+
+test_that("make_restart_point keeps the formation coefficients of the requested simulation", {
+  skip_on_cran()
+  # arrivals and departures make `edges_correct()` move the formation
+  # coefficients apart across simulations
+  set.seed(1)
+  nw <- network_initialize(n = 60)
+  est <- netest(nw, formation = ~edges, target.stats = 30,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.03),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, a.rate = 0.03, ds.rate = 0.03,
+                     di.rate = 0.03)
+  init <- init.net(i.num = 5)
+  control <- control.net(type = "SI", nsteps = 6, nsims = 3,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.run = TRUE, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  coefs <- vapply(mod$coef.form, function(cf) cf[[1]][[1]], numeric(1))
+  expect_false(isTRUE(all.equal(coefs[[1]], coefs[[2]])))
+
+  rp <- make_restart_point(mod, time_attrs = c(), sim_num = 2)
+  expect_equal(rp$coef.form$sim1, mod$coef.form$sim2)
+  expect_equal(rp$nwparam[[1]]$coef.form, mod$coef.form$sim2[[1]])
+
+  # the restart initializes from them
+  control.rs <- control.net(type = "SI", start = 2, nsteps = 3, nsims = 1,
+                            tergmLite = TRUE, resimulate.network = TRUE,
+                            save.run = TRUE, verbose = FALSE)
+  dat <- initialize.net(rp, param, init, control.rs, s = 1)
+  expect_equal(dat$nwparam[[1]]$coef.form, mod$coef.form$sim2[[1]])
 })
 
 test_that("make_restart_point re-bases the unique IDs of the transmission matrix", {
@@ -347,6 +438,9 @@ test_that("restarted simulations label their time steps from 1", {
   df_tr <- as.data.frame(tr)
   expect_equal(df_tr$time, rep(6:10, 2))
   expect_equal(df_tr$i.num, df$i.num[df$time >= 6])
+  # truncating it again reads `at` on those labels, network statistics included
+  expect_equal(truncate_sim(tr, at = 8), truncate_sim(mod2, at = 8))
+  expect_equal(nrow(get_nwstats(truncate_sim(tr, at = 8))), 2 * 3)
 
   pdf(NULL)
   on.exit(dev.off(), add = TRUE)

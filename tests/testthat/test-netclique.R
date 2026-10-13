@@ -655,7 +655,7 @@ test_that("new: a group id is never given to a second group", {
     hh <- get_attr(dat, "hh_id")
     entr <- get_attr(dat, "entrTime")
     seen <- NVL(dat$run$test_seen_ids, hh[entr < at])
-    dat <- set_epi(dat, "reused", at, sum(hh[entr == at] %in% seen))
+    dat <- set_epi(dat, "reused", sum(hh[entr == at] %in% seen))
     dat$run$test_seen_ids <- union(seen, hh)
     return(dat)
   }

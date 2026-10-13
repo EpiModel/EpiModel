@@ -76,6 +76,8 @@
 #'        whether or not to impute starting times for relationships extant at
 #'        the start of the simulation. Defaults to `TRUE` when
 #'        `type = "duration"`.
+#' @param ylim The y limits (y1, y2) of the plot. The default, `NULL`, sets
+#'        the limits from the range of the values plotted.
 #' @param ... Additional arguments to pass.
 #' @inheritParams graphics::plot
 #'

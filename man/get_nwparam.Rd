@@ -16,5 +16,11 @@ representing the population.}
 Extracts a list of network model parameters saved in the
 initialization module.
 }
+\details{
+On a \code{netsim} object, the \code{coef.form} element returned holds the formation
+coefficients of its first simulation at the last time step, which the edges
+correction may have moved away from the fitted ones. Those of every
+simulation are in \code{x$coef.form}.
+}
 \keyword{extract}
 \keyword{internal}
