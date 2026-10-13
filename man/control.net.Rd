@@ -244,13 +244,16 @@ given the output of a \code{future::tweak()} call, which sets up a user-defined 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
 simulations. Supports \code{\link{multilayer}} specification.}
 
-\item{set.control.ergm}{Control arguments passed to \code{ergm::simulate_formula.network}. In \code{netsim},
-this is only used when initializing the network with \code{edapprox = TRUE}. All other
-simulations in \code{netsim} use \code{tergm}. Supports \code{\link{multilayer}} specification.}
+\item{set.control.ergm}{Control arguments passed to \code{ergm::simulate_formula.network}, built with
+\code{\link[ergm:control.simulate.formula]{ergm::control.simulate.formula()}}. In \code{netsim}, this is only used when initializing the
+network with \code{edapprox = TRUE}. All other simulations in \code{netsim} use \code{tergm}. Supports
+\code{\link{multilayer}} specification. See \code{\link{net-controls}}.}
 
-\item{set.control.tergm}{Control arguments passed to \code{tergm::simulate_formula.network}. See the
-help file for \code{\link{netdx}} for details and examples on specifying this parameter. Supports
-\code{\link{multilayer}} specification.}
+\item{set.control.tergm}{Control arguments passed to \code{tergm::simulate_formula.network}, built with
+\code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm()}}, for each time step of the network simulation. Use
+the same settings that brought the \code{\link{netdx}} diagnostics on target, and restate the default
+\code{MCMC.maxchanges = .Machine$integer.max} when passing other settings. Supports \code{\link{multilayer}}
+specification. See \code{\link{net-controls}}.}
 
 \item{save.diss.stats}{If \code{TRUE}, \code{netsim} will compute and save duration and dissolution
 statistics for plotting and printing, provided \code{save.network} is \code{TRUE}, \code{tergmLite} is

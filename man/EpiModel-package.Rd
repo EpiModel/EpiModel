@@ -100,7 +100,9 @@ calculated from an egocentric sample of the population. Dissolution
 coefficients are calculated with \code{\link[=dissolution_coefs]{dissolution_coefs()}}.
 \item \code{\link[=netdx]{netdx()}} runs diagnostics on the fitted model by simulating the
 network forward in time without disease, to check that the simulated
-network recovers the formation and dissolution targets.
+network recovers the formation and dissolution targets. The
+\link{net-controls} page covers the estimation and simulation settings to
+adjust when it does not.
 \item \code{\link[=netsim]{netsim()}} simulates the stochastic network epidemic model, given the
 fitted network model from \code{\link[=netest]{netest()}} along with the parameters,
 initial conditions, and controls defined above.

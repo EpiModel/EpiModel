@@ -39,16 +39,21 @@
 #' @param edapprox If `TRUE`, use the indirect edges dissolution
 #'        approximation method for the dynamic model fit, otherwise use the
 #'        more time-intensive full STERGM estimation (see details). The
-#'        approximation is recommended for most use cases, especially when
-#'        average partnership durations are moderate to long (> 25 time steps).
-#'        Direct STERGM estimation (`edapprox = FALSE`) is slower but may be
-#'        preferred for very short durations or when inferential quantities
-#'        (standard errors, p-values) on formation coefficients are needed.
-#'        For `nw` of class `egor`, only `edapprox = TRUE` is supported.
-#' @param set.control.ergm Control arguments passed to `ergm` (see details).
-#' @param set.control.ergm.ego Control arguments passed to `ergm.ego` (see
-#'        details).
-#' @param set.control.tergm Control arguments passed to `tergm` (see details).
+#'        approximation is recommended for most use cases, and works best when
+#'        average partnership durations are long or density is low, so that few
+#'        partnerships form or dissolve at each time step. With short durations
+#'        it can bias the formation statistics in the dynamic diagnostics of
+#'        [`netdx`] (see [`net-controls`]). Direct STERGM estimation
+#'        (`edapprox = FALSE`) is slower but may be preferred for short
+#'        durations or when inferential quantities (standard errors, p-values)
+#'        on formation coefficients are needed. For `nw` of class `egor`, only
+#'        `edapprox = TRUE` is supported.
+#' @param set.control.ergm Control arguments passed to `ergm`, built with
+#'        [ergm::control.ergm()] (see [`net-controls`]).
+#' @param set.control.ergm.ego Control arguments passed to `ergm.ego`, built
+#'        with `ergm.ego::control.ergm.ego()` (see [`net-controls`]).
+#' @param set.control.tergm Control arguments passed to `tergm`, built with
+#'        [tergm::control.tergm()] (see [`net-controls`]).
 #' @param verbose If `TRUE`, print model fitting progress to console.
 #' @param nested.edapprox Logical, only used when `edapprox = TRUE`. When
 #'        `TRUE` (the default), the dissolution model must be an initial
@@ -144,6 +149,13 @@
 #' [`ergm::control.ergm`] help page in the `ergm` package and the
 #' [`ergm.ego::control.ergm.ego`] help page in the `ergm.ego`
 #' package. An example is below.
+#'
+#' The [`net-controls`] help page lists the settings most often changed when a
+#' fit fails, stalls, or does not reproduce its targets, and how to use
+#' [`netdx`] to find whether the estimation or the simulation needs adjusting.
+#' The [Improving Model Estimation and Simulation](https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html)
+#' appendix of the Network Modeling for Epidemics course materials works
+#' through examples.
 #'
 #' @section Typical Workflow:
 #' The network modeling pipeline in EpiModel typically follows these steps:

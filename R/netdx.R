@@ -32,9 +32,14 @@
 #'        for verifying that the model produces reasonable values for network
 #'        features that were not directly targeted in the formation model.
 #' @param set.control.ergm Control arguments passed to `ergm`'s
-#'        `simulate_formula.network` (see details).
+#'        `simulate_formula.network`, built with
+#'        [ergm::control.simulate.formula()] (see details and
+#'        [`net-controls`]).
 #' @param set.control.tergm Control arguments passed to `tergm`'s
-#'        `simulate_formula.network` (see details).
+#'        `simulate_formula.network`, built with
+#'        [tergm::control.simulate.formula.tergm()] (see details and
+#'        [`net-controls`]). The default sets `MCMC.maxchanges` to
+#'        `.Machine$integer.max`; restate it when passing other settings.
 #' @param sequential For static diagnostics (`dynamic=FALSE`): if
 #'        `FALSE`, each of the `nsims` simulated Markov chains begins
 #'        at the initial network; if `TRUE`, the end of one simulation is
@@ -90,6 +95,10 @@
 #' available parameters listed in the [`tergm::control.simulate.formula.tergm`]
 #' help page in the `tergm` package. An example is shown below.
 #'
+#' Pass the same `set.control.tergm` settings to [`control.net`] for the
+#' epidemic simulation, which steps the network forward in the same way. See
+#' [`net-controls`] for the settings most often changed.
+#'
 #' @section Static vs. Dynamic Diagnostics:
 #' Static diagnostics (`dynamic = FALSE`) draw many independent networks from
 #' the fitted ERGM and compare the resulting statistics to the target values.
@@ -112,10 +121,22 @@
 #'  * **Dissolution statistics** (dynamic only): The simulated dissolution
 #'    rates should be approximately `1 / duration`.
 #'
-#' Common problems: If formation statistics are off, the ERGM may need
-#' increased burn-in (via `set.control.ergm`), or the target statistics
-#' may be incompatible (e.g., specifying more edges than the network can
-#' support). If durations are off but formation is correct, verify that
+#' The Z score scales with the effective sample size of the simulated
+#' statistics, so read it together with the percent difference: many static
+#' draws can make a small difference statistically significant, while the
+#' autocorrelation between time steps keeps the Z scores of dynamic
+#' diagnostics smaller.
+#'
+#' Common problems: If the dynamic formation statistics are off, compare them
+#' with static diagnostics (`dynamic = FALSE`). Static diagnostics on target
+#' point to the dynamic simulation: either its per-step burn-in, which can be
+#' fixed with `MCMC.burnin.min` and `MCMC.burnin.max` in `set.control.tergm`,
+#' or the edges dissolution approximation, which loses accuracy at short
+#' partnership durations. Static diagnostics that are also off point to the
+#' ERGM fit or to too short a burn-in in `set.control.ergm`. The target
+#' statistics may also be incompatible (e.g., specifying more edges than the
+#' network can support). See [`net-controls`] for the settings to adjust at
+#' each stage. If durations are off but formation is correct, verify that
 #' `d.rate` was correctly specified in [`dissolution_coefs`] for models
 #' with vital dynamics.
 #'

@@ -52,10 +52,15 @@ for verifying that the model produces reasonable values for network
 features that were not directly targeted in the formation model.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
-\code{simulate_formula.network} (see details).}
+\code{simulate_formula.network}, built with
+\code{\link[ergm:control.simulate.formula]{ergm::control.simulate.formula()}} (see details and
+\code{\link{net-controls}}).}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}'s
-\code{simulate_formula.network} (see details).}
+\code{simulate_formula.network}, built with
+\code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm()}} (see details and
+\code{\link{net-controls}}). The default sets \code{MCMC.maxchanges} to
+\code{.Machine$integer.max}; restate it when passing other settings.}
 
 \item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
 \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
@@ -134,6 +139,10 @@ page in the \code{ergm} package. For the second, parameters should be input
 through the \code{control.simulate.formula.tergm()} function, with the
 available parameters listed in the \code{\link[tergm:control.simulate.formula.tergm]{tergm::control.simulate.formula.tergm}}
 help page in the \code{tergm} package. An example is shown below.
+
+Pass the same \code{set.control.tergm} settings to \code{\link{control.net}} for the
+epidemic simulation, which steps the network forward in the same way. See
+\code{\link{net-controls}} for the settings most often changed.
 }
 
 \section{Static vs. Dynamic Diagnostics}{
@@ -162,10 +171,22 @@ durations should match the values passed to \code{\link{dissolution_coefs}}.
 rates should be approximately \code{1 / duration}.
 }
 
-Common problems: If formation statistics are off, the ERGM may need
-increased burn-in (via \code{set.control.ergm}), or the target statistics
-may be incompatible (e.g., specifying more edges than the network can
-support). If durations are off but formation is correct, verify that
+The Z score scales with the effective sample size of the simulated
+statistics, so read it together with the percent difference: many static
+draws can make a small difference statistically significant, while the
+autocorrelation between time steps keeps the Z scores of dynamic
+diagnostics smaller.
+
+Common problems: If the dynamic formation statistics are off, compare them
+with static diagnostics (\code{dynamic = FALSE}). Static diagnostics on target
+point to the dynamic simulation: either its per-step burn-in, which can be
+fixed with \code{MCMC.burnin.min} and \code{MCMC.burnin.max} in \code{set.control.tergm},
+or the edges dissolution approximation, which loses accuracy at short
+partnership durations. Static diagnostics that are also off point to the
+ERGM fit or to too short a burn-in in \code{set.control.ergm}. The target
+statistics may also be incompatible (e.g., specifying more edges than the
+network can support). See \code{\link{net-controls}} for the settings to adjust at
+each stage. If durations are off but formation is correct, verify that
 \code{d.rate} was correctly specified in \code{\link{dissolution_coefs}} for models
 with vital dynamics.
 }

@@ -88,7 +88,9 @@
 #'       coefficients are calculated with [dissolution_coefs()].
 #'    2. [netdx()] runs diagnostics on the fitted model by simulating the
 #'       network forward in time without disease, to check that the simulated
-#'       network recovers the formation and dissolution targets.
+#'       network recovers the formation and dissolution targets. The
+#'       [net-controls] page covers the estimation and simulation settings to
+#'       adjust when it does not.
 #'    3. [netsim()] simulates the stochastic network epidemic model, given the
 #'       fitted network model from [netest()] along with the parameters,
 #'       initial conditions, and controls defined above.

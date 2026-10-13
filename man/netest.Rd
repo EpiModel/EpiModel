@@ -60,19 +60,24 @@ formula.}
 \item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
 approximation method for the dynamic model fit, otherwise use the
 more time-intensive full STERGM estimation (see details). The
-approximation is recommended for most use cases, especially when
-average partnership durations are moderate to long (> 25 time steps).
-Direct STERGM estimation (\code{edapprox = FALSE}) is slower but may be
-preferred for very short durations or when inferential quantities
-(standard errors, p-values) on formation coefficients are needed.
-For \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is supported.}
+approximation is recommended for most use cases, and works best when
+average partnership durations are long or density is low, so that few
+partnerships form or dissolve at each time step. With short durations
+it can bias the formation statistics in the dynamic diagnostics of
+\code{\link{netdx}} (see \code{\link{net-controls}}). Direct STERGM estimation
+(\code{edapprox = FALSE}) is slower but may be preferred for short
+durations or when inferential quantities (standard errors, p-values)
+on formation coefficients are needed. For \code{nw} of class \code{egor}, only
+\code{edapprox = TRUE} is supported.}
 
-\item{set.control.ergm}{Control arguments passed to \code{ergm} (see details).}
+\item{set.control.ergm}{Control arguments passed to \code{ergm}, built with
+\code{\link[ergm:control.ergm]{ergm::control.ergm()}} (see \code{\link{net-controls}}).}
 
-\item{set.control.tergm}{Control arguments passed to \code{tergm} (see details).}
+\item{set.control.tergm}{Control arguments passed to \code{tergm}, built with
+\code{\link[tergm:control.tergm]{tergm::control.tergm()}} (see \code{\link{net-controls}}).}
 
-\item{set.control.ergm.ego}{Control arguments passed to \code{ergm.ego} (see
-details).}
+\item{set.control.ergm.ego}{Control arguments passed to \code{ergm.ego}, built
+with \code{ergm.ego::control.ergm.ego()} (see \code{\link{net-controls}}).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
@@ -190,6 +195,13 @@ functions, respectively, with the available parameters listed in the
 \code{\link[ergm:control.ergm]{ergm::control.ergm}} help page in the \code{ergm} package and the
 \code{\link[ergm.ego:control.ergm.ego]{ergm.ego::control.ergm.ego}} help page in the \code{ergm.ego}
 package. An example is below.
+
+The \code{\link{net-controls}} help page lists the settings most often changed when a
+fit fails, stalls, or does not reproduce its targets, and how to use
+\code{\link{netdx}} to find whether the estimation or the simulation needs adjusting.
+The \href{https://epimodel.github.io/sismid/11_advanced/mod11-NetFitting.html}{Improving Model Estimation and Simulation}
+appendix of the Network Modeling for Epidemics course materials works
+through examples.
 }
 
 \section{Typical Workflow}{
