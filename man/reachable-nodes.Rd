@@ -86,17 +86,6 @@ Also, as long as the size of the \code{nodes} set is greater than 5, theses
 functions are faster than iterating over \code{tsna::tPath}.
 }
 
-\section{Displaying Progress}{
-
-These functions are using the
-\href{https://progressr.futureverse.org/articles/progressr-01-intro.html}{progressr package}
-to display its progression. Use
-\code{progressr::with_progress({ fwd_reach <- get_forward_reachable(el, from = 1, to = 260) })}
-to display the progress bar. Or see the
-\href{https://progressr.futureverse.org/articles/progressr-01-intro.html}{progressr package}
-for more information and customization.
-}
-
 \examples{
 \dontrun{
 
@@ -124,14 +113,14 @@ for (i in seq_along(el_fwd)) {
 
   t_fwd_set <- which(t_fwd$tdist < Inf)
   if(!setequal(el_fwd[[i]], t_fwd_set))
-    stop("Missmatch on node: ", node)
+    stop("Mismatch on node: ", node)
 }
 
 # Backward:
 el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
 nodes <- strsplit(names(el_bkwd), "_")
 t_bkwd <- tsna::tPath(
-  nd, v = nodes[i][2],
+  nd, v = as.integer(nodes[[1]][2]),
   start = 1, end = 52 + 1,
   direction = "bkwd", type = "latest.depart"
 )

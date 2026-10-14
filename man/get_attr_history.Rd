@@ -17,11 +17,20 @@ simulation by the \code{record_attr_history} function.
 Extract the Attributes History from Network Simulations
 }
 \examples{
-\dontrun{
+\donttest{
+nw <- network_initialize(n = 100)
+est <- netest(nw, formation = ~edges, target.stats = 50,
+              coef.diss = dissolution_coefs(~offset(edges), 10),
+              verbose = FALSE)
+control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+                       tracked.attributes = "status", verbose = FALSE)
+sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+              init.net(i.num = 10), control)
 
-# With `sims` the result of a `netsim` call
-get_attr_history(sims)
-
+# One data frame per tracked attribute, with the changes at each step
+hist <- get_attr_history(sim)
+names(hist)
+head(hist$status)
 }
 
 }

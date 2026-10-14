@@ -3,9 +3,11 @@
 #' Extract the elements required for re-initializing a `netsim` simulation from
 #' a completed simulation. This function also resets the Unique IDs and Time
 #' values to reduce the size of the simulation. This function only works for
-#' simulations where `control$tergmLite = TRUE`
+#' simulations run with `tergmLite = TRUE` and `save.run = TRUE` in
+#' [control.net()].
 #'
-#' @param sim_obj a `netsim` object from an ended `netsim` call.
+#' @param sim_obj a `netsim` object from an ended `netsim` call, run with
+#'        `tergmLite = TRUE` and `save.run = TRUE`.
 #' @param sim_num the number of the simulation to extract from the `netsim`
 #'        object (default = 1).
 #' @param keep_steps The number of simulation steps to keep from the previous
@@ -14,7 +16,9 @@
 #' @param time_attrs a `character` vector containing the names of the attributes
 #'        that are expressed in time-steps. These will be offset so the last
 #'        step in the original simulation become the step 1 (default) in the new
-#'        ones. If no such attributes exist, pass `c()`.
+#'        ones. The core attributes `entrTime`, `exitTime`, and `infTime` (when
+#'        present) are always offset. If the model has no other such
+#'        attributes, pass `c()`.
 #'
 #' @details
 #' The restart point created always contains a single simulation and drops the
@@ -28,10 +32,18 @@
 #' truncated to only contain the last `keep_steps` entries. The unique IDs in
 #' the transmission matrix are re-based like the ones of the attributes.
 #'
-#' Warning: the `time_attrs` argument is mandatory. Almost all simulations worth
-#' restarting have such attributes (e.g. time.of.hiv.infection). If no such
-#' argument exists, passing `c()` will allow the function to run while ensuring
-#' that this was done on purpose.
+#' Warning: the `time_attrs` argument is mandatory. Almost all extension models
+#' have such attributes (e.g. the time of HIV diagnosis). If no such attribute
+#' exists beyond the core ones, passing `c()` will allow the function to run
+#' while ensuring that this was done on purpose. An attribute holding a time
+#' step that is not offset puts the events it records in the future of the
+#' restarted simulation: for example, a duration of infection computed from an
+#' `infTime` that was not offset would be negative.
+#'
+#' A dynamic [netcensus()] layer reads the observed network on the simulation
+#' clock, which this function re-bases, so it stops on such a layer. Restart
+#' those simulations from the `netsim` object itself, selecting a simulation
+#' with [get_sims()].
 #'
 #' When restarting from the output of this function, it is suggested to express
 #' the time steps in a relative manner in `control.net`:
@@ -43,23 +55,28 @@
 #' ```
 #'
 #' @examples
-#' \dontrun{
-#' # With  pre-existing `sim`, `param` and `init` object (see `netsim`)
+#' \donttest{
+#' nw <- network_initialize(n = 100)
+#' est <- netest(nw, formation = ~edges, target.stats = 50,
+#'               coef.diss = dissolution_coefs(~offset(edges), 20),
+#'               verbose = FALSE)
+#' param <- param.net(inf.prob = 0.3, act.rate = 1)
+#' init <- init.net(i.num = 10)
+#' control <- control.net(type = "SI", nsteps = 20, nsims = 2,
+#'                        tergmLite = TRUE, resimulate.network = TRUE,
+#'                        save.run = TRUE, verbose = FALSE)
+#' sim <- netsim(est, param, init, control)
 #'
-#' # List all attributes that store a time step
-#' time_attrs <- c(
-#'   "inf.time",
-#'   "stage.time",
-#'   "aids.time",
-#'   "prep.start.last"
-#' )
-#' # Make a restart point from simulation 1, re-run for 10 more timesteps
-#' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
-#' control <- control_msm(
-#'   start = x$control$nsteps + 1,
-#'   nsteps = x$control$nsteps + 1 + 10
-#' )
-#' sim <- netsim(x, param, init, control)
+#' # Make a restart point from simulation 2. The built-in SI model has no time
+#' # attribute beyond the core ones, which are offset by default.
+#' x <- make_restart_point(sim, time_attrs = c(), sim_num = 2)
+#'
+#' # Run it for 10 more time steps
+#' control <- control.net(type = "SI", start = x$control$nsteps + 1,
+#'                        nsteps = x$control$nsteps + 10,
+#'                        tergmLite = TRUE, resimulate.network = TRUE,
+#'                        verbose = FALSE)
+#' sim2 <- netsim(x, param, init, control)
 #' }
 #'
 #' @return a trimmed `netsim` object with only one simulation that is ready to
@@ -104,6 +121,20 @@ make_restart_point <- function(
     stop("Only `netsim` object with `tergmLite == TRUE` are supported")
   }
 
+  # A dynamic census is read on the simulation clock, which is re-based below
+  census <- vapply(sim_obj$nwparam, function(p) {
+    is_census_layer(p) && isTRUE(p$dynamic)
+  }, logical(1))
+  if (any(census)) {
+    stop(
+      "`make_restart_point()` does not support dynamic `netcensus` layers ",
+      "(network ", paste(which(census), collapse = ", "), "): they read the ",
+      "observed network on the simulation clock, which a restart point ",
+      "re-bases. Restart from the `netsim` object itself, selecting a ",
+      "simulation with `get_sims()`."
+    )
+  }
+
   # Select the simulation of interest, that renames the selected sim: `sim1`
   x <- get_sims(sim_obj, sims = sim_num)
   n_steps <- x$control$nsteps
@@ -133,8 +164,12 @@ make_restart_point <- function(
   x$control$start <- 1
   x$control$nsteps <- keep_steps
 
-  # Time attributes - offset so last step is now `keep_steps`
-  time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
+  # Time attributes - offset so last step is now `keep_steps`. `infTime` is a
+  # core attribute of the built-in models, which read durations of infection
+  # from it
+  core_time_attrs <- intersect(c("entrTime", "exitTime", "infTime"),
+                               c("entrTime", "exitTime", names(run_ls$attr)))
+  time_attrs <- union(core_time_attrs, time_attrs)
   missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
   if (length(missing_attrs) > 0) {
     stop(

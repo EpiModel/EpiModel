@@ -14,14 +14,20 @@
 #' @param nw An object of class `network` (a static census: the edges are
 #'        active at every time step) or `networkDynamic` (a dynamic census:
 #'        the edges active at time step `at` are those whose spells cover
-#'        `at`). The network must be undirected and not bipartite. Vertex
+#'        `at`). The network must be undirected and not bipartite, without
+#'        loops or parallel edges (a pair of nodes in contact over several
+#'        periods has one edge with several activity spells). Vertex
 #'        attributes on `nw` are carried into the simulation as nodal
-#'        attributes; temporally extended vertex attributes (`*.active`) are
-#'        dropped with a message, since `netsim` keeps its own disease status.
-#' @param window Observation window of a dynamic census, as `c(start, end)`.
-#'        Defaults to the `net.obs.period` network attribute when `nw` has
-#'        one, and otherwise to the range of the finite edge spell times. Used
-#'        to warn when a simulation runs past the end of the observations.
+#'        attributes, wherever the layer sits in the layer list; temporally
+#'        extended vertex attributes (`*.active`) are dropped with a message,
+#'        since `netsim` keeps its own disease status.
+#' @param window Observation window of a dynamic census, as `c(start, end)`,
+#'        read like a `networkDynamic` spell as the half-open interval
+#'        `[start, end)`: `c(1, 11)` covers time steps 1 to 10. Defaults to the
+#'        `net.obs.period` network attribute when `nw` has one with finite
+#'        bounds, and otherwise to the range of the finite edge spell times.
+#'        Used to summarize the observed edges and to warn when a simulation
+#'        ends before the window begins or runs past its end.
 #'
 #' @details
 #' [netest()] exists to turn partial, usually egocentric, network data into a
@@ -39,12 +45,21 @@
 #'
 #' For a `networkDynamic` census, EpiModel time step `at` reads the edges
 #' active at time `at` of the observed object, so the simulation clock is the
-#' observation clock. Match `nsteps` in [control.net()] to the observation
-#' window: by the `networkDynamic` convention, edges active at the last
-#' observed time stay active indefinitely, so a simulation that runs past the
-#' window sees a frozen edge set. [netsim()] warns when `nsteps` reaches the
-#' end of `window`. Vertex activity spells are not used; every node is present
-#' throughout.
+#' observation clock. A census recorded in other units, such as seconds or
+#' calendar dates, needs its spell times rescaled to time steps first. Match
+#' the time steps of [control.net()] to the observation window. Past its end,
+#' the layer holds only the edges whose spells extend beyond it: spells
+#' censored at the end of the observation (terminus `Inf`, as in `tergm` and
+#' EpiModel output) stay active, and spells that end with the observation, as
+#' in most contact data, leave the layer empty. [netsim()] warns when the
+#' simulation ends before the window begins or `nsteps` reaches its end. Vertex
+#' activity spells are not used; every node is present throughout.
+#'
+#' The layer reads the observed object on the simulation clock, so a
+#' simulation with a dynamic census layer is restarted from the `netsim`
+#' object itself (selecting a simulation with [get_sims()]) rather than from
+#' [make_restart_point()], which re-bases the time steps and stops on such a
+#' layer.
 #'
 #' A census has a fixed node set, so vital dynamics are refused: [netsim()]
 #' stops when the model has arrivals or departures and a `netcensus` layer,
@@ -74,8 +89,9 @@
 #'  * **edapprox:** `FALSE`.
 #'  * **summary:** a list with the node count, the vertex attribute names,
 #'    and either the edge count, mean degree, and number of isolates (static)
-#'    or the number of distinct edges ever observed and the number of edges
-#'    active at each integer time in the window (dynamic).
+#'    or the number of distinct edges ever observed, the first and last time
+#'    steps in the window, and the number of edges active at each of those
+#'    steps, or at 1000 evenly spaced steps for longer windows (dynamic).
 #'
 #' @seealso [netclique()] for a layer of cliques defined by a grouping
 #'   attribute, which is the other model-free layer. [netsim()] runs the
@@ -84,23 +100,31 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # A dynamic census: an observed networkDynamic with edge spells
-#' library(networkDynamicData)
-#' data(concurrencyComparisonNets)
-#' obs <- netcensus(base)
+#' \donttest{
+#' # A dynamic census: an observed networkDynamic with edge spells, here 80
+#' # contacts between 50 people over 30 time steps
+#' set.seed(4)
+#' pairs <- t(combn(50, 2))[sample.int(choose(50, 2), 80), ]
+#' onset <- sample(0:25, 80, replace = TRUE)
+#' spells <- data.frame(onset = onset,
+#'                      terminus = onset + sample(2:10, 80, replace = TRUE),
+#'                      tail = pairs[, 1], head = pairs[, 2])
+#' nd <- networkDynamic::networkDynamic(base.net = network_initialize(n = 50),
+#'                                      edge.spells = spells)
+#' obs <- netcensus(nd, window = c(0, 30))
 #' obs
 #'
 #' param <- param.net(inf.prob = 0.5, act.rate = 1)
-#' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+#' init <- init.net(i.num = 5)
+#' control <- control.net(type = "SI", nsteps = 25, nsims = 2,
 #'                        resimulate.network = FALSE, verbose = FALSE)
 #' sim <- netsim(obs, param, init, control)
 #' plot(sim)
 #'
 #' # The same census under tergmLite, with the active edges read each step
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
-#'                        tergmLite = TRUE, verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 25, nsims = 2,
+#'                        tergmLite = TRUE, resimulate.network = TRUE,
+#'                        verbose = FALSE)
 #' sim <- netsim(obs, param, init, control)
 #'
 #' # A static census next to an estimated layer
@@ -113,7 +137,8 @@
 #'               param.net(inf.prob = multilayer(0.3, 0.1)),
 #'               init.net(i.num = 5),
 #'               control.net(type = "SI", nsteps = 20, nsims = 1,
-#'                           tergmLite = TRUE, verbose = FALSE))
+#'                           tergmLite = TRUE, resimulate.network = TRUE,
+#'                           verbose = FALSE))
 #' }
 #'
 netcensus <- function(nw, window = NULL) {
@@ -127,6 +152,23 @@ netcensus <- function(nw, window = NULL) {
   if (is.bipartite(nw)) {
     stop("`netcensus` does not support bipartite networks.")
   }
+  if (network.edgecount(nw) == 0) {
+    stop("`nw` has no edges.")
+  }
+  ## a loop joins no two nodes and a parallel edge would count a contact twice
+  ## in the discordant edgelist; networkLite, used under tergmLite, refuses both
+  el.all <- network::as.matrix.network.edgelist(nw)
+  if (any(el.all[, 1] == el.all[, 2])) {
+    stop("`netcensus` does not support loops (edges from a node to itself).")
+  }
+  if (anyDuplicated(cbind(pmin(el.all[, 1], el.all[, 2]),
+                          pmax(el.all[, 1], el.all[, 2]))) > 0) {
+    stop("`netcensus` does not support parallel edges. Give each pair of ",
+         "nodes a single edge, with one activity spell per contact period in ",
+         "a `networkDynamic`.")
+  }
+  nw %n% "loops" <- FALSE
+  nw %n% "multiple" <- FALSE
   dynamic <- networkDynamic::is.networkDynamic(nw)
   n <- network.size(nw)
 
@@ -147,11 +189,17 @@ netcensus <- function(nw, window = NULL) {
     if (is.null(window)) {
       window <- census_window(nw)
     } else if (!is.numeric(window) || length(window) != 2 ||
-                 anyNA(window) || window[1] >= window[2]) {
-      stop("`window` must be a numeric vector `c(start, end)` with ",
-           "`start < end`.")
+                 !all(is.finite(window)) || window[1] >= window[2]) {
+      stop("`window` must be a numeric vector `c(start, end)` of finite ",
+           "times with `start < end`.")
     }
-    times <- seq(ceiling(window[1]), floor(window[2]))
+    ## the window is half-open, [start, end), as networkDynamic spells are
+    steps <- c(ceiling(window[1]), ceiling(window[2]) - 1)
+    if (steps[2] < steps[1]) {
+      stop("The observation window [", window[1], ", ", window[2], ") ",
+           "contains no whole time step.")
+    }
+    times <- seq(steps[1], steps[2])
     if (length(times) > 1000) {
       times <- round(seq(times[1], times[length(times)], length.out = 1000))
     }
@@ -162,15 +210,13 @@ netcensus <- function(nw, window = NULL) {
     summary <- list(n = n,
                     dynamic = TRUE,
                     window = window,
+                    steps = steps,
                     edges.ever = network.edgecount(nw),
                     edges.active = edges.active,
                     attributes = census_attributes(nw))
   } else {
     if (!is.null(window)) {
       stop("`window` applies to a `networkDynamic` census only.")
-    }
-    if (network.edgecount(nw) == 0) {
-      stop("`nw` has no edges.")
     }
     el <- as.edgelist(nw)
     deg <- tabulate(c(el[, 1], el[, 2]), nbins = n)
@@ -208,7 +254,8 @@ print.netcensus <- function(x, digits = 3, ...) {
   cat("\n-----------------------")
   cat("\nNodes:", s$n)
   if (s$dynamic) {
-    cat("\nObservation window:", s$window[1], "to", s$window[2])
+    cat("\nObservation window: [", s$window[1], ", ", s$window[2],
+        "), time steps ", s$steps[1], " to ", s$steps[2], sep = "")
     cat("\nEdges ever observed:", s$edges.ever)
     ea <- s$edges.active
     cat("\nEdges active per step: min", min(ea), ", median",
@@ -237,19 +284,31 @@ census_attributes <- function(nw) {
   setdiff(list.vertex.attributes(nw), c("na", "vertex.names", "active"))
 }
 
-# Observation window of a networkDynamic: its net.obs.period when it has one,
-# otherwise the range of the finite spell times.
+# Observation window of a networkDynamic, as the half-open [start, end): the
+# range of its net.obs.period, with any infinite bound (which the
+# networkDynamic() constructor sets for open or censored spells) replaced by
+# the range of the finite spell times. A spell starting at t is observed at
+# step t, so the end is at least t + 1; a spell ending at t (exclusive) is
+# observed at step t - 1, so the start is at most t - 1.
 census_window <- function(nw) {
-  obs <- nw %n% "net.obs.period"
-  if (!is.null(obs) && length(obs$observations) > 0) {
-    o <- do.call(rbind, obs$observations)
-    return(c(min(o[, 1]), max(o[, 2])))
-  }
   sp <- networkDynamic::get.edge.activity(nw, as.spellList = TRUE)
   onset <- sp$onset[is.finite(sp$onset)]
   terminus <- sp$terminus[is.finite(sp$terminus)]
-  c(if (length(onset) > 0) min(onset) else 0,
-    if (length(terminus) > 0) max(terminus) else Inf)
+  spell.range <- c(min(c(onset, terminus - 1), Inf),
+                   max(c(onset + 1, terminus), -Inf))
+  window <- c(-Inf, Inf)
+  obs <- nw %n% "net.obs.period"
+  if (!is.null(obs) && length(obs$observations) > 0) {
+    o <- do.call(rbind, obs$observations)
+    window <- c(min(o[, 1]), max(o[, 2]))
+  }
+  window[!is.finite(window)] <- spell.range[!is.finite(window)]
+  if (!all(is.finite(window)) || window[1] >= window[2]) {
+    stop("Cannot find a finite observation window for `nw`: its ",
+         "net.obs.period and edge spells have no finite times. Set `window` ",
+         "to the start and end of the observation.")
+  }
+  window
 }
 
 # The edges of a dynamic census active at time `at`, as a tergmLite edgelist:

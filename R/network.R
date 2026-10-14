@@ -142,14 +142,45 @@ get_network_attributes <- function(x) {
 #' [`control.net`], so that the cumulative edgelist holds every edge, and with
 #' at least one attribute in `tracked.attributes` or `tracked.attributes.once`,
 #' so that the activity of the nodes is recorded. The vertex ids of the
-#' `networkDynamic` object are the `unique_id`s of the nodes. The edges of all
-#' the network layers are merged into one network, with the layer of each edge
-#' in the `network` edge attribute.
+#' `networkDynamic` object are the `unique_id`s of the nodes. Each pair of
+#' nodes tied on a layer has one edge, with one activity spell per period the
+#' tie was active, and the layer in the `network` edge attribute. With
+#' `network = NULL` and more than one layer, the layers are merged into one
+#' network that allows multiple edges (`multiple = TRUE`), so that a pair of
+#' nodes tied on two layers has one edge per layer.
+#'
+#' The nodes are active from the first record of the attribute history: for a
+#' new simulation from time 0, as in the `networkDynamic` objects that
+#' [netsim()] saves without `tergmLite`, and for a restarted one from
+#' `start - 1`, the snapshot its history starts from. An edge that formed
+#' before the activity spell of one of its nodes starts is active from the
+#' start of that spell, so that no edge is active between inactive vertices.
 #'
 #' @return A `networkDynamic` object with active vertex spells and
 #'   time-varying vertex attributes.
 #'
 #' @seealso [get_attr_at()], [get_attr_history()]
+#' @examples
+#' \donttest{
+#' nw <- network_initialize(n = 100)
+#' est <- netest(nw, formation = ~edges, target.stats = 50,
+#'               coef.diss = dissolution_coefs(~offset(edges), 10),
+#'               verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+#'                        tergmLite = TRUE, resimulate.network = TRUE,
+#'                        cumulative.edgelist = TRUE,
+#'                        save.cumulative.edgelist = TRUE,
+#'                        truncate.el.cuml = Inf,
+#'                        tracked.attributes = "status", verbose = FALSE)
+#' sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+#'               init.net(i.num = 10), control)
+#'
+#' # The full network history of a tergmLite run, with each node's status
+#' nd <- make_networkDynamic(sim)
+#' nd
+#' x10 <- network.collapse(nd, at = 10)
+#' table(get_vertex_attribute(x10, "status"))
+#' }
 #' @export
 make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   if (!inherits(sim, "netsim"))
@@ -179,9 +210,24 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   d_active <- attr_hist$active[attr_hist$active$sim == sim_num, ]
   n_nodes <- max(d_active$uids)
 
-  # Setup Nodes
-  nw <- network::network.initialize(n_nodes, directed = FALSE)
+  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]]
+  el$stop <-  ifelse(is.na(el$stop), Inf, el$stop)
+  if (!is.null(network))
+    el <- el[el$network == network, , drop = FALSE]
+
+  # Setup Nodes. The edges of several layers may join the same pair of nodes,
+  # which needs a network allowing multiple edges
+  multi_layer <- length(unique(el$network)) > 1
+  nw <- network::network.initialize(n_nodes, directed = FALSE,
+                                    multiple = multi_layer)
   spells <- get_nodes_spell(d_active)
+  # A new simulation records its first snapshot at time 1, after the network
+  # of time 0 that its initial edges come from: the nodes of that snapshot are
+  # active from time 0, as in netsim's own networkDynamic
+  t_first <- min(d_active$time)
+  if (isTRUE(sim$control$start == 1) && epi_start(sim) == 1 && t_first == 1) {
+    spells$onset[spells$onset == t_first] <- 0
+  }
   networkDynamic::activate.vertices(
     nw,
     v = spells$uid,
@@ -202,11 +248,12 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   }
 
   # Setup Edges
-  el <- sim$cumulative.edgelist[[paste0("sim", sim_num)]]
-  el$stop <-  ifelse(is.na(el$stop), Inf, el$stop)
-
-  if (!is.null(network))
-    el <- el[el$network == network, , drop = FALSE]
+  # An edge that formed before the activity spell of one of its nodes starts
+  # (before the first snapshot of a restarted simulation's history) starts
+  # with that spell
+  head_on <- get_spell_onset(spells, el$head, el$start)
+  tail_on <- get_spell_onset(spells, el$tail, el$start)
+  el$start <- pmax(el$start, head_on, tail_on)
 
   # Clip edges if they disapear due one of the node exiting
   # In these cases, the cumulative edgelist and networkDynamic store the end
@@ -214,19 +261,31 @@ make_networkDynamic <- function(sim, sim_num = 1, network = NULL) {
   head_term <- get_spell_terminus(spells, el$head, el$start)
   tail_term <- get_spell_terminus(spells, el$tail, el$start)
   el$stop <- pmin(el$stop, head_term - 1L, tail_term - 1L)
-  # onset is already correct, no need to update `el$start`
   # An edge formed on the step one of its nodes departed is never active
   el <- el[which(el$stop >= el$start), , drop = FALSE]
 
-  networkDynamic::add.edges.active(
-    nw,
-    head = el$head,
-    tail = el$tail,
-    onset = el$start,
-    terminus = el$stop + 1L,
-    names.eval = rep(list("network"), nrow(el)),
-    vals.eval = lapply(el$network, \(x) list(network = x))
-  )
+  # One edge per pair of nodes and layer, with one spell per row of the
+  # cumulative edgelist: a tie that dissolves and forms again is the same
+  # edge, active again
+  key <- paste(pmin(el$head, el$tail), pmax(el$head, el$tail), el$network)
+  first_row <- !duplicated(key)
+  edge_of_row <- match(key, key[first_row])
+  if (any(first_row)) {
+    network::add.edges(
+      nw,
+      tail = el$tail[first_row],
+      head = el$head[first_row],
+      names.eval = rep(list("network"), sum(first_row)),
+      vals.eval = lapply(el$network[first_row], \(x) list(x))
+    )
+    networkDynamic::activate.edges(
+      nw,
+      e = edge_of_row,
+      onset = el$start,
+      terminus = el$stop + 1L
+    )
+  }
+  nw <- networkDynamic::as.networkDynamic(nw)
 
   for (item in names(attr_hist)) {
     if (item == "active") next

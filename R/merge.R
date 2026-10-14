@@ -341,10 +341,18 @@ check_similar_sim <- function(sim1, sim2) {
   if (!setequal(names(sim1$epi), names(sim2$epi))) {
     stop("x and y do not hold the same epi trackers", call. = FALSE)
   }
-  sim1_n_steps <- unique(vapply(sim1$epi, nrow, 1L))
-  sim2_n_steps <- unique(vapply(sim2$epi, nrow, 1L))
-  if (sim1_n_steps != sim2_n_steps) {
-    stop("x and y do not have the same number of steps", call. = FALSE)
+  # trackers are bound column-wise one by one, so each needs the same number of
+  # rows in `x` and `y`; trackers may differ in length from one another, e.g.
+  # one set only before a restart
+  sim1_n_steps <- vapply(sim1$epi, nrow, 1L)
+  sim2_n_steps <- vapply(sim2$epi, nrow, 1L)[names(sim1$epi)]
+  diff_steps <- names(sim1$epi)[sim1_n_steps != sim2_n_steps]
+  if (length(diff_steps) > 0) {
+    stop(
+      "x and y do not have the same number of steps for the epi trackers: ",
+      paste.and(paste0("`", diff_steps, "`")),
+      call. = FALSE
+    )
   }
 
   # same `num.nw`

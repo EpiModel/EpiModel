@@ -975,6 +975,18 @@ control.net <- function(type,
 crosscheck.net <- function(x, param, init, control) {
   check.control.class("net", "EpiModel crosscheck.net")
 
+  # The random parameter interface was removed in v2.7.0. param.net() refuses
+  # the argument, but a param.net object saved under 2.6.x, or one given
+  # random.params through update_params(), would otherwise run without the
+  # draws and without an error
+  if (!is.null(param[["random.params"]]) ||
+        !is.null(param[["random.params.values"]])) {
+    stop("The random.params parameter has been removed. Use scenarios to ",
+         "vary parameters across simulations; see the Parameter Uncertainty ",
+         "section of vignette(\"model-parameters\", package = \"EpiModel\").",
+         call. = FALSE)
+  }
+
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) == 0) {
 
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
@@ -1115,7 +1127,7 @@ crosscheck.net <- function(x, param, init, control) {
           stop("control setting nsteps must be > control setting start in ",
                "restarted simulations")
         }
-        if (control[["start"]] > x[["control"]][["nsteps"]] + 1) {
+        if (control[["start"]] != x[["control"]][["nsteps"]] + 1) {
           stop("control setting start must be 1 greater than the nsteps in ",
                "the prior simulation")
         }
@@ -1196,14 +1208,45 @@ crosscheck.net <- function(x, param, init, control) {
              "carry the edge durations.")
       }
       window <- nwparam[[network]]$window
-      if (!is.null(window) && is.finite(window[2]) &&
-            control[["nsteps"]] >= window[2]) {
-        warning("`nsteps` (", control[["nsteps"]], ") reaches the end of the ",
-                "observation window (", window[2], ") of network ", network,
-                ", a dynamic `netcensus` layer. Edges active at the last ",
-                "observed time stay active indefinitely, so steps past the ",
-                "window run on a frozen edge set.", call. = FALSE)
+      if (!is.null(window) && control[["nsteps"]] < window[1]) {
+        warning("The simulation ends at step ", control[["nsteps"]],
+                ", before the observation window [", window[1], ", ",
+                window[2], ") of network ", network, ", a dynamic ",
+                "`netcensus` layer, begins. A census recorded in other ",
+                "units, such as seconds, needs its spell times rescaled to ",
+                "time steps.", call. = FALSE)
       }
+      if (!is.null(window) && control[["nsteps"]] >= window[2]) {
+        warning("`nsteps` (", control[["nsteps"]], ") reaches the end of the ",
+                "observation window [", window[1], ", ", window[2], ") of ",
+                "network ", network, ", a dynamic `netcensus` layer. Past ",
+                "the window, the layer holds only the edges whose spells ",
+                "extend beyond it: spells censored at the end (terminus Inf) ",
+                "stay active, and spells that end with the observation leave ",
+                "the layer empty.", call. = FALSE)
+      }
+    }
+  }
+
+  # clique layers built on the same grouping attribute place arriving nodes
+  # one layer at a time, so a "join" draw on each would put a node in
+  # different groups on different layers
+  clique.layers <- which(vapply(nwparam, is_clique_layer, logical(1)))
+  clique.attrs <- vapply(clique.layers, function(k) {
+    NVL(nwparam[[k]]$group.attr, NA_character_)
+  }, character(1))
+  for (a in unique(clique.attrs[duplicated(clique.attrs) & !is.na(clique.attrs)])) {
+    shared <- clique.layers[clique.attrs %in% a]
+    join <- shared[vapply(shared, function(k) {
+      identical(nwparam[[k]]$arrivals, "join")
+    }, logical(1))]
+    if (length(join) > 0) {
+      stop("Clique layers ", paste.and(shared), " share the grouping ",
+           "attribute `", a, "`, and layer ", paste.and(join), " uses the ",
+           "\"join\" arrival rule. Arrivals are placed on each layer ",
+           "separately, so the layers would fall out of step. Use a single ",
+           "clique layer, or give each layer its own grouping attribute.",
+           call. = FALSE)
     }
   }
 
@@ -1317,10 +1360,9 @@ crosscheck.net <- function(x, param, init, control) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # A household layer that transmits more per contact than the community layer
 #' param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
-#' }
+#' param
 #'
 multilayer <- function(...) {
   out <- list(...)

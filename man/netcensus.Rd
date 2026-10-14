@@ -10,15 +10,21 @@ netcensus(nw, window = NULL)
 \item{nw}{An object of class \code{network} (a static census: the edges are
 active at every time step) or \code{networkDynamic} (a dynamic census:
 the edges active at time step \code{at} are those whose spells cover
-\code{at}). The network must be undirected and not bipartite. Vertex
+\code{at}). The network must be undirected and not bipartite, without
+loops or parallel edges (a pair of nodes in contact over several
+periods has one edge with several activity spells). Vertex
 attributes on \code{nw} are carried into the simulation as nodal
-attributes; temporally extended vertex attributes (\verb{*.active}) are
-dropped with a message, since \code{netsim} keeps its own disease status.}
+attributes, wherever the layer sits in the layer list; temporally
+extended vertex attributes (\verb{*.active}) are dropped with a message,
+since \code{netsim} keeps its own disease status.}
 
-\item{window}{Observation window of a dynamic census, as \code{c(start, end)}.
-Defaults to the \code{net.obs.period} network attribute when \code{nw} has
-one, and otherwise to the range of the finite edge spell times. Used
-to warn when a simulation runs past the end of the observations.}
+\item{window}{Observation window of a dynamic census, as \code{c(start, end)},
+read like a \code{networkDynamic} spell as the half-open interval
+\verb{[start, end)}: \code{c(1, 11)} covers time steps 1 to 10. Defaults to the
+\code{net.obs.period} network attribute when \code{nw} has one with finite
+bounds, and otherwise to the range of the finite edge spell times.
+Used to summarize the observed edges and to warn when a simulation
+ends before the window begins or runs past its end.}
 }
 \value{
 An object of class \code{netcensus}, a list with elements:
@@ -31,8 +37,9 @@ one.
 \item \strong{edapprox:} \code{FALSE}.
 \item \strong{summary:} a list with the node count, the vertex attribute names,
 and either the edge count, mean degree, and number of isolates (static)
-or the number of distinct edges ever observed and the number of edges
-active at each integer time in the window (dynamic).
+or the number of distinct edges ever observed, the first and last time
+steps in the window, and the number of edges active at each of those
+steps, or at 1000 evenly spaced steps for longer windows (dynamic).
 }
 }
 \description{
@@ -62,12 +69,21 @@ predictors is estimated with \code{netest}, whatever their turnover.
 
 For a \code{networkDynamic} census, EpiModel time step \code{at} reads the edges
 active at time \code{at} of the observed object, so the simulation clock is the
-observation clock. Match \code{nsteps} in \code{\link[=control.net]{control.net()}} to the observation
-window: by the \code{networkDynamic} convention, edges active at the last
-observed time stay active indefinitely, so a simulation that runs past the
-window sees a frozen edge set. \code{\link[=netsim]{netsim()}} warns when \code{nsteps} reaches the
-end of \code{window}. Vertex activity spells are not used; every node is present
-throughout.
+observation clock. A census recorded in other units, such as seconds or
+calendar dates, needs its spell times rescaled to time steps first. Match
+the time steps of \code{\link[=control.net]{control.net()}} to the observation window. Past its end,
+the layer holds only the edges whose spells extend beyond it: spells
+censored at the end of the observation (terminus \code{Inf}, as in \code{tergm} and
+EpiModel output) stay active, and spells that end with the observation, as
+in most contact data, leave the layer empty. \code{\link[=netsim]{netsim()}} warns when the
+simulation ends before the window begins or \code{nsteps} reaches its end. Vertex
+activity spells are not used; every node is present throughout.
+
+The layer reads the observed object on the simulation clock, so a
+simulation with a dynamic census layer is restarted from the \code{netsim}
+object itself (selecting a simulation with \code{\link[=get_sims]{get_sims()}}) rather than from
+\code{\link[=make_restart_point]{make_restart_point()}}, which re-bases the time steps and stops on such a
+layer.
 
 A census has a fixed node set, so vital dynamics are refused: \code{\link[=netsim]{netsim()}}
 stops when the model has arrivals or departures and a \code{netcensus} layer,
@@ -87,23 +103,31 @@ object, since there is no model to diagnose; \code{print} summarizes the
 observed edges over the window.
 }
 \examples{
-\dontrun{
-# A dynamic census: an observed networkDynamic with edge spells
-library(networkDynamicData)
-data(concurrencyComparisonNets)
-obs <- netcensus(base)
+\donttest{
+# A dynamic census: an observed networkDynamic with edge spells, here 80
+# contacts between 50 people over 30 time steps
+set.seed(4)
+pairs <- t(combn(50, 2))[sample.int(choose(50, 2), 80), ]
+onset <- sample(0:25, 80, replace = TRUE)
+spells <- data.frame(onset = onset,
+                     terminus = onset + sample(2:10, 80, replace = TRUE),
+                     tail = pairs[, 1], head = pairs[, 2])
+nd <- networkDynamic::networkDynamic(base.net = network_initialize(n = 50),
+                                     edge.spells = spells)
+obs <- netcensus(nd, window = c(0, 30))
 obs
 
 param <- param.net(inf.prob = 0.5, act.rate = 1)
-init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+init <- init.net(i.num = 5)
+control <- control.net(type = "SI", nsteps = 25, nsims = 2,
                        resimulate.network = FALSE, verbose = FALSE)
 sim <- netsim(obs, param, init, control)
 plot(sim)
 
 # The same census under tergmLite, with the active edges read each step
-control <- control.net(type = "SI", nsteps = 100, nsims = 5,
-                       tergmLite = TRUE, verbose = FALSE)
+control <- control.net(type = "SI", nsteps = 25, nsims = 2,
+                       tergmLite = TRUE, resimulate.network = TRUE,
+                       verbose = FALSE)
 sim <- netsim(obs, param, init, control)
 
 # A static census next to an estimated layer
@@ -116,7 +140,8 @@ sim <- netsim(list(netcensus(nw), est),
               param.net(inf.prob = multilayer(0.3, 0.1)),
               init.net(i.num = 5),
               control.net(type = "SI", nsteps = 20, nsims = 1,
-                          tergmLite = TRUE, verbose = FALSE))
+                          tergmLite = TRUE, resimulate.network = TRUE,
+                          verbose = FALSE))
 }
 
 }

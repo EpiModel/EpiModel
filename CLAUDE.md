@@ -142,7 +142,7 @@ R is not pre-installed in the Claude Code environment but can be installed. When
    install.packages(c("deSolve", "networkDynamic", "tergm", "statnet.common",
      "ergm", "network", "networkLite", "collections", "future", "future.apply",
      "RColorBrewer", "ape", "lazyeval", "ggplot2", "tibble", "rlang", "dplyr",
-     "coda", "Rcpp", "testthat", "knitr", "rmarkdown", "progressr", "tidyr",
+     "coda", "Rcpp", "testthat", "knitr", "rmarkdown", "tidyr",
      "roxygen2", "lintr", "DT", "shiny"),
      repos = "https://cloud.r-project.org", Ncpus = 4)
    ```

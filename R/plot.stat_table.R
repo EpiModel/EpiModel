@@ -54,6 +54,7 @@ plot_stats_table <- function(data, nmstats, method,
                              dynamic,
                              xlim = NULL, ylim = NULL,
                              xlab = NULL, ylab = NULL,
+                             time.offset = 0,
                              ...) {
   nstats <- length(nmstats)
 
@@ -66,7 +67,9 @@ plot_stats_table <- function(data, nmstats, method,
     sim.col <- "dodgerblue3"
   }
 
-  xlim <- NVL(xlim, c(1, dim(data)[1]))
+  # rows are drawn at 1, 2, ... plus `time.offset`, which labels the rows of
+  # an object truncated without resetting time from its first kept step
+  xlim <- NVL(xlim, c(1, dim(data)[1]) + time.offset)
 
   labs <- stats_plot_labs(method, plots.joined, dynamic, nstats, nmstats,
                           xlab, ylab)
@@ -140,10 +143,12 @@ plot_stats_table <- function(data, nmstats, method,
 
       if (isTRUE(draw_qnts)) {
         qnts_list[[j]] <- get_qnts(dataj, qnts, qnts.smooth)
+        qnts_list[[j]]$x <- qnts_list[[j]]$x + time.offset
       }
 
       if (isTRUE(mean.line)) {
         means[[j]] <- get_means(dataj, mean.smooth)
+        means[[j]]$x <- means[[j]]$x + time.offset
       }
     }
 
@@ -218,7 +223,10 @@ plot_stats_table <- function(data, nmstats, method,
       if (isTRUE(sim.lines)) {
         apply(dataj,
               2,
-              function(y) lines(which(!is.na(y)), y[!is.na(y)], lwd = sim.lwd, col = sim.col[j]))
+              function(y) {
+                lines(which(!is.na(y)) + time.offset, y[!is.na(y)],
+                      lwd = sim.lwd, col = sim.col[j])
+              })
       }
 
       if (isTRUE(mean.line)) {

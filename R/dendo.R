@@ -63,10 +63,11 @@
 #'
 #' # Convert to phylo object and plot
 #' tmPhylo <- as.phylo.transmat(tm)
-#' par(mar = c(1,1,1,1))
+#' oldpar <- par(mar = c(1,1,1,1))
 #' plot(tmPhylo, show.node.label = TRUE,
 #'               root.edge = TRUE,
 #'               cex = 0.75)
+#' par(oldpar)
 #' }
 #'
 as.phylo.transmat <- function(x, vertex.exit.times = NULL, ...) {

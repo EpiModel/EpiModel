@@ -455,6 +455,26 @@ test_that("merge.netsim binds the epi trackers of y by name", {
   expect_equal(z$epi, mod$epi, check.attributes = FALSE)
 })
 
+test_that("merge.netsim binds epi trackers shorter than the others", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 4, nsims = 2, verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.3), init.net(i.num = 5), control)
+  # a tracker set only in the first steps, e.g. before a restart
+  mod$epi$short <- mod$epi$i.num[1:2, , drop = FALSE]
+  x <- get_sims(mod, sims = 1)
+  y <- get_sims(mod, sims = 2)
+
+  z <- merge(x, y)
+  expect_equal(dim(z$epi$short), c(2, 2))
+  expect_equal(dim(z$epi$i.num), c(4, 2))
+
+  y$epi$short <- y$epi$i.num
+  expect_error(merge(x, y), "same number of steps for the epi trackers: `short`")
+})
+
 test_that("merge.netsim accepts runs that differ only in how they were executed", {
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 20,

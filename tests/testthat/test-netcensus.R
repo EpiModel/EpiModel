@@ -51,6 +51,15 @@ active_at <- function(nd, at) {
 
 init <- init.net(i.num = 5)
 
+# networkDynamic() prints the observation period it creates
+quiet_nd <- function(...) {
+  out <- NULL
+  utils::capture.output(out <- suppressMessages(
+    networkDynamic::networkDynamic(...)
+  ))
+  out
+}
+
 
 # Constructor ------------------------------------------------------------------
 
@@ -78,25 +87,83 @@ test_that("netcensus wraps a dynamic network and finds its window", {
   # the fixture has dyads with more than one spell
   sp <- networkDynamic::get.edge.activity(nw_dyn, as.spellList = TRUE)
   expect_gt(nrow(sp), network.edgecount(nw_dyn))
+  # the window is half-open, so its end is not an observed step
   ea <- obs$summary$edges.active
-  expect_equal(names(ea), as.character(0:30))
+  expect_equal(names(ea), as.character(0:29))
+  expect_equal(obs$summary$steps, c(0, 29))
   expect_equal(unname(ea["10"]), nrow(active_at(nw_dyn, 10)))
   out <- capture.output(print(obs))
   expect_true(any(grepl("dynamic \\(networkDynamic\\)", out)))
-  expect_true(any(grepl("Observation window: 0 to 30", out)))
+  expect_true(any(grepl("Observation window: [0, 30), time steps 0 to 29",
+                        out, fixed = TRUE)))
 
   # without net.obs.period, the window is the range of finite spell times
   nd <- nw_dyn
   network::delete.network.attribute(nd, "net.obs.period")
   obs2 <- netcensus(nd)
   sp <- networkDynamic::get.edge.activity(nd, as.spellList = TRUE)
-  expect_equal(obs2$window[1], min(sp$onset[is.finite(sp$onset)]))
-  expect_equal(obs2$window[2], max(sp$terminus[is.finite(sp$terminus)]))
+  on <- sp$onset[is.finite(sp$onset)]
+  term <- sp$terminus[is.finite(sp$terminus)]
+  expect_equal(obs2$window, c(min(on, term - 1), max(on + 1, term)))
 
   # an explicit window overrides
   obs3 <- netcensus(nw_dyn, window = c(5, 20))
   expect_equal(obs3$window, c(5, 20))
-  expect_equal(names(obs3$summary$edges.active), as.character(5:20))
+  expect_equal(names(obs3$summary$edges.active), as.character(5:19))
+})
+
+test_that("netcensus finds a finite window when net.obs.period is infinite", {
+  # the networkDynamic() constructor sets an infinite net.obs.period for open
+  # spells (terminus Inf) and censored onsets (-Inf)
+  base <- network::network.initialize(10, directed = FALSE)
+  spells <- data.frame(onset = c(1, 3, -Inf), terminus = c(5, Inf, 4),
+                       tail = c(1, 2, 3), head = c(2, 3, 4))
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
+  expect_false(all(is.finite(unlist((nd %n% "net.obs.period")$observations))))
+  obs <- netcensus(nd)
+  expect_equal(obs$window, c(1, 5))
+  expect_equal(obs$summary$steps, c(1, 4))
+  expect_equal(unname(obs$summary$edges.active),
+               vapply(1:4, function(t) {
+                 NROW(networkDynamic::get.dyads.active(nd, at = t))
+               }, numeric(1)))
+
+  expect_error(netcensus(nd, window = c(0, Inf)), "finite times")
+  expect_error(netcensus(nd, window = c(1.2, 1.8)), "no whole time step")
+
+  # a census without any finite spell time needs an explicit window
+  nd2 <- quiet_nd(
+    base.net = base,
+    edge.spells = data.frame(onset = -Inf, terminus = Inf, tail = 1, head = 2)
+  )
+  expect_error(netcensus(nd2), "Set `window`")
+  expect_equal(netcensus(nd2, window = c(0, 10))$summary$steps, c(0, 9))
+
+  # a dynamic census without edges is refused like a static one
+  nd3 <- networkDynamic::as.networkDynamic(base)
+  expect_true(networkDynamic::is.networkDynamic(nd3))
+  expect_error(netcensus(nd3), "no edges")
+})
+
+test_that("netcensus refuses loops and parallel edges", {
+  # add.edges() changes its network in place, so build each one anew
+  flagged <- function(tail = c(1, 2), head = c(2, 3)) {
+    nw <- network::network.initialize(5, directed = FALSE, loops = TRUE,
+                                      multiple = TRUE)
+    network::add.edges(nw, tail = tail, head = head)
+  }
+  expect_error(netcensus(flagged(c(1, 2, 4), c(2, 3, 4))), "loops")
+  expect_error(netcensus(flagged(c(1, 2, 2), c(2, 3, 1))), "parallel edges")
+  nw <- flagged()
+
+  # a network only flagged as allowing them runs under tergmLite
+  obs <- netcensus(nw)
+  expect_false(obs$newnetwork %n% "loops")
+  expect_false(obs$newnetwork %n% "multiple")
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  sim <- netsim(obs, param.net(inf.prob = 0.5), init.net(i.num = 1), control)
+  expect_true(all(get_nwstats(sim, network = 1)$edges == 2))
 })
 
 test_that("netcensus drops temporally extended vertex attributes", {
@@ -346,6 +413,80 @@ test_that("a census with vertex spells and censored onsets runs without tergmLit
                  vapply(1:25, function(t) nrow(active_at(nd, t)), numeric(1)))
     test_net(sim)
   }
+})
+
+test_that("a census layer after the first one keeps its vertex attributes", {
+  nw <- network_initialize(N)
+  est <- netest(nw, ~edges, target.stats = 30,
+                coef.diss = dissolution_coefs(~offset(edges), 10),
+                verbose = FALSE)
+  obs <- netcensus(nw_static)
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  for (tergmLite in c(TRUE, FALSE)) {
+    control <- control.net(type = "SI", nsteps = 3, nsims = 1,
+                           tergmLite = tergmLite, resimulate.network = TRUE,
+                           verbose = FALSE, save.run = TRUE, epi.by = "sex")
+    sim <- netsim(list(est, obs), param, init, control)
+    expect_equal(sim$run[[1]]$attr$sex, rep(c("F", "M"), N / 2))
+    expect_true(all(c("i.num.sexF", "i.num.sexM") %in% names(sim$epi)))
+  }
+
+  # an attribute on both layers must agree
+  nw2 <- set_vertex_attribute(nw, "sex", rep(c("M", "F"), N / 2))
+  est2 <- netest(nw2, ~edges, target.stats = 30,
+                 coef.diss = dissolution_coefs(~offset(edges), 10),
+                 verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 3, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  expect_error(netsim(list(est2, obs), param, init, control),
+               "differs from the one on census layer 2")
+})
+
+test_that("a dynamic census with empty steps runs without tergmLite", {
+  # contact data often have steps without contacts; the edgelist of such a
+  # step must still be a matrix for the cumulative edgelist
+  base <- network::network.initialize(20, directed = FALSE)
+  spells <- data.frame(onset = 2, terminus = 6, tail = 1:5, head = 6:10)
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
+  obs <- netcensus(nd, window = c(0, 10))
+  for (tergmLite in c(TRUE, FALSE)) {
+    control <- control.net(type = "SI", nsteps = 8, nsims = 1,
+                           tergmLite = tergmLite, resimulate.network = tergmLite,
+                           verbose = FALSE, cumulative.edgelist = TRUE,
+                           save.cumulative.edgelist = TRUE,
+                           truncate.el.cuml = Inf)
+    sim <- netsim(obs, param.net(inf.prob = 0.5), init.net(i.num = 2), control)
+    cel <- sim$cumulative.edgelist[[1]]
+    expect_equal(nrow(cel), 5)
+    expect_true(all(cel$start == 2 & cel$stop == 5))
+    expect_equal(get_nwstats(sim, network = 1)$edges,
+                 c(0, 5, 5, 5, 5, 0, 0, 0))
+  }
+})
+
+test_that("netsim warns when the simulation ends before a census window", {
+  base <- network::network.initialize(20, directed = FALSE)
+  spells <- data.frame(onset = 100, terminus = 130, tail = 1:5, head = 6:10)
+  nd <- quiet_nd(base.net = base, edge.spells = spells)
+  obs <- netcensus(nd, window = c(100, 130))
+  control <- control.net(type = "SI", nsteps = 20, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE)
+  expect_warning(netsim(obs, param.net(inf.prob = 0.5), init.net(i.num = 2),
+                        control),
+                 "ends at step 20, before the observation window")
+})
+
+test_that("make_restart_point refuses a dynamic census layer", {
+  obs <- netcensus(nw_dyn)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1,
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         verbose = FALSE, save.run = TRUE)
+  sim <- netsim(obs, param.net(inf.prob = 0.3), init, control)
+  expect_error(make_restart_point(sim, time_attrs = c()),
+               "does not support dynamic `netcensus` layers")
+  # a static census has no clock to follow
+  sim <- netsim(netcensus(nw_static), param.net(inf.prob = 0.3), init, control)
+  expect_s3_class(make_restart_point(sim, time_attrs = c()), "netsim")
 })
 
 test_that("a census layer survives a restart", {

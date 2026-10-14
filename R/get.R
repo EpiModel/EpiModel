@@ -424,7 +424,10 @@ get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list
   }
 
   out <- as.data.frame(do.call("rbind", out))
-  out$time <- rep(seq_len(min(nsteps, nrow(out))), length(sim))
+  # the rows of a netsim object truncated without resetting time are labeled
+  # from the step of the first row kept, as its epi trackers are
+  first <- if (inherits(x, "netsim")) epi_start(x) else 1L
+  out$time <- rep(seq_len(min(nsteps, nrow(out))), length(sim)) + first - 1L
   out$sim <- rep(sim, each = min(nsteps, nrow(out)))
   row.names(out) <- seq_len(nrow((out)))
   out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
@@ -618,11 +621,20 @@ get_args <- function(formal.args, dot.args) {
 #' simulation by the `record_attr_history` function.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' nw <- network_initialize(n = 100)
+#' est <- netest(nw, formation = ~edges, target.stats = 50,
+#'               coef.diss = dissolution_coefs(~offset(edges), 10),
+#'               verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 20, nsims = 1,
+#'                        tracked.attributes = "status", verbose = FALSE)
+#' sim <- netsim(est, param.net(inf.prob = 0.3, act.rate = 1),
+#'               init.net(i.num = 10), control)
 #'
-#' # With `sims` the result of a `netsim` call
-#' get_attr_history(sims)
-#'
+#' # One data frame per tracked attribute, with the changes at each step
+#' hist <- get_attr_history(sim)
+#' names(hist)
+#' head(hist$status)
 #' }
 #'
 #' @export

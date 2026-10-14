@@ -200,6 +200,29 @@ copy_nwattr_to_datattr <- function(dat, nw) {
 }
 
 
+# Copy the vertex attributes of a census layer other than the first into the
+# nodal attributes, as copy_nwattr_to_datattr() does for the first layer. An
+# attribute already set from the first layer must hold the same values.
+copy_census_attrs <- function(dat, nw, network) {
+  epi_by <- get_control(dat, "epi.by", override.null.error = TRUE)
+  for (a in census_attributes(nw)) {
+    va <- get_vertex_attribute(nw, a)
+    cur <- get_attr(dat, a, override.null.error = TRUE)
+    if (is.null(cur)) {
+      dat <- set_attr(dat, a, va)
+      if (!is.null(epi_by) && epi_by == a) {
+        dat$run$epi.by.vals <- unique(va)
+      }
+    } else if (!identical(is.na(cur), is.na(va)) ||
+                 any(cur != va, na.rm = TRUE)) {
+      stop("The `", a, "` attribute on the network of layer 1 differs from ",
+           "the one on census layer ", network, ". Set the same values on ",
+           "both networks, or remove it from one of them.", call. = FALSE)
+    }
+  }
+  dat
+}
+
 #' @title Copy Vertex Attributes from the `netsim_dat` List to the Network
 #'        Objects
 #'

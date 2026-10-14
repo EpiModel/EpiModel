@@ -180,14 +180,15 @@
 #' plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 #'
 #' # Plot static networks
+#' oldpar <- par(no.readonly = TRUE)
 #' par(mar = c(0, 0, 0, 0))
 #' plot(mod, type = "network", vertex.cex = 1.5)
 #'
 #' # Automatic coloring of infected nodes as red
 #' par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
-#' plot(mod, type = "network", main = "Min Prev | Time 50",
+#' plot(mod, type = "network", main = "Min Prev | Time 20",
 #'      col.status = TRUE, at = 20, sims = "min", vertex.cex = 1.25)
-#' plot(mod, type = "network", main = "Max Prev | Time 50",
+#' plot(mod, type = "network", main = "Max Prev | Time 20",
 #'      col.status = TRUE, at = 20, sims = "max", vertex.cex = 1.25)
 #'
 #' # Automatic shape by group number (circle = group 1)
@@ -206,6 +207,7 @@
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
 #'      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
+#' par(oldpar)
 #' }
 #'
 plot.netsim <- function(x, type = "epi", y = NULL, popfrac = FALSE,
@@ -629,6 +631,8 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
     dynamic = TRUE, # always dynamic in netsim
     xlim = xlim, xlab = xlab,
     ylim = ylim, ylab = ylab,
+    # network statistics follow the epi trackers of a truncated object
+    time.offset = if (type == "formation") epi_start(x) - 1L else 0L,
     ...
   )
 }

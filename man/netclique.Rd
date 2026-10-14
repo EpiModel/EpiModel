@@ -165,7 +165,7 @@ distribution and mean degree are shown by \code{print}.
 }
 
 \examples{
-\dontrun{
+\donttest{
 # Households as cliques under a community TERGM layer
 hh <- sample_groups(500, c("adult" = 0.3, "adult adult" = 0.4,
                            "adult adult child" = 0.2,

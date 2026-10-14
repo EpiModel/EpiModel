@@ -79,7 +79,7 @@
 #' param <- param.net(inf.prob = inf.prob, act.rate = 1)
 #' param
 #'
-#' \dontrun{
+#' \donttest{
 #' nw <- network_initialize(n = 100)
 #' est <- netest(nw, formation = ~edges, target.stats = 50,
 #'               coef.diss = dissolution_coefs(~offset(edges), 10),

@@ -609,3 +609,64 @@ test_that("netsim refuses to restart from objects of another EpiModel version", 
   attr(rp, "version") <- package_version("2.6.2")
   expect_error(restart(rp), "comes from version v2.6.2", fixed = TRUE)
 })
+
+test_that("truncate_sim without reset labels the network statistics like the epi trackers", {
+  skip_on_cran()
+  set.seed(11)
+  nw <- network_initialize(n = 40)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 12, nsims = 2,
+                         nwstats.formula = ~edges + degree(0),
+                         verbose = FALSE)
+  mod <- netsim(est, param.net(inf.prob = 0.5, act.rate = 2),
+                init.net(i.num = 5), control)
+  tr <- truncate_sim(mod, at = 6, reset.time = FALSE)
+  ns <- get_nwstats(tr)
+  expect_equal(ns$time, rep(6:12, 2))
+  expect_equal(ns$time, as.data.frame(tr)$time)
+  full <- get_nwstats(mod)
+  expect_equal(ns$edges, full$edges[full$time >= 6])
+
+  # the formation plot draws the rows at their time steps
+  pdf(NULL)
+  plot(tr, type = "formation")
+  usr <- par("usr")
+  dev.off()
+  expect_true(usr[1] > 5 && usr[1] < 6 && usr[2] > 12 && usr[2] < 13)
+})
+
+test_that("netsim refuses a restart whose start does not follow the run state", {
+  skip_on_cran()
+  mod <- build_restart_sim(nsteps = 6)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 5)
+  restart <- function(x, start, type = "SI") {
+    control <- control.net(type = type, start = start, nsteps = 10,
+                           infection.FUN = if (is.null(type)) infection.net,
+                           tergmLite = TRUE, resimulate.network = TRUE,
+                           verbose = FALSE)
+    netsim(x, param, init, control)
+  }
+  expect_error(restart(mod, start = 4), "start must be 1 greater")
+  # the check of the run state also covers extension models
+  expect_error(restart(mod, start = 4, type = NULL), "must have `start = 7`")
+  expect_s3_class(restart(mod, start = 7, type = NULL), "netsim")
+
+  # a truncated object holds fewer steps than its run state
+  tr <- truncate_sim(mod, at = 3)
+  expect_error(restart(tr, start = 5), "as after `truncate_sim\\(\\)`")
+})
+
+test_that("make_restart_point re-bases infTime by default", {
+  skip_on_cran()
+  set.seed(12)
+  mod <- build_restart_sim(nsteps = 10, inf.prob = 0.5)
+  rp <- make_restart_point(mod, time_attrs = c())
+  expect_equal(rp$run[[1]]$attr$infTime, mod$run[[1]]$attr$infTime - 9)
+  expect_true(all(rp$run[[1]]$attr$infTime <= 1, na.rm = TRUE))
+  # listing it again changes nothing
+  rp2 <- make_restart_point(mod, time_attrs = "infTime")
+  expect_identical(rp2$run[[1]]$attr$infTime, rp$run[[1]]$attr$infTime)
+})

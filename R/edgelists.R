@@ -26,6 +26,10 @@ get_edgelist <- function(dat, network) {
     at <- get_current_timestep(dat)
     net <- get_network(dat, network = network)
     el <- networkDynamic::get.dyads.active(net, at = at)
+    # with no active edge, get.dyads.active() returns a list-mode matrix
+    if (NROW(el) == 0) {
+      el <- matrix(integer(0), ncol = 2)
+    }
   }
 
   return(el)
