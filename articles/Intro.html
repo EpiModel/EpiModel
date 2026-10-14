@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">Samuel M.
 Jenness, Steven M. Goodreau, Martina Morris, and Adrien Le Guillou</h4>
             
-            <h4 data-toc-skip class="date">2026-10-13</h4>
+            <h4 data-toc-skip class="date">2026-10-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/Intro.Rmd" class="external-link"><code>vignettes/Intro.Rmd</code></a></small>
       <div class="d-none name"><code>Intro.Rmd</code></div>
@@ -163,11 +163,11 @@ through examples.</p>
 <p>With a validated network model, we layer on the epidemic. This SIS
 model uses a per-act transmission probability of 0.4, 2 acts per
 partnership per time step, and a recovery rate of 0.05. We seed 10
-infections and run 5 stochastic simulations for 500 time steps.</p>
+infections and run 3 stochastic simulations for 500 time steps.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.4</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">500</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -207,7 +207,7 @@ proportions across simulations at a specified time step:</p>
 <span><span class="co">## Simulation Details</span></span>
 <span><span class="co">## -----------------------</span></span>
 <span><span class="co">## Model type: SIS</span></span>
-<span><span class="co">## No. simulations: 5</span></span>
+<span><span class="co">## No. simulations: 3</span></span>
 <span><span class="co">## No. time steps: 500</span></span>
 <span><span class="co">## No. NW groups: 1</span></span>
 <span><span class="co">## </span></span>
@@ -215,12 +215,12 @@ proportions across simulations at a specified time step:</p>
 <span><span class="co">## ------------------------------</span></span>
 <span><span class="co">## Time: 500 </span></span>
 <span><span class="co">## ------------------------------ </span></span>
-<span><span class="co">##            mean      sd    pct</span></span>
-<span><span class="co">## Suscept.  277.6  11.194  0.555</span></span>
-<span><span class="co">## Infect.   222.4  11.194  0.445</span></span>
-<span><span class="co">## Total     500.0   0.000  1.000</span></span>
-<span><span class="co">## S -&gt; I     11.8   3.564     NA</span></span>
-<span><span class="co">## I -&gt; S     13.8   4.970     NA</span></span>
+<span><span class="co">##              mean      sd    pct</span></span>
+<span><span class="co">## Suscept.  283.000  16.093  0.566</span></span>
+<span><span class="co">## Infect.   217.000  16.093  0.434</span></span>
+<span><span class="co">## Total     500.000   0.000  1.000</span></span>
+<span><span class="co">## S -&gt; I     13.667   2.887     NA</span></span>
+<span><span class="co">## I -&gt; S     11.667   4.163     NA</span></span>
 <span><span class="co">## ------------------------------</span></span></code></pre>
 </div>
 <div class="section level4">
@@ -234,11 +234,11 @@ across simulations:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   sim time s.num i.num num si.flow is.flow</span></span>
 <span><span class="co">## 1   1    1   490    10 500      NA      NA</span></span>
-<span><span class="co">## 2   1    2   484    16 500       6       0</span></span>
-<span><span class="co">## 3   1    3   481    19 500       4       1</span></span>
-<span><span class="co">## 4   1    4   480    20 500       2       1</span></span>
-<span><span class="co">## 5   1    5   479    21 500       5       4</span></span>
-<span><span class="co">## 6   1    6   472    28 500       7       0</span></span></code></pre>
+<span><span class="co">## 2   1    2   486    14 500       5       1</span></span>
+<span><span class="co">## 3   1    3   481    19 500       5       0</span></span>
+<span><span class="co">## 4   1    4   479    21 500       3       1</span></span>
+<span><span class="co">## 5   1    5   476    24 500       3       0</span></span>
+<span><span class="co">## 6   1    6   476    24 500       1       1</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="transmission-trees">Transmission Trees<a class="anchor" aria-label="anchor" href="#transmission-trees"></a>

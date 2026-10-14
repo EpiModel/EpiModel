@@ -272,13 +272,13 @@ est <- netest(nw, formation, target.stats, coef.diss)
 #> Warning: ‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.7444.
+#> The log-likelihood improved by 1.5495.
 #> Estimating equations are not within tolerance region.
 #> Iteration 2 of at most 60:
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0575.
-#> Convergence test p-value: 0.0031. 
+#> The log-likelihood improved by 0.0794.
+#> Convergence test p-value: 0.0001. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
@@ -303,18 +303,18 @@ dx
 #> Formation Diagnostics
 #> ----------------------- 
 #>            Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges          50    52.75     5.50  2.749    1.00         2.220         8.365
-#> concurrent     20    22.31    11.55  1.878    1.23         0.495         5.792
+#> edges          50   49.875   -0.250  1.436  -0.087         1.209         5.883
+#> concurrent     20   20.885    4.425  1.054   0.840         1.266         4.530
 #> 
 #> Duration Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     10   10.218     2.18   0.62   0.352         0.618         1.759
+#> edges     10    9.599   -4.014  0.305  -1.316         0.248         1.152
 #> 
 #> Dissolution Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges    0.1      0.1    -0.15  0.003  -0.052         0.005         0.041
+#> edges    0.1      0.1    0.481  0.003   0.161         0.006         0.042
 
 # Pass the same settings to the epidemic simulation
 param <- param.net(inf.prob = 0.3, act.rate = 1)

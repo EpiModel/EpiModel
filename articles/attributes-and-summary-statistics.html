@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.7.0</h4>
             
-            <h4 data-toc-skip class="date">2026-10-13</h4>
+            <h4 data-toc-skip class="date">2026-10-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/attributes-and-summary-statistics.Rmd" class="external-link"><code>vignettes/attributes-and-summary-statistics.Rmd</code></a></small>
       <div class="d-none name"><code>attributes-and-summary-statistics.Rmd</code></div>
@@ -457,9 +457,9 @@ attribute (with values <code>"s"</code> for susceptible,
 <code>item</code>: a label for the attribute (here
 <code>"viral_load"</code>).</li>
 <li>
-<code>value</code>: the values to record. Must match the number of
-nodes in length, unless a single value is provided (which is recycled
-for all nodes).</li>
+<code>value</code>: the values to record, one per node in
+<code>posit_ids</code> or <code>unique_ids</code>, or a single value
+recycled for all of them.</li>
 <li>
 <code>at</code>: the time step to associate with the recording.
 Defaults to the current time step if omitted, and must be passed by
@@ -505,8 +505,9 @@ aging module that also tracks mean age and its change over time:</p>
 <span></span>
 <span>  <span class="co"># Calculate summary statistics</span></span>
 <span>  <span class="va">mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">new_age</span><span class="op">)</span></span>
-<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epi.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
-<span>  <span class="va">age_change</span> <span class="op">&lt;-</span> <span class="va">mean_age</span> <span class="op">-</span> <span class="va">prev_mean_age</span></span>
+<span>  <span class="co"># the tracker does not exist before the module first sets it</span></span>
+<span>  <span class="va">prev_mean_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epi.html">get_epi</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"mean_age"</span>, <span class="va">at</span> <span class="op">-</span> <span class="fl">1</span>, override.null.error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">age_change</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">prev_mean_age</span><span class="op">)</span><span class="op">)</span> <span class="cn">NA</span> <span class="kw">else</span> <span class="va">mean_age</span> <span class="op">-</span> <span class="va">prev_mean_age</span></span>
 <span></span>
 <span>  <span class="co"># Update nodal attributes</span></span>
 <span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_attr.html">set_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="va">new_age</span><span class="op">)</span></span>
@@ -526,7 +527,10 @@ current time step; to record it at another one, pass <code>at</code> by
 name (<code>set_epi(dat, "mean_age", mean_age, at = 10)</code>).</li>
 <li>
 <code><a href="../reference/get_epi.html">get_epi()</a></code> retrieves the tracker value at a specific
-time step. Requesting a nonexistent tracker throws an error.</li>
+time step. Requesting a nonexistent tracker throws an error, unless
+<code>override.null.error = TRUE</code>, which returns <code>NULL</code>
+instead; the module above uses it on its first call, before
+<code>mean_age</code> exists.</li>
 </ul>
 </div>
 <div class="section level3">

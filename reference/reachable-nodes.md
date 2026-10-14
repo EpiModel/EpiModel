@@ -94,16 +94,6 @@ dense networks. Also, as long as the size of the `nodes` set is greater
 than 5, theses functions are faster than iterating over
 [`tsna::tPath`](https://rdrr.io/pkg/tsna/man/paths.html).
 
-## Displaying Progress
-
-These functions are using the [progressr
-package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
-to display its progression. Use
-`progressr::with_progress({ fwd_reach <- get_forward_reachable(el, from = 1, to = 260) })`
-to display the progress bar. Or see the [progressr
-package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
-for more information and customization.
-
 ## See also
 
 [`get_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.md)
@@ -155,14 +145,14 @@ for (i in seq_along(el_fwd)) {
 
   t_fwd_set <- which(t_fwd$tdist < Inf)
   if(!setequal(el_fwd[[i]], t_fwd_set))
-    stop("Missmatch on node: ", node)
+    stop("Mismatch on node: ", node)
 }
 
 # Backward:
 el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
 nodes <- strsplit(names(el_bkwd), "_")
 t_bkwd <- tsna::tPath(
-  nd, v = nodes[i][2],
+  nd, v = as.integer(nodes[[1]][2]),
   start = 1, end = 52 + 1,
   direction = "bkwd", type = "latest.depart"
 )

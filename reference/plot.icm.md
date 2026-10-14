@@ -224,9 +224,10 @@ plot(mod2, y = "i.num", mean.line = FALSE, sim.lines = TRUE)
 
 
 # Plot incidence
-par(mfrow = c(1, 2))
+oldpar <- par(mfrow = c(1, 2))
 plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 
+par(oldpar)
 # }
 ```

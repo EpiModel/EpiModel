@@ -342,8 +342,8 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Iteration 1 of at most 60:
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0970.
-#> Convergence test p-value: 0.0011. 
+#> The log-likelihood improved by 0.0122.
+#> Convergence test p-value: < 0.0001. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
@@ -358,7 +358,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55c9966982e0>
+#> <environment: 0x561d9fe7ddb8>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
@@ -375,8 +375,8 @@ summary(est)
 #> Monte Carlo Maximum Likelihood Results:
 #> 
 #>            Estimate Std. Error MCMC % z value Pr(>|z|)    
-#> edges       -4.4358     0.3220      0 -13.774   <1e-04 ***
-#> concurrent  -0.2043     0.4230      0  -0.483    0.629    
+#> edges       -4.4088     0.3308      0 -13.326   <1e-04 ***
+#> concurrent  -0.2458     0.4118      0  -0.597    0.551    
 #> ---
 #> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #> 

@@ -58,7 +58,12 @@ row per active node and one column per tracked attribute.</p>
 
 
 <dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
-<dd><p>The time step at which to reconstruct attributes.</p></dd>
+<dd><p>The time step at which to reconstruct attributes, on the time
+step labels of <code>sim</code> (see <code><a href="truncate_sim.html">truncate_sim()</a></code>). It must lie between the
+start of the attribute history and the last time step. The history
+starts at the first time step for a new simulation, and at
+<code>start - 1</code> for a restarted one, whose history starts again from a
+full snapshot of the state it restarted from.</p></dd>
 
 
 <dt id="arg-sim-num">sim_num<a class="anchor" aria-label="anchor" href="#arg-sim-num"></a></dt>
@@ -84,6 +89,45 @@ for each active node.</p>
     <div class="dont-index"><p><code><a href="record_attr_history.html">record_attr_history()</a></code>, <code><a href="get_attr_history.html">get_attr_history()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>              coef.diss <span class="op">=</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting simulated annealing (SAN)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished simulated annealing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting maximum pseudolikelihood estimation (MPLE):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Obtaining the responsible dyads.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Evaluating the predictor and response matrix.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">20</span>, nsims <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                       tracked.attributes <span class="op">=</span> <span class="st">"status"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="fu"><a href="param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              <span class="fu"><a href="init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, <span class="va">control</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The status of every node at time step 10</span></span></span>
+<span class="r-in"><span><span class="va">at10</span> <span class="op">&lt;-</span> <span class="fu">get_attr_at</span><span class="op">(</span><span class="va">sim</span>, at <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">at10</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   unique_id active status</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>         1      1 i     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>         2      1 i     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>         3      1 i     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>         4      1 s     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>         5      1 s     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>         6      1 s     </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">at10</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  i  s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 64 </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

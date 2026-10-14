@@ -72,28 +72,32 @@
   `generate_random_params()` and `get_param_set()`. Passing
   `random.params` to
   [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
-  is now an error. To vary parameters across simulations, draw the
-  values in advance into a table with one row per draw and run each row
-  as a scenario with
+  is now an error, and so is running a `param.net` object that holds
+  them (saved under 2.6.x, or set with
+  [`update_params()`](https://epimodel.github.io/EpiModel/reference/update_params.md)).
+  To vary parameters across simulations, draw the values in advance into
+  a table with one row per draw and run each row as a scenario with
   [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
   and
   [`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md).
   The new Parameter Uncertainty section of the “Working with Model
   Parameters in EpiModel” vignette shows how, including correlated draws
-  and a mapping from each part of the removed interface.
+  and a mapping from each part of the removed interface. To tabulate a
+  single `param.net` object, use
+  [`param.net_to_table()`](https://epimodel.github.io/EpiModel/reference/param.net_to_table.md).
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   no longer completes `param` with the parameters saved in `x` when
   restarting: `param` must hold all the parameters of the model, and `x`
   (like the `sim_obj` of
   [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md))
-  no longer needs them. In extension models, a parameter that an
+  no longer needs them. The internal `groups` parameter is restored from
+  the `run` sublist. In extension models, a parameter that an
   initialization module sets with
   [`set_param()`](https://epimodel.github.io/EpiModel/reference/get_param.md)
   is lost on restart, as that module does not run again. For example,
-  `initialize_msm()` in EpiModelHIV-p sets `time.unit` from
-  `param$epistats`, so `reinit_msm()` sets it again on restart from
-  EpiModelHIV 3.3.3 (EpiModel/EpiModelHIV-p#407).
+  EpiModelHIV’s `initialize_msm()` sets `time.unit` from
+  `param$epistats`, so its `reinit_msm()` sets it again on restart.
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   restarts every simulation from the first simulation of `x`, with a
@@ -103,6 +107,18 @@
   [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
   or
   [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md).
+
+- [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  now stops when the layers of a multi-layer model have different
+  numbers of nodes, which 2.6.x accepted.
+
+- [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  now stops when restarting with a `start` other than one more than the
+  last step of the run state of `x`. 2.6.x accepted an earlier `start`,
+  which replayed those steps from the later state, and an object
+  truncated with
+  [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md),
+  whose time attributes then ran ahead of the clock.
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   now stamps its output with the EpiModel version and refuses to restart
@@ -137,10 +153,14 @@
   [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
   refuses `netclique` objects, and
   [`print()`](https://rdrr.io/r/base/print.html) summarizes the layer,
-  including mean degree by a nodal attribute with `by`. The layer is
-  stored as a `networkLite`, which keeps even large layers small.
+  including mean degree by a nodal attribute with `by`.
+  [`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
+  stores the layer as a `networkLite`, which keeps even large layers
+  small.
   [`trim_netest()`](https://epimodel.github.io/EpiModel/reference/trim_netest.md)
-  accepts `netclique` and `netcensus` layers. Closes
+  accepts `netclique` and `netcensus` layers. Clique layers that share a
+  grouping attribute cannot use the `"join"` rule, which would place an
+  arrival in different groups on different layers. Closes
   [\#1081](https://github.com/EpiModel/EpiModel/issues/1081).
 
 - Add
@@ -154,19 +174,23 @@
   returning each node’s group id and the attributes its type implies.
   [`assign_groups()`](https://epimodel.github.io/EpiModel/reference/assign_groups.md)
   assigns group ids to an existing population: it draws group sizes from
-  a target distribution, seeds each group with an anchor member (an
-  adult), places dependent members (children) in the open slots of
-  anchored groups, and fills the rest at random, so that every dependent
-  shares a group with an anchor.
+  a target distribution, seeds groups with an anchor member (an adult),
+  places dependent members (children) in the open slots of anchored
+  groups, and fills the rest at random, so that every dependent shares a
+  group with an anchor.
 
 - Add
   [`move_to_group()`](https://epimodel.github.io/EpiModel/reference/move_to_group.md),
   which moves nodes to another group of a `netclique` layer during a
   simulation and rewires the layer to match, in either network storage
   mode: each moved node loses its edges to its old group and gains an
-  edge to every active member of its new group. Setting the grouping
-  attribute alone does not rewire the layer. Moving nodes to an unused
-  group id starts a new group, and `NA` takes a node out of its group.
+  edge to every active member of its new group. Every clique layer on
+  the same grouping attribute is rewired, while setting the attribute
+  alone rewires none. Moving nodes to an unused group id starts a new
+  group, and `NA` takes a node out of its group. Nodes arriving in a
+  time step can be moved only once
+  [`nwupdate.net()`](https://epimodel.github.io/EpiModel/reference/nwupdate.net.md)
+  has placed them by the layer’s arrival rule.
 
 - Add
   [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md),
@@ -174,22 +198,30 @@
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   accepts anywhere in its list of layers. It wraps a fully observed
   contact network, a static `network` or a `networkDynamic` with edge
-  spells, and the simulation reads the edges active at each time step
-  from it, in either network storage mode. The node set is fixed, so
+  spells (without loops or parallel edges), and the simulation reads the
+  edges active at each time step from it, in either network storage
+  mode. Its vertex attributes become nodal attributes wherever the layer
+  sits in the list. The node set is fixed, so
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   refuses vital dynamics with a census layer,
   [`arrive_nodes()`](https://epimodel.github.io/EpiModel/reference/arrive_nodes.md)
   and
   [`depart_nodes()`](https://epimodel.github.io/EpiModel/reference/depart_nodes.md)
   stop if a custom module tries to change it, and duration tracking is
-  refused for a dynamic census, whose spells carry the durations.
+  refused for a dynamic census, whose spells carry the durations. The
+  observation window is half-open, `[start, end)`, like a
+  `networkDynamic` spell.
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
-  warns when `nsteps` reaches the end of the observation window, since
-  the edges active at the last observed time then stay active.
-  [`print()`](https://rdrr.io/r/base/print.html) summarizes the edges
-  active over the window. This replaces the custom initialization and
-  infection modules of the Network Modeling for Epidemics chapter on
-  epidemics over observed networks. Closes
+  warns when the simulation ends before the window begins or `nsteps`
+  reaches its end, past which only spells that extend beyond the window
+  stay active. [`print()`](https://rdrr.io/r/base/print.html) summarizes
+  the edges active over the window.
+  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
+  refuses a dynamic census, which reads the observed network on the
+  simulation clock; restart from the `netsim` object instead. This
+  replaces the custom initialization and infection modules of the
+  Network Modeling for Epidemics chapter on epidemics over observed
+  networks. Closes
   [\#937](https://github.com/EpiModel/EpiModel/issues/937).
 
 - [`param.net()`](https://epimodel.github.io/EpiModel/reference/param.net.md)
@@ -206,19 +238,19 @@
   stops on one, since parameter tables cannot yet represent them
   ([\#1092](https://github.com/EpiModel/EpiModel/issues/1092)).
 
-- Add attribute history tracking for network simulations. The attributes
-  named in the new `tracked.attributes` argument of
+- Add automatic attribute history tracking for network simulations. The
+  attributes named in the new `tracked.attributes` argument of
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
   are recorded at each time step as delta-compressed changes: only the
   nodes whose values changed (including `NA` transitions), plus arriving
   and departing nodes. `active` is always tracked when tracking is on.
   The attributes named in `tracked.attributes.once`, such as `"race"` or
   `"birth.year"`, are recorded only in the initial snapshot and for
-  arrivals. An attribute that a module creates is recorded for every
-  node from the step it appears, and a tracked attribute missing at the
-  end of a step is an error. On restart, the history starts again from a
-  full snapshot at `start - 1`, as the history of `x` is not carried
-  over.
+  arrivals. An attribute that a module creates on its first call is
+  recorded for every node from the step it appears, and a tracked
+  attribute missing at the end of a step is an error. On restart, the
+  history starts again from a full snapshot at `start - 1`, as the
+  history of `x` is not carried over.
 
 - Add
   [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md),
@@ -231,11 +263,12 @@
 - Add
   [`make_networkDynamic()`](https://epimodel.github.io/EpiModel/reference/make_networkDynamic.md),
   which reconstructs a `networkDynamic` object from a `netsim`
-  simulation, with edge spells from the cumulative edgelist and vertex
-  activity and attributes from the attribute history. This allows `ndtv`
-  visualization and `tsna` temporal network analysis even of simulations
-  run with `tergmLite = TRUE`. It needs every edge of the simulation, so
-  it stops unless the simulation ran with `truncate.el.cuml = Inf`.
+  simulation, with one edge per tie and layer, its spells from the
+  cumulative edgelist, and vertex activity and attributes from the
+  attribute history. This allows `ndtv` visualization and `tsna`
+  temporal network analysis even of simulations run with
+  `tergmLite = TRUE`. It needs every edge of the simulation, so it stops
+  unless the simulation ran with `truncate.el.cuml = Inf`.
 
 - [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
   gains `keep.run`, `keep.cumulative.edgelist`, `keep.attr.history` and
@@ -268,29 +301,30 @@
   to bind the epi trackers of `y` by name rather than by position
   (trackers held in a different order were bound to the wrong tracker of
   `x`), to bind the per-simulation `coef.form` lists rather than keep
-  those of `x` alone (a restart from a simulation coming from `y` read
-  the wrong formation coefficients), and to keep the `transmat` class of
+  those of `x` alone, and to keep the `transmat` class of
   `stats$transmat`, so that splitting an object with
   [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
   and merging the parts back returns the original object.
 
 - Fix
   [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
-  to compare the formula-type controls (`monitors`, `nwstats.formula`,
-  `set.control.tergm`, `set.control.ergm` and `dat.updates`) with
-  [`all.equal()`](https://rdrr.io/r/base/all.equal.html) rather than
+  to compare `set.control.tergm`, `set.control.ergm` and `dat.updates`
+  with [`all.equal()`](https://rdrr.io/r/base/all.equal.html), as it
+  already did `monitors` and `nwstats.formula`, rather than
   [`identical()`](https://rdrr.io/r/base/identical.html). Their
-  environments differ once simulations are serialized and read back
-  (returned by parallel workers, or saved as the batches of an HPC run),
-  and the merge then failed with “x and y have different controls”.
+  environments differ between separate
+  [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+  calls and once simulations are serialized and read back (returned by
+  parallel workers, or saved as the batches of an HPC run), and the
+  merge then failed with “x and y have different controls”.
 
 - [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)
   no longer requires `x` and `y` to share the controls for how they were
   run rather than what they simulated: `ncores`, `verbose`,
   `verbose.int` and the checkpoint settings (`nsims` could already
-  differ). Batches run with different `ncores` or checkpoint directories
-  could not be merged, nor could a batch of one simulation and a batch
-  of several run on more than one core, since
+  differ). Batches run with different `ncores` or checkpoint
+  directories, or a batch of one simulation and a batch of several,
+  failed with “x and y have different controls”, since
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   sets `ncores` to 1 for a single simulation and turns `verbose` off for
   several.
@@ -301,29 +335,30 @@
   [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md),
   to subset the per-simulation `coef.form`, `attr.history`,
   `raw.records` and `cumulative.edgelist` elements, which were returned
-  for every simulation, and to keep the formation coefficients in
-  `nwparam` in step with the first simulation returned, so that
+  for every simulation; a restart from a subset could then start from
+  another simulation’s formation coefficients.
+  [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
+  also keeps the formation coefficients in `nwparam` in step with the
+  first simulation returned, so that
   [`get_nwparam()`](https://epimodel.github.io/EpiModel/reference/get_nwparam.md)
-  agrees with `coef.form`, which restarts read. An empty per-simulation
-  element, such as `attr.history` after
-  [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md),
-  is now left as is rather than erroring or coming back with a `NULL`
-  entry.
+  agrees with `coef.form`.
 
 - [`get_sims()`](https://epimodel.github.io/EpiModel/reference/get_sims.md)
-  now returns each requested simulation once, in ascending order,
-  whatever the order of `sims`; a repeated value set `control$nsims` to
-  a count that did not match the simulations returned. It stops with a
-  clear error when `sims` holds a value that is not a whole number of at
-  least 1 (such as `0`, `1.5` or `NA`), and `sims` no longer has a
-  default.
+  now returns each requested simulation once, in ascending order as
+  before (a repeated value in `sims` used to error or leave
+  `control$nsims` wrong), and stops with a clear error when `sims` holds
+  a value that is not a whole number of at least 1 (such as `0` or
+  `1.5`).
 
 - Fix
   [`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md)
-  to re-base the unique IDs in the `sus` and `inf` columns of the
-  transmission matrix like those of the attributes, to keep the unique
-  IDs integer, and to name the right attributes in the error raised when
-  a `time_attrs` element is missing.
+  to re-base `infTime` by default, as `entrTime` and `exitTime` were;
+  unless listed in `time_attrs`, it was left in the old time frame, so
+  parameters read by duration of infection treated every carried-over
+  infection as new. Also fix it to re-base the unique IDs in the `sus`
+  and `inf` columns of the transmission matrix like those of the
+  attributes, to keep the unique IDs integer, and to name the right
+  attributes in the error raised when a `time_attrs` element is missing.
 
 - Fix
   [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
@@ -364,9 +399,10 @@
   line with the network statistics, transmission matrix and cumulative
   edgelist. `truncate_sim(reset.time = FALSE)` now stores the label of
   the first row it keeps in `control$epi.start`, from which these
-  methods label the steps, and
-  [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
-  sets `control$start` to 1 in both cases. Its `at`, like that of
+  methods,
+  [`get_nwstats()`](https://epimodel.github.io/EpiModel/reference/get_nwstats.md)
+  and the formation plot label the steps, rather than in
+  `control$start`, which is now 1 in both cases. Its `at`, like that of
   [`get_attr_at()`](https://epimodel.github.io/EpiModel/reference/get_attr_at.md),
   is read on these labels, so an object truncated without reset can be
   truncated again, and an `at` outside the time steps of the object is
@@ -379,14 +415,14 @@
   restarting with `save.nwstats = TRUE` from an object without network
   statistics (such as one run with `save.nwstats = FALSE`), which failed
   with “subscript out of bounds”. The network statistics of the earlier
-  steps are now `NA`, in line with the epi trackers, as are those of the
-  steps after `end.horizon` removes `summary_nets`.
+  steps, and of the steps after `end.horizon` removes `summary_nets`,
+  are now `NA`, so they stay aligned with the epi trackers.
 
 - Fix the “Setting row names on a tibble is deprecated” warning when
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   restarted from a simulation without transmissions. The empty
   transmission matrix of `x` is no longer carried over, so the restarted
-  simulation’s transmission matrix is a data frame.
+  simulation’s transmission matrix is a data frame rather than a tibble.
 
 - Fix
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
@@ -407,8 +443,19 @@
   were bound in layer order and the transmission matrix keeps the first
   successful exposure. The bound edgelist is now shuffled when there is
   more than one layer, so the recorded infector is a uniform draw among
-  the successful exposures. Single-layer models and the number of
-  infections per step are unaffected.
+  the successful exposures. Single-layer models and the distribution of
+  infections per step are unaffected, but seeded multi-layer runs do not
+  reproduce the results of 2.6.x.
+
+- Fix the two-group modules for parameters that vary with the duration
+  of infection.
+  [`infection.2g.net()`](https://epimodel.github.io/EpiModel/reference/infection.2g.net.md)
+  read `inf.prob.g2` by the length of `inf.prob`, so its values were cut
+  short or became `NA`, and
+  [`recovery.2g.net()`](https://epimodel.github.io/EpiModel/reference/recovery.2g.net.md)
+  used only the first value of `rec.rate.g2` when `rec.rate` was a
+  single value. Two-group models with such parameters give different
+  results from 2.6.x.
 
 - Fix
   [`auto_update_attr()`](https://epimodel.github.io/EpiModel/reference/auto_update_attr.md)
@@ -433,10 +480,11 @@
   and in updaters; it used to replace the whole vector, so a scenario
   setting only `prep.start.rate_1 = 0.5` turned
   `prep.start.rate = c(0.0055, 0.0042, 0.0066)` into `0.5` rather than
-  `c(0.5, 0.0042, 0.0066)`. Positions past the end of the vector extend
-  it when they leave no gap and are an error otherwise, a scenario can
-  no longer shorten a vector, and setting by position a parameter that
-  is not a plain vector (a
+  `c(0.5, 0.0042, 0.0066)`. A column without a suffix still replaces the
+  whole parameter. Positions past the end of the vector extend it when
+  they leave no gap and are an error otherwise, suffixed columns can no
+  longer shorten a vector, and setting by position a parameter that is
+  not a plain vector (a
   [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md)
   or
   [`by_infection_duration()`](https://epimodel.github.io/EpiModel/reference/by_infection_duration.md)
@@ -459,13 +507,20 @@
 
 ### OTHER
 
+- [`get_forward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  and
+  [`get_backward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  no longer report progress, and progressr is no longer a suggested
+  package; they failed when it was not installed. EpiModel now imports
+  Rcpp and requires future 1.40.0 and dplyr 1.1.0 or later.
+
 - Add Multi-Layer Networks, Clique Layers, and Observed Network Layers
   sections to the “Working with Network Objects in EpiModel” vignette,
-  the first vignette coverage of multi-layer models (lists of layers,
+  the first vignette guide to multi-layer models (lists of layers,
   per-layer controls and parameters with
   [`multilayer()`](https://epimodel.github.io/EpiModel/reference/multilayer.md),
   reading layers in modules and output, and dependent layers kept
-  current with `dat.updates`) and of the new
+  current with `dat.updates`) and to the new
   [`netclique()`](https://epimodel.github.io/EpiModel/reference/netclique.md)
   and
   [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
@@ -518,7 +573,7 @@
   [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
   and
   [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
-  pages link to, along with the Improving Model Estimation and
+  pages link to, and which links to the Improving Model Estimation and
   Simulation appendix of the Network Modeling for Epidemics course.
   Closes [\#743](https://github.com/EpiModel/EpiModel/issues/743).
 

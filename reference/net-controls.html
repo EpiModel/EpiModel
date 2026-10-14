@@ -249,13 +249,13 @@ reading the diagnostics.</p></div>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.7444.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 1.5495.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating equations are not within tolerance region.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 2 of at most 60:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0575.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Convergence test p-value: 0.0031. </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0794.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Convergence test p-value: 0.0001. </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Converged with 99% confidence.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MCMLE.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This model was fit using MCMC.  To examine model diagnostics and check</span>
@@ -280,18 +280,18 @@ reading the diagnostics.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges          50    52.75     5.50  2.749    1.00         2.220         8.365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> concurrent     20    22.31    11.55  1.878    1.23         0.495         5.792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges          50   49.875   -0.250  1.436  -0.087         1.209         5.883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> concurrent     20   20.885    4.425  1.054   0.840         1.266         4.530</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Duration Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges     10   10.218     2.18   0.62   0.352         0.618         1.759</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges     10    9.599   -4.014  0.305  -1.316         0.248         1.152</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dissolution Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> edges    0.1      0.1    -0.15  0.003  -0.052         0.005         0.041</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> edges    0.1      0.1    0.481  0.003   0.161         0.006         0.042</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Pass the same settings to the epidemic simulation</span></span></span>
 <span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>

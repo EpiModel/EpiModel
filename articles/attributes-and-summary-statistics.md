@@ -318,9 +318,8 @@ takes the following arguments:
 
 1.  `dat`: the main list object.
 2.  `item`: a label for the attribute (here `"viral_load"`).
-3.  `value`: the values to record. Must match the number of nodes in
-    length, unless a single value is provided (which is recycled for all
-    nodes).
+3.  `value`: the values to record, one per node in `posit_ids` or
+    `unique_ids`, or a single value recycled for all of them.
 4.  `at`: the time step to associate with the recording. Defaults to the
     current time step if omitted, and must be passed by name.
 5.  `posit_ids` or `unique_ids`: a vector of node IDs to which the
@@ -366,8 +365,9 @@ aging_track_module <- function(dat, at) {
 
   # Calculate summary statistics
   mean_age <- mean(new_age)
-  prev_mean_age <- get_epi(dat, "mean_age", at - 1)
-  age_change <- mean_age - prev_mean_age
+  # the tracker does not exist before the module first sets it
+  prev_mean_age <- get_epi(dat, "mean_age", at - 1, override.null.error = TRUE)
+  age_change <- if (is.null(prev_mean_age)) NA else mean_age - prev_mean_age
 
   # Update nodal attributes
   dat <- set_attr(dat, "age", new_age)
@@ -389,7 +389,9 @@ Key points:
   (`set_epi(dat, "mean_age", mean_age, at = 10)`).
 - [`get_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md)
   retrieves the tracker value at a specific time step. Requesting a
-  nonexistent tracker throws an error.
+  nonexistent tracker throws an error, unless
+  `override.null.error = TRUE`, which returns `NULL` instead; the module
+  above uses it on its first call, before `mean_age` exists.
 
 ### Accessing Epidemic Trackers After a Simulation
 

@@ -84,15 +84,82 @@ time-varying vertex attributes.</p>
 <code><a href="control.net.html">control.net</a></code>, so that the cumulative edgelist holds every edge, and with
 at least one attribute in <code>tracked.attributes</code> or <code>tracked.attributes.once</code>,
 so that the activity of the nodes is recorded. The vertex ids of the
-<code>networkDynamic</code> object are the <code>unique_id</code>s of the nodes. The edges of all
-the network layers are merged into one network, with the layer of each edge
-in the <code>network</code> edge attribute.</p>
+<code>networkDynamic</code> object are the <code>unique_id</code>s of the nodes. Each pair of
+nodes tied on a layer has one edge, with one activity spell per period the
+tie was active, and the layer in the <code>network</code> edge attribute. With
+<code>network = NULL</code> and more than one layer, the layers are merged into one
+network that allows multiple edges (<code>multiple = TRUE</code>), so that a pair of
+nodes tied on two layers has one edge per layer.</p>
+<p>The nodes are active from the first record of the attribute history: for a
+new simulation from time 0, as in the <code>networkDynamic</code> objects that
+<code><a href="netsim.html">netsim()</a></code> saves without <code>tergmLite</code>, and for a restarted one from
+<code>start - 1</code>, the snapshot its history starts from. An edge that formed
+before the activity spell of one of its nodes starts is active from the
+start of that spell, so that no edge is active between inactive vertices.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="get_attr_at.html">get_attr_at()</a></code>, <code><a href="get_attr_history.html">get_attr_history()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>              coef.diss <span class="op">=</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting simulated annealing (SAN)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished simulated annealing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting maximum pseudolikelihood estimation (MPLE):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Obtaining the responsible dyads.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Evaluating the predictor and response matrix.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">20</span>, nsims <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                       tergmLite <span class="op">=</span> <span class="cn">TRUE</span>, resimulate.network <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                       cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                       save.cumulative.edgelist <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                       truncate.el.cuml <span class="op">=</span> <span class="cn">Inf</span>,</span></span>
+<span class="r-in"><span>                       tracked.attributes <span class="op">=</span> <span class="st">"status"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="fu"><a href="param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.3</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              <span class="fu"><a href="init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, <span class="va">control</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The full network history of a tergmLite run, with each node's status</span></span></span>
+<span class="r-in"><span><span class="va">nd</span> <span class="op">&lt;-</span> <span class="fu">make_networkDynamic</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nd</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NetworkDynamic properties:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   distinct change times: 22 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   maximal time range: 0 until  Inf </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Dynamic (TEA) attributes:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Vertex TEAs:    status.active </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Network attributes:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   vertices = 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   directed = FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   hyper = FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   loops = FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   multiple = FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   bipartite = FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 165 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     missing edges= 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 165 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Vertex attribute names: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     active status.active vertex.names </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Edge attribute names: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     active network </span>
+<span class="r-in"><span><span class="va">x10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/networkDynamic/man/network.collapse.html" class="external-link">network.collapse</a></span><span class="op">(</span><span class="va">nd</span>, at <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="get_vertex_attribute.html">get_vertex_attribute</a></span><span class="op">(</span><span class="va">x10</span>, <span class="st">"status"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  i  s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 60 </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

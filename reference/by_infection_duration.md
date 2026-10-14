@@ -120,15 +120,38 @@ param
 #> by_infection_duration(c(acute = 0.25, chronic = 0.02), durations = c(10, Inf))
 #> act.rate = 1
 
-if (FALSE) { # \dontrun{
+# \donttest{
 nw <- network_initialize(n = 100)
 est <- netest(nw, formation = ~edges, target.stats = 50,
               coef.diss = dissolution_coefs(~offset(edges), 10),
               verbose = FALSE)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
+#> Starting maximum pseudolikelihood estimation (MPLE):
+#> Obtaining the responsible dyads.
+#> Evaluating the predictor and response matrix.
+#> Maximizing the pseudolikelihood.
+#> Finished MPLE.
 sim <- netsim(est, param, init.net(i.num = 10),
               control.net(type = "SI", nsteps = 25, nsims = 1,
                           verbose = FALSE))
 tm <- get_transmat(sim)
 table(tm$infDur, tm$transProb)
-} # }
+#>     
+#>      0.02 0.25
+#>   1     0    6
+#>   2     0    5
+#>   3     0    4
+#>   4     0    4
+#>   5     0    4
+#>   6     0    5
+#>   7     0    5
+#>   8     0    4
+#>   9     0    2
+#>   10    0    1
+#>   12    1    0
+#>   15    1    0
+#>   33    1    0
+# }
 ```

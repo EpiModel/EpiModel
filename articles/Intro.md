@@ -106,13 +106,13 @@ appendix of the NME course works through examples.
 With a validated network model, we layer on the epidemic. This SIS model
 uses a per-act transmission probability of 0.4, 2 acts per partnership
 per time step, and a recovery rate of 0.05. We seed 10 infections and
-run 5 stochastic simulations for 500 time steps.
+run 3 stochastic simulations for 500 time steps.
 
 ``` r
 
 param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.05)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SIS", nsims = 5, nsteps = 500, verbose = FALSE)
+control <- control.net(type = "SIS", nsims = 3, nsteps = 500, verbose = FALSE)
 
 sim <- netsim(est, param, init, control)
 ```
@@ -162,7 +162,7 @@ summary(sim, at = 500)
     ## Simulation Details
     ## -----------------------
     ## Model type: SIS
-    ## No. simulations: 5
+    ## No. simulations: 3
     ## No. time steps: 500
     ## No. NW groups: 1
     ## 
@@ -170,12 +170,12 @@ summary(sim, at = 500)
     ## ------------------------------
     ## Time: 500 
     ## ------------------------------ 
-    ##            mean      sd    pct
-    ## Suscept.  277.6  11.194  0.555
-    ## Infect.   222.4  11.194  0.445
-    ## Total     500.0   0.000  1.000
-    ## S -> I     11.8   3.564     NA
-    ## I -> S     13.8   4.970     NA
+    ##              mean      sd    pct
+    ## Suscept.  283.000  16.093  0.566
+    ## Infect.   217.000  16.093  0.434
+    ## Total     500.000   0.000  1.000
+    ## S -> I     13.667   2.887     NA
+    ## I -> S     11.667   4.163     NA
     ## ------------------------------
 
 #### Data Extraction
@@ -192,11 +192,11 @@ head(d)
 
     ##   sim time s.num i.num num si.flow is.flow
     ## 1   1    1   490    10 500      NA      NA
-    ## 2   1    2   484    16 500       6       0
-    ## 3   1    3   481    19 500       4       1
-    ## 4   1    4   480    20 500       2       1
-    ## 5   1    5   479    21 500       5       4
-    ## 6   1    6   472    28 500       7       0
+    ## 2   1    2   486    14 500       5       1
+    ## 3   1    3   481    19 500       5       0
+    ## 4   1    4   479    21 500       3       1
+    ## 5   1    5   476    24 500       3       0
+    ## 6   1    6   476    24 500       1       1
 
 #### Transmission Trees
 

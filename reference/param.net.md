@@ -352,18 +352,18 @@ sim
 #> Formation Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50       50        0  2.456       0        11.123         9.706
+#> edges     50   45.633   -8.733  0.824  -5.301         2.928         3.399
 #> 
 #> 
 #> Duration Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     20   20.575    2.873  0.609   0.944         1.609         1.823
+#> edges     20   19.317   -3.413  0.572  -1.193         1.829         2.112
 #> 
 #> Dissolution Statistics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges   0.05    0.042  -15.011  0.005  -1.381         0.004          0.03
+#> edges   0.05    0.046    -7.03  0.004  -0.942         0.006          0.03
 #> 
 # }
 ```

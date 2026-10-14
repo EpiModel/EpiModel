@@ -214,7 +214,7 @@ sets per-layer parameters and controls.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Households as cliques under a community TERGM layer
 hh <- sample_groups(500, c("adult" = 0.3, "adult adult" = 0.4,
                            "adult adult child" = 0.2,
@@ -226,12 +226,65 @@ nw <- set_vertex_attribute(nw, "hh_id", hh$group)
 
 est_hh <- netclique(nw, group.attr = "hh_id", arrivals = "join")
 est_hh
+#> EpiModel Clique Network Layer
+#> =======================
+#> Model class: netclique
+#> Grouping attribute: hh_id
+#> 
+#> Layer Summary
+#> -----------------------
+#> Nodes: 500
+#> Groups: 227
+#> Edges: 410
+#> Mean degree: 1.64
+#> Isolates: 62
+#> 
+#> Group Size Distribution
+#> -----------------------
+#>                   
+#> size    1  2  3  4
+#> groups 62 86 50 29
+#> 
+#> Arrivals: join (group drawn in proportion to its size)
 print(est_hh, by = "age")
+#> EpiModel Clique Network Layer
+#> =======================
+#> Model class: netclique
+#> Grouping attribute: hh_id
+#> 
+#> Layer Summary
+#> -----------------------
+#> Nodes: 500
+#> Groups: 227
+#> Edges: 410
+#> Mean degree: 1.64
+#> Isolates: 62
+#> 
+#> Group Size Distribution
+#> -----------------------
+#>                   
+#> size    1  2  3  4
+#> groups 62 86 50 29
+#> 
+#> Mean Degree by `age`
+#> -----------------------
+#> adult child 
+#> 1.393 2.537 
+#> 
+#> Arrivals: join (group drawn in proportion to its size)
 
 est_com <- netest(nw, formation = ~edges + nodematch("age"),
                   target.stats = c(250, 175),
                   coef.diss = dissolution_coefs(~offset(edges), 20),
                   verbose = FALSE)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
+#> Starting maximum pseudolikelihood estimation (MPLE):
+#> Obtaining the responsible dyads.
+#> Evaluating the predictor and response matrix.
+#> Maximizing the pseudolikelihood.
+#> Finished MPLE.
 
 param <- param.net(inf.prob = multilayer(0.3, 0.05), act.rate = 1)
 init <- init.net(i.num = 10)
@@ -243,6 +296,7 @@ sim <- netsim(list(est_hh, est_com), param, init, control)
 # Share of transmissions on the household layer
 tm <- get_transmat(sim)
 mean(tm$network == 1)
+#> [1] 0.5680473
 
 # Newborns join a household that already has a child
 est_hh2 <- netclique(nw, group.attr = "hh_id", arrivals = "join",
@@ -255,5 +309,5 @@ est_hh2 <- netclique(nw, group.attr = "hh_id", arrivals = "join",
     pool <- hh[which(existing & age == "child" & !is.na(hh))]
     pool[sample.int(length(pool), length(new_ids), replace = TRUE)]
   })
-} # }
+# }
 ```

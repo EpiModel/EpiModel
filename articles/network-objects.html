@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">EpiModel
 v2.7.0</h4>
             
-            <h4 data-toc-skip class="date">2026-10-13</h4>
+            <h4 data-toc-skip class="date">2026-10-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/network-objects.Rmd" class="external-link"><code>vignettes/network-objects.Rmd</code></a></small>
       <div class="d-none name"><code>network-objects.Rmd</code></div>
@@ -625,16 +625,20 @@ through a complete example.</p>
 <span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/netcensus.html">netcensus</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="va">obs</span></span></code></pre></div>
 <p><code><a href="../reference/netcensus.html">netcensus()</a></code> carries the vertex attributes of the
-observed network into the simulation as nodal attributes. Temporally
-extended vertex attributes (those ending in <code>.active</code>), such
-as the <code>status.active</code> attribute stored on <code>base</code>,
-are dropped with a message, since <code><a href="../reference/netsim.html">netsim()</a></code> keeps its own
-disease status. Printing a dynamic census shows the observation window
-and the number of edges active per step across it; printing a static
-census shows its edge count, mean degree, and number of isolates. As
-with a clique layer, there is no model to diagnose, so
-<code><a href="../reference/netdx.html">netdx()</a></code> does not accept a <code>netcensus</code>
-object.</p>
+observed network into the simulation as nodal attributes, wherever the
+layer sits in the list of layers; an attribute that the first layer also
+holds must have the same values on both. The network must be undirected
+and not bipartite, without loops or parallel edges (a pair of nodes in
+contact over several periods has one edge with several activity spells).
+Temporally extended vertex attributes (those ending in
+<code>.active</code>), such as the <code>status.active</code> attribute
+stored on <code>base</code>, are dropped with a message, since
+<code><a href="../reference/netsim.html">netsim()</a></code> keeps its own disease status. Printing a dynamic
+census shows the observation window and the number of edges active per
+step across it; printing a static census shows its edge count, mean
+degree, and number of isolates. As with a clique layer, there is no
+model to diagnose, so <code><a href="../reference/netdx.html">netdx()</a></code> does not accept a
+<code>netcensus</code> object.</p>
 </div>
 <div class="section level3">
 <h3 id="simulation-time-and-the-observation-window">Simulation Time and the Observation Window<a class="anchor" aria-label="anchor" href="#simulation-time-and-the-observation-window"></a>
@@ -642,16 +646,23 @@ object.</p>
 <p>A static census has the same edges at every time step. For a dynamic
 census, EpiModel time step <code>at</code> reads the edges active at
 time <code>at</code> of the observed object, so the simulation clock is
-the observation clock. The <code>window</code> argument of
-<code><a href="../reference/netcensus.html">netcensus()</a></code> sets the observation window. It defaults to the
-<code>net.obs.period</code> network attribute when the object has one,
-and otherwise to the range of the finite edge spell times; for
-<code>base</code>, the window runs from time 2 to time 102.</p>
-<p>By the <code>networkDynamic</code> convention, edges active at the
-last observed time stay active indefinitely, so a simulation that runs
-past the window sees a frozen edge set. Keep <code>nsteps</code> in
-<code><a href="../reference/control.net.html">control.net()</a></code> within the window; <code><a href="../reference/netsim.html">netsim()</a></code>
-warns when <code>nsteps</code> reaches its end:</p>
+the observation clock. A census recorded in other units, such as seconds
+or calendar dates, needs its spell times rescaled to time steps first.
+The <code>window</code> argument of <code><a href="../reference/netcensus.html">netcensus()</a></code> sets the
+observation window, read like a <code>networkDynamic</code> spell as the
+half-open interval <code>[start, end)</code>: <code>c(1, 11)</code>
+covers time steps 1 to 10. It defaults to the
+<code>net.obs.period</code> network attribute when the object has one
+with finite bounds, and otherwise to the range of the finite edge spell
+times; for <code>base</code>, the window is <code>[2, 102)</code>.</p>
+<p>Past the end of the window, the layer holds only the edges whose
+spells extend beyond it. Spells censored at the end of the observation
+(a terminus of <code>Inf</code>, as in <code>tergm</code> and EpiModel
+output such as <code>base</code>) stay active, so the edge set is
+frozen; spells that end with the observation, as in most contact data,
+leave the layer empty. Keep the time steps of <code><a href="../reference/control.net.html">control.net()</a></code>
+within the window; <code><a href="../reference/netsim.html">netsim()</a></code> warns when the simulation ends
+before the window begins or <code>nsteps</code> reaches its end:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.5</span>, act.rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -873,10 +884,15 @@ simulation:</p>
 <code>network</code>). Do not call the accessor functions on a processed
 <code>netsim</code> object: the live <code>dat$run</code> state they
 depend on is dropped during <code><a href="../reference/process_out.net.html">process_out.net()</a></code>. Note also
-that <code><a href="../reference/truncate_sim.html">truncate_sim()</a></code> left-truncates the epidemiological time
-series but does not currently trim <code>sim$cumulative.edgelist</code>;
-filter it manually by <code>start</code> / <code>stop</code> if you need
-a matching time window.</p>
+that <code><a href="../reference/truncate_sim.html">truncate_sim()</a></code> keeps the edges of
+<code>sim$cumulative.edgelist</code> that ended before <code>at</code>.
+With <code>reset.time = TRUE</code> (the default), their
+<code>start</code> and <code>stop</code> are shifted to the new time
+steps along with the rest of the output, so
+<code>is.na(stop) | stop &gt;= 1</code> keeps the edges active in the
+kept window; with <code>reset.time = FALSE</code> the times are
+unchanged and the filter is
+<code>is.na(stop) | stop &gt;= at</code>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -1028,15 +1044,8 @@ into a single row:</p>
 <div class="section level3">
 <h3 id="performance-notes">Performance Notes<a class="anchor" aria-label="anchor" href="#performance-notes"></a>
 </h3>
-<p>Both reachability functions use the <a href="https://progressr.futureverse.org/" class="external-link">progressr</a> package for
-progress reporting. Wrap calls in
-<code><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">progressr::with_progress()</a></code> to display a progress bar:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">fwd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reachable-nodes.html">get_forward_reachable</a></span><span class="op">(</span><span class="va">el_cuml</span>, from_step <span class="op">=</span> <span class="fl">1</span>, to_step <span class="op">=</span> <span class="fl">260</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>These functions are efficient for large networks because they operate
-on cumulative edgelists (much smaller than full
+<p>The reachability functions are efficient for large networks because
+they operate on cumulative edgelists (much smaller than full
 <code>networkDynamic</code> objects). For sets of more than 5 nodes,
 they are faster than iterating over <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath()</a></code>. The
 <code>dense_optim</code> argument controls an adjacency-list

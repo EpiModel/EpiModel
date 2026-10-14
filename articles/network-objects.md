@@ -640,9 +640,14 @@ obs
 
 [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
 carries the vertex attributes of the observed network into the
-simulation as nodal attributes. Temporally extended vertex attributes
-(those ending in `.active`), such as the `status.active` attribute
-stored on `base`, are dropped with a message, since
+simulation as nodal attributes, wherever the layer sits in the list of
+layers; an attribute that the first layer also holds must have the same
+values on both. The network must be undirected and not bipartite,
+without loops or parallel edges (a pair of nodes in contact over several
+periods has one edge with several activity spells). Temporally extended
+vertex attributes (those ending in `.active`), such as the
+`status.active` attribute stored on `base`, are dropped with a message,
+since
 [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
 keeps its own disease status. Printing a dynamic census shows the
 observation window and the number of edges active per step across it;
@@ -655,21 +660,27 @@ not accept a `netcensus` object.
 
 A static census has the same edges at every time step. For a dynamic
 census, EpiModel time step `at` reads the edges active at time `at` of
-the observed object, so the simulation clock is the observation clock.
-The `window` argument of
+the observed object, so the simulation clock is the observation clock. A
+census recorded in other units, such as seconds or calendar dates, needs
+its spell times rescaled to time steps first. The `window` argument of
 [`netcensus()`](https://epimodel.github.io/EpiModel/reference/netcensus.md)
-sets the observation window. It defaults to the `net.obs.period` network
-attribute when the object has one, and otherwise to the range of the
-finite edge spell times; for `base`, the window runs from time 2 to time
-102.
+sets the observation window, read like a `networkDynamic` spell as the
+half-open interval `[start, end)`: `c(1, 11)` covers time steps 1 to 10.
+It defaults to the `net.obs.period` network attribute when the object
+has one with finite bounds, and otherwise to the range of the finite
+edge spell times; for `base`, the window is `[2, 102)`.
 
-By the `networkDynamic` convention, edges active at the last observed
-time stay active indefinitely, so a simulation that runs past the window
-sees a frozen edge set. Keep `nsteps` in
+Past the end of the window, the layer holds only the edges whose spells
+extend beyond it. Spells censored at the end of the observation (a
+terminus of `Inf`, as in `tergm` and EpiModel output such as `base`)
+stay active, so the edge set is frozen; spells that end with the
+observation, as in most contact data, leave the layer empty. Keep the
+time steps of
 [`control.net()`](https://epimodel.github.io/EpiModel/reference/control.net.md)
 within the window;
 [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
-warns when `nsteps` reaches its end:
+warns when the simulation ends before the window begins or `nsteps`
+reaches its end:
 
 ``` r
 
@@ -894,9 +905,12 @@ depend on is dropped during
 [`process_out.net()`](https://epimodel.github.io/EpiModel/reference/process_out.net.md).
 Note also that
 [`truncate_sim()`](https://epimodel.github.io/EpiModel/reference/truncate_sim.md)
-left-truncates the epidemiological time series but does not currently
-trim `sim$cumulative.edgelist`; filter it manually by `start` / `stop`
-if you need a matching time window.
+keeps the edges of `sim$cumulative.edgelist` that ended before `at`.
+With `reset.time = TRUE` (the default), their `start` and `stop` are
+shifted to the new time steps along with the rest of the output, so
+`is.na(stop) | stop >= 1` keeps the edges active in the kept window;
+with `reset.time = FALSE` the times are unchanged and the filter is
+`is.na(stop) | stop >= at`.
 
 ### Contact Tracing
 
@@ -1054,23 +1068,10 @@ el_cuml <- dedup_cumulative_edgelist(rbind(el_run1, el_run2))
 
 ### Performance Notes
 
-Both reachability functions use the
-[progressr](https://progressr.futureverse.org/) package for progress
-reporting. Wrap calls in
-[`progressr::with_progress()`](https://progressr.futureverse.org/reference/with_progress.html)
-to display a progress bar:
-
-``` r
-
-progressr::with_progress({
-  fwd <- get_forward_reachable(el_cuml, from_step = 1, to_step = 260)
-})
-```
-
-These functions are efficient for large networks because they operate on
-cumulative edgelists (much smaller than full `networkDynamic` objects).
-For sets of more than 5 nodes, they are faster than iterating over
-[`tsna::tPath()`](https://rdrr.io/pkg/tsna/man/paths.html). The
+The reachability functions are efficient for large networks because they
+operate on cumulative edgelists (much smaller than full `networkDynamic`
+objects). For sets of more than 5 nodes, they are faster than iterating
+over [`tsna::tPath()`](https://rdrr.io/pkg/tsna/man/paths.html). The
 `dense_optim` argument controls an adjacency-list optimization that
 helps with dense networks; `"auto"` enables it when the number of edges
 exceeds the number of nodes.

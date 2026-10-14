@@ -159,17 +159,40 @@ objects yet, so <code><a href="param.net_to_table.html">param.net_to_table()</a>
 <span class="r-out co"><span class="r-pr">#&gt;</span> by_infection_duration(c(acute = 0.25, chronic = 0.02), durations = c(10, Inf))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> act.rate = 1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span>, target.stats <span class="op">=</span> <span class="fl">50</span>,</span></span>
 <span class="r-in"><span>              coef.diss <span class="op">=</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting simulated annealing (SAN)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished simulated annealing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting maximum pseudolikelihood estimation (MPLE):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Obtaining the responsible dyads.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Evaluating the predictor and response matrix.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="fu"><a href="init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              <span class="fu"><a href="control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">25</span>, nsims <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                          verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">tm</span><span class="op">$</span><span class="va">infDur</span>, <span class="va">tm</span><span class="op">$</span><span class="va">transProb</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.02 0.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1     0    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2     0    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3     0    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4     0    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5     0    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6     0    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7     0    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8     0    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9     0    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   10    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   12    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   15    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   33    1    0</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

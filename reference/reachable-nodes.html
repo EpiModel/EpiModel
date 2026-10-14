@@ -160,18 +160,6 @@ Also, as long as the size of the <code>nodes</code> set is greater than 5, these
 functions are faster than iterating over <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath</a></code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="displaying-progress">Displaying Progress<a class="anchor" aria-label="anchor" href="#displaying-progress"></a></h2>
-
-
-<p>These functions are using the
-<a href="https://progressr.futureverse.org/articles/progressr-01-intro.html" class="external-link">progressr package</a>
-to display its progression. Use
-<code>progressr::with_progress({ fwd_reach &lt;- get_forward_reachable(el, from = 1, to = 260) })</code>
-to display the progress bar. Or see the
-<a href="https://progressr.futureverse.org/articles/progressr-01-intro.html" class="external-link">progressr package</a>
-for more information and customization.</p>
-    </div>
-    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="get_cumulative_edgelist.html">get_cumulative_edgelist()</a></code> / <code><a href="get_cumulative_edgelists_df.html">get_cumulative_edgelists_df()</a></code>
 for the typical input source from a <code>netsim</code> run;
@@ -218,14 +206,14 @@ full lifecycle.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">t_fwd_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">t_fwd</span><span class="op">$</span><span class="va">tdist</span> <span class="op">&lt;</span> <span class="cn">Inf</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setequal</a></span><span class="op">(</span><span class="va">el_fwd</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, <span class="va">t_fwd_set</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Missmatch on node: "</span>, <span class="va">node</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Mismatch on node: "</span>, <span class="va">node</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Backward:</span></span></span>
 <span class="r-in"><span><span class="va">el_bkwd</span> <span class="op">&lt;-</span> <span class="fu">get_backward_reachable</span><span class="op">(</span><span class="va">el_cuml</span>, <span class="fl">1</span>, <span class="fl">52</span>, nodes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">[[</span><span class="st">"reached"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">nodes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">el_bkwd</span><span class="op">)</span>, <span class="st">"_"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">t_bkwd</span> <span class="op">&lt;-</span> <span class="fu">tsna</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tPath</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">nd</span>, v <span class="op">=</span> <span class="va">nodes</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  <span class="va">nd</span>, v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">nodes</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  start <span class="op">=</span> <span class="fl">1</span>, end <span class="op">=</span> <span class="fl">52</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  direction <span class="op">=</span> <span class="st">"bkwd"</span>, type <span class="op">=</span> <span class="st">"latest.depart"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

@@ -44,8 +44,11 @@ through a two-layer model in full.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # A household layer that transmits more per contact than the community layer
 param <- param.net(inf.prob = multilayer(0.45, 0.10), act.rate = 1)
-} # }
+param
+#> Model Parameters
+#> ---------------------------
+#> inf.prob = multilayer(0.45, 0.1)
+#> act.rate = 1
 ```
