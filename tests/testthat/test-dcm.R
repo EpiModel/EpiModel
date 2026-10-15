@@ -678,3 +678,85 @@ test_that("as.data.frame.dcm returns runs in the order requested", {
   d31 <- as.data.frame(mod, run = c(3, 1))
   expect_equal(d13[d13$run == 3, "i.num"], d31[d31$run == 3, "i.num"])
 })
+
+test_that("control.dcm passes ode.args to the ODE solver", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = 1)
+
+  ## closed one-group SI model: logistic growth at rate 0.05 from time 1
+  exact <- 501 / (1 + 500 * exp(-0.05 * (0:199)))
+  err <- function(mod) max(abs(mod$epi$i.num$run1 - exact))
+
+  mod.default <- dcm(param, init, control.dcm(type = "SI", nsteps = 200))
+  mod.tight <- dcm(param, init,
+                   control.dcm(type = "SI", nsteps = 200,
+                               ode.args = list(rtol = 1e-10, atol = 1e-10)))
+  expect_lt(err(mod.tight), 1e-6)
+  expect_lt(err(mod.tight), err(mod.default))
+
+  expect_error(control.dcm(type = "SI", nsteps = 10, ode.args = list(1e-8)),
+               "ode.args must be a named list")
+  expect_error(control.dcm(type = "SI", nsteps = 10,
+                           ode.args = list(method = "rk4")),
+               "ode.args may not include method")
+})
+
+test_that("control.dcm accepts a custom solver", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = 1)
+
+  ## restart the solver halfway, returning a derived output as well
+  piecewise <- function(y, times, func, parms, control) {
+    mid <- which(times == 100)
+    a <- deSolve::ode(y, times[1:mid], func, parms, method = control$odemethod)
+    b <- deSolve::ode(a[mid, names(y)], times[mid:length(times)], func, parms,
+                      method = control$odemethod)
+    out <- rbind(a, b[-1, ])
+    cbind(out, prev = out[, "i.num"] / (out[, "s.num"] + out[, "i.num"]))
+  }
+
+  mod <- dcm(param, init, control.dcm(type = "SI", nsteps = 200))
+  mod.pw <- dcm(param, init,
+                control.dcm(type = "SI", nsteps = 200, solver = piecewise))
+  expect_equal(mod.pw$epi$i.num$run1, mod$epi$i.num$run1, tolerance = 1e-5)
+  expect_equal(mod.pw$epi$si.flow$run1, mod$epi$si.flow$run1,
+               tolerance = 1e-4)
+  expect_equal(mod.pw$epi$prev$run1,
+               mod.pw$epi$i.num$run1 / (mod.pw$epi$s.num$run1 +
+                                          mod.pw$epi$i.num$run1))
+
+  expect_error(control.dcm(type = "SI", nsteps = 10, solver = "ode"),
+               "solver must be a function")
+})
+
+test_that("print.dcm handles list parameters and many compartments", {
+  ## new model whose parameters include a list, with 30 compartments
+  chain <- function(t, t0, parms) {
+    rates <- parms$rates
+    list(c(-rates$k * t0[1], rates$k * (t0[-length(t0)] - t0[-1])))
+  }
+  init <- do.call(init.dcm, as.list(setNames(c(100, rep(0, 29)),
+                                             paste0("x", 1:30))))
+  param <- param.dcm(rates = list(k = 0.5, unused = 1))
+  control <- control.dcm(nsteps = 10, new.mod = chain, sens.param = FALSE)
+  mod <- dcm(param, init, control)
+
+  out <- capture.output(print(mod))
+  expect_true(any(grepl("rates = <list>", out)))
+  expect_true(any(grepl("and 10 more", out)))
+  expect_equal(sum(sapply(mod$epi, function(d) d[10, 1])), 100,
+               tolerance = 1e-4)
+})
+
+test_that("plot.dcm sets the x-axis from the solved times", {
+  expect_equal(default_dcm_xlim(1:100), c(0, 100))
+  expect_equal(default_dcm_xlim(0:3), c(0, 3))
+  expect_equal(default_dcm_xlim(seq(1, 3, 0.1)), c(0, 3))
+  expect_equal(default_dcm_xlim(seq(2010, 2037, 1 / 12)), c(2010, 2037))
+
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = 1)
+  control <- control.dcm(type = "SI", nsteps = seq(2010, 2030, 0.5))
+  mod <- dcm(param, init, control)
+  expect_silent(plot(mod))
+})

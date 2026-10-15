@@ -14,6 +14,8 @@ control.dcm(
   sens.param = TRUE,
   print.mod = FALSE,
   verbose = FALSE,
+  ode.args = NULL,
+  solver = NULL,
   ...
 )
 }
@@ -51,6 +53,14 @@ error unless the model function is designed to accommodate vectors).}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
+\item{ode.args}{A named list of further arguments passed to
+\code{\link[deSolve:ode]{deSolve::ode}} (or \code{\link[deSolve:dede]{deSolve::dede}} with \code{dede = TRUE}), such as
+the tolerances \code{rtol} and \code{atol} or the maximum step \code{hmax}.}
+
+\item{solver}{An optional function that solves the model in place of
+\code{\link[deSolve:ode]{deSolve::ode}}, called as
+\code{solver(y, times, func, parms, control)} (see details).}
+
 \item{...}{additional control settings passed to model.}
 }
 \value{
@@ -86,6 +96,23 @@ model functions.
 
 These new models may be input and solved with \code{\link[=dcm]{dcm()}} using the
 \code{new.mod} argument, which requires as input a model function.
+}
+
+\section{Custom Solvers}{
+
+By default, \code{\link[=dcm]{dcm()}} solves the model with one call to \code{\link[deSolve:ode]{deSolve::ode}}
+over all time steps, passing \code{odemethod} and any \code{ode.args}. A model whose
+rates change abruptly (an intervention that starts on a given day, for
+example) is solved more accurately by restarting the solver at each change.
+The \code{solver} argument allows this, or any other solver, for base and new
+models alike. It is called with the initial state \code{y}, the solution times
+\code{times}, the model function \code{func}, the parameters \code{parms}, and the control
+settings \code{control}, and must return a matrix or data frame with time in the
+first column and one named column per state variable, as \code{ode} does. Any
+further columns it returns, such as derived outputs, are kept as model
+outputs. Columns whose names contain \code{.flow} are converted from cumulative
+counts to counts per time step after the solver returns, as for the default
+solver.
 }
 
 \seealso{

@@ -23,6 +23,11 @@
 #' (SIS). Both base and original models require the `param`,
 #' `init`, and `control` inputs.
 #'
+#' Solver settings such as tolerances are passed to `deSolve` through the
+#' `ode.args` argument of [control.dcm()], and the `solver` argument replaces
+#' the solver altogether, for example to restart it at abrupt changes in a
+#' model's rates.
+#'
 #' @return
 #' A list of class `dcm` with the following elements:
 #'
@@ -251,17 +256,25 @@ dcm <- function(param, init, control) {
 
 
     ## Differential equation solvers
-    if (control$dede == FALSE) {
-      df <- data.frame(ode(y = t0,
-                           times = times,
-                           func = model,
-                           parms = all.p,
-                           method = control$odemethod))
+    if (!is.null(control$solver)) {
+      df <- data.frame(control$solver(y = t0,
+                                      times = times,
+                                      func = model,
+                                      parms = all.p,
+                                      control = control))
+    } else if (control$dede == FALSE) {
+      df <- data.frame(do.call(ode, c(list(y = t0,
+                                           times = times,
+                                           func = model,
+                                           parms = all.p,
+                                           method = control$odemethod),
+                                      control$ode.args)))
     } else {
-      df <- data.frame(dede(y = t0,
-                            times = times,
-                            func = model,
-                            parms = all.p))
+      df <- data.frame(do.call(dede, c(list(y = t0,
+                                            times = times,
+                                            func = model,
+                                            parms = all.p),
+                                       control$ode.args)))
     }
 
     ## Recalculate Flows

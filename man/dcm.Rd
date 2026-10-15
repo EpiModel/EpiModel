@@ -44,6 +44,11 @@ and two-group models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
 (SIS). Both base and original models require the \code{param},
 \code{init}, and \code{control} inputs.
+
+Solver settings such as tolerances are passed to \code{deSolve} through the
+\code{ode.args} argument of \code{\link[=control.dcm]{control.dcm()}}, and the \code{solver} argument replaces
+the solver altogether, for example to restart it at abrupt changes in a
+model's rates.
 }
 \examples{
 ## Example 1: SI Model (One-Group)

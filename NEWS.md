@@ -50,7 +50,11 @@
 
 -   `merge.netsim()` gains `keep.run`, `keep.cumulative.edgelist`, `keep.attr.history` and `keep.raw.records`, which bind the per-simulation `run` sublists, cumulative edgelists and recorded histories; only `keep.cumulative.edgelist` defaults to `FALSE`. A merged object that keeps its `run` sublists can restart from any of its simulations, selected with `get_sims()`. Elements not kept are dropped from both `x` and `y`, which must then hold the same elements, per-simulation elements and network statistics. An element with its own `keep.*` argument (such as `run`) follows that argument even when listed in `save.other`.
 
+-   `control.dcm()` gains `ode.args`, a list of further arguments to `deSolve::ode()` such as `rtol` and `atol`, and `solver`, a function that replaces the call to `ode()` (for example, to restart the solver at abrupt changes in a model's rates). Extra columns a custom solver returns are kept as model outputs.
+
 ### BUG FIXES
+
+-   `print.dcm()` now prints list parameters and lists only the first 20 initial conditions and output variables of larger models, and `plot.dcm()` no longer starts the x-axis at 0 for models solved over times that start after 1, such as calendar years.
 
 -   Fix `merge.netsim()` for three or more objects merged in sequence (`Reduce(merge, ...)`, or the batches of an HPC run) with `keep.network`, `keep.other` or `keep.diss.stats` set to `FALSE`, which failed with "x and y have different structure". Elements not kept may now be missing from one side; a kept element missing from one side is still an error, which now names the element and the `keep.*` argument that would drop it. The `save.other` elements are now bound like the other per-simulation elements, which keeps their `NULL` entries.
 

@@ -265,6 +265,12 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        error unless the model function is designed to accommodate vectors).
 #' @param print.mod If `TRUE`, print the model form to the console.
 #' @param verbose If `TRUE`, print model progress to the console.
+#' @param ode.args A named list of further arguments passed to
+#'        [`deSolve::ode`] (or [`deSolve::dede`] with `dede = TRUE`), such as
+#'        the tolerances `rtol` and `atol` or the maximum step `hmax`.
+#' @param solver An optional function that solves the model in place of
+#'        [`deSolve::ode`], called as
+#'        `solver(y, times, func, parms, control)` (see details).
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -291,6 +297,21 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' These new models may be input and solved with [dcm()] using the
 #' `new.mod` argument, which requires as input a model function.
 #'
+#' @section Custom Solvers:
+#' By default, [dcm()] solves the model with one call to [`deSolve::ode`]
+#' over all time steps, passing `odemethod` and any `ode.args`. A model whose
+#' rates change abruptly (an intervention that starts on a given day, for
+#' example) is solved more accurately by restarting the solver at each change.
+#' The `solver` argument allows this, or any other solver, for base and new
+#' models alike. It is called with the initial state `y`, the solution times
+#' `times`, the model function `func`, the parameters `parms`, and the control
+#' settings `control`, and must return a matrix or data frame with time in the
+#' first column and one named column per state variable, as `ode` does. Any
+#' further columns it returns, such as derived outputs, are kept as model
+#' outputs. Columns whose names contain `.flow` are converted from cumulative
+#' counts to counts per time step after the solver returns, as for the default
+#' solver.
+#'
 #' @return An `EpiModel` object of class `control.dcm`.
 #'
 #' @seealso Use [param.dcm()] to specify model parameters and
@@ -303,7 +324,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 control.dcm <- function(type, nsteps, dt = 1, odemethod = "lsoda",
                         dede = FALSE, new.mod = NULL, sens.param = TRUE,
-                        print.mod = FALSE, verbose = FALSE, ...) {
+                        print.mod = FALSE, verbose = FALSE, ode.args = NULL,
+                        solver = NULL, ...) {
 
 
 
@@ -330,6 +352,22 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "lsoda",
   ## Defaults and checks
   if (is.null(p$nsteps)) {
     stop("Specify nsteps")
+  }
+
+  if (!is.null(p$ode.args)) {
+    if (!is.list(p$ode.args) || length(p$ode.args) == 0 ||
+          is.null(names(p$ode.args)) || any(names(p$ode.args) == "")) {
+      stop("ode.args must be a named list of arguments to deSolve::ode")
+    }
+    reserved <- c("y", "times", "func", "parms", "method")
+    if (any(names(p$ode.args) %in% reserved)) {
+      stop("ode.args may not include ",
+           paste(intersect(names(p$ode.args), reserved), collapse = ", "),
+           ", which dcm sets itself (use odemethod for the method)")
+    }
+  }
+  if (!is.null(p$solver) && !is.function(p$solver)) {
+    stop("solver must be a function of y, times, func, parms, and control")
   }
 
 
