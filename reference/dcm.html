@@ -87,6 +87,10 @@ and two-group models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
 (SIS). Both base and original models require the <code>param</code>,
 <code>init</code>, and <code>control</code> inputs.</p>
+<p>Solver settings such as tolerances are passed to <code>deSolve</code> through the
+<code>ode.args</code> argument of <code><a href="control.dcm.html">control.dcm()</a></code>, and the <code>solver</code> argument replaces
+the solver altogether, for example to restart it at abrupt changes in a
+model's rates.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

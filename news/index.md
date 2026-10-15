@@ -283,7 +283,22 @@
   statistics. An element with its own `keep.*` argument (such as `run`)
   follows that argument even when listed in `save.other`.
 
+- [`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md)
+  gains `ode.args`, a list of further arguments to
+  [`deSolve::ode()`](https://rdrr.io/pkg/deSolve/man/ode.html) such as
+  `rtol` and `atol`, and `solver`, a function that replaces the call to
+  [`ode()`](https://rdrr.io/pkg/deSolve/man/ode.html) (for example, to
+  restart the solver at abrupt changes in a model’s rates). Extra
+  columns a custom solver returns are kept as model outputs.
+
 ### BUG FIXES
+
+- [`print.dcm()`](https://epimodel.github.io/EpiModel/reference/print.dcm.md)
+  now prints list parameters and lists only the first 20 initial
+  conditions and output variables of larger models, and
+  [`plot.dcm()`](https://epimodel.github.io/EpiModel/reference/plot.dcm.md)
+  no longer starts the x-axis at 0 for models solved over times that
+  start after 1, such as calendar years.
 
 - Fix
   [`merge.netsim()`](https://epimodel.github.io/EpiModel/reference/merge.netsim.md)

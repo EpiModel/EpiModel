@@ -53,6 +53,8 @@ simulated with <code><a href="dcm.html">dcm()</a></code>.</p>
 <span>  sens.param <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  print.mod <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ode.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  solver <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -112,6 +114,18 @@ error unless the model function is designed to accommodate vectors).</p></dd>
 <dd><p>If <code>TRUE</code>, print model progress to the console.</p></dd>
 
 
+<dt id="arg-ode-args">ode.args<a class="anchor" aria-label="anchor" href="#arg-ode-args"></a></dt>
+<dd><p>A named list of further arguments passed to
+<code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode</a></code> (or <code><a href="https://rdrr.io/pkg/deSolve/man/dede.html" class="external-link">deSolve::dede</a></code> with <code>dede = TRUE</code>), such as
+the tolerances <code>rtol</code> and <code>atol</code> or the maximum step <code>hmax</code>.</p></dd>
+
+
+<dt id="arg-solver">solver<a class="anchor" aria-label="anchor" href="#arg-solver"></a></dt>
+<dd><p>An optional function that solves the model in place of
+<code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode</a></code>, called as
+<code>solver(y, times, func, parms, control)</code> (see details).</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional control settings passed to model.</p></dd>
 
@@ -149,6 +163,24 @@ not be run. These model forms may be used as templates to write original
 model functions.</p>
 <p>These new models may be input and solved with <code><a href="dcm.html">dcm()</a></code> using the
 <code>new.mod</code> argument, which requires as input a model function.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="custom-solvers">Custom Solvers<a class="anchor" aria-label="anchor" href="#custom-solvers"></a></h2>
+
+
+<p>By default, <code><a href="dcm.html">dcm()</a></code> solves the model with one call to <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode</a></code>
+over all time steps, passing <code>odemethod</code> and any <code>ode.args</code>. A model whose
+rates change abruptly (an intervention that starts on a given day, for
+example) is solved more accurately by restarting the solver at each change.
+The <code>solver</code> argument allows this, or any other solver, for base and new
+models alike. It is called with the initial state <code>y</code>, the solution times
+<code>times</code>, the model function <code>func</code>, the parameters <code>parms</code>, and the control
+settings <code>control</code>, and must return a matrix or data frame with time in the
+first column and one named column per state variable, as <code>ode</code> does. Any
+further columns it returns, such as derived outputs, are kept as model
+outputs. Columns whose names contain <code>.flow</code> are converted from cumulative
+counts to counts per time step after the solver returns, as for the default
+solver.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

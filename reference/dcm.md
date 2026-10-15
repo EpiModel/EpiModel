@@ -56,6 +56,12 @@ Susceptible-Infected-Recovered (SIR), and
 Susceptible-Infected-Susceptible (SIS). Both base and original models
 require the `param`, `init`, and `control` inputs.
 
+Solver settings such as tolerances are passed to `deSolve` through the
+`ode.args` argument of
+[`control.dcm()`](https://epimodel.github.io/EpiModel/reference/control.dcm.md),
+and the `solver` argument replaces the solver altogether, for example to
+restart it at abrupt changes in a model's rates.
+
 ## References
 
 Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in R:

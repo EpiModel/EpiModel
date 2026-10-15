@@ -16,6 +16,8 @@ control.dcm(
   sens.param = TRUE,
   print.mod = FALSE,
   verbose = FALSE,
+  ode.args = NULL,
+  solver = NULL,
   ...
 )
 ```
@@ -74,6 +76,20 @@ control.dcm(
 
   If `TRUE`, print model progress to the console.
 
+- ode.args:
+
+  A named list of further arguments passed to
+  [`deSolve::ode`](https://rdrr.io/pkg/deSolve/man/ode.html) (or
+  [`deSolve::dede`](https://rdrr.io/pkg/deSolve/man/dede.html) with
+  `dede = TRUE`), such as the tolerances `rtol` and `atol` or the
+  maximum step `hmax`.
+
+- solver:
+
+  An optional function that solves the model in place of
+  [`deSolve::ode`](https://rdrr.io/pkg/deSolve/man/ode.html), called as
+  `solver(y, times, func, parms, control)` (see details).
+
 - ...:
 
   additional control settings passed to model.
@@ -112,6 +128,25 @@ functions.
 These new models may be input and solved with
 [`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) using
 the `new.mod` argument, which requires as input a model function.
+
+## Custom Solvers
+
+By default,
+[`dcm()`](https://epimodel.github.io/EpiModel/reference/dcm.md) solves
+the model with one call to
+[`deSolve::ode`](https://rdrr.io/pkg/deSolve/man/ode.html) over all time
+steps, passing `odemethod` and any `ode.args`. A model whose rates
+change abruptly (an intervention that starts on a given day, for
+example) is solved more accurately by restarting the solver at each
+change. The `solver` argument allows this, or any other solver, for base
+and new models alike. It is called with the initial state `y`, the
+solution times `times`, the model function `func`, the parameters
+`parms`, and the control settings `control`, and must return a matrix or
+data frame with time in the first column and one named column per state
+variable, as `ode` does. Any further columns it returns, such as derived
+outputs, are kept as model outputs. Columns whose names contain `.flow`
+are converted from cumulative counts to counts per time step after the
+solver returns, as for the default solver.
 
 ## See also
 
