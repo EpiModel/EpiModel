@@ -44,22 +44,34 @@ print.dcm <- function(x, ...) {
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
   for (i in pToPrint) {
-    cat(names(x$param)[i], "=", x$param[[i]], fill = 60)
+    format_param(names(x$param)[i], x$param[[i]])
   }
 
+  ## Models with many compartments list the first initial conditions and
+  ## output variables only
+  max.print <- 20
   if (!is.null(x$init)) {
     cat("\nInitial Conditions")
     cat("\n-----------------------\n")
     flow.names <- grep("\\.flow", names(x$init), value = TRUE)
     iToPrint <- which(!(names(x$init) %in% flow.names))
-    for (i in iToPrint) {
-      cat(names(x$init)[i], "=", x$init[[i]], fill = 60)
+    for (i in utils::head(iToPrint, max.print)) {
+      format_param(names(x$init)[i], x$init[[i]])
+    }
+    if (length(iToPrint) > max.print) {
+      cat("... and", length(iToPrint) - max.print, "more\n")
     }
   }
 
   cat("\nModel Output")
   cat("\n-----------------------")
-  cat("\nVariables:", names(x$epi), fill = 60)
+  vars <- names(x$epi)
+  if (length(vars) > max.print) {
+    cat("\nVariables:", utils::head(vars, max.print), "... and",
+        length(vars) - max.print, "more", fill = 60)
+  } else {
+    cat("\nVariables:", vars, fill = 60)
+  }
 
   invisible()
 }

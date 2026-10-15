@@ -158,10 +158,7 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
   }
 
   if (is.null(xlim)) {
-    ## `nsteps` may hold the full time vector rather than a maximum, so the
-    ## limits come from the times the model was solved over. The lower bound
-    ## keeps the origin of the standard case, where times start at 1
-    xlim <- range(c(0, x$control$timesteps))
+    xlim <- default_dcm_xlim(x$control$timesteps)
   }
 
   ## Defaults for lwd
@@ -434,4 +431,17 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
     }
   }
 
+}
+
+## Default x-axis limits for a solved `dcm` model. `nsteps` may hold the full
+## time vector rather than a maximum, so the limits come from the times the
+## model was solved over. The lower bound keeps the origin of the standard
+## case, where times start at 1, but not of times that start later, such as
+## calendar years.
+default_dcm_xlim <- function(timesteps) {
+  xlim <- range(timesteps)
+  if (xlim[1] > 0 && xlim[1] <= 1) {
+    xlim[1] <- 0
+  }
+  return(xlim)
 }
