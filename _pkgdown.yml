@@ -18,6 +18,8 @@ template:
 
 home:
   links:
+    - text: "EpiModel Platform"
+      href: "https://www.epimodel.org/"
     - text: "NME Course Materials"
       href: "https://epimodel.github.io/sismid/"
     - text: "EpiModel Gallery"
