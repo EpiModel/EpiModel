@@ -54,13 +54,47 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="epimodel">EpiModel<a class="anchor" aria-label="anchor" href="#epimodel"></a>
 </h1></div>
-<p><a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="https://www.r-pkg.org/badges/version/EpiModel" alt="CRAN Version"></a> <a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/EpiModel?color=blue" alt="Downloads"></a> <a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue" alt="Total Downloads"></a> <a href="https://github.com/EpiModel/EpiModel/actions" class="external-link"><img src="https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></p>
-<p><br><img src="https://epimodel.github.io/sismid/images/movie.gif" align="right"></p>
-<p>EpiModel is an R package for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the <a href="https://statnet.org" class="external-link">Statnet</a> suite of R packages. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an API for extending these templates to address novel research aims.</p>
-<p>EpiModel is part of a broader platform for infectious disease modeling. Visit <strong><a href="https://www.epimodel.org/" class="external-link">epimodel.org</a></strong> for the full ecosystem, learning pathway, team, and project information.</p>
-<div class="section level3">
-<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h3>
+<!-- badges: start -->
+
+<p><picture><source srcset="https://www.epimodel.org/img/network-logo-static.svg" media="(prefers-reduced-motion: reduce)"><img src="https://www.epimodel.org/img/network-logo.svg" align="right" width="230" alt="Animated simulation of an infection spreading across a dynamic contact network, simulated with EpiModel"></source></picture></p>
+<p><strong>Mathematical modeling of infectious disease dynamics in R.</strong></p>
+<p>EpiModel simulates epidemics with three classes of models, from deterministic compartmental models to stochastic network models in which partnerships form, persist, and dissolve according to rules estimated with temporal exponential-family random graph models (TERGMs) from the <a href="https://statnet.org" class="external-link">Statnet</a> suite of R packages. Built-in SI, SIR, and SIS models run out of the box, and an extension API supports custom disease states, demography, and interventions for new research questions.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Model class</th>
+<th>Simulate with</th>
+<th>Contact structure</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Deterministic compartmental models</td>
+<td><code><a href="reference/dcm.html">dcm()</a></code></td>
+<td>Population-level ODEs with random mixing</td>
+</tr>
+<tr>
+<td>Stochastic individual contact models</td>
+<td><code><a href="reference/icm.html">icm()</a></code></td>
+<td>Individuals with random mixing</td>
+</tr>
+<tr>
+<td>Stochastic network models</td>
+<td>
+<code><a href="reference/netest.html">netest()</a></code>, <code><a href="reference/netdx.html">netdx()</a></code>, <code><a href="reference/netsim.html">netsim()</a></code>
+</td>
+<td>Dynamic partnerships estimated from network data</td>
+</tr>
+</tbody>
+</table>
+<p>All three share one interface: set inputs with <code>param.*()</code>, <code>init.*()</code>, and <code>control.*()</code>, then simulate.</p>
+<p>EpiModel is the core package of a broader platform for infectious disease modeling. Visit <strong><a href="https://www.epimodel.org/" class="external-link">epimodel.org</a></strong> for the extension packages, the learning pathway, and the team.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>The current release version can be found on <a href="https://CRAN.R-project.org/package=EpiModel" class="external-link">CRAN</a> and installed with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"EpiModel"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -69,42 +103,72 @@
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EpiModel/EpiModel"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
-</h3>
-<p><strong>Package Documentation.</strong> Full function reference, vignettes, and getting started guides are on the <a href="https://epimodel.github.io/EpiModel/">pkgdown site</a>.</p>
-<p><strong>Methods Paper.</strong> The main methods paper in the <em>Journal of Statistical Software</em> describes the modeling framework and software design: <a href="https://doi.org/10.18637/jss.v084.i08" class="external-link">doi:10.18637/jss.v084.i08</a>.</p>
-<p><strong>Training Course.</strong> <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics (NME)</a> is our course at the Summer Institute in Statistics and Modeling in Infectious Diseases (SISMID). Materials are open-source and updated annually.</p>
-<p><strong>EpiModel Gallery.</strong> The <a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a> provides worked examples and templates for extending EpiModel’s stochastic network models with custom epidemic modules.</p>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>A network model in three steps: estimate a dynamic network from target statistics, check that simulations from it reproduce those targets, then simulate an epidemic over it. This runs in under a minute on a laptop.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.epimodel.org/" class="external-link">EpiModel</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 1. Estimate: 500 people, 175 partnerships, 110 with 2+ partners, none with 4+</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>,</span>
+<span>  formation <span class="op">=</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span> <span class="op">+</span> <span class="fu">degrange</span><span class="op">(</span>from <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  target.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">175</span>, <span class="fl">110</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  coef.diss <span class="op">=</span> <span class="fu"><a href="reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>  <span class="co"># mean duration</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Diagnose: simulated networks should match the targets</span></span>
+<span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netdx.html">netdx</a></span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Simulate an SIS epidemic over the dynamic network</span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.4</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p>The <a href="https://epimodel.github.io/EpiModel/articles/Intro.html">Intro to EpiModel</a> vignette walks through each step and the analysis of the output.</p>
 </div>
-<div class="section level3">
-<h3 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
-</h3>
+<div class="section level2">
+<h2 id="learning-epimodel">Learning EpiModel<a class="anchor" aria-label="anchor" href="#learning-epimodel"></a>
+</h2>
+<table class="table readme-resources"><tr>
+<td align="center" valign="top" width="33%">
+<a href="https://epimodel.github.io/EpiModel/"><img src="https://www.epimodel.org/img/thumb-package.png" height="110" alt="Stylized EpiModel R code on a dark background"></a><br><b><a href="https://epimodel.github.io/EpiModel/">Package Documentation</a></b><br> Function reference, vignettes, and getting started guides
+</td>
+<td align="center" valign="top" width="33%">
+<a href="https://epimodel.github.io/sismid/" class="external-link"><img src="https://www.epimodel.org/img/thumb-training.png" height="110" alt="Prevalence over time in a stochastic network SIS model"></a><br><b><a href="https://epimodel.github.io/sismid/" class="external-link">Training Materials</a></b><br> Network Modeling for Epidemics (NME), our open course at SISMID
+</td>
+<td align="center" valign="top" width="33%">
+<a href="https://epimodel.github.io/EpiModel-Gallery/"><img src="https://www.epimodel.org/img/thumb-gallery.png" height="110" alt="SEIR and SIS compartmental model flow diagrams"></a><br><b><a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a></b><br> Worked examples and templates for extending network models
+</td>
+</tr></table>
+<p>The main methods paper in the <em>Journal of Statistical Software</em> describes the modeling framework and software design: <a href="https://doi.org/10.18637/jss.v084.i08" class="external-link">doi:10.18637/jss.v084.i08</a>. The <a href="https://www.epimodel.org/" class="external-link">learning pathway</a> on epimodel.org orders these resources from beginning to advanced.</p>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
 <p>Users are encouraged to use <a href="https://github.com/EpiModel/EpiModel/issues" class="external-link">GitHub Issues</a> to ask questions (both technical coding questions and conceptual modeling questions), report bugs, and request new features.</p>
 </div>
-<div class="section level3">
-<h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
-</h3>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
 <p>If using EpiModel for teaching or research, please include a citation to our main methods paper:</p>
 <blockquote>
 <p>Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. <em>Journal of Statistical Software.</em> 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08</p>
 </blockquote>
-<p>Please also <a href="mailto:samuel.m.jenness@emory.edu?Subject=We%20Used%20EpiModel%20in%20Our%20Study!">send us an email</a> if you have used EpiModel in your work so we can add it to our records.</p>
+<p>Please also <a href="mailto:samuel.m.jenness@emory.edu?Subject=We%20Used%20EpiModel%20in%20Our%20Study!">send us an email</a> if you have used EpiModel in your work so we can add it to our records. EpiModel and its extension packages have been used in 130+ published studies; see the <a href="https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature" class="external-link">full list</a>.</p>
 </div>
-<div class="section level3">
-<h3 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
-</h3>
-<p>EpiModel is developed by <a href="https://www.epimodel.org/team.html" class="external-link">Samuel Jenness</a>, <a href="https://www.epimodel.org/team.html" class="external-link">Steven Goodreau</a>, <a href="https://www.epimodel.org/team.html" class="external-link">Martina Morris</a>, and <a href="https://www.epimodel.org/team.html" class="external-link">Adrien Le Guillou</a>. Additional contributors are listed on the <a href="https://github.com/EpiModel/EpiModel/graphs/contributors" class="external-link">contributors</a> page. See the full team at <a href="https://www.epimodel.org/team.html" class="external-link">epimodel.org/team</a>.</p>
+<div class="section level2">
+<h2 id="authors-and-funding">Authors and Funding<a class="anchor" aria-label="anchor" href="#authors-and-funding"></a>
+</h2>
+<p>EpiModel is developed by <a href="https://www.epimodel.org/team.html" class="external-link">Samuel Jenness</a>, <a href="https://www.epimodel.org/team.html" class="external-link">Steven Goodreau</a>, <a href="https://www.epimodel.org/team.html" class="external-link">Martina Morris</a>, and <a href="https://www.epimodel.org/team.html" class="external-link">Adrien Le Guillou</a>. Additional contributors are listed on the <a href="https://github.com/EpiModel/EpiModel/graphs/contributors" class="external-link">contributors</a> page.</p>
+<p>Development has been supported by grants from the National Institutes of Health (NIH) and the Centers for Disease Control and Prevention (CDC). Details are on the <a href="https://www.epimodel.org/about.html" class="external-link">project page</a>.</p>
 </div>
-<div class="section level3">
-<h3 id="funding-and-literature">Funding and Literature<a class="anchor" aria-label="anchor" href="#funding-and-literature"></a>
-</h3>
-<p>The development of EpiModel has been supported by grants from the National Institutes of Health (NIH) and the Centers for Disease Control and Prevention (CDC). Details are available on the <a href="https://www.epimodel.org/about.html" class="external-link">project page</a>.</p>
-<p>EpiModel and its extension packages have been used in 130+ published studies. See the <a href="https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature" class="external-link">full list</a>.</p>
-</div>
-<div class="section level3">
-<h3 id="copyright">Copyright<a class="anchor" aria-label="anchor" href="#copyright"></a>
-</h3>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
 <p>These materials are distributed under the GPL-3 license, with the copyright and attribution requirements listed in the <a href="https://github.com/EpiModel/EpiModel/blob/main/LICENSE.md" class="external-link">LICENSE</a>.</p>
 </div>
 </div>
@@ -114,6 +178,7 @@
 <li><a href="https://cloud.r-project.org/package=EpiModel" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/EpiModel/EpiModel/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/EpiModel/EpiModel/issues/" class="external-link">Report a bug</a></li>
+<li><a href="https://www.epimodel.org/" class="external-link">EpiModel Platform</a></li>
 <li><a href="https://epimodel.github.io/sismid/" class="external-link">NME Course Materials</a></li>
 <li><a href="https://epimodel.github.io/EpiModel-Gallery/">EpiModel Gallery</a></li>
 </ul>
@@ -147,7 +212,15 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="https://www.r-pkg.org/badges/version/EpiModel" alt="CRAN Version"></a></li>
+<li><a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/EpiModel?color=blue" alt="Downloads"></a></li>
+<li><a href="https://CRAN.R-project.org/package=EpiModel" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue" alt="Total Downloads"></a></li>
+<li><a href="https://github.com/EpiModel/EpiModel/actions/workflows/check-standard.yaml" class="external-link"><img src="https://github.com/EpiModel/EpiModel/actions/workflows/check-standard.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

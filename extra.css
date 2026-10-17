@@ -61,3 +61,11 @@ footer {
   border-bottom: 2px solid #dee2e6;
   padding-bottom: 0.3rem;
 }
+
+/* README resource cards: GitHub honors the height attribute, but pkgdown's
+   img reset overrides it, so pin the thumbnails to one height here */
+.readme-resources img {
+  height: 110px;
+  width: auto;
+  object-fit: contain;
+}

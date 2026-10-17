@@ -2,6 +2,8 @@
 
 ## EpiModel 2.7.0
 
+CRAN release: 2026-10-16
+
 ### BREAKING CHANGES
 
 - [`set_epi()`](https://epimodel.github.io/EpiModel/reference/get_epi.md),
