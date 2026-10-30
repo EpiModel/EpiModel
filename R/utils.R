@@ -269,3 +269,34 @@ apportion_lr <- function(vector.length, values,
 
   return(result)
 }
+
+# Stop on the parameter names removed in EpiModel 2.6.1 (#992). Called only
+# for the built-in models, since extension models may use these names for
+# parameters of their own.
+check_removed_params <- function(param) {
+  renamed <- c(b.rate = "a.rate", b.rate.g2 = "a.rate.g2",
+               trans.rate = "inf.prob", trans.rate.g2 = "inf.prob.g2")
+  old <- intersect(names(renamed), names(param))
+  if (length(old) > 0) {
+    stop("The ", old[1], " parameter has been removed. Use ",
+         renamed[[old[1]]], " instead.", call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
+# Stop on the .m2 suffix of parameters (type = "param") or initial conditions
+# (type = "init"), replaced by .g2 in EpiModel 2.0 and removed in 2.6.1.
+# Matched as a suffix, so custom names such as area.km2 are accepted.
+check_m2_suffix <- function(names, type = c("param", "init")) {
+  type <- match.arg(type)
+  if (any(endsWith(as.character(names), ".m2"))) {
+    if (type == "param") {
+      stop("Parameters using the .m2 suffix have been removed. ",
+           "Use the .g2 suffix instead (e.g., inf.prob.g2).", call. = FALSE)
+    } else {
+      stop("Initial conditions using the .m2 suffix have been removed. ",
+           "Use the .g2 suffix instead (e.g., i.num.g2).", call. = FALSE)
+    }
+  }
+  invisible(TRUE)
+}

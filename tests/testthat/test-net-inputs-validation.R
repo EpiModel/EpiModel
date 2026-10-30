@@ -25,6 +25,43 @@ test_that("init.net rejects the .m2 suffix", {
                "\\.m2 suffix have been removed")
 })
 
+test_that("the .m2 guards match the suffix only, in every model class", {
+  expect_s3_class(param.net(inf.prob = 0.3, area.km2 = 5), "param.net")
+  expect_s3_class(init.net(i.num = 5, sim2 = 1), "init.net")
+  expect_s3_class(param.icm(inf.prob = 0.3, area.km2 = 5), "param.icm")
+  expect_s3_class(init.icm(s.num = 100, i.num = 5, sim2 = 1), "init.icm")
+  expect_s3_class(param.dcm(inf.prob = 0.3, area.km2 = 5), "param.dcm")
+  expect_s3_class(init.dcm(s.num = 100, i.num = 5, sim2 = 1), "init.dcm")
+
+  expect_error(param.icm(inf.prob = 0.3, inf.prob.m2 = 0.2),
+               "\\.m2 suffix have been removed")
+  expect_error(init.icm(s.num = 100, i.num = 5, i.num.m2 = 5),
+               "\\.m2 suffix have been removed")
+  expect_error(param.dcm(inf.prob = 0.3, inf.prob.m2 = 0.2),
+               "\\.m2 suffix have been removed")
+  expect_error(init.dcm(s.num = 100, i.num = 5, i.num.m2 = 5),
+               "\\.m2 suffix have been removed")
+})
+
+test_that("built-in models reject b.rate and trans.rate", {
+  init_icm <- init.icm(s.num = 100, i.num = 5)
+  control_icm <- control.icm(type = "SI", nsteps = 5, verbose = FALSE)
+  init_dcm <- init.dcm(s.num = 100, i.num = 5)
+  control_dcm <- control.dcm(type = "SI", nsteps = 5)
+  renamed <- c(b.rate = "a.rate", trans.rate = "inf.prob")
+
+  for (old in names(renamed)) {
+    msg <- paste0("The ", old, " parameter has been removed. Use ",
+                  renamed[[old]], " instead.")
+    p <- list(inf.prob = 0.3, 0.01)
+    names(p)[2] <- old
+    expect_error(icm(do.call(param.icm, p), init_icm, control_icm),
+                 msg, fixed = TRUE)
+    expect_error(dcm(do.call(param.dcm, p), init_dcm, control_dcm),
+                 msg, fixed = TRUE)
+  }
+})
+
 test_that("control.net rejects births.FUN / deaths.FUN / depend", {
   noop <- function(dat, at) dat
 
@@ -147,6 +184,27 @@ test_that("crosscheck.net requires rec.rate for SIR/SIS", {
                       init.net(i.num = 5),
                       ctrl_small("SIS")),
                "Specify rec.rate in param.net")
+})
+
+test_that("crosscheck.net rejects b.rate and trans.rate for built-in models", {
+  skip_on_cran()
+  est <- build_small_est()
+  init <- init.net(i.num = 5)
+  expect_error(netsim(est, param.net(inf.prob = 0.3, a.rate = 0.01,
+                                     b.rate = 0.01),
+                      init, ctrl_small("SI")),
+               "The b.rate parameter has been removed. Use a.rate instead.",
+               fixed = TRUE)
+  expect_error(netsim(est, param.net(inf.prob = 0.3, trans.rate.g2 = 0.3),
+                      init, ctrl_small("SI")),
+               "The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.",
+               fixed = TRUE)
+
+  # Extension models may use the names for parameters of their own
+  control <- control.net(type = NULL, nsteps = 3, nsims = 1, verbose = FALSE,
+                         infection.FUN = infection.net)
+  sim <- netsim(est, param.net(inf.prob = 0.3, b.rate = 0.01), init, control)
+  expect_s3_class(sim, "netsim")
 })
 
 test_that("crosscheck.net requires r.num for SIR", {
