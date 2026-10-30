@@ -91,3 +91,43 @@ test_that("netsim par, 2 sims, 1 cores", {
   expect_true(mod$control$ncores == 1)
 
 })
+
+test_that("user code runs with its global objects on multisession workers", {
+  skip_on_cran()
+
+  # Functions and formulas from a script look up their objects in the global
+  # environment, which multisession workers do not share (#1104)
+  genv <- globalenv()
+  assign("epimodel_test_lv", 2, envir = genv)
+  assign("epimodel_test_rate", function() 0.5, envir = genv)
+  on.exit(rm(list = c("epimodel_test_lv", "epimodel_test_rate"), envir = genv))
+
+  my_mod <- function(dat, at) {
+    EpiModel::set_epi(dat, "rate", epimodel_test_rate())
+  }
+  environment(my_mod) <- genv
+  formation <- ~edges + nodefactor("grp", levels = epimodel_test_lv)
+  environment(formation) <- genv
+
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "grp", rep(1:2, 25))
+  coef.diss <- dissolution_coefs(~offset(edges), 10, 0)
+  est <- netest(nw, formation, target.stats = c(24, 12), coef.diss,
+                verbose = FALSE)
+  est_nn <- netest(nw, formation, target.stats = c(24, 12), coef.diss,
+                   nested.edapprox = FALSE, verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL, nsims = 2, nsteps = 3, ncores = 2,
+                         infection.FUN = infection.net, my.FUN = my_mod,
+                         resimulate.network = TRUE, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_equal(unname(unlist(mod$epi$rate[3, ])), c(0.5, 0.5))
+
+  mod <- netsim(est_nn, param, init, control)
+  expect_s3_class(mod, "netsim")
+
+  dx <- netdx(est_nn, nsims = 2, nsteps = 3, ncores = 2, verbose = FALSE)
+  expect_s3_class(dx, "netdx")
+})

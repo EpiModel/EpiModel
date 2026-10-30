@@ -288,13 +288,16 @@ netsim <- function(x, param, init, control) {
     } else if (control$ncores > 1 && isFALSE(control$future.use.plan)) {
       with(future::plan("multisession", workers = control$ncores), local = TRUE)
     } # else if (isTRUE(control$future.use.plan)) - use plan defined by user
+    user <- future_user_globals(x, param, init, control)
     dat_list <- future.apply::future_lapply(
       seq_len(control$nsims),
       function(s) {
         dat <- netsim_initialize(x, param, init, control, s)
         netsim_run(dat, s)
       },
-      future.seed = TRUE
+      future.seed = TRUE,
+      future.globals = structure(TRUE, add = user$globals),
+      future.packages = user$packages
     )
   }
 

@@ -52,7 +52,8 @@
 #'        objects, with one entry per simulation. Accessible at `$network`.
 #' @param verbose If `TRUE`, print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
-#'        on, using the `future` framework.
+#'        on, using the `future` framework. The global objects and attached
+#'        packages that the model formulas refer to are exported to the workers.
 #' @param skip.dissolution If `TRUE`, skip over the calculations of
 #'        duration and dissolution stats in `netdx`.
 #' @param future.use.plan If `FALSE`, `netdx` uses `multisession` with `workers = ncores` for its
@@ -369,8 +370,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
       ncores_eff <- min(nsims, ncores)
       with(future::plan("multisession", workers = ncores_eff), local = TRUE)
     } # else if (isTRUE(future.use.plan)) - use plan defined by user
+    user <- future_user_globals(x, nwstats.formula, set.control.ergm,
+                                set.control.tergm)
     diag.sim <- future.apply::future_replicate(
-      nsims, dosim(), simplify = FALSE, future.seed = TRUE
+      nsims, dosim(), simplify = FALSE, future.seed = TRUE,
+      future.globals = structure(TRUE, add = user$globals),
+      future.packages = user$packages
     )
   }
 

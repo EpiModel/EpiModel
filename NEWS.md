@@ -1,3 +1,9 @@
+## EpiModel 2.7.1
+
+### BUG FIXES
+
+-   `netsim()` and `netdx()` with `ncores > 1` now export to the workers the global objects and attached packages that user modules, trackers, updaters, `arrivals.FUN`, and network model formulas refer to, so code that runs with `ncores = 1` no longer fails with "object not found" (#1104).
+
 ## EpiModel 2.7.0
 
 ### BREAKING CHANGES

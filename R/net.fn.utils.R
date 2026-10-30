@@ -14,6 +14,62 @@ cap_ncores <- function(ncores, detected = parallel::detectCores()) {
   return(min(detected, ncores))
 }
 
+# Globals of the user code in `...` (control, param, init, and the network
+# models) for netsim() and netdx() to export to multisession workers (#1104).
+# future finds the globals of the function it runs, but not of the functions
+# and formulas held in lists such as `control`, and functions or formulas
+# defined in a script look up their globals in the global environment, which
+# the workers do not share. Returns the objects found there, and the packages
+# whose attached functions the user code calls.
+future_user_globals <- function(...) {
+  globals <- list()
+  packages <- character(0)
+  done <- list()
+  queue <- find_user_closures(list(...))
+  while (length(queue) > 0) {
+    obj <- queue[[1]]
+    queue <- queue[-1]
+    if (any(vapply(done, identical, logical(1), obj))) next
+    done <- c(done, list(obj))
+
+    expr <- if (is.function(obj)) call("function", formals(obj), body(obj)) else obj
+    found <- tryCatch(future::getGlobalsAndPackages(expr, envir = environment(obj)),
+                      error = function(e) NULL)
+    if (is.null(found)) next
+    where <- attr(found$globals, "where")
+    found <- list(globals = as.list(found$globals), packages = found$packages)
+    in_global <- vapply(where, identical, logical(1), globalenv())
+    new <- setdiff(names(found$globals)[in_global], names(globals))
+    globals[new] <- found$globals[new]
+    packages <- union(packages, found$packages)
+
+    # functions found are scanned by getGlobalsAndPackages itself, but not
+    # the functions and formulas inside other objects, such as the formation
+    # formula inside the environment of a non-nested edapprox formula
+    queue <- c(queue, find_user_closures(Filter(Negate(is.function), found$globals)))
+  }
+  list(globals = globals, packages = packages)
+}
+
+# Functions and formulas in `x`, walked recursively through lists, that come
+# from a script rather than from package code: their environment leads to the
+# global environment, or to the base environment for formulas trimmed with
+# trim_env(), which may hold user formulas in turn
+find_user_closures <- function(x) {
+  if (is.function(x) || inherits(x, "formula")) {
+    env <- environment(x)
+    top <- if (is.environment(env)) topenv(env)
+    if (identical(top, globalenv()) || identical(top, baseenv())) {
+      return(list(x))
+    }
+    return(list())
+  }
+  if (is.list(x) && !is.data.frame(x) && !inherits(x, "network")) {
+    return(unlist(lapply(unclass(x), find_user_closures), recursive = FALSE))
+  }
+  list()
+}
+
 #' @title Check Degree Distribution for Balance in Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
