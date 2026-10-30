@@ -1,3 +1,9 @@
+## EpiModel 2.7.1
+
+### BUG FIXES
+
+-   `trim_netest()` no longer modifies the `netest` object passed to it when the model was fit with `nested.edapprox = FALSE` or `edapprox = FALSE` (#1107).
+
 ## EpiModel 2.7.0
 
 ### BREAKING CHANGES
