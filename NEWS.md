@@ -1,3 +1,9 @@
+## EpiModel 2.7.1
+
+### BUG FIXES
+
+-   Fix `dedup_cumulative_edgelist()`, which invented spells across gaps, left overlaps, and closed ongoing spells, so `get_forward_reachable()` and `get_backward_reachable()` could report false paths on its output (#1106).
+
 ## EpiModel 2.7.0
 
 ### BREAKING CHANGES

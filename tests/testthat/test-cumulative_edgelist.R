@@ -450,3 +450,38 @@ test_that("seed_cumulative_edgelist_t1 keeps orientation in all branches (#1021)
   expect_equal(dropped$head, 6)
   expect_equal(c(dropped$start, dropped$stop), c(0, 0))
 })
+
+test_that("dedup_cumulative_edgelist merges overlapping spells only (#1106)", {
+  dedup <- function(el) as.data.frame(dedup_cumulative_edgelist(el))
+  pair <- function(start, stop) data.frame(head = 1, tail = 2, start, stop)
+
+  # a duplicated pair with two spells keeps the gap between them
+  el <- pair(c(1, 10), c(3, 12))
+  expect_equal(dedup(rbind(el, el)), el)
+
+  # overlapping, nested, and touching spells merge; adjacent ones do not
+  expect_equal(dedup(pair(c(7, 1, 3, 2), c(10, 5, 8, 4))), pair(1, 10))
+  expect_equal(dedup(pair(c(1, 3), c(3, 6))), pair(1, 6))
+  expect_equal(dedup(pair(c(1, 4), c(3, 6))), pair(c(1, 4), c(3, 6)))
+
+  # an ongoing spell stays ongoing, and absorbs later spells
+  expect_equal(dedup(pair(c(1, 3), c(5, NA))), pair(1, NA_real_))
+  expect_equal(dedup(pair(c(1, 3, 20), c(NA, 5, 25))), pair(1, NA_real_))
+  expect_equal(dedup(pair(c(1, 8), c(5, NA))), pair(c(1, 8), c(5, NA)))
+
+  # pairs, and any other columns, are kept apart
+  el <- data.frame(head = c(1, 1, 2), tail = c(2, 3, 3),
+                   start = c(1, 2, 1), stop = c(5, 6, 5))
+  expect_equal(dedup(rbind(el, el)), el)
+  el$network <- c(1, 1, 1)
+  el2 <- data.frame(head = 1, tail = 2, start = 2, stop = 4, network = 2)
+  expect_equal(nrow(dedup(rbind(el, el2))), 4)
+
+  # column types and the input class are kept
+  el <- data.frame(head = 1L, tail = 2L, start = c(1L, 3L), stop = c(5L, NA))
+  out <- dedup_cumulative_edgelist(el)
+  expect_identical(out, data.frame(head = 1L, tail = 2L, start = 1L, stop = NA_integer_))
+  cel <- structure(pair(c(1, 3), c(5, 6)), class = c("cumulative_edgelist", "data.frame"))
+  expect_s3_class(dedup_cumulative_edgelist(cel), "cumulative_edgelist")
+  expect_equal(nrow(dedup_cumulative_edgelist(cel[0, ])), 0)
+})
