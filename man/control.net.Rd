@@ -338,8 +338,9 @@ checkpointed data. It defaults to \code{TRUE}, which is gzip compression and usu
 \code{netsim} objects. Any value accepted by the \code{compress} argument of \code{saveRDS} may be used
 instead, such as \code{"xz"} or \code{"bzip2"} for smaller but slower files, or \code{FALSE} for no compression.
 
-By default, if \code{netsim} reaches the end of all simulations, the checkpoint data directory and its
-content are removed before returning the \code{netsim} object. The \code{.checkpoint.keep} argument can be
+By default, if \code{netsim} reaches the end of all simulations, the checkpoint files it wrote are
+removed before returning the \code{netsim} object, and so is the checkpoint directory if nothing else
+is left in it. Other files in the directory are kept. The \code{.checkpoint.keep} argument can be
 set to \code{TRUE} to prevent this removal to inspect the raw simulation objects.
 }
 

@@ -690,8 +690,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' `netsim` objects. Any value accepted by the `compress` argument of `saveRDS` may be used
 #' instead, such as `"xz"` or `"bzip2"` for smaller but slower files, or `FALSE` for no compression.
 #'
-#' By default, if `netsim` reaches the end of all simulations, the checkpoint data directory and its
-#' content are removed before returning the `netsim` object. The `.checkpoint.keep` argument can be
+#' By default, if `netsim` reaches the end of all simulations, the checkpoint files it wrote are
+#' removed before returning the `netsim` object, and so is the checkpoint directory if nothing else
+#' is left in it. Other files in the directory are kept. The `.checkpoint.keep` argument can be
 #' set to `TRUE` to prevent this removal to inspect the raw simulation objects.
 #'
 #' @section New Modules:

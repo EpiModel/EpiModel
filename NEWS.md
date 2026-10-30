@@ -1,3 +1,9 @@
+## EpiModel 2.7.1
+
+### BUG FIXES
+
+-   `netsim()` no longer deletes the whole `.checkpoint.dir` after a successful run, only the checkpoint files it wrote and then the directory if it is empty (#1105).
+
 ## EpiModel 2.7.0
 
 ### BREAKING CHANGES

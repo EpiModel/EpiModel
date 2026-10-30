@@ -57,10 +57,20 @@ netsim_get_checkpoint_filename <- function(control, s) {
   paste0(control[[".checkpoint.dir"]], "/", s, ".rds")
 }
 
-# Remove all checkpoint files and directories
+# Remove the checkpoint files of each simulation, then the checkpoint directory
+# if nothing else is left in it
 #
 netsim_clear_checkpoint <- function(control) {
-  if (control[[".checkpointed"]])
-    unlink(control[[".checkpoint.dir"]], recursive = TRUE)
+  if (control[[".checkpointed"]]) {
+    ckpt_files <- vapply(seq_len(control$nsims), netsim_get_checkpoint_filename,
+                         character(1), control = control)
+    unlink(c(ckpt_files, paste0(ckpt_files, "_tmp")))
+
+    ckpt_dir <- control[[".checkpoint.dir"]]
+    if (dir.exists(ckpt_dir) &&
+          length(list.files(ckpt_dir, all.files = TRUE, no.. = TRUE)) == 0) {
+      unlink(ckpt_dir, recursive = TRUE)
+    }
+  }
   invisible(TRUE)
 }
