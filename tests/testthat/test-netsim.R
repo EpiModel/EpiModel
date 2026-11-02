@@ -535,6 +535,24 @@ test_that("netsim with checkpoint", {
   expect_false(mod$control[[".checkpointed"]])
 })
 
+test_that("netsim removes only its own files from the checkpoint dir", {
+  ckpt_dir <- tempfile("cp")
+  dir.create(ckpt_dir)
+  on.exit(unlink(ckpt_dir, recursive = TRUE))
+  writeLines("x", file.path(ckpt_dir, "analysis.R"))
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(
+    type = "SI", nsims = 2, nsteps = 5, ncores = 1, verbose = FALSE,
+    .checkpoint.dir = ckpt_dir, .checkpoint.steps = 2
+  )
+  mod <- suppressMessages(netsim(est, param, init, control))
+
+  expect_s3_class(mod, "netsim")
+  expect_identical(list.files(ckpt_dir), "analysis.R")
+})
+
 context("Netsim End Horizon")
 
 test_that("netsim with checkpoint", {
