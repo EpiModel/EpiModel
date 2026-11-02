@@ -4,6 +4,10 @@
 
 ### BUG FIXES
 
+- [`trim_netest()`](https://epimodel.github.io/EpiModel/reference/trim_netest.md)
+  no longer modifies the `netest` object passed to it when the model was
+  fit with `nested.edapprox = FALSE` or `edapprox = FALSE`
+  ([\#1107](https://github.com/EpiModel/EpiModel/issues/1107)).
 - The guards for the argument names removed in 2.6.1 now match only the
   `.m2` suffix, so names such as `area.km2` are accepted, and built-in
   models of every class now reject `b.rate` and `trans.rate` rather than
