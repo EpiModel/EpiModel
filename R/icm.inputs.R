@@ -63,8 +63,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-
   ## Defaults and checks
+  check_m2_suffix(names(p), "param")
   if (is.null(p$act.rate)) {
     p$act.rate <- 1
   }
@@ -144,6 +144,7 @@ init.icm <- function(s.num, i.num, r.num,
     }
   }
 
+  check_m2_suffix(names(p), "init")
 
   ## Output
   class(p) <- c("init.icm", "list")
@@ -243,6 +244,7 @@ crosscheck.icm <- function(param, init, control) {
     stop("control must be an object of class control.icm")
   }
   stop_if_by_infection_duration(param, "ICM")
+  check_removed_params(param)
 
   ## Check that rec.rate is supplied for SIR models
   if (control$type %in% c("SIR", "SIS")) {
@@ -277,13 +279,6 @@ crosscheck.icm <- function(param, init, control) {
   if (param$groups == 1 && init.groups == 2) {
     stop("Group 2 initial stats specified in init.icm, but missing group 2 ",
          "parameters in param.icm")
-  }
-
-  if (!is.null(param$trans.rate)) {
-    stop("The trans.rate parameter has been removed. Use inf.prob instead.")
-  }
-  if (!is.null(param$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.")
   }
 
   ## Assign built-in modules based on group parameter
