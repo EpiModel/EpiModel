@@ -493,9 +493,11 @@ instead, such as `"xz"` or `"bzip2"` for smaller but slower files, or
 `FALSE` for no compression.
 
 By default, if `netsim` reaches the end of all simulations, the
-checkpoint data directory and its content are removed before returning
-the `netsim` object. The `.checkpoint.keep` argument can be set to
-`TRUE` to prevent this removal to inspect the raw simulation objects.
+checkpoint files it wrote are removed before returning the `netsim`
+object, and so is the checkpoint directory if nothing else is left in
+it. Other files in the directory are kept. The `.checkpoint.keep`
+argument can be set to `TRUE` to prevent this removal to inspect the raw
+simulation objects.
 
 ## New Modules
 

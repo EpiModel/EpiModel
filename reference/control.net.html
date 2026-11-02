@@ -461,8 +461,9 @@ restart the third one from the last checkpoint.</p>
 checkpointed data. It defaults to <code>TRUE</code>, which is gzip compression and usually works well on
 <code>netsim</code> objects. Any value accepted by the <code>compress</code> argument of <code>saveRDS</code> may be used
 instead, such as <code>"xz"</code> or <code>"bzip2"</code> for smaller but slower files, or <code>FALSE</code> for no compression.</p>
-<p>By default, if <code>netsim</code> reaches the end of all simulations, the checkpoint data directory and its
-content are removed before returning the <code>netsim</code> object. The <code>.checkpoint.keep</code> argument can be
+<p>By default, if <code>netsim</code> reaches the end of all simulations, the checkpoint files it wrote are
+removed before returning the <code>netsim</code> object, and so is the checkpoint directory if nothing else
+is left in it. Other files in the directory are kept. The <code>.checkpoint.keep</code> argument can be
 set to <code>TRUE</code> to prevent this removal to inspect the raw simulation objects.</p>
     </div>
     <div class="section level2">
