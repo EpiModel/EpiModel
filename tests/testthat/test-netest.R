@@ -638,6 +638,28 @@ test_that("trim_netest keep argument behaves as expected", {
   expect_is(trim_sim_keep, "netsim")
 })
 
+test_that("trim_netest leaves the object passed to it unchanged", {
+  skip_on_cran()
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "grp", rep(1:2, 25))
+  lv <- 2
+
+  est <- netest(nw, formation = ~edges + nodefactor("grp", levels = lv),
+                target.stats = c(25, 12),
+                coef.diss = dissolution_coefs(~offset(edges), 10),
+                nested.edapprox = FALSE, verbose = FALSE)
+  form_env <- as.list(environment(est$formation))
+
+  trim_est <- trim_netest(est)
+  expect_identical(as.list(environment(est$formation)), form_env)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
+  expect_s3_class(netsim(est, param, init, control), "netsim")
+  expect_error(netsim(trim_est, param, init, control), "object 'lv' not found")
+})
+
 context("Full STERGM Workflow (All SOC)")
 
 test_that("Full STERGM", {
@@ -648,9 +670,11 @@ test_that("Full STERGM", {
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 edapprox = FALSE, verbose = FALSE)
 
+  formula_env <- as.list(environment(est$formula))
   for (trim in c(FALSE, TRUE)) {
     if (trim == TRUE) {
       est2 <- trim_netest(est)
+      expect_identical(as.list(environment(est$formula)), formula_env)
     } else {
       est2 <- est
     }
