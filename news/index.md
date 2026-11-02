@@ -1,5 +1,15 @@
 # Changelog
 
+## EpiModel 2.7.1
+
+### BUG FIXES
+
+- The guards for the argument names removed in 2.6.1 now match only the
+  `.m2` suffix, so names such as `area.km2` are accepted, and built-in
+  models of every class now reject `b.rate` and `trans.rate` rather than
+  storing them silently
+  ([\#1108](https://github.com/EpiModel/EpiModel/issues/1108)).
+
 ## EpiModel 2.7.0
 
 CRAN release: 2026-10-16
