@@ -449,6 +449,19 @@ netsim_run_modules <- function(dat, s) {
                "is a missing `return(dat)` at the end of the module function.",
                call. = FALSE)
         }
+        # `dat` carries only `names` and `class`. Anything else usually means
+        # `set_attr()` resolved to `magrittr::set_attr()` (base `attr<-`),
+        # which stores the value on `dat` itself instead of `dat$run$attr`.
+        if (length(attributes(new_dat)) > 2L) {
+          stray <- setdiff(names(attributes(new_dat)), c("names", "class"))
+          stop("Module '", current_mod, "' returned `dat` with the R ",
+               "attribute(s) ", paste0("'", stray, "'", collapse = ", "),
+               " set on it, so those values never reached the simulation. ",
+               "The most common cause is a package attached after EpiModel, ",
+               "usually magrittr, that masks `set_attr()`. Attach that ",
+               "package before EpiModel or call `EpiModel::set_attr()`.",
+               call. = FALSE)
+        }
         dat <- new_dat
       }
 

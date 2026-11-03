@@ -1028,6 +1028,39 @@ test_that("netsim errors when a custom module returns a plain list", {
   )
 })
 
+test_that("netsim errors when a masked set_attr writes an R attribute on dat", {
+  skip_on_cran()
+
+  nw <- network_initialize(n = 50)
+  est <- netest(nw,
+                formation = ~edges,
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  # Mimics `library(magrittr)` after `library(EpiModel)`: magrittr's
+  # `set_attr` is base `attr<-`, which writes to `attr(dat, "flag")`.
+  masked_module <- function(dat, at) {
+    set_attr <- `attr<-`
+    dat <- set_attr(dat, "flag", rep(at, length(get_attr(dat, "active"))))
+    return(dat)
+  }
+
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL,
+                         nsims = 1,
+                         nsteps = 5,
+                         infection.FUN = infection.net,
+                         my_masked.FUN = masked_module,
+                         verbose = FALSE)
+
+  expect_error(
+    suppressMessages(netsim(est, param, init, control)),
+    "Module 'my_masked.FUN' returned `dat` with the R attribute\\(s\\) 'flag'"
+  )
+})
+
 test_that("netsim_cond_msg names the condition, module, and step", {
   expect_equal(netsim_cond_msg("error", "my.FUN", 3),
                "\n\tAn error occurred in module 'my.FUN' at step 3")
