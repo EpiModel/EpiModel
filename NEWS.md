@@ -6,6 +6,10 @@
 -   `trim_netest()` no longer modifies the `netest` object passed to it when the model was fit with `nested.edapprox = FALSE` or `edapprox = FALSE` (#1107).
 -   The guards for the argument names removed in 2.6.1 now match only the `.m2` suffix, so names such as `area.km2` are accepted, and built-in models of every class now reject `b.rate` and `trans.rate` rather than storing them silently (#1108).
 
+### OTHER
+
+-   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
+
 ## EpiModel 2.7.0
 
 ### BREAKING CHANGES
