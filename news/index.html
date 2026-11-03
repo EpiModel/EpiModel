@@ -43,6 +43,11 @@
 <code><a href="../reference/trim_netest.html">trim_netest()</a></code> no longer modifies the <code>netest</code> object passed to it when the model was fit with <code>nested.edapprox = FALSE</code> or <code>edapprox = FALSE</code> (<a href="https://github.com/EpiModel/EpiModel/issues/1107" class="external-link">#1107</a>).</li>
 <li>The guards for the argument names removed in 2.6.1 now match only the <code>.m2</code> suffix, so names such as <code>area.km2</code> are accepted, and built-in models of every class now reject <code>b.rate</code> and <code>trans.rate</code> rather than storing them silently (<a href="https://github.com/EpiModel/EpiModel/issues/1108" class="external-link">#1108</a>).</li>
 </ul></div>
+<div class="section level3">
+<h3 id="other-2-7-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-7-1"></a></h3>
+<ul><li>
+<code><a href="../reference/netsim.html">netsim()</a></code> now stops with an error naming the module when a module returns <code>dat</code> with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks <code><a href="../reference/get_attr.html">set_attr()</a></code> (<a href="https://github.com/EpiModel/EpiModel/issues/1120" class="external-link">#1120</a>).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.7.0" id="epimodel-270">EpiModel 2.7.0<a class="anchor" aria-label="anchor" href="#epimodel-270"></a></h2><p class="text-muted">CRAN release: 2026-10-16</p>
