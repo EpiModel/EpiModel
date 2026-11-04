@@ -139,6 +139,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
+  check_m2_suffix(names(p), "param")
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
@@ -222,6 +223,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
+
+  check_m2_suffix(names(p), "init")
 
   # Reorder arguments
   mc <- names(as.list(sys.call()[-1]))
@@ -417,6 +420,7 @@ crosscheck.dcm <- function(param, init, control) {
 
   # Parameter checks for base models ----------------------------------
   if (is.null(control$new.mod)) {
+    check_removed_params(param)
 
     ## Defaults
     if (is.null(param$act.rate)) {
@@ -485,13 +489,6 @@ crosscheck.dcm <- function(param, init, control) {
     # Over-specified initial conditions
     if (control$type != "SIR" && any(c("r.num", "r.num.g2") %in% names(init))) {
       stop("Specified initial number recovered for non-SIR model")
-    }
-
-    if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter has been removed. Use inf.prob instead.")
-    }
-    if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter has been removed. Use inf.prob.g2 instead.")
     }
   }
 
