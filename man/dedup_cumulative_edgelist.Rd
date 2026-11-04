@@ -11,7 +11,7 @@ dedup_cumulative_edgelist(el)
 }
 \value{
 A cumulative edgelist with no overlapping edges for the same
-\verb{(head, tail)} pair.
+\verb{(head, tail)} pair, sorted by pair and \code{start}.
 }
 \description{
 Merges overlapping spells for the same \verb{(head, tail)} pair into a single
@@ -20,10 +20,17 @@ simulations or sources, where the same partnership can appear in more
 than one segment. The reachability functions assume non-overlapping
 input.
 }
-\examples{
-\dontrun{
-el_cuml <- dedup_cumulative_edgelist(el_raw)
+\details{
+Spells are inclusive on both ends, so two spells of a pair are merged when
+one starts at or before the step the other stops; spells separated by a gap
+are kept apart. A \code{stop} of \code{NA} marks a spell that is still ongoing, and a
+merged spell that includes one stays ongoing. Columns other than \code{start}
+and \code{stop} are treated as part of the pair, so spells of the same pair on
+different layers of a \code{network} column are not merged.
 }
+\examples{
+el <- data.frame(head = 1, tail = 2, start = c(1, 3, 10), stop = c(5, 7, NA))
+dedup_cumulative_edgelist(el)
 
 }
 \seealso{
