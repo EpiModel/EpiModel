@@ -350,8 +350,16 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 #'
 #' @param el A cumulative edgelist with potentially overlapping edges.
 #'
+#' @details
+#' Spells are inclusive on both ends, so two spells of a pair are merged when
+#' one starts at or before the step the other stops; spells separated by a gap
+#' are kept apart. A `stop` of `NA` marks a spell that is still ongoing, and a
+#' merged spell that includes one stays ongoing. Columns other than `start`
+#' and `stop` are treated as part of the pair, so spells of the same pair on
+#' different layers of a `network` column are not merged.
+#'
 #' @return A cumulative edgelist with no overlapping edges for the same
-#'   `(head, tail)` pair.
+#'   `(head, tail)` pair, sorted by pair and `start`.
 #'
 #' @family cumulative_edgelist
 #' @seealso [as_cumulative_edgelist()] for one source of duplicates;
@@ -359,41 +367,32 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 #'   non-overlapping input.
 #'
 #' @examples
-#' \dontrun{
-#' el_cuml <- dedup_cumulative_edgelist(el_raw)
-#' }
+#' el <- data.frame(head = 1, tail = 2, start = c(1, 3, 10), stop = c(5, 7, NA))
+#' dedup_cumulative_edgelist(el)
 #'
 #' @export
 dedup_cumulative_edgelist <- function(el) {
-  el_n <- el |>
-    dplyr::group_by(head, tail) |>
-    dplyr::mutate(n = dplyr::n()) |>
-    dplyr::ungroup()
+  if (nrow(el) == 0) {
+    return(el)
+  }
+  key <- setdiff(names(el), c("start", "stop"))
 
-  e_unique <- el_n |>
-    dplyr::filter(.data$n == 1) |>
-    dplyr::select(-"n")
-
-  e_dup <- el_n |>
-    dplyr::filter(.data$n > 1) |>
-    dplyr::select(-"n") |>
-    dplyr::arrange(.data$head, .data$tail, .data$start, .data$stop)
-
-  e_dedup <- e_dup |>
-    dplyr::group_by(.data$head, .data$tail) |>
+  # Union of the spells of each pair: sort by start, and start a new spell
+  # when a row starts after every earlier row of the pair has stopped
+  out <- el |>
+    dplyr::mutate(.end = dplyr::coalesce(as.numeric(.data$stop), Inf)) |>
+    dplyr::arrange(dplyr::across(dplyr::all_of(key)), .data$start) |>
     dplyr::mutate(
-      lstart = dplyr::lag(.data$start),
-      lstop = dplyr::lag(.data$stop),
-      overlap =
-        !is.na(.data$lstop) &
-        !is.na(.data$lstart) &
-        .data$start <= .data$lstop,
-      stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
-      start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
+      .spell = cumsum(.data$start > dplyr::lag(cummax(.data$.end), default = -Inf)),
+      .by = dplyr::all_of(key)
     ) |>
-    dplyr::select(-c("lstart", "lstop", "overlap")) |>
-    dplyr::ungroup() |>
-    unique()
+    dplyr::summarise(
+      start = min(.data$start),
+      stop = max(.data$stop),
+      .by = dplyr::all_of(c(key, ".spell"))
+    ) |>
+    dplyr::select(-".spell")
 
-  dplyr::bind_rows(e_unique, e_dedup)
+  # Restore the class and attributes of el; dplyr_reconstruct() is still experimental in dplyr
+  dplyr::dplyr_reconstruct(out, el)
 }

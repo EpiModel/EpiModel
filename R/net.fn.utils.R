@@ -1198,7 +1198,9 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
     if (object$nested.edapprox == TRUE) {
       object$formation <- trim_env(object$formation, keep = keep)
     } else {
-      # trim environments for formation and dissolution inside formation
+      # trim environments for formation and dissolution inside formation, in
+      # a copy of its environment so the object passed in is left unchanged
+      object$formation <- copy_formula_env(object$formation)
       environment(object$formation)$formation <-
         trim_env(environment(object$formation)$formation, keep = keep)
       environment(object$formation)$dissolution <-
@@ -1206,7 +1208,9 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
     }
   } else {
     object$formation <- trim_env(object$formation, keep = keep)
-    # trim environments for formation and dissolution inside formula
+    # trim environments for formation and dissolution inside formula, in a
+    # copy of its environment so the object passed in is left unchanged
+    object$formula <- copy_formula_env(object$formula)
     environment(object$formula)$formation <-
       trim_env(environment(object$formula)$formation, keep = keep)
     environment(object$formula)$dissolution <-
@@ -1226,4 +1230,13 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
   }
 
   return(object)
+}
+
+# Give a formula a copy of its environment, so that assigning into the
+# environment does not change other objects that share it
+copy_formula_env <- function(formula) {
+  env <- environment(formula)
+  environment(formula) <- list2env(as.list(env, all.names = TRUE),
+                                   parent = parent.env(env))
+  formula
 }

@@ -259,12 +259,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## Defaults and Checks
-  # Check for old .m2 parameter suffix
-  m2.flag <- grep(".m2", names(p))
-  if (length(m2.flag) > 0) {
-    stop("Parameters using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., inf.prob.g2).")
-  }
+  check_m2_suffix(names(p), "param")
   if (missing(act.rate) && is.null(p[["act.rate"]])) {
     p[["act.rate"]] <- 1
   }
@@ -428,12 +423,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 
   ## Defaults and checks
 
-  # Check for old .m2 initial condition suffix
-  m2.init <- grep("m2", names(p), value = TRUE)
-  if (length(m2.init) > 0) {
-    stop("Initial conditions using the .m2 suffix have been removed. ",
-         "Use the .g2 suffix instead (e.g., i.num.g2).")
-  }
+  check_m2_suffix(names(p), "init")
   if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
   }
@@ -692,8 +682,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' `netsim` objects. Any value accepted by the `compress` argument of `saveRDS` may be used
 #' instead, such as `"xz"` or `"bzip2"` for smaller but slower files, or `FALSE` for no compression.
 #'
-#' By default, if `netsim` reaches the end of all simulations, the checkpoint data directory and its
-#' content are removed before returning the `netsim` object. The `.checkpoint.keep` argument can be
+#' By default, if `netsim` reaches the end of all simulations, the checkpoint files it wrote are
+#' removed before returning the `netsim` object, and so is the checkpoint directory if nothing else
+#' is left in it. Other files in the directory are kept. The `.checkpoint.keep` argument can be
 #' set to `TRUE` to prevent this removal to inspect the raw simulation objects.
 #'
 #' @section New Modules:
@@ -990,6 +981,8 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) == 0) {
+
+    check_removed_params(param)
 
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
