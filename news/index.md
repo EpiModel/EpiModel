@@ -8,6 +8,15 @@
   no longer deletes the whole `.checkpoint.dir` after a successful run,
   only the checkpoint files it wrote and then the directory if it is
   empty ([\#1105](https://github.com/EpiModel/EpiModel/issues/1105)).
+- Fix
+  [`dedup_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.md),
+  which invented spells across gaps, left overlaps, and closed ongoing
+  spells, so
+  [`get_forward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  and
+  [`get_backward_reachable()`](https://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
+  could report false paths on its output
+  ([\#1106](https://github.com/EpiModel/EpiModel/issues/1106)).
 - [`trim_netest()`](https://epimodel.github.io/EpiModel/reference/trim_netest.md)
   no longer modifies the `netest` object passed to it when the model was
   fit with `nested.edapprox = FALSE` or `edapprox = FALSE`

@@ -66,7 +66,16 @@ input.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A cumulative edgelist with no overlapping edges for the same
-<code>(head, tail)</code> pair.</p>
+<code>(head, tail)</code> pair, sorted by pair and <code>start</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Spells are inclusive on both ends, so two spells of a pair are merged when
+one starts at or before the step the other stops; spells separated by a gap
+are kept apart. A <code>stop</code> of <code>NA</code> marks a spell that is still ongoing, and a
+merged spell that includes one stays ongoing. Columns other than <code>start</code>
+and <code>stop</code> are treated as part of the pair, so spells of the same pair on
+different layers of a <code>network</code> column are not merged.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -85,9 +94,11 @@ non-overlapping input.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">el_cuml</span> <span class="op">&lt;-</span> <span class="fu">dedup_cumulative_edgelist</span><span class="op">(</span><span class="va">el_raw</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">el</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>head <span class="op">=</span> <span class="fl">1</span>, tail <span class="op">=</span> <span class="fl">2</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span>, stop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dedup_cumulative_edgelist</span><span class="op">(</span><span class="va">el</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   head tail start stop</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1    2     1    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1    2    10   NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

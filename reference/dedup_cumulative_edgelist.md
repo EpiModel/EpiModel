@@ -21,7 +21,17 @@ dedup_cumulative_edgelist(el)
 ## Value
 
 A cumulative edgelist with no overlapping edges for the same
-`(head, tail)` pair.
+`(head, tail)` pair, sorted by pair and `start`.
+
+## Details
+
+Spells are inclusive on both ends, so two spells of a pair are merged
+when one starts at or before the step the other stops; spells separated
+by a gap are kept apart. A `stop` of `NA` marks a spell that is still
+ongoing, and a merged spell that includes one stays ongoing. Columns
+other than `start` and `stop` are treated as part of the pair, so spells
+of the same pair on different layers of a `network` column are not
+merged.
 
 ## See also
 
@@ -44,7 +54,9 @@ Other cumulative_edgelist:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-el_cuml <- dedup_cumulative_edgelist(el_raw)
-} # }
+el <- data.frame(head = 1, tail = 2, start = c(1, 3, 10), stop = c(5, 7, NA))
+dedup_cumulative_edgelist(el)
+#>   head tail start stop
+#> 1    1    2     1    7
+#> 2    1    2    10   NA
 ```
