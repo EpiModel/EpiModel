@@ -393,5 +393,6 @@ dedup_cumulative_edgelist <- function(el) {
     ) |>
     dplyr::select(-".spell")
 
+  # Restore the class and attributes of el; dplyr_reconstruct() is still experimental in dplyr
   dplyr::dplyr_reconstruct(out, el)
 }
