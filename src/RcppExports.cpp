@@ -10,6 +10,28 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// compact_attr_list_cpp
+List compact_attr_list_cpp(List x, IntegerVector drop);
+RcppExport SEXP _EpiModel_compact_attr_list_cpp(SEXP xSEXP, SEXP dropSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type drop(dropSEXP);
+    rcpp_result_gen = Rcpp::wrap(compact_attr_list_cpp(x, drop));
+    return rcpp_result_gen;
+END_RCPP
+}
+// append_attr_cpp
+SEXP append_attr_cpp(SEXP old, SEXP nw);
+RcppExport SEXP _EpiModel_append_attr_cpp(SEXP oldSEXP, SEXP nwSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type old(oldSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nw(nwSEXP);
+    rcpp_result_gen = Rcpp::wrap(append_attr_cpp(old, nw));
+    return rcpp_result_gen;
+END_RCPP
+}
 // shiftVec
 IntegerVector shiftVec(IntegerVector x, IntegerVector y);
 RcppExport SEXP _EpiModel_shiftVec(SEXP xSEXP, SEXP ySEXP) {
@@ -24,6 +46,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_EpiModel_compact_attr_list_cpp", (DL_FUNC) &_EpiModel_compact_attr_list_cpp, 2},
+    {"_EpiModel_append_attr_cpp", (DL_FUNC) &_EpiModel_append_attr_cpp, 2},
     {"_EpiModel_shiftVec", (DL_FUNC) &_EpiModel_shiftVec, 2},
     {NULL, NULL, 0}
 };

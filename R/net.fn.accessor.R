@@ -215,9 +215,8 @@ get_attr_list <- function(dat, item = NULL) {
 #' @order 1
 #' @export
 get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
-  attr_list <- raw_get_attr_list(dat)
-
-  if (!item %in% names(attr_list)) {
+  attr <- dat$run$attr[[item]]
+  if (is.null(attr) && !item %in% names(dat$run$attr)) {
     if (!override.null.error) {
       stop("There is no attribute called `", item,
            "` in the attributes list of the main list object (dat)")
@@ -226,11 +225,10 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
   }
 
   if (is.null(posit_ids)) {
-    return(attr_list[[item]])
+    return(attr)
   }
 
   assert_valid_posit_ids(dat, posit_ids)
-  attr <- attr_list[[item]]
   return(attr[posit_ids])
 }
 
@@ -251,26 +249,26 @@ add_attr <- function(dat, item) {
 #' @export
 set_attr <- function(dat, item, value, posit_ids = NULL,
                      override.length.check = FALSE) {
-  attr_list <- raw_get_attr_list(dat)
-  if (!item %in% names(attr_list)) {
+  attr <- dat$run$attr[[item]]
+  if (is.null(attr) && !item %in% names(dat$run$attr)) {
     dat <- add_attr(dat, item)
     # re-read, so that the `posit_ids` branch below writes into the full-length
     # NA vector just created rather than into the pre-creation snapshot
-    attr_list <- raw_get_attr_list(dat)
+    attr <- dat$run$attr[[item]]
   }
 
   if (is.null(posit_ids)) {
     if (!override.length.check &&
-          length(value) != length(attr_list$active)) {
+          length(value) != length(dat$run$attr$active)) {
       stop(
         "When trying to edit the ", `item`, " nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes in",
         " the network. \n",
-        "Expected: ", length(attr_list$active), "\n",
+        "Expected: ", length(dat$run$attr$active), "\n",
         "Given: ", length(value)
       )
     }
-    dat <- raw_set_attr(dat, item, value)
+    dat$run$attr[[item]] <- value
   } else {
     assert_valid_posit_ids(dat, posit_ids)
     if (length(value) != 1L && length(value) != length(posit_ids)) {
@@ -278,13 +276,12 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
         "selected by the `posit_ids` vector nor of length 1. \n",
-        "Expected: ", length(attr_list$active[posit_ids]), " or 1 \n",
+        "Expected: ", length(dat$run$attr$active[posit_ids]), " or 1 \n",
         "Given: ", length(value)
       )
     }
-    attr <- attr_list[[item]]
     attr[posit_ids] <- value
-    dat <- raw_set_attr(dat, item, attr)
+    dat$run$attr[[item]] <- attr
   }
 
   return(dat)
@@ -306,7 +303,7 @@ append_attr <- function(dat, item, value, n.new) {
     stop("`value` must be of length one or `n.new`.")
   }
 
-  old_vals <- get_attr(dat, item, override.null.error = TRUE)
+  old_vals <- dat$run$attr[[item]]
   if (is.null(old_vals) && item != "active") {
     # the attribute does not exist yet: the nodes that predate the ones being
     # appended get NA, so that the result is still one value per node.
@@ -316,8 +313,13 @@ append_attr <- function(dat, item, value, n.new) {
     n_active <- length(get_posit_ids(dat))
     old_vals <- rep(NA, max(n_active - n.new, 0L))
   }
-  dat <- set_attr(dat, item, c(old_vals, new_vals),
-                  override.length.check = TRUE)
+  # c(old_vals, new_vals) without the element-wise copy of c() when the types
+  # allow it; same result, same type
+  vals <- if (is.null(old_vals)) NULL else append_attr_cpp(old_vals, new_vals)
+  if (is.null(vals)) {
+    vals <- c(old_vals, new_vals)
+  }
+  dat$run$attr[[item]] <- vals
 
   return(dat)
 }
@@ -330,8 +332,21 @@ remove_node_attr <- function(dat, posit_ids) {
     return(dat)
   }
   assert_valid_posit_ids(dat, posit_ids)
+  if (length(posit_ids) == 0L) {
+    # x[-integer(0)] is empty, which would drop every node
+    return(dat)
+  }
   attr_list <- raw_get_attr_list(dat)
-  attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  if (anyNA(posit_ids) || any(posit_ids < 1)) {
+    attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  } else {
+    out <- compact_attr_list_cpp(attr_list, as.integer(posit_ids))
+    other <- vapply(out, is.null, logical(1))
+    if (any(other)) {
+      out[other] <- lapply(attr_list[other], function(x) x[-posit_ids])
+    }
+    attr_list <- out
+  }
   dat <- raw_set_attr_list(dat, attr_list)
   return(dat)
 }
@@ -463,12 +478,14 @@ set_epi <- function(dat, item, value, ..., at = NULL) {
   check_record_name(item, "item")
   at <- resolve_record_at(dat, at)
 
-  if (!item %in% names(dat$epi)) {
+  cur <- dat$epi[[item]]
+  if (is.null(cur) && !item %in% names(dat$epi)) {
     dat <- add_epi(dat, item)
+    cur <- dat$epi[[item]]
   }
 
   # ensure that the vector is of size `nsteps`, right padded with NA
-  if (at > length(dat$epi[[item]])) {
+  if (at > length(cur)) {
     nsteps <- get_control(dat, "nsteps")
     dat$epi[[item]] <- padded_vector(dat$epi[[item]], nsteps)
   }
@@ -568,7 +585,8 @@ get_param_list <- function(dat, item = NULL) {
 #' @order 1
 #' @export
 get_param <- function(dat, item, override.null.error = FALSE) {
-  if (!item %in% names(dat$param)) {
+  out <- dat$param[[item]]
+  if (is.null(out) && !item %in% names(dat$param)) {
     if (!override.null.error) {
       stop("There is no parameter called `", item,
            "` in the parameter list of the main list object (dat)")
@@ -576,7 +594,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
     return(NULL)
   }
 
-  return(dat$param[[item]])
+  return(out)
 }
 
 #' @rdname get_param
@@ -623,14 +641,15 @@ get_control_list <- function(dat, item = NULL) {
 #' @order 5
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE) {
-  if (!item %in% names(dat$control)) {
+  out <- dat$control[[item]]
+  if (is.null(out) && !item %in% names(dat$control)) {
     if (!override.null.error) {
       stop("There is no control value called `", item,
            "` in the control list of the main list object (dat)")
     }
     return(NULL)
   }
-  return(dat$control[[item]])
+  return(out)
 }
 
 #' @rdname get_param
@@ -925,7 +944,7 @@ padded_vector <- function(orig, size) {
 assert_valid_posit_ids <- function(dat, posit_ids) {
   if (!is.numeric(posit_ids))
     stop("`posit_ids` must be `numeric`")
-  if (any(posit_ids > length(get_attr(dat, "active"))))
+  if (any(posit_ids > length(dat$run$attr$active)))
     stop("Some `posit_ids` are larger than the number of nodes ",
          " in the network")
   invisible(posit_ids)
