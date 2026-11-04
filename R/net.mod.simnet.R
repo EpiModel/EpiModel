@@ -126,6 +126,12 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     return(simulate_model_free_dat(dat, at, network, nsteps))
   }
 
+  ## tergmLite direct engine: cached model and proposal, sampler called directly
+  if (nsteps == 1L && get_control(dat, "tergmLite") == TRUE &&
+        isTRUE(get_control(dat, "tergmLite.direct", override.null.error = TRUE))) {
+    return(simulate_dat_direct(dat, at, network))
+  }
+
   ## determine formula and coefficients; set discordance_fraction in ergm case
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
   if (nwparam$coef.diss$duration[1] > 1) {
@@ -162,7 +168,15 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   }
 
   ## always TERGM simulation
-  nw <- suppressWarnings(simulate(formula,
+  ## (prototype switch) ergm::simulate_formula() dispatches on the basis directly;
+  ## stats::simulate() goes through ergm's simulate.formula(), which attaches the
+  ## basis to the formula and re-evaluates it, deep-copying the network twice
+  sim_fun <- if (isTRUE(getOption("EpiModel.simulate_formula"))) {
+    ergm::simulate_formula
+  } else {
+    simulate
+  }
+  nw <- suppressWarnings(sim_fun(formula,
                                   coef = coef,
                                   basis = get_network(x = dat, network = network),
                                   constraints = nwparam$constraints,
