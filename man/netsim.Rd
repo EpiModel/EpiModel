@@ -131,6 +131,31 @@ time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.
 }
 
+\section{Parallel Simulation}{
+
+With \code{ncores > 1}, \code{netsim} runs the simulations on a \code{multisession} plan
+from the \code{future} package (see \code{future.use.plan} in \code{\link{control.net}} for
+other plans). Each worker is a separate R session with EpiModel attached and
+an empty global environment. Modules, updaters, trackers, and network model
+formulas are copied to the workers, but the global objects they refer to and
+the packages attached with \code{library()} are not. Code that runs with
+\code{ncores = 1} can then fail with "object not found", or call a different
+function: after \code{library(dplyr)}, \code{lag()} is \code{stats::lag()} on the workers.
+\code{netsim} and \code{\link{netdx}} warn when user code refers to such objects or
+functions.
+
+To make the code self-contained, pass values through \code{\link{param.net}} and read
+them with \code{\link{get_param}}, call package functions as \code{pkg::fun()}, keep helper
+functions in a package, and store the objects a formula needs in its
+environment with \code{\link[statnet.common:trim_env]{statnet.common::trim_env()}}, as in
+\code{trim_env(~nodefactor("grp", levels = lv), keep = "lv")}. For larger
+projects, run the simulations in parallel outside \code{netsim}, so that each
+worker loads and creates what it needs, and call \code{netsim} with
+\code{ncores = 1}. A \code{multicore} plan, set with \code{future::plan("multicore")} and
+\code{future.use.plan = TRUE}, forks this session and shares its global objects
+and packages, but is not available on Windows or in RStudio.
+}
+
 \section{Partnership Histories (Cumulative Edgelist)}{
 
 For contact tracing, partnership-duration analysis, or reachability

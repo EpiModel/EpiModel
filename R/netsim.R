@@ -87,6 +87,29 @@
 #' time. Without it, the network structure evolves independently of the
 #' epidemic and demographic dynamics.
 #'
+#' @section Parallel Simulation:
+#' With `ncores > 1`, `netsim` runs the simulations on a `multisession` plan
+#' from the `future` package (see `future.use.plan` in [`control.net`] for
+#' other plans). Each worker is a separate R session with EpiModel attached and
+#' an empty global environment. Modules, updaters, trackers, and network model
+#' formulas are copied to the workers, but the global objects they refer to and
+#' the packages attached with `library()` are not. Code that runs with
+#' `ncores = 1` can then fail with "object not found", or call a different
+#' function: after `library(dplyr)`, `lag()` is `stats::lag()` on the workers.
+#' `netsim` and [`netdx`] warn when user code refers to such objects or
+#' functions.
+#'
+#' To make the code self-contained, pass values through [`param.net`] and read
+#' them with [`get_param`], call package functions as `pkg::fun()`, keep helper
+#' functions in a package, and store the objects a formula needs in its
+#' environment with [statnet.common::trim_env()], as in
+#' `trim_env(~nodefactor("grp", levels = lv), keep = "lv")`. For larger
+#' projects, run the simulations in parallel outside `netsim`, so that each
+#' worker loads and creates what it needs, and call `netsim` with
+#' `ncores = 1`. A `multicore` plan, set with `future::plan("multicore")` and
+#' `future.use.plan = TRUE`, forks this session and shares its global objects
+#' and packages, but is not available on Windows or in RStudio.
+#'
 #' @section Partnership Histories (Cumulative Edgelist):
 #' For contact tracing, partnership-duration analysis, or reachability
 #' analysis, enable cumulative-edgelist tracking via
@@ -288,6 +311,7 @@ netsim <- function(x, param, init, control) {
     } else if (control$ncores > 1 && isFALSE(control$future.use.plan)) {
       with(future::plan("multisession", workers = control$ncores), local = TRUE)
     } # else if (isTRUE(control$future.use.plan)) - use plan defined by user
+    warn_worker_globals("netsim", x = x, param = param, init = init, control = control)
     dat_list <- future.apply::future_lapply(
       seq_len(control$nsims),
       function(s) {
