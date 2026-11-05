@@ -14,60 +14,148 @@ cap_ncores <- function(ncores, detected = parallel::detectCores()) {
   return(min(detected, ncores))
 }
 
-# Globals of the user code in `...` (control, param, init, and the network
-# models) for netsim() and netdx() to export to multisession workers (#1104).
-# future finds the globals of the function it runs, but not of the functions
-# and formulas held in lists such as `control`, and functions or formulas
-# defined in a script look up their globals in the global environment, which
-# the workers do not share. Returns the objects found there, and the packages
-# whose attached functions the user code calls.
-future_user_globals <- function(...) {
-  globals <- list()
-  packages <- character(0)
+# Warn when the user code passed to netsim() or netdx() in `...` (modules,
+# updaters, trackers, network model formulas) refers to global objects, or to
+# functions from packages attached in this session, that the workers do not
+# have (#1104). Code defined in a script looks these up in the global
+# environment and on the search path, and workers in separate R sessions
+# (multisession, cluster) start with neither. Sequential and forked
+# (multicore) workers share this session's, so they are not checked. Nothing
+# is exported: the user decides how the workers get what the code needs.
+warn_worker_globals <- function(fn, ...) {
+  if (inherits(future::plan(), c("sequential", "multicore"))) {
+    return(invisible(NULL))
+  }
+  found <- worker_globals(list(...))
+  if (length(found) == 0) {
+    return(invisible(NULL))
+  }
+  uses <- paste0("  ", names(found), ": ", vapply(found, paste, character(1), collapse = ", "))
+  warning(
+    fn, "() runs the simulations in separate R sessions, which do not have the global objects ",
+    "or attached packages of this one. Code passed to ", fn, "() uses:\n",
+    paste(uses, collapse = "\n"),
+    "\nSee the Parallel Simulation section of ?netsim.",
+    call. = FALSE
+  )
+}
+
+# The global objects, and the functions from packages that the workers do not
+# attach, that the user code in `objs` refers to, grouped by where the code
+# was found (such as "control$my.FUN")
+worker_globals <- function(objs) {
+  on_workers <- worker_packages()
+  queue <- find_user_code(objs)
+  queue <- queue[order(lengths(lapply(queue, `[[`, "path")))]
   done <- list()
-  queue <- find_user_closures(list(...))
+  found <- character(0)
   while (length(queue) > 0) {
-    obj <- queue[[1]]
+    obj <- queue[[1]]$obj
+    path <- queue[[1]]$path
     queue <- queue[-1]
     if (any(vapply(done, identical, logical(1), obj))) next
     done <- c(done, list(obj))
 
-    expr <- if (is.function(obj)) call("function", formals(obj), body(obj)) else obj
-    found <- tryCatch(future::getGlobalsAndPackages(expr, envir = environment(obj)),
-                      error = function(e) NULL)
-    if (is.null(found)) next
-    where <- attr(found$globals, "where")
-    found <- list(globals = as.list(found$globals), packages = found$packages)
-    in_global <- vapply(where, identical, logical(1), globalenv())
-    new <- setdiff(names(found$globals)[in_global], names(globals))
-    globals[new] <- found$globals[new]
-    packages <- union(packages, found$packages)
-
-    # functions found are scanned by getGlobalsAndPackages itself, but not
-    # the functions and formulas inside other objects, such as the formation
-    # formula inside the environment of a non-nested edapprox formula
-    queue <- c(queue, find_user_closures(Filter(Negate(is.function), found$globals)))
+    g <- tryCatch({
+      expr <- if (is.function(obj)) obj else as.call(c(as.name("{"), formula_term_args(obj)))
+      globals::globalsOf(expr, envir = environment(obj), substitute = FALSE,
+                         mustExist = FALSE, recursive = TRUE)
+    }, error = function(e) NULL)
+    where <- attr(g, "where")
+    inner <- list()
+    for (i in seq_along(g)) {
+      env <- where[[i]]
+      if (!is.environment(env) || identical(env, baseenv()) || isNamespace(env)) next
+      if (identical(env, globalenv())) {
+        name <- paste0(names(g)[i], if (is.function(g[[i]])) "()")
+      } else if (startsWith(environmentName(env), "package:")) {
+        pkg <- sub("^package:", "", environmentName(env))
+        if (pkg %in% on_workers) next
+        name <- paste0(names(g)[i], "() from ", pkg)
+      } else {
+        # an environment that travels with the code, such as the trimmed
+        # environment of a fitted model's formula, which holds the formation
+        # formula from the script; scanned next, under the same path
+        inner <- c(inner, find_user_code(g[[i]], path))
+        next
+      }
+      if (!name %in% names(found)) {
+        found[name] <- paste(utils::head(path, 2), collapse = "")
+      }
+    }
+    queue <- c(inner, queue)
   }
-  list(globals = globals, packages = packages)
+  if (length(found) == 0) {
+    return(list())
+  }
+  split(names(found), factor(found, levels = unique(found)))
 }
 
 # Functions and formulas in `x`, walked recursively through lists, that come
 # from a script rather than from package code: their environment leads to the
 # global environment, or to the base environment for formulas trimmed with
-# trim_env(), which may hold user formulas in turn
-find_user_closures <- function(x) {
+# trim_env(), which may hold user formulas in turn. Each comes with its path
+# in `x`, such as c("control", "$my.FUN").
+find_user_code <- function(x, path = character(0)) {
   if (is.function(x) || inherits(x, "formula")) {
     env <- environment(x)
     top <- if (is.environment(env)) topenv(env)
     if (identical(top, globalenv()) || identical(top, baseenv())) {
-      return(list(x))
+      return(list(list(obj = x, path = path)))
     }
     return(list())
   }
   if (is.list(x) && !is.data.frame(x) && !inherits(x, "network")) {
-    return(unlist(lapply(unclass(x), find_user_closures), recursive = FALSE))
+    x <- unclass(x)
+    nms <- if (is.null(names(x))) character(length(x)) else names(x)
+    out <- lapply(seq_along(x), function(i) {
+      step <- if (!nzchar(nms[i])) {
+        paste0("[[", i, "]]")
+      } else if (length(path) == 0) {
+        nms[i]
+      } else {
+        paste0("$", nms[i])
+      }
+      find_user_code(x[[i]], c(path, step))
+    })
+    return(unlist(out, recursive = FALSE))
   }
   list()
+}
+
+# The expressions that a network model formula evaluates: the arguments of its
+# terms, and the terms of formulas passed to operator terms such as
+# Passthrough(), but not the term names (edges, concurrent), which are not R
+# objects
+formula_term_args <- function(expr) {
+  if (!is.call(expr)) {
+    return(list())
+  }
+  if (identical(expr[[1]], as.name("~"))) {
+    return(formula_term_args(expr[[length(expr)]]))
+  }
+  args <- unname(as.list(expr)[-1])
+  if (is.name(expr[[1]]) && as.character(expr[[1]]) %in% c("+", "-", "(", "offset")) {
+    return(unlist(lapply(args, formula_term_args), recursive = FALSE))
+  }
+  is_formula <- vapply(args, function(a) is.call(a) && identical(a[[1]], as.name("~")), logical(1))
+  c(args[!is_formula], unlist(lapply(args[is_formula], formula_term_args), recursive = FALSE))
+}
+
+# Packages attached on a worker that runs EpiModel code: the default packages,
+# future, and EpiModel with the packages it depends on
+worker_packages <- function() {
+  pkgs <- "EpiModel"
+  i <- 0
+  while (i < length(pkgs)) {
+    i <- i + 1
+    deps <- utils::packageDescription(pkgs[i], fields = "Depends")
+    if (!is.na(deps)) {
+      deps <- sub("^\\s*([[:alnum:].]+).*$", "\\1", strsplit(deps, ",")[[1]])
+      pkgs <- union(pkgs, setdiff(deps, "R"))
+    }
+  }
+  c("base", getOption("defaultPackages"), "future", pkgs)
 }
 
 #' @title Check Degree Distribution for Balance in Target Statistics

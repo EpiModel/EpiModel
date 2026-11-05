@@ -136,8 +136,10 @@ The layer keeps \code{arrivals.FUN} with its enclosing environment, and so does
 every \code{netsim} object simulated from it. Define the function at the top
 level of a script or in a package, not inside another function whose local
 objects (fitted networks, population data) would then be saved with each
-simulation. The global objects and helper functions it calls are not saved,
-so define them again before restarting a saved simulation in a new session.
+simulation. The global objects and helper functions it calls are not saved
+with it, so define them again before restarting a saved simulation in a new
+session. They are not available on multisession workers either (see the
+Parallel Simulation section of \code{\link{netsim}}).
 
 The rule decides the group attribute of every arriving node. A value given
 by \code{attr.rules} in \code{\link[=control.net]{control.net()}} or by a custom arrivals module is

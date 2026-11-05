@@ -70,9 +70,8 @@ section of \code{\link{netsim}}).}
 
 \item{ncores}{Number of processor cores to run multiple simulations on, using
 the \code{future} framework with \code{multisession}. See \code{future.use.plan} for
-other \code{future} backends. The global objects and attached packages that
-user modules, updaters, trackers, and network model formulas refer to
-are exported to the workers.}
+other \code{future} backends. Each worker is a separate R session; see the
+Parallel Simulation section of \code{\link{netsim}}.}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This is required
 when the epidemic or demographic processes impact the network structure (e.g., vital

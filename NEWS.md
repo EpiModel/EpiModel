@@ -2,7 +2,6 @@
 
 ### BUG FIXES
 
--   `netsim()` and `netdx()` with `ncores > 1` now export to the workers the global objects and attached packages that user modules, trackers, updaters, `arrivals.FUN`, and network model formulas refer to, so code that runs with `ncores = 1` no longer fails with "object not found" (#1104).
 -   `netsim()` no longer deletes the whole `.checkpoint.dir` after a successful run, only the checkpoint files it wrote and then the directory if it is empty (#1105).
 -   Fix `dedup_cumulative_edgelist()`, which invented spells across gaps, left overlaps, and closed ongoing spells, so `get_forward_reachable()` and `get_backward_reachable()` could report false paths on its output (#1106).
 -   `trim_netest()` no longer modifies the `netest` object passed to it when the model was fit with `nested.edapprox = FALSE` or `edapprox = FALSE` (#1107).
@@ -10,6 +9,7 @@
 
 ### OTHER
 
+-   `netsim()` and `netdx()` with `ncores > 1` now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and `?netsim` has a new Parallel Simulation section on making such code self-contained (#1104).
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
 
 ## EpiModel 2.7.0
