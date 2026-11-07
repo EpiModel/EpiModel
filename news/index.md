@@ -45,6 +45,11 @@
   attached after EpiModel and masks
   [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   ([\#1120](https://github.com/EpiModel/EpiModel/issues/1120)).
+- [`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  now warns when a duration is at or above 90% of the departure ceiling,
+  `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at
+  the ceiling gives the ceiling and points at the duration before
+  `d.rate` ([\#1138](https://github.com/EpiModel/EpiModel/issues/1138)).
 
 ## EpiModel 2.7.0
 
