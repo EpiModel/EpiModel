@@ -456,7 +456,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nsims The total number of disease simulations.
 #' @param ncores Number of processor cores to run multiple simulations on, using
 #'        the `future` framework with `multisession`. See `future.use.plan` for
-#'        other `future` backends.
+#'        other `future` backends. Each worker is a separate R session; see the
+#'        Parallel Simulation section of [`netsim`].
 #' @param start For models with network resimulation, time point to start up the simulation. For
 #'        restarted simulations, this must be one greater than the final time step in the prior
 #'        simulation and must be less than the value in `nsteps`. Every simulation restarts from

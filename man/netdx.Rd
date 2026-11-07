@@ -78,7 +78,8 @@ objects, with one entry per simulation. Accessible at \verb{$network}.}
 \item{verbose}{If \code{TRUE}, print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
-on, using the \code{future} framework.}
+on, using the \code{future} framework. Each worker is a separate R
+session; see the Parallel Simulation section of \code{\link{netsim}}.}
 
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in \code{netdx}.}
