@@ -162,26 +162,87 @@ test_that("get_degree", {
   expect_equal(ergm.method, deg.el)
 })
 
-test_that("dissolution_coefs returns error for incompatible departure rate", {
-  #Dividing by zero:
-  d.rate_ <- round(1 - sqrt(59 / 60), 5)
-  err.msg <- paste("The competing risk of departure is too high for the given",
-                   " duration of ", 60, "; specify a d.rate lower than ",
-                   d.rate_, ".", sep = "")
-  dissolution <-  ~offset(edges)
-  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1 / 60),
-              throws_error(err.msg))
-  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01),
-              throws_error(err.msg))
-  dissolution <-  ~offset(edges) + offset(nodematch("group", diff = TRUE))
+test_that("dissolution_coefs stops at the departure ceiling and names the duration", {
+  # Ceiling is 1 / (1 - (1 - d.rate)^2): 30.25 at d.rate = 1/60, 50.25 at 0.01
+  expect_error(dissolution_coefs(~offset(edges), duration = 60, d.rate = 1 / 60),
+               "^duration = 60 is at or above the departure ceiling of 30.2521 for d.rate = 0.01666667")
+  expect_error(dissolution_coefs(~offset(edges), duration = 60, d.rate = 0.01),
+               "ceiling of 50.2513 for d.rate = 0.01 .*Lower the duration below the ceiling, or if it is right, lower d.rate below 0.008368\\.$")
+  # The stated d.rate bound admits the duration, which then sits at the ceiling
+  expect_warning(o <- dissolution_coefs(~offset(edges), duration = 60, d.rate = 0.008368),
+                 "duration = 60 \\(100.0%\\) is at or above 90% of the departure ceiling of 60.0025")
+  expect_s3_class(o, "disscoef")
+  expect_error(dissolution_coefs(~offset(edges), duration = 60, d.rate = 0.008369),
+               "at or above the departure ceiling")
+
+  dissolution <- ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
   duration <- c(60, 30, 80, 100, 125, 160)
-  dissolution <-  ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
-  err.msg <- paste("The competing risk of departure is too high for the given",
-                   "edge duration of 60 in place 1.",
-                   "Specify a d.rate lower than 0.00837.")
-  expect_that(dissolution_coefs(dissolution,
-                                duration = duration, d.rate = 1 / 60),
-              throws_error(err.msg))
+  expect_error(dissolution_coefs(dissolution, duration = duration, d.rate = 1 / 60),
+               "^duration\\[1\\] = 60, duration\\[3\\] = 80, duration\\[4\\] = 100, duration\\[5\\] = 125 and duration\\[6\\] = 160 are at or above the departure ceiling of 30.2521 .*Lower these durations below the ceiling, or if they are right, lower d.rate below 0.003129\\.$")
+  # The error names the dissolution_coefs call, not the internal check
+  err <- tryCatch(dissolution_coefs(~offset(edges), duration = 60, d.rate = 0.01),
+                  error = function(e) e)
+  expect_equal(conditionCall(err)[[1]], as.name("dissolution_coefs"))
+})
+
+test_that("dissolution_coefs warns at or above 90% of the departure ceiling", {
+  d.rate <- 0.000478213
+  ceiling <- 1 / (1 - (1 - d.rate)^2)
+  expect_equal(ceiling, 1045.809, tolerance = 1e-6)
+
+  expect_warning(o <- dissolution_coefs(~offset(edges), duration = 1040, d.rate = d.rate),
+                 "^duration = 1040 \\(99.4%\\) is at or above 90% of the departure ceiling of 1045.81 for d.rate = 0.000478213 .*Check the duration first; d.rate is the other lever\\.$")
+  # The coefficients are still returned, and the adjustment is -log(1 - share)
+  expect_equal(o$coef.crude, log(1039))
+  expect_equal(o$coef.adj, o$coef.crude - log(1 - 1040 / ceiling))
+  expect_equal(o$coef.adj, 12.139, tolerance = 1e-4)
+  warn <- tryCatch(dissolution_coefs(~offset(edges), duration = 1040, d.rate = d.rate),
+                   warning = function(w) w)
+  expect_equal(conditionCall(warn)[[1]], as.name("dissolution_coefs"))
+
+  # Heterogeneous model: one warning naming every duration at or above 90%
+  dissolution <- ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
+  expect_warning(o <- dissolution_coefs(dissolution, duration = c(60, 30, 950, 100, 1040, 160),
+                                        d.rate = d.rate),
+                 "^duration\\[3\\] = 950 \\(90.8%\\) and duration\\[5\\] = 1040 \\(99.4%\\) are at or above 90% of the departure ceiling of 1045.81 .*Check these durations first")
+  expect_length(o$coef.adj, 6)
+
+  # Below 90% of the ceiling, and with no departures, there is no warning
+  expect_no_warning(dissolution_coefs(~offset(edges), duration = 900, d.rate = d.rate))
+  expect_no_warning(dissolution_coefs(~offset(edges), duration = 1e6, d.rate = 0))
+  expect_no_warning(dissolution_coefs(dissolution, duration = c(60, 30, 900, 100, 125, 160),
+                                      d.rate = d.rate))
+})
+
+test_that("dissolution_coefs coefficients are unchanged", {
+  o <- dissolution_coefs(~offset(edges), duration = 38, d.rate = 0.01)
+  expect_equal(o$coef.crude, 3.61091791264423)
+  expect_equal(o$coef.adj, 5.0223249745792)
+  expect_equal(o$coef.form.corr, 3.63758615972639)
+  expect_equal(o$diss.model.type, "edgesonly")
+
+  o <- dissolution_coefs(~offset(edges) + offset(nodematch("race")), duration = c(20, 10),
+                         d.rate = 0.001)
+  expect_equal(o$coef.crude, c(2.94443897916644, -0.74721440183022))
+  expect_equal(o$coef.adj, c(2.98524014057037, -0.767823059946204))
+  expect_equal(o$coef.form.corr, c(2.99573227355399, -0.693147180559944))
+  expect_equal(o$diss.model.type, "nodematch")
+
+  o <- dissolution_coefs(~offset(edges) + offset(nodemix("race")),
+                         duration = c(60, 30, 80, 100, 125, 160), d.rate = 0.002)
+  expect_equal(o$coef.crude, c(4.07753744390572, -0.710241613919242, 0.291910408561309,
+                               0.517582406228873, 0.74274412169932, 0.991366758314519))
+  expect_equal(o$coef.adj, c(4.35165854998479, -0.856665702828121, 0.402981305750843,
+                             0.753620479372626, 1.1607706958471, 1.73712070036617))
+  expect_equal(o$coef.form.corr, c(4.0943445622221, -0.693147180559942, 0.287682072451787,
+                                   0.510825623765993, 0.733969175080203, 0.980829253011732))
+  expect_equal(o$diss.model.type, "nodemix")
+
+  expect_error(dissolution_coefs(~offset(edges), duration = c(20, 10)),
+               "Dissolution model length is 1, but number of duration was 2")
+  expect_error(dissolution_coefs(~offset(edges) + offset(nodematch("a")) + offset(nodemix("b")),
+                                 duration = c(20, 10, 5)),
+               "The form of the dissolution argument is invalid")
 })
 
 

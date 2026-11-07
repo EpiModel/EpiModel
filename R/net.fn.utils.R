@@ -435,6 +435,18 @@ copy_datattr_to_nwattr <- function(dat) {
 #'     adjust these coefficients; this upward adjustment accounts for
 #'     departure as a competing risk to edge dissolution.
 #'
+#' The departure adjustment has a ceiling. Each time step a partnership ends
+#' through the departure of either node with probability `1 - (1 - d.rate)^2`,
+#' whatever the dissolution model, so its mean duration cannot exceed
+#' `1 / (1 - (1 - d.rate)^2)`, about `1 / (2 * d.rate)`. The ratio of a
+#' duration to this ceiling is the share of partnership endings that are
+#' departures rather than dissolutions, and the adjusted coefficient is
+#' `coef.adj = coef.crude - log(1 - ratio)`, which climbs steeply as the ratio
+#' approaches 1: by 2.3 at 90% of the ceiling and by 4.6 at 99%. The function
+#' stops with an error for a duration at or above the ceiling and warns for one
+#' at or above 90% of it. A duration that close to the ceiling is usually a
+#' noisy estimate from a small stratum, so check the duration before lowering
+#' `d.rate`.
 #'
 #' The current dissolution models supported by this function and in network
 #' model estimation in [netest()] are as follows:
@@ -564,11 +576,10 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   } else {
     if (form.length == 2 && t1.edges == TRUE) {
       t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
-      t2.term <- NULL
       if (grepl("offset[(]nodematch", t2)) {
-        t2.term <- diss.model.type <- "nodematch"
+        diss.model.type <- "nodematch"
       } else if (grepl("offset[(]nodemix", t2)) {
-        t2.term <- diss.model.type <- "nodemix"
+        diss.model.type <- "nodemix"
       } else {
         stop("The form of the dissolution argument is invalid. Type
               help(\'dissolution_coefs\') to see the set of options
@@ -580,57 +591,32 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1")
   }
-  # Log transformation of duration to coefficent
   if (t1.edges == FALSE) {
     stop("Dissolution models must start with offset(edges)")
   }
-  if (form.length == 1) {
-    if (length(duration) > 1) {
-      stop("Dissolution model length is 1, but number of duration was ",
-           length(duration))
-    }
-    pg <- (duration[1] - 1) / duration[1]
-    ps2 <- (1 - d.rate) ^ 2
-    if (ps2 <= pg) {
-      d.rate_ <- round(1 - sqrt(pg), 5)
-      str <- paste("The competing risk of departure is too high for the given",
-                   " duration of ", duration[1],
-                   "; specify a d.rate lower than ", d.rate_, ".", sep = "")
-      stop(str)
-    }
-
-    coef.crude <- log(pg / (1 - pg))
-    coef.adj <- log(pg / (ps2 - pg))
-    coef.form.corr <- log(1 + pg / (1 - pg))
+  if (is.na(diss.model.type)) {
+    stop("The form of the dissolution argument is invalid. Type ",
+         "help('dissolution_coefs') to see the set of options allowed.")
   }
-  if (form.length == 2) {
-    if (t2.term %in% c("nodematch", "nodemix")) {
-      coef.crude <- coef.adj <- coef.form.corr <- NA
-      for (i in seq_along(duration)) {
-        pg <- (duration[i] - 1) / duration[i]
-        ps2 <- (1 - d.rate) ^ 2
-
-        if (ps2 <= pg) {
-          d.rate_ <- round(1 - sqrt(pg), 5)
-          stop("The competing risk of departure is too high for the given",
-               " edge duration of ", duration[i], " in place ", i, ". ",
-               "Specify a d.rate lower than ", d.rate_, ".", sep = "")
-        }
-        if (i == 1) {
-          coef.crude[i] <- log(pg / (1 - pg))
-          coef.adj[i] <- log(pg / (ps2 - pg))
-          coef.form.corr[i] <- log(1 + pg / (1 - pg))
-        } else {
-          coef.crude[i] <- log(pg / (1 - pg)) - coef.crude[1]
-          coef.adj[i] <- log(pg / (ps2 - pg)) - coef.adj[1]
-          coef.form.corr[i] <- log(1 + pg / (1 - pg)) - coef.form.corr[1]
-        }
-      }
-    } else {
-      stop("Supported heterogeneous dissolution model terms are nodematch ",
-           "or nodemix")
-    }
+  if (diss.model.type == "edgesonly" && length(duration) > 1) {
+    stop("Dissolution model length is 1, but number of duration was ",
+         length(duration))
   }
+  check_departure_ceiling(duration, d.rate)
+
+  # Log transformation of duration to coefficient, with the adjustment for
+  # departure as a competing risk; heterogeneous terms are relative to edges
+  pg <- (duration - 1) / duration
+  ps2 <- (1 - d.rate) ^ 2
+  coef.crude <- log(pg / (1 - pg))
+  coef.adj <- log(pg / (ps2 - pg))
+  coef.form.corr <- log(1 + pg / (1 - pg))
+  if (diss.model.type != "edgesonly") {
+    coef.crude[-1] <- coef.crude[-1] - coef.crude[1]
+    coef.adj[-1] <- coef.adj[-1] - coef.adj[1]
+    coef.form.corr[-1] <- coef.form.corr[-1] - coef.form.corr[1]
+  }
+
   out <- list()
   out$dissolution <- dissolution
   out$duration <- duration
@@ -641,6 +627,84 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$diss.model.type <- diss.model.type
   class(out) <- "disscoef"
   return(out)
+}
+
+#' @title Check Mean Edge Durations Against the Departure Ceiling
+#'
+#' @description Stops when a mean edge duration is at or above the departure
+#'              ceiling and warns when one is at or above 90% of it, for
+#'              [dissolution_coefs()].
+#'
+#' @param duration Vector of mean edge durations.
+#' @param d.rate Departure rate, a single number.
+#'
+#' @details
+#' The ceiling is `1 / (1 - (1 - d.rate)^2)`, the mean duration at which every
+#' partnership ending is a departure; see the Details of [dissolution_coefs()].
+#' The error and the warning carry the caller's call, so they name
+#' `dissolution_coefs()`.
+#'
+#' @return `NULL`, invisibly.
+#'
+#' @keywords internal
+check_departure_ceiling <- function(duration, d.rate) {
+  call <- sys.call(-1)
+  share <- duration * (1 - (1 - d.rate) ^ 2)
+  if (!any(share >= 0.9)) {
+    return(invisible(NULL))
+  }
+  ceiling <- 1 / (1 - (1 - d.rate) ^ 2)
+  labels <- if (length(duration) == 1) {
+    "duration"
+  } else {
+    paste0("duration[", seq_along(duration), "]")
+  }
+  and_list <- function(x) {
+    if (length(x) == 1) {
+      return(x)
+    }
+    paste(paste(x[-length(x)], collapse = ", "), "and", x[length(x)])
+  }
+  ceiling_str <- paste0(
+    "the departure ceiling of ", signif(ceiling, 6), " for d.rate = ",
+    format(d.rate, scientific = FALSE), " (1 / (2 * d.rate - d.rate^2))"
+  )
+
+  over <- which(share >= 1)
+  if (length(over) > 0) {
+    one <- length(over) == 1
+    # Largest d.rate that admits the longest duration, rounded down to four
+    # significant digits so the value in the message does admit it
+    d.rate.max <- 1 - sqrt((max(duration) - 1) / max(duration))
+    scale <- 10 ^ (3 - floor(log10(d.rate.max)))
+    d.rate.max <- floor(d.rate.max * scale) / scale
+    msg <- paste0(
+      and_list(paste0(labels[over], " = ", signif(duration[over], 6))),
+      if (one) " is" else " are", " at or above ", ceiling_str,
+      ". At the ceiling departures alone end partnerships faster than the",
+      " mean duration allows, so no dissolution coefficient can produce it.",
+      " Lower ", if (one) "the duration" else "these durations",
+      " below the ceiling, or if ", if (one) "it is" else "they are",
+      " right, lower d.rate below ", format(d.rate.max, scientific = FALSE), "."
+    )
+    stop(simpleError(msg, call = call))
+  }
+
+  near <- which(share >= 0.9)
+  one <- length(near) == 1
+  msg <- paste0(
+    and_list(paste0(labels[near], " = ", signif(duration[near], 6), " (",
+                    formatC(100 * share[near], format = "f", digits = 1),
+                    "%)")),
+    if (one) " is" else " are", " at or above 90% of ", ceiling_str,
+    ". The percentage is the share of partnership endings that are",
+    " departures rather than dissolutions, and this close to the ceiling",
+    " coef.adj rises steeply with the duration. Check ",
+    if (one) "the duration" else "these durations",
+    " first; d.rate is the other lever."
+  )
+  warning(simpleWarning(msg, call = call))
+  invisible(NULL)
 }
 
 
