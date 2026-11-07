@@ -114,6 +114,28 @@ add_vertices <- function(el, nv) {
 #'
 delete_vertices <- function(el, vid) {
 
+  n <- attr(el, "n")
+  if (length(vid) > 0 && !is.null(n) && NROW(el) > 0 && is.numeric(vid) &&
+        !anyNA(vid) && all(vid >= 1 & vid <= n) && !anyDuplicated(vid)) {
+    # one pass: drop the edges of the deleted vertices, then map each remaining
+    # id to its id after the deletion
+    drop <- logical(n)
+    drop[vid] <- TRUE
+    rows <- which(drop[el[, 1]] | drop[el[, 2]])
+    new.el <- el
+    if (length(rows) > 0) {
+      new.el <- el[-rows, , drop = FALSE]
+      attr(new.el, "n") <- n
+    }
+    if (NROW(new.el) > 0) {
+      newid <- seq_len(n) - cumsum(drop)
+      new.el[, 1] <- newid[new.el[, 1]]
+      new.el[, 2] <- newid[new.el[, 2]]
+    }
+    attr(new.el, "n") <- n - length(vid)
+    return(new.el)
+  }
+
   vid <- sort(vid)
 
   new.el <- delete_edges(el, vid)

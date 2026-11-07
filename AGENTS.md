@@ -103,6 +103,7 @@ When modifying functions that touch time or epi structure, verify behavior acros
 
 - `changestats.users.c` - Custom ERGM terms (`fuzzynodematch`, `absdiffby`, `absdiffnodemix`)
 - `updatenw.c` - `shiftVec()`, the C helper behind `delete_vertices()` that renumbers vertex IDs after deletions
+- `attr_kernels.c` - One-pass compaction and append of plain attribute vectors for `remove_node_attr()` and `append_attr()`; vectors with attributes or of other types fall back to R
 - `init.c` - Native routine registration; keeps dynamic symbol lookup on so ergm can find the custom change statistics by name
 
 ### Multi-Network Support

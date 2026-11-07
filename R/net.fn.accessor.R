@@ -81,6 +81,13 @@
 NULL
 
 raw_get_attr_list <- function(dat) return(dat$run$attr)
+
+# An atomic integer, double, logical or character vector with no attributes:
+# what the C kernels in src/attr_kernels.c handle
+is_plain_vector <- function(x) {
+  is.null(attributes(x)) &&
+    (is.double(x) || is.integer(x) || is.logical(x) || is.character(x))
+}
 raw_set_attr_list <- function(dat, attr_list) {
   dat$run$attr <- attr_list
   return(dat)
@@ -316,8 +323,16 @@ append_attr <- function(dat, item, value, n.new) {
     n_active <- length(get_posit_ids(dat))
     old_vals <- rep(NA, max(n_active - n.new, 0L))
   }
-  dat <- set_attr(dat, item, c(old_vals, new_vals),
-                  override.length.check = TRUE)
+  # c(old_vals, new_vals) by memcpy for plain vectors in the type pairs where
+  # c() keeps the type of old_vals; NULL otherwise, and then c() itself
+  vals <- NULL
+  if (is_plain_vector(old_vals) && is_plain_vector(new_vals)) {
+    vals <- .Call(C_append_attr_c, old_vals, new_vals) # nolint: object_usage_linter.
+  }
+  if (is.null(vals)) {
+    vals <- c(old_vals, new_vals)
+  }
+  dat <- set_attr(dat, item, vals, override.length.check = TRUE)
 
   return(dat)
 }
@@ -326,12 +341,23 @@ append_attr <- function(dat, item, value, n.new) {
 #' @order 7
 #' @export
 remove_node_attr <- function(dat, posit_ids) {
-  if (is.null(posit_ids)) {
+  if (length(posit_ids) == 0) {
+    # x[-integer(0)] is empty, which would drop every node (#1142)
     return(dat)
   }
   assert_valid_posit_ids(dat, posit_ids)
   attr_list <- raw_get_attr_list(dat)
-  attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  if (anyNA(posit_ids) || any(posit_ids < 1)) {
+    attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  } else {
+    # one pass per plain vector in C; vectors with attributes or of another
+    # type are subset in R
+    plain <- vapply(attr_list, is_plain_vector, logical(1))
+    out <- attr_list
+    out[plain] <- .Call(C_compact_attr_list, attr_list[plain], as.integer(posit_ids)) # nolint: object_usage_linter.
+    out[!plain] <- lapply(attr_list[!plain], function(x) x[-posit_ids])
+    attr_list <- out
+  }
   dat <- raw_set_attr_list(dat, attr_list)
   return(dat)
 }
