@@ -51,6 +51,19 @@ adjust these coefficients; this upward adjustment accounts for
 departure as a competing risk to edge dissolution.
 }
 
+The departure adjustment has a ceiling. Each time step a partnership ends
+through the departure of either node with probability \code{1 - (1 - d.rate)^2},
+whatever the dissolution model, so its mean duration cannot exceed
+\code{1 / (1 - (1 - d.rate)^2)}, about \code{1 / (2 * d.rate)}. The ratio of a
+duration to this ceiling is the share of partnership endings that are
+departures rather than dissolutions, and the adjusted coefficient is
+\code{coef.adj = coef.crude - log(1 - ratio)}, which climbs steeply as the ratio
+approaches 1: by 2.3 at 90\% of the ceiling and by 4.6 at 99\%. The function
+stops with an error for a duration at or above the ceiling and warns for one
+at or above 90\% of it. A duration that close to the ceiling is usually a
+noisy estimate from a small stratum, so check the duration before lowering
+\code{d.rate}.
+
 The current dissolution models supported by this function and in network
 model estimation in \code{\link[=netest]{netest()}} are as follows:
 \itemize{
