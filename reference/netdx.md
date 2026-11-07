@@ -116,7 +116,9 @@ netdx(
 - ncores:
 
   Number of processor cores to run multiple simulations on, using the
-  `future` framework.
+  `future` framework. Each worker is a separate R session; see the
+  Parallel Simulation section of
+  [`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - skip.dissolution:
 

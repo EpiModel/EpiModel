@@ -30,6 +30,16 @@
 ### OTHER
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  and
+  [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
+  with `ncores > 1` now warn when modules or network model formulas
+  refer to global objects or functions from attached packages, which
+  multisession workers do not have, and
+  [`?netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  has a new Parallel Simulation section on making such code
+  self-contained
+  ([\#1104](https://github.com/EpiModel/EpiModel/issues/1104)).
+- [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   now stops with an error naming the module when a module returns `dat`
   with an R attribute set on it, which is what happens when magrittr is
   attached after EpiModel and masks

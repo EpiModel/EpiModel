@@ -166,7 +166,11 @@ The layer keeps `arrivals.FUN` with its enclosing environment, and so
 does every `netsim` object simulated from it. Define the function at the
 top level of a script or in a package, not inside another function whose
 local objects (fitted networks, population data) would then be saved
-with each simulation.
+with each simulation. The global objects and helper functions it calls
+are not saved with it, so define them again before restarting a saved
+simulation in a new session. They are not available on multisession
+workers either (see the Parallel Simulation section of
+[`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md)).
 
 The rule decides the group attribute of every arriving node. A value
 given by `attr.rules` in

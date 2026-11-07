@@ -88,7 +88,9 @@ control.net(
 
   Number of processor cores to run multiple simulations on, using the
   `future` framework with `multisession`. See `future.use.plan` for
-  other `future` backends.
+  other `future` backends. Each worker is a separate R session; see the
+  Parallel Simulation section of
+  [`netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
 
 - resimulate.network:
 

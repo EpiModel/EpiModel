@@ -170,6 +170,39 @@ processes (arrivals and departures) change the network composition over
 time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.
 
+## Parallel Simulation
+
+With `ncores > 1`, `netsim` runs the simulations on a `multisession`
+plan from the `future` package (see `future.use.plan` in
+[`control.net`](https://epimodel.github.io/EpiModel/reference/control.net.md)
+for other plans). Each worker is a separate R session with EpiModel
+attached and an empty global environment. Modules, updaters, trackers,
+and network model formulas are copied to the workers, but the global
+objects they refer to and the packages attached with
+[`library()`](https://rdrr.io/r/base/library.html) are not. Code that
+runs with `ncores = 1` can then fail with "object not found", or call a
+different function: after
+[`library(dplyr)`](https://dplyr.tidyverse.org),
+[`lag()`](https://rdrr.io/r/stats/lag.html) is
+[`stats::lag()`](https://rdrr.io/r/stats/lag.html) on the workers.
+`netsim` and
+[`netdx`](https://epimodel.github.io/EpiModel/reference/netdx.md) warn
+when user code refers to such objects or functions.
+
+To make the code self-contained, pass values through
+[`param.net`](https://epimodel.github.io/EpiModel/reference/param.net.md)
+and read them with
+[`get_param`](https://epimodel.github.io/EpiModel/reference/get_param.md),
+call package functions as `pkg::fun()`, keep helper functions in a
+package, and store the objects a formula needs in its environment with
+[`statnet.common::trim_env()`](https://rdrr.io/pkg/statnet.common/man/trim_env.html),
+as in `trim_env(~nodefactor("grp", levels = lv), keep = "lv")`. For
+larger projects, run the simulations in parallel outside `netsim`, so
+that each worker loads and creates what it needs, and call `netsim` with
+`ncores = 1`. A `multicore` plan, set with `future::plan("multicore")`
+and `future.use.plan = TRUE`, forks this session and shares its global
+objects and packages, but is not available on Windows or in RStudio.
+
 ## Partnership Histories (Cumulative Edgelist)
 
 For contact tracing, partnership-duration analysis, or reachability

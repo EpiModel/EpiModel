@@ -175,6 +175,31 @@ time. Without it, the network structure evolves independently of the
 epidemic and demographic dynamics.</p>
     </div>
     <div class="section level2">
+    <h2 id="parallel-simulation">Parallel Simulation<a class="anchor" aria-label="anchor" href="#parallel-simulation"></a></h2>
+
+
+<p>With <code>ncores &gt; 1</code>, <code>netsim</code> runs the simulations on a <code>multisession</code> plan
+from the <code>future</code> package (see <code>future.use.plan</code> in <code><a href="control.net.html">control.net</a></code> for
+other plans). Each worker is a separate R session with EpiModel attached and
+an empty global environment. Modules, updaters, trackers, and network model
+formulas are copied to the workers, but the global objects they refer to and
+the packages attached with <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> are not. Code that runs with
+<code>ncores = 1</code> can then fail with "object not found", or call a different
+function: after <code><a href="https://dplyr.tidyverse.org" class="external-link">library(dplyr)</a></code>, <code><a href="https://rdrr.io/r/stats/lag.html" class="external-link">lag()</a></code> is <code><a href="https://rdrr.io/r/stats/lag.html" class="external-link">stats::lag()</a></code> on the workers.
+<code>netsim</code> and <code><a href="netdx.html">netdx</a></code> warn when user code refers to such objects or
+functions.</p>
+<p>To make the code self-contained, pass values through <code><a href="param.net.html">param.net</a></code> and read
+them with <code><a href="get_param.html">get_param</a></code>, call package functions as <code>pkg::fun()</code>, keep helper
+functions in a package, and store the objects a formula needs in its
+environment with <code><a href="https://rdrr.io/pkg/statnet.common/man/trim_env.html" class="external-link">statnet.common::trim_env()</a></code>, as in
+<code>trim_env(~nodefactor("grp", levels = lv), keep = "lv")</code>. For larger
+projects, run the simulations in parallel outside <code>netsim</code>, so that each
+worker loads and creates what it needs, and call <code>netsim</code> with
+<code>ncores = 1</code>. A <code>multicore</code> plan, set with <code>future::plan("multicore")</code> and
+<code>future.use.plan = TRUE</code>, forks this session and shares its global objects
+and packages, but is not available on Windows or in RStudio.</p>
+    </div>
+    <div class="section level2">
     <h2 id="partnership-histories-cumulative-edgelist-">Partnership Histories (Cumulative Edgelist)<a class="anchor" aria-label="anchor" href="#partnership-histories-cumulative-edgelist-"></a></h2>
 
 

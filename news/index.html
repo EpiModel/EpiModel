@@ -47,6 +47,8 @@
 <div class="section level3">
 <h3 id="other-2-7-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-7-1"></a></h3>
 <ul><li>
+<code><a href="../reference/netsim.html">netsim()</a></code> and <code><a href="../reference/netdx.html">netdx()</a></code> with <code>ncores &gt; 1</code> now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and <code><a href="../reference/netsim.html">?netsim</a></code> has a new Parallel Simulation section on making such code self-contained (<a href="https://github.com/EpiModel/EpiModel/issues/1104" class="external-link">#1104</a>).</li>
+<li>
 <code><a href="../reference/netsim.html">netsim()</a></code> now stops with an error naming the module when a module returns <code>dat</code> with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks <code><a href="../reference/get_attr.html">set_attr()</a></code> (<a href="https://github.com/EpiModel/EpiModel/issues/1120" class="external-link">#1120</a>).</li>
 </ul></div>
 </div>

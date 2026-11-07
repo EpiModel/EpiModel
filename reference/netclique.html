@@ -191,7 +191,10 @@ draws it joins the other arrivals in a spurious group.</p></li>
 every <code>netsim</code> object simulated from it. Define the function at the top
 level of a script or in a package, not inside another function whose local
 objects (fitted networks, population data) would then be saved with each
-simulation.</p>
+simulation. The global objects and helper functions it calls are not saved
+with it, so define them again before restarting a saved simulation in a new
+session. They are not available on multisession workers either (see the
+Parallel Simulation section of <code><a href="netsim.html">netsim</a></code>).</p>
 <p>The rule decides the group attribute of every arriving node. A value given
 by <code>attr.rules</code> in <code><a href="control.net.html">control.net()</a></code> or by a custom arrivals module is
 replaced, so that the layer always matches the groups, and <code>netsim</code> warns
