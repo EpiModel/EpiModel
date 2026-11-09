@@ -52,6 +52,7 @@
 <code><a href="../reference/netsim.html">netsim()</a></code> now stops with an error naming the module when a module returns <code>dat</code> with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks <code><a href="../reference/get_attr.html">set_attr()</a></code> (<a href="https://github.com/EpiModel/EpiModel/issues/1120" class="external-link">#1120</a>).</li>
 <li>
 <code><a href="../reference/dissolution_coefs.html">dissolution_coefs()</a></code> now warns when a duration is at or above 90% of the departure ceiling, <code>1 / (2 * d.rate - d.rate^2)</code>, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before <code>d.rate</code> (<a href="https://github.com/EpiModel/EpiModel/issues/1138" class="external-link">#1138</a>).</li>
+<li>EpiModel no longer imports or links to Rcpp. Its one compiled helper, <code><a href="../reference/shiftVec.html">shiftVec()</a></code>, which <code><a href="../reference/delete_vertices.html">delete_vertices()</a></code> uses to renumber vertex IDs after departures, is now plain C registered through R’s native routine interface (<a href="https://github.com/EpiModel/EpiModel/issues/1140" class="external-link">#1140</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">

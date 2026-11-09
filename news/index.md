@@ -50,6 +50,13 @@
   `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at
   the ceiling gives the ceiling and points at the duration before
   `d.rate` ([\#1138](https://github.com/EpiModel/EpiModel/issues/1138)).
+- EpiModel no longer imports or links to Rcpp. Its one compiled helper,
+  [`shiftVec()`](https://epimodel.github.io/EpiModel/reference/shiftVec.md),
+  which
+  [`delete_vertices()`](https://epimodel.github.io/EpiModel/reference/delete_vertices.md)
+  uses to renumber vertex IDs after departures, is now plain C
+  registered through R’s native routine interface
+  ([\#1140](https://github.com/EpiModel/EpiModel/issues/1140)).
 
 ## EpiModel 2.7.0
 
