@@ -51,7 +51,7 @@ After modifying C/C++ code in `src/`, the package must be reinstalled (`R CMD IN
 - Roxygen2 with markdown enabled for documentation
 - S3 OOP: classes are `dcm`, `icm`, `netsim`, `netest`, `netdx` with method dispatch
 - Disabled linters: `object_name_linter`, `cyclocomp_linter`, `trailing_blank_lines_linter`, `return_linter`
-- Lintr exclusions: `inst/`, `tests/`, `vignettes/`, `R/test.R`, `R/RcppExports.R`, `R/dcm.mods.R`
+- Lintr exclusions: `inst/`, `tests/`, `vignettes/`, `R/test.R`, `R/dcm.mods.R`
 
 ## Architecture
 
@@ -102,8 +102,8 @@ When modifying functions that touch time or epi structure, verify behavior acros
 ### Compiled Code (src/)
 
 - `changestats.users.c` - Custom ERGM terms (`fuzzynodematch`, `absdiffby`, `absdiffnodemix`)
-- `updatenw.cpp` - Rcpp-based network update operations
-- `RcppExports.cpp` - Auto-generated Rcpp bindings (do not edit manually)
+- `updatenw.c` - `shiftVec()`, the C helper behind `delete_vertices()` that renumbers vertex IDs after deletions
+- `init.c` - Native routine registration; keeps dynamic symbol lookup on so ergm can find the custom change statistics by name
 
 ### Multi-Network Support
 
@@ -142,7 +142,7 @@ R is not pre-installed in the Claude Code environment but can be installed. When
    install.packages(c("deSolve", "networkDynamic", "tergm", "statnet.common",
      "ergm", "network", "networkLite", "collections", "future", "future.apply",
      "RColorBrewer", "ape", "lazyeval", "ggplot2", "tibble", "rlang", "dplyr",
-     "coda", "Rcpp", "testthat", "knitr", "rmarkdown", "tidyr",
+     "coda", "testthat", "knitr", "rmarkdown", "tidyr",
      "roxygen2", "lintr", "DT", "shiny"),
      repos = "https://cloud.r-project.org", Ncpus = 4)
    ```

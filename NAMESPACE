@@ -237,7 +237,6 @@ importFrom(RColorBrewer,
   brewer.pal,
   brewer.pal.info
 )
-importFrom(Rcpp,evalCpp)
 importFrom(ape,
   as.phylo,
   collapse.singles
@@ -310,4 +309,4 @@ importFrom(utils,
   packageVersion,
   tail
 )
-useDynLib(EpiModel, .registration = TRUE)
+useDynLib(EpiModel, .registration = TRUE, .fixes = "C_")

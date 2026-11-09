@@ -12,6 +12,7 @@
 -   `netsim()` and `netdx()` with `ncores > 1` now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and `?netsim` has a new Parallel Simulation section on making such code self-contained (#1104).
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
 -   `dissolution_coefs()` now warns when a duration is at or above 90% of the departure ceiling, `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before `d.rate` (#1138).
+-   EpiModel no longer imports or links to Rcpp. Its one compiled helper, `shiftVec()`, which `delete_vertices()` uses to renumber vertex IDs after departures, is now plain C registered through R's native routine interface (#1140).
 
 ## EpiModel 2.7.0
 

@@ -52,8 +52,7 @@ Imports:
     rlang,
     dplyr (>= 1.1.0),
     coda,
-    networkLite (>= 1.0.5),
-    Rcpp
+    networkLite (>= 1.0.5)
 Suggests:
     bslib (>= 0.6.0),
     DT,
@@ -67,7 +66,7 @@ Suggests:
     testthat (>= 3.1.8),
     tidyr
 VignetteBuilder: knitr
-LinkingTo: Rcpp, ergm
+LinkingTo: ergm
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1

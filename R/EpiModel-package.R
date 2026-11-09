@@ -195,9 +195,8 @@
 #' @importFrom tibble as_tibble tibble
 #' @importFrom coda effectiveSize
 #' @importFrom rlang .data
-#' @importFrom Rcpp evalCpp
 #'
-#' @useDynLib EpiModel, .registration = TRUE
+#' @useDynLib EpiModel, .registration = TRUE, .fixes = "C_"
 #'
 #' @keywords package
 #'

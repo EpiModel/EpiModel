@@ -9,5 +9,4 @@ exclusions: list(
   "tests",
   "vignettes",
   "R/test.R",
-  "R/RcppExports.R",
   "R/dcm.mods.R")
