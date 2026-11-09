@@ -951,6 +951,10 @@ padded_vector <- function(orig, size) {
 assert_valid_posit_ids <- function(dat, posit_ids) {
   if (!is.numeric(posit_ids))
     stop("`posit_ids` must be `numeric`")
+  if (anyNA(posit_ids))
+    stop("Some `posit_ids` are `NA`")
+  if (any(posit_ids < 1))
+    stop("Some `posit_ids` are lower than 1")
   if (any(posit_ids > length(get_attr(dat, "active"))))
     stop("Some `posit_ids` are larger than the number of nodes ",
          " in the network")
