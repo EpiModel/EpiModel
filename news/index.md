@@ -26,6 +26,18 @@
   models of every class now reject `b.rate` and `trans.rate` rather than
   storing them silently
   ([\#1108](https://github.com/EpiModel/EpiModel/issues/1108)).
+- [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  and
+  [`delete_attr()`](https://epimodel.github.io/EpiModel/reference/delete_attr.md)
+  called with an empty ID vector now leave `dat` unchanged instead of
+  dropping every node from every attribute
+  ([\#1142](https://github.com/EpiModel/EpiModel/issues/1142)).
+- [`get_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md),
+  [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md),
+  and
+  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  now stop with an error when `posit_ids` holds `NA` or values below 1
+  ([\#1143](https://github.com/EpiModel/EpiModel/issues/1143)).
 
 ### OTHER
 
@@ -57,6 +69,18 @@
   uses to renumber vertex IDs after departures, is now plain C
   registered through R’s native routine interface
   ([\#1140](https://github.com/EpiModel/EpiModel/issues/1140)).
+- Faster bookkeeping on departures and arrivals in tergmLite
+  simulations, with identical output:
+  [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  and
+  [`append_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
+  copy plain attribute vectors in C,
+  [`delete_vertices()`](https://epimodel.github.io/EpiModel/reference/delete_vertices.md)
+  renumbers the edgelist in one pass without sorting, and
+  [`update_cumulative_edgelist()`](https://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.md)
+  matches the current edges to the open partnerships on a pair key
+  instead of a join
+  ([\#1141](https://github.com/EpiModel/EpiModel/issues/1141)).
 
 ## EpiModel 2.7.0
 

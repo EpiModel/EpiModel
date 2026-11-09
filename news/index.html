@@ -43,6 +43,10 @@
 <li>
 <code><a href="../reference/trim_netest.html">trim_netest()</a></code> no longer modifies the <code>netest</code> object passed to it when the model was fit with <code>nested.edapprox = FALSE</code> or <code>edapprox = FALSE</code> (<a href="https://github.com/EpiModel/EpiModel/issues/1107" class="external-link">#1107</a>).</li>
 <li>The guards for the argument names removed in 2.6.1 now match only the <code>.m2</code> suffix, so names such as <code>area.km2</code> are accepted, and built-in models of every class now reject <code>b.rate</code> and <code>trans.rate</code> rather than storing them silently (<a href="https://github.com/EpiModel/EpiModel/issues/1108" class="external-link">#1108</a>).</li>
+<li>
+<code><a href="../reference/get_attr.html">remove_node_attr()</a></code> and <code><a href="../reference/delete_attr.html">delete_attr()</a></code> called with an empty ID vector now leave <code>dat</code> unchanged instead of dropping every node from every attribute (<a href="https://github.com/EpiModel/EpiModel/issues/1142" class="external-link">#1142</a>).</li>
+<li>
+<code><a href="../reference/get_attr.html">get_attr()</a></code>, <code><a href="../reference/get_attr.html">set_attr()</a></code>, and <code><a href="../reference/get_attr.html">remove_node_attr()</a></code> now stop with an error when <code>posit_ids</code> holds <code>NA</code> or values below 1 (<a href="https://github.com/EpiModel/EpiModel/issues/1143" class="external-link">#1143</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-7-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-7-1"></a></h3>
@@ -53,6 +57,7 @@
 <li>
 <code><a href="../reference/dissolution_coefs.html">dissolution_coefs()</a></code> now warns when a duration is at or above 90% of the departure ceiling, <code>1 / (2 * d.rate - d.rate^2)</code>, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before <code>d.rate</code> (<a href="https://github.com/EpiModel/EpiModel/issues/1138" class="external-link">#1138</a>).</li>
 <li>EpiModel no longer imports or links to Rcpp. Its one compiled helper, <code><a href="../reference/shiftVec.html">shiftVec()</a></code>, which <code><a href="../reference/delete_vertices.html">delete_vertices()</a></code> uses to renumber vertex IDs after departures, is now plain C registered through R’s native routine interface (<a href="https://github.com/EpiModel/EpiModel/issues/1140" class="external-link">#1140</a>).</li>
+<li>Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: <code><a href="../reference/get_attr.html">remove_node_attr()</a></code> and <code><a href="../reference/get_attr.html">append_attr()</a></code> copy plain attribute vectors in C, <code><a href="../reference/delete_vertices.html">delete_vertices()</a></code> renumbers the edgelist in one pass without sorting, and <code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> matches the current edges to the open partnerships on a pair key instead of a join (<a href="https://github.com/EpiModel/EpiModel/issues/1141" class="external-link">#1141</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
