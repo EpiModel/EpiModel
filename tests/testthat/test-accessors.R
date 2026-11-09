@@ -112,6 +112,9 @@ test_that("`dat` getters and setter", {
 
   expect_error(dat <- set_attr(dat, "age", 1, posit_ids = TRUE))
   expect_error(dat <- set_attr(dat, "age", 1, posit_ids = "a"))
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c(1, NA)), "`NA`")
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = 0), "lower than 1")
+  expect_error(get_attr(dat, "age", -1), "lower than 1")
 
 
   expect_error(get_attr_list(dat, "sex"))
@@ -325,4 +328,67 @@ test_that("check_attr_lengths flags attributes of the wrong length", {
   no.active <- dat
   no.active$run$attr$active <- NULL
   expect_error(check_attr_lengths(no.active), "`active` nodal attribute is missing")
+})
+
+test_that("remove_node_attr compacts every attribute type like x[-ids] (#1141, #1142)", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 20)
+  dat <- set_attr(dat, "dbl", rnorm(20))
+  dat <- set_attr(dat, "int", sample.int(100, 20))
+  dat <- set_attr(dat, "lgl", sample(c(TRUE, FALSE, NA), 20, TRUE))
+  dat <- set_attr(dat, "chr", sample(c("a", "b", NA), 20, TRUE))
+  dat <- set_attr(dat, "fct", factor(sample(c("x", "y"), 20, TRUE)))
+  dat <- set_attr(dat, "named", setNames(runif(20), paste0("n", 1:20)))
+  dat <- set_attr(dat, "date", as.Date("2026-01-01") + 0:19)
+  dat <- set_attr(dat, "lst", as.list(1:20))
+
+  ref <- function(dat, ids) lapply(get_attr_list(dat), function(x) x[-ids])
+  for (ids in list(c(2, 5), c(5, 2, 5), 1, 20, c(1, 20), 1:20, c(3.7, 8.2))) {
+    expect_identical(get_attr_list(EpiModel:::remove_node_attr(dat, ids)), ref(dat, ids))
+  }
+  # an empty id vector leaves dat unchanged instead of dropping every node (#1142)
+  expect_identical(EpiModel:::remove_node_attr(dat, integer(0)), dat)
+  expect_identical(delete_attr(dat, NULL), dat)
+  expect_identical(delete_attr(dat, which(get_attr(dat, "active") == 0)), dat)
+  # positions past the end of a shorter vector are ignored, as by x[-ids]
+  short <- dat
+  short$run$attr$short <- 1:5
+  expect_identical(get_attr_list(EpiModel:::remove_node_attr(short, c(2, 8))), ref(short, c(2, 8)))
+  # zero, negative, NA and out of range positions are errors
+  expect_error(EpiModel:::remove_node_attr(dat, c(0, 3)), "lower than 1")
+  expect_error(EpiModel:::remove_node_attr(dat, -1), "lower than 1")
+  expect_error(EpiModel:::remove_node_attr(dat, c(NA, 3)), "`NA`")
+  expect_error(EpiModel:::remove_node_attr(dat, 21), "larger than")
+})
+
+test_that("append_attr concatenates like c() for every type pair (#1141)", {
+  dat <- create_dat_object(control = list(nsteps = 10))
+  dat <- append_core_attr(dat, at = 1, n.new = 5)
+  olds <- list(dbl = rnorm(5), int = 1:5, lgl = c(TRUE, FALSE, NA, TRUE, FALSE),
+               chr = letters[1:5], fct = factor(letters[1:5]),
+               named = setNames(1:5, letters[1:5]), date = as.Date("2026-01-01") + 0:4)
+  news <- list(dbl = c(1.5, NA, 3), int = c(7L, NA, 9L), lgl = c(NA, TRUE, FALSE),
+               chr = c("z", NA, "y"), fct = factor(c("a", "q", "a")),
+               named = c(x = 10L, y = 11L, z = 12L), date = as.Date("2027-01-01") + 0:2,
+               one = 4)
+  for (o in names(olds)) {
+    for (nw in names(news)) {
+      d <- set_attr(dat, "x", olds[[o]])
+      d <- append_core_attr(d, at = 2, n.new = 3)
+      val <- news[[nw]]
+      expected <- tryCatch(c(olds[[o]], if (length(val) == 1) rep(val, 3) else val),
+                           error = function(e) NULL)
+      if (is.null(expected)) {
+        # c() itself fails for this pair (a Date with a character), so must we
+        expect_error(append_attr(d, "x", val, 3))
+      } else {
+        d <- append_attr(d, "x", val, 3)
+        expect_identical(get_attr(d, "x"), expected, info = paste(o, "+", nw))
+      }
+    }
+  }
+  # an attribute that does not exist yet gets NA for the existing nodes
+  d <- append_core_attr(dat, at = 2, n.new = 3)
+  d <- append_attr(d, "new", 1:3, 3)
+  expect_identical(get_attr(d, "new"), c(rep(NA, 5), 1:3))
 })

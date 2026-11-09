@@ -6,6 +6,8 @@
 -   Fix `dedup_cumulative_edgelist()`, which invented spells across gaps, left overlaps, and closed ongoing spells, so `get_forward_reachable()` and `get_backward_reachable()` could report false paths on its output (#1106).
 -   `trim_netest()` no longer modifies the `netest` object passed to it when the model was fit with `nested.edapprox = FALSE` or `edapprox = FALSE` (#1107).
 -   The guards for the argument names removed in 2.6.1 now match only the `.m2` suffix, so names such as `area.km2` are accepted, and built-in models of every class now reject `b.rate` and `trans.rate` rather than storing them silently (#1108).
+-   `remove_node_attr()` and `delete_attr()` called with an empty ID vector now leave `dat` unchanged instead of dropping every node from every attribute (#1142).
+-   `get_attr()`, `set_attr()`, and `remove_node_attr()` now stop with an error when `posit_ids` holds `NA` or values below 1 (#1143).
 
 ### OTHER
 
@@ -13,6 +15,7 @@
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
 -   `dissolution_coefs()` now warns when a duration is at or above 90% of the departure ceiling, `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before `d.rate` (#1138).
 -   EpiModel no longer imports or links to Rcpp. Its one compiled helper, `shiftVec()`, which `delete_vertices()` uses to renumber vertex IDs after departures, is now plain C registered through R's native routine interface (#1140).
+-   Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: `remove_node_attr()` and `append_attr()` copy plain attribute vectors in C, `delete_vertices()` renumbers the edgelist in one pass without sorting, and `update_cumulative_edgelist()` matches the current edges to the open partnerships on a pair key instead of a join (#1141).
 
 ## EpiModel 2.7.0
 

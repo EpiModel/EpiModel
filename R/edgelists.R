@@ -294,11 +294,43 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
     el_cuml_hist <- el_cuml_hist[rel.age <= truncate, ]
   }
 
-  el <- tibble::tibble(
-    head = get_unique_ids(dat, el[, 2]),
-    tail = get_unique_ids(dat, el[, 1]),
-    current = TRUE
-  )
+  head <- get_unique_ids(dat, el[, 2])
+  tail <- get_unique_ids(dat, el[, 1])
+
+  # Match the current edges against the open partnerships on a numeric pair
+  # key (head * key_base + tail, exact below 2^53). For unique keys this is the
+  # full_join below: open partnerships still in `el` keep their row and order,
+  # the ones missing from `el` are terminated, and the new edges are appended
+  # in `el` order.
+  key_base <- max(c(head, tail, el_cuml_cur$head, el_cuml_cur$tail, 0)) + 1
+  if (key_base < 2^26 && !anyNA(head) && !anyNA(tail)) {
+    key_el <- head * key_base + tail
+    key_cur <- el_cuml_cur$head * key_base + el_cuml_cur$tail
+    if (!anyDuplicated(key_el) && !anyDuplicated(key_cur)) {
+      is_continuing <- match(key_cur, key_el, 0L) > 0L
+      is_new <- !(key_el %in% key_cur)
+      n_new <- sum(is_new)
+      el_cuml_new <- tibble::new_tibble(
+        list(
+          head = c(el_cuml_cur$head[is_continuing], head[is_new]),
+          tail = c(el_cuml_cur$tail[is_continuing], tail[is_new]),
+          start = c(el_cuml_cur$start[is_continuing], rep(at, n_new)),
+          stop = c(el_cuml_cur$stop[is_continuing], rep(NA, n_new))
+        ),
+        nrow = sum(is_continuing) + n_new
+      )
+      if (!all(is_continuing) && truncate != 0) {
+        el_cuml_term <- el_cuml_cur[!is_continuing, ]
+        el_cuml_term$stop <- at - 1
+        el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, el_cuml_term)
+      }
+      dat <- set_raw_elcuml(dat, network, el_cuml_new, active = TRUE)
+      dat <- set_raw_elcuml(dat, network, el_cuml_hist, active = FALSE)
+      return(dat)
+    }
+  }
+
+  el <- tibble::tibble(head = head, tail = tail, current = TRUE)
 
   el_cuml_cur <- dplyr::full_join(el_cuml_cur, el, by = c("head", "tail"))
 

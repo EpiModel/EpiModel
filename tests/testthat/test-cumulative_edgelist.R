@@ -485,3 +485,72 @@ test_that("dedup_cumulative_edgelist merges overlapping spells only (#1106)", {
   expect_s3_class(dedup_cumulative_edgelist(cel), "cumulative_edgelist")
   expect_equal(nrow(dedup_cumulative_edgelist(cel[0, ])), 0)
 })
+
+test_that("update_cumulative_edgelist match path equals the join (#1141)", {
+  update_cuml_ref <- function(dat, network, truncate) {
+    el <- get_edgelist(dat, network)
+    cur <- EpiModel:::get_raw_elcuml(dat, network, active = TRUE)
+    hist <- EpiModel:::get_raw_elcuml(dat, network, active = FALSE)
+    at <- get_current_timestep(dat)
+    if (truncate != Inf && truncate != 0) {
+      hist <- hist[at - hist$stop <= truncate, ]
+    }
+    el <- tibble::tibble(head = get_unique_ids(dat, el[, 2]),
+                         tail = get_unique_ids(dat, el[, 1]), current = TRUE)
+    cur <- dplyr::full_join(cur, el, by = c("head", "tail"))
+    new_ids <- which(is.na(cur$start))
+    if (length(new_ids) > 0) cur[new_ids, ]$start <- at
+    term <- which(is.na(cur$current))
+    cur$current <- NULL
+    if (length(term) > 0) {
+      tm <- cur[term, ]
+      if (truncate != 0) {
+        tm$stop <- at - 1
+        hist <- dplyr::bind_rows(hist, tm)
+      }
+      cur <- cur[-term, ]
+    }
+    list(cur = cur, hist = hist)
+  }
+
+  set.seed(10)
+  nw <- network_initialize(n = 200)
+  est <- netest(nw, ~edges, 100, dissolution_coefs(~offset(edges), 10, 0), verbose = FALSE)
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1, tergmLite = TRUE,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         cumulative.edgelist = TRUE, truncate.el.cuml = 5)
+  crosscheck.net(est, param, init, control)
+  dat <- initialize.net(est, param, init, control, s = 1)
+
+  for (step in 2:6) {
+    dat$run$current_timestep <- step
+    # turn over a quarter of the edges, keeping the edgelist sorted
+    el <- get_edgelist(dat, 1)
+    keep <- sort(sample.int(nrow(el), round(nrow(el) * 0.75)))
+    new <- cbind(sample.int(200, nrow(el) - length(keep)), sample.int(200, nrow(el) - length(keep)))
+    new <- cbind(pmin(new[, 1], new[, 2]), pmax(new[, 1], new[, 2]))
+    el2 <- unique(rbind(el[keep, ], new[new[, 1] != new[, 2], ]))
+    el2 <- el2[order(el2[, 1], el2[, 2]), ]
+    storage.mode(el2) <- "integer"
+    attr(el2, "n") <- attr(el, "n")
+    dat$run$el[[1]] <- el2
+
+    ref <- update_cuml_ref(dat, 1, truncate = 5)
+    dat <- update_cumulative_edgelist(dat, 1, truncate = 5)
+    expect_identical(EpiModel:::get_raw_elcuml(dat, 1, active = TRUE), ref$cur)
+    expect_identical(EpiModel:::get_raw_elcuml(dat, 1, active = FALSE), ref$hist)
+    expect_true(nrow(ref$hist) > 0)
+  }
+
+  # a duplicated edge falls back to the join and gives the same result
+  dat$run$current_timestep <- 7
+  el <- get_edgelist(dat, 1)
+  el2 <- rbind(el, el[1, ])
+  attr(el2, "n") <- attr(el, "n")
+  dat$run$el[[1]] <- el2
+  ref <- update_cuml_ref(dat, 1, truncate = 5)
+  dat <- update_cumulative_edgelist(dat, 1, truncate = 5)
+  expect_identical(EpiModel:::get_raw_elcuml(dat, 1, active = TRUE), ref$cur)
+})

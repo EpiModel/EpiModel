@@ -370,3 +370,40 @@ test_that("shiftVec matches its R reference and handles edge cases", {
   expect_identical(EpiModel:::shiftVec(c(3L, 5L), c(3L, 3L)), c(1L, 3L))
   expect_error(EpiModel:::shiftVec("a", 1L), "orig and del must be numeric vectors")
 })
+
+test_that("delete_vertices one-pass path matches the sort-based path (#1141)", {
+  delete_vertices_ref <- function(el, vid) {
+    vid <- sort(vid)
+    new.el <- delete_edges(el, vid)
+    if (length(vid) > 0 && NROW(new.el) > 0) {
+      o1 <- order(new.el[, 1])
+      new.el[, 1] <- EpiModel:::shiftVec(new.el[o1, 1], vid)[order(o1)]
+      o2 <- order(new.el[, 2])
+      new.el[, 2] <- EpiModel:::shiftVec(new.el[o2, 2], vid)[order(o2)]
+    }
+    if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") - length(vid)
+    new.el
+  }
+  set.seed(2)
+  for (k in 1:40) {
+    n <- sample(5:300, 1)
+    m <- sample(0:400, 1)
+    el <- cbind(sample.int(n, m, TRUE), sample.int(n, m, TRUE))
+    el <- el[el[, 1] != el[, 2], , drop = FALSE]
+    el <- unique(cbind(pmin(el[, 1], el[, 2]), pmax(el[, 1], el[, 2])))
+    el <- el[order(el[, 1], el[, 2]), , drop = FALSE]
+    storage.mode(el) <- if (k %% 2 == 0) "integer" else "double"
+    attr(el, "n") <- n
+    vid <- sample.int(n, sample(0:min(n, 30), 1))   # unsorted, may include isolates
+    expect_identical(delete_vertices(el, vid), delete_vertices_ref(el, vid))
+    expect_identical(delete_vertices(el, seq_len(n)), delete_vertices_ref(el, seq_len(n)))
+  }
+  # as.edgelist attributes survive, and an edgelist without n uses the sort path
+  nw <- network_initialize(10)
+  nw[1, 2] <- nw[3, 6] <- nw[2, 5] <- nw[8, 10] <- 1
+  el <- as.edgelist(nw)
+  expect_identical(delete_vertices(el, c(4, 7)), delete_vertices_ref(el, c(4, 7)))
+  expect_identical(delete_vertices(el, c(1, 10)), delete_vertices_ref(el, c(1, 10)))
+  el_plain <- matrix(c(1, 2, 3, 8, 2, 5, 6, 10), ncol = 2)
+  expect_identical(delete_vertices(el_plain, c(4, 7)), delete_vertices_ref(el_plain, c(4, 7)))
+})

@@ -81,6 +81,24 @@
 NULL
 
 raw_get_attr_list <- function(dat) return(dat$run$attr)
+
+# An atomic integer, double, logical or character vector with no attributes:
+# what the C kernels in src/attr_kernels.c handle
+is_plain_vector <- function(x) {
+  is.null(attributes(x)) &&
+    (is.double(x) || is.integer(x) || is.logical(x) || is.character(x))
+}
+
+# TRUE for the pairs of plain vectors C_append_attr_c handles: the same type,
+# or integer or logical values appended to a double vector, or logical values
+# to an integer one. c() keeps the type of `old_vals` in each of these.
+can_append_in_c <- function(old_vals, new_vals) {
+  old_type <- typeof(old_vals)
+  new_type <- typeof(new_vals)
+  old_type == new_type ||
+    (old_type == "double" && new_type %in% c("integer", "logical")) ||
+    (old_type == "integer" && new_type == "logical")
+}
 raw_set_attr_list <- function(dat, attr_list) {
   dat$run$attr <- attr_list
   return(dat)
@@ -316,8 +334,15 @@ append_attr <- function(dat, item, value, n.new) {
     n_active <- length(get_posit_ids(dat))
     old_vals <- rep(NA, max(n_active - n.new, 0L))
   }
-  dat <- set_attr(dat, item, c(old_vals, new_vals),
-                  override.length.check = TRUE)
+  # c(old_vals, new_vals) by memcpy for plain vectors in the type pairs where
+  # c() keeps the type of old_vals, and c() itself otherwise
+  if (is_plain_vector(old_vals) && is_plain_vector(new_vals) &&
+        can_append_in_c(old_vals, new_vals)) {
+    vals <- .Call(C_append_attr_c, old_vals, new_vals) # nolint: object_usage_linter.
+  } else {
+    vals <- c(old_vals, new_vals)
+  }
+  dat <- set_attr(dat, item, vals, override.length.check = TRUE)
 
   return(dat)
 }
@@ -326,12 +351,20 @@ append_attr <- function(dat, item, value, n.new) {
 #' @order 7
 #' @export
 remove_node_attr <- function(dat, posit_ids) {
-  if (is.null(posit_ids)) {
+  if (length(posit_ids) == 0) {
+    # x[-integer(0)] is empty, which would drop every node (#1142)
     return(dat)
   }
+  # validated, sorted and unique here, so C_compact_attr_list does not check
+  # or sort the positions again
   assert_valid_posit_ids(dat, posit_ids)
+  drop_pos <- sort(unique(as.integer(posit_ids)))
   attr_list <- raw_get_attr_list(dat)
-  attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  # one pass per plain vector in C; vectors with attributes or of another
+  # type are subset in R
+  is_plain <- vapply(attr_list, is_plain_vector, logical(1))
+  attr_list[is_plain] <- .Call(C_compact_attr_list, attr_list[is_plain], drop_pos) # nolint: object_usage_linter.
+  attr_list[!is_plain] <- lapply(attr_list[!is_plain], function(x) x[-drop_pos])
   dat <- raw_set_attr_list(dat, attr_list)
   return(dat)
 }
@@ -925,9 +958,13 @@ padded_vector <- function(orig, size) {
 assert_valid_posit_ids <- function(dat, posit_ids) {
   if (!is.numeric(posit_ids))
     stop("`posit_ids` must be `numeric`")
+  if (anyNA(posit_ids))
+    stop("Some `posit_ids` are `NA`")
+  if (any(posit_ids < 1))
+    stop("Some `posit_ids` are lower than 1")
   if (any(posit_ids > length(get_attr(dat, "active"))))
     stop("Some `posit_ids` are larger than the number of nodes ",
-         " in the network")
+         "in the network")
   invisible(posit_ids)
 }
 
