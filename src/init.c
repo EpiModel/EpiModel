@@ -2,7 +2,7 @@
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
-SEXP shiftVec(SEXP x, SEXP y);
+SEXP shiftVec(SEXP orig, SEXP del);
 
 static const R_CallMethodDef CallEntries[] = {
   {"shiftVec", (DL_FUNC) &shiftVec, 2},

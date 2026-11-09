@@ -130,19 +130,24 @@ delete_vertices <- function(el, vid) {
 
 #' @title Shift Vertex IDs Down Past Deleted IDs
 #'
-#' @description Subtracts from each vertex ID in `x` the number of deleted IDs
-#'              in `y` that are less than or equal to it, so that the IDs left
-#'              after a deletion are consecutive again. Both vectors must be
-#'              sorted in increasing order.
+#' @description Subtracts from each vertex ID in `orig` the number of deleted
+#'              IDs in `del` that are less than or equal to it, so that the IDs
+#'              left after a deletion are consecutive again. Both vectors must
+#'              be sorted in increasing order.
 #'
-#' @param x Sorted vector of vertex IDs.
-#' @param y Sorted vector of deleted vertex IDs.
+#' @param orig Sorted vector of vertex IDs.
+#' @param del Sorted vector of deleted vertex IDs.
 #'
-#' @return An integer vector the length of `x`.
+#' @details
+#' For example, `orig = 1:10` and `del = c(4, 6, 8, 9)` return
+#' `c(1, 2, 3, 3, 4, 4, 5, 5, 5, 6)`, so the IDs kept (1, 2, 3, 5, 7, 10)
+#' become 1 to 6.
+#'
+#' @return An integer vector the length of `orig`.
 #'
 #' @keywords internal
-shiftVec <- function(x, y) {
-  .Call(C_shiftVec, x, y) # nolint: object_usage_linter.
+shiftVec <- function(orig, del) {
+  .Call(C_shiftVec, orig, del) # nolint: object_usage_linter.
 }
 
 

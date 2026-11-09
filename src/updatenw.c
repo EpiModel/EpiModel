@@ -3,40 +3,46 @@
 
 /* Shift sorted vertex ids down past deleted ids.
 
-   x: vertex ids sorted in increasing order
-   y: deleted vertex ids sorted in increasing order
+   orig: vertex ids sorted in increasing order
+   del:  deleted vertex ids sorted in increasing order
 
-   Returns x[i] minus the number of elements of y that are <= x[i], as an
-   integer vector, so that the ids left after deleting y are consecutive
-   again. Both inputs are coerced to integer. */
-SEXP shiftVec(SEXP x, SEXP y) {
-  if (!Rf_isNumeric(x) || !Rf_isNumeric(y)) {
-    Rf_error("x and y must be numeric vectors");
+   Returns orig[pos_orig] minus the number of elements of del that are
+   <= orig[pos_orig], as an integer vector, so that the ids left after
+   deleting del are consecutive again. Both inputs are coerced to integer.
+
+   Example: orig = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 and del = 4, 6, 8, 9 return
+   1, 2, 3, 3, 4, 4, 5, 5, 5, 6, so the ids kept (1, 2, 3, 5, 7, 10) become
+   1 to 6. */
+SEXP shiftVec(SEXP orig, SEXP del) {
+  if (!Rf_isNumeric(orig) || !Rf_isNumeric(del)) {
+    Rf_error("orig and del must be numeric vectors");
   }
-  PROTECT(x = Rf_coerceVector(x, INTSXP));
-  PROTECT(y = Rf_coerceVector(y, INTSXP));
-  R_xlen_t x_len = XLENGTH(x);
-  R_xlen_t y_len = XLENGTH(y);
-  int *px = INTEGER(x);
-  int *py = INTEGER(y);
+  PROTECT(orig = Rf_coerceVector(orig, INTSXP));
+  PROTECT(del = Rf_coerceVector(del, INTSXP));
+  R_xlen_t n_orig = XLENGTH(orig);
+  R_xlen_t n_del = XLENGTH(del);
+  int *p_orig = INTEGER(orig);
+  int *p_del = INTEGER(del);
 
-  SEXP z = PROTECT(Rf_allocVector(INTSXP, x_len));
-  int *pz = INTEGER(z);
+  SEXP shifted = PROTECT(Rf_allocVector(INTSXP, n_orig));
+  int *p_shifted = INTEGER(shifted);
 
-  R_xlen_t i = 0;
-  for (R_xlen_t j = 0; j < y_len; j++) {
-    while (i < x_len && px[i] < py[j]) {
-      pz[i] = px[i] - (int) j;
-      i++;
+  /* the ids in orig from del[pos_del - 1] up to but not including
+     del[pos_del] have exactly pos_del deleted ids at or below them */
+  R_xlen_t pos_orig = 0;
+  for (R_xlen_t pos_del = 0; pos_del < n_del; pos_del++) {
+    while (pos_orig < n_orig && p_orig[pos_orig] < p_del[pos_del]) {
+      p_shifted[pos_orig] = p_orig[pos_orig] - (int) pos_del;
+      pos_orig++;
     }
   }
 
-  /* any trailing part of x after the end of y */
-  while (i < x_len) {
-    pz[i] = px[i] - (int) y_len;
-    i++;
+  /* any trailing part of orig after the end of del */
+  while (pos_orig < n_orig) {
+    p_shifted[pos_orig] = p_orig[pos_orig] - (int) n_del;
+    pos_orig++;
   }
 
   UNPROTECT(3);
-  return z;
+  return shifted;
 }

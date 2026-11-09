@@ -4,20 +4,25 @@
 \alias{shiftVec}
 \title{Shift Vertex IDs Down Past Deleted IDs}
 \usage{
-shiftVec(x, y)
+shiftVec(orig, del)
 }
 \arguments{
-\item{x}{Sorted vector of vertex IDs.}
+\item{orig}{Sorted vector of vertex IDs.}
 
-\item{y}{Sorted vector of deleted vertex IDs.}
+\item{del}{Sorted vector of deleted vertex IDs.}
 }
 \value{
-An integer vector the length of \code{x}.
+An integer vector the length of \code{orig}.
 }
 \description{
-Subtracts from each vertex ID in \code{x} the number of deleted IDs
-in \code{y} that are less than or equal to it, so that the IDs left
-after a deletion are consecutive again. Both vectors must be
-sorted in increasing order.
+Subtracts from each vertex ID in \code{orig} the number of deleted
+IDs in \code{del} that are less than or equal to it, so that the IDs
+left after a deletion are consecutive again. Both vectors must
+be sorted in increasing order.
+}
+\details{
+For example, \code{orig = 1:10} and \code{del = c(4, 6, 8, 9)} return
+\code{c(1, 2, 3, 3, 4, 4, 5, 5, 5, 6)}, so the IDs kept (1, 2, 3, 5, 7, 10)
+become 1 to 6.
 }
 \keyword{internal}
