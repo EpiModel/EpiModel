@@ -112,6 +112,9 @@ test_that("`dat` getters and setter", {
 
   expect_error(dat <- set_attr(dat, "age", 1, posit_ids = TRUE))
   expect_error(dat <- set_attr(dat, "age", 1, posit_ids = "a"))
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c(1, NA)), "`NA`")
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = 0), "lower than 1")
+  expect_error(get_attr(dat, "age", -1), "lower than 1")
 
 
   expect_error(get_attr_list(dat, "sex"))
@@ -347,9 +350,15 @@ test_that("remove_node_attr compacts every attribute type like x[-ids] (#1141, #
   expect_identical(EpiModel:::remove_node_attr(dat, integer(0)), dat)
   expect_identical(delete_attr(dat, NULL), dat)
   expect_identical(delete_attr(dat, which(get_attr(dat, "active") == 0)), dat)
-  # the zero and NA paths use x[-ids] directly
-  expect_identical(get_attr_list(EpiModel:::remove_node_attr(dat, c(0, 3))), ref(dat, c(0, 3)))
-  expect_error(EpiModel:::remove_node_attr(dat, 21))
+  # positions past the end of a shorter vector are ignored, as by x[-ids]
+  short <- dat
+  short$run$attr$short <- 1:5
+  expect_identical(get_attr_list(EpiModel:::remove_node_attr(short, c(2, 8))), ref(short, c(2, 8)))
+  # zero, negative, NA and out of range positions are errors
+  expect_error(EpiModel:::remove_node_attr(dat, c(0, 3)), "lower than 1")
+  expect_error(EpiModel:::remove_node_attr(dat, -1), "lower than 1")
+  expect_error(EpiModel:::remove_node_attr(dat, c(NA, 3)), "`NA`")
+  expect_error(EpiModel:::remove_node_attr(dat, 21), "larger than")
 })
 
 test_that("append_attr concatenates like c() for every type pair (#1141)", {

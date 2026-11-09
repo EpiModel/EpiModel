@@ -7,6 +7,7 @@
 -   `trim_netest()` no longer modifies the `netest` object passed to it when the model was fit with `nested.edapprox = FALSE` or `edapprox = FALSE` (#1107).
 -   The guards for the argument names removed in 2.6.1 now match only the `.m2` suffix, so names such as `area.km2` are accepted, and built-in models of every class now reject `b.rate` and `trans.rate` rather than storing them silently (#1108).
 -   `remove_node_attr()` and `delete_attr()` called with an empty ID vector now leave `dat` unchanged instead of dropping every node from every attribute (#1142).
+-   `get_attr()`, `set_attr()`, and `remove_node_attr()` now stop with an error when `posit_ids` holds `NA` or values below 1 (#1143).
 
 ### OTHER
 
