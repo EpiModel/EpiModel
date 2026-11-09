@@ -349,23 +349,26 @@ test_that("add_vertices, delete_vertices, delete_edges behave as expected", {
 })
 
 test_that("shiftVec matches its R reference and handles edge cases", {
-  # x minus the number of deleted ids at or below it
-  shift_ref <- function(x, y) as.integer(x - findInterval(x, y))
+  # orig minus the number of deleted ids at or below it
+  shift_ref <- function(orig, del) as.integer(orig - findInterval(orig, del))
   set.seed(1)
   for (k in 1:50) {
-    x <- sort(sample.int(1000, sample(0:500, 1), replace = TRUE))
-    y <- sort(sample.int(1000, sample(0:100, 1), replace = TRUE))
-    expect_identical(EpiModel:::shiftVec(x, y), shift_ref(x, y))
+    orig <- sort(sample.int(1000, sample(0:500, 1), replace = TRUE))
+    del <- sort(sample.int(1000, sample(0:100, 1), replace = TRUE))
+    expect_identical(EpiModel:::shiftVec(orig, del), shift_ref(orig, del))
   }
+  # the example in the documentation
+  expect_identical(EpiModel:::shiftVec(1:10, c(4L, 6L, 8L, 9L)),
+                   c(1L, 2L, 3L, 3L, 4L, 4L, 5L, 5L, 5L, 6L))
   # double input is coerced and the result is integer
   expect_identical(EpiModel:::shiftVec(c(1, 5, 9), c(3, 6)), c(1L, 4L, 7L))
   expect_identical(EpiModel:::shiftVec(integer(0), 1:3), integer(0))
   expect_identical(EpiModel:::shiftVec(1:5, integer(0)), 1:5)
-  # deleted ids all below, all above, and equal to ids in x
+  # deleted ids all below, all above, and equal to ids in orig
   expect_identical(EpiModel:::shiftVec(c(5L, 6L), c(1L, 2L)), c(3L, 4L))
   expect_identical(EpiModel:::shiftVec(c(5L, 6L), c(8L, 9L)), c(5L, 6L))
   expect_identical(EpiModel:::shiftVec(c(3L, 5L), c(3L, 3L)), c(1L, 3L))
-  expect_error(EpiModel:::shiftVec("a", 1L), "x and y must be numeric vectors")
+  expect_error(EpiModel:::shiftVec("a", 1L), "orig and del must be numeric vectors")
 })
 
 test_that("delete_vertices one-pass path matches the sort-based path (#1141)", {

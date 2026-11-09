@@ -2,9 +2,9 @@
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
-SEXP shiftVec(SEXP x, SEXP y);
-SEXP compact_attr_list(SEXP x, SEXP drop);
-SEXP append_attr_c(SEXP old, SEXP nw);
+SEXP shiftVec(SEXP orig, SEXP del);
+SEXP compact_attr_list(SEXP attr_list, SEXP drop_pos);
+SEXP append_attr_c(SEXP old_vec, SEXP new_vals);
 
 static const R_CallMethodDef CallEntries[] = {
   {"shiftVec", (DL_FUNC) &shiftVec, 2},
