@@ -128,6 +128,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 
   ## determine formula and coefficients; set discordance_fraction in ergm case
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
+  simulation_control <- set_term_version(simulation_control)
   if (nwparam$coef.diss$duration[1] > 1) {
     formula <- ~Form(nwparam$formation) +
       Persist(nwparam$coef.diss$dissolution)
@@ -472,3 +473,27 @@ update_sim_num <- function(dat) {
   }
   return(dat)
 }
+
+
+# ergm's term initializers default to `version = packageVersion("ergm")`,
+# which reads the package description from disk each time a term is
+# initialized, and tergm initializes every term of every layer at every time
+# step. Passing the same version through `term.options` skips the read. A
+# version set by the user is left as it is.
+set_term_version <- function(control) {
+  if (is.null(control$term.options$version)) {
+    control$term.options$version <- ergm_version()
+  }
+  control
+}
+
+# The version of the installed ergm, read once per session
+ergm_version <- local({
+  version <- NULL
+  function() {
+    if (is.null(version)) {
+      version <<- utils::packageVersion("ergm")
+    }
+    version
+  }
+})
