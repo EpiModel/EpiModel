@@ -892,35 +892,23 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
   if (is.null(unique_ids)) {
     return(seq_along(get_attr(dat, "active")))
   }
-  posit_ids <- match_unique_ids(unique_ids, get_attr(dat, "unique_id"))
-  if (any(is.na(posit_ids))) {
+  all_unique_ids <- get_attr(dat, "unique_id")
+  if (length(unique_ids) * 16 < length(all_unique_ids)) {
+    # unique IDs are in increasing order: binary search finds a few of them
+    posit_ids <- findInterval(unique_ids, all_unique_ids)
+    posit_ids[posit_ids == 0L] <- NA_integer_
+    posit_ids[all_unique_ids[posit_ids] != unique_ids] <- NA_integer_
+  } else {
+    # match() is several times faster on doubles than on consecutive integers
+    posit_ids <- base::match(as.numeric(unique_ids), as.numeric(all_unique_ids))
+  }
+  if (anyNA(posit_ids)) {
     warning(
       "While converting `unique_ids` to `posit_ids`, some `unique_ids`",
       " correspond to deactivated nodes and NAs were produced"
     )
   }
   return(posit_ids)
-}
-
-# `base::match(ids, table)` for a `table` of unique IDs, with the same result.
-# `match()` hashes the table on every call, and its hash clusters on a large
-# table of near-consecutive integers, which is what unique IDs are: at 100,000
-# nodes a lookup takes several times longer than on the same values held as
-# doubles. Unique IDs are handed out in increasing order and nodes leave
-# without reordering the rest, so a few IDs (fewer than a sixteenth of the
-# table) are found by binary search, and more are matched as doubles.
-match_unique_ids <- function(ids, table) {
-  if (!is.numeric(ids) || !is.numeric(table)) {
-    return(base::match(ids, table))
-  }
-  if (length(ids) * 16 < length(table) && !anyNA(ids) &&
-        isFALSE(is.unsorted(table, strictly = TRUE))) {
-    posit_ids <- findInterval(ids, table)
-    posit_ids[posit_ids == 0L] <- NA_integer_
-    posit_ids[table[posit_ids] != ids] <- NA_integer_
-    return(posit_ids)
-  }
-  base::match(as.numeric(ids), as.numeric(table))
 }
 
 #' @title Are These Nodes Active (Positional IDs)
