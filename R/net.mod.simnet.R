@@ -138,14 +138,11 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     simulation_control$MCMC.prop.args <- list(discordance_fraction = 0)
   }
 
-  ## determine output type. A tergmLite layer keeps only its edgelist, which
-  ## is read from the sampler's final state ("ergm_state"). With "final", tergm
-  ## turns that state into a networkLite and set_network() turns the
-  ## networkLite straight back into an edgelist. A layer that tracks edge
-  ## durations still needs the network attributes of the "final" network.
-  if (get_control(dat, "tergmLite") == FALSE) {
+  ## determine output type; a tergmLite layer only needs the sampler's state,
+  ## unless it tracks durations, which are kept as network attributes
+  if (!get_control(dat, "tergmLite")) {
     output <- "networkDynamic"
-  } else if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+  } else if (get_network_control(dat, network, "tergmLite.track.duration")) {
     output <- "final"
   } else {
     output <- "ergm_state"
@@ -198,21 +195,20 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   return(dat)
 }
 
-# The edgelist of the network an `ergm_state` holds, identical to
-# `as.edgelist(as.network(state))` without building that network. The edges are
-# the state's own edgelist; the network size, vertex names and network type
-# come from the edgeless copy of the network the state carries.
+# The edgelist of the network an `ergm_state` holds: the same result as
+# `as.edgelist(as.network(state))`, without building the network
 ergm_state_edgelist <- function(state) {
-  el <- as.edgelist(state)
-  tail <- el[[".tail"]]
-  head <- el[[".head"]]
-  ord <- order(tail, head)
-  out <- matrix(c(tail[ord], head[ord]), ncol = 2L)
-  empty <- as.edgelist(as.network(state, populate = FALSE))
+  state_edges <- as.edgelist(state)
+  tails <- state_edges[[".tail"]]
+  heads <- state_edges[[".head"]]
+  edge_order <- order(tails, heads)
+  edgelist <- matrix(c(tails[edge_order], heads[edge_order]), ncol = 2L)
+  # the network size, vertex names and type, from the state's edgeless network
+  empty_edgelist <- as.edgelist(as.network(state, populate = FALSE))
   for (name in c("n", "vnames", "bipartite", "directed", "loops", "class")) {
-    attr(out, name) <- attr(empty, name)
+    attr(edgelist, name) <- attr(empty_edgelist, name)
   }
-  out
+  edgelist
 }
 
 # A model-free layer has no model to simulate from. A clique layer's edges

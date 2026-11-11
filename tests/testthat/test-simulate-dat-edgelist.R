@@ -1,8 +1,7 @@
 context("simulate_dat edgelist")
 
-# In a tergmLite layer simulate_dat() takes the new edgelist from the state the
-# sampler returns. These tests pin it to the route it took before: tergm
-# returns the final network and set_network() reads the edgelist back from it.
+# simulate_dat() reads a tergmLite layer's edgelist from the sampler's state.
+# These tests pin it to the earlier route through tergm's final network.
 
 state_edgelist_setup <- function(duration = 10, track.duration = FALSE) {
   nw <- network_initialize(n = 100)
