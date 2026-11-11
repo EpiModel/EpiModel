@@ -2,7 +2,8 @@ context("netsim timing guard")
 
 test_that("the reference case stays within 1.5 times its baseline step time", {
   skip_on_cran()
-  # The baseline is from Apple Silicon; other platforms are not measured yet
+  # The baseline is from Apple Silicon, and CI runners are not measured yet
+  skip_on_ci()
   skip_on_os(c("windows", "linux"))
 
   # Time per step of `inst/bench/sis-10k.R` over its CPU reference, on an M5
