@@ -475,11 +475,8 @@ update_sim_num <- function(dat) {
 }
 
 
-# ergm's term initializers default to `version = packageVersion("ergm")`,
-# which reads the package description from disk each time a term is
-# initialized, and tergm initializes every term of every layer at every time
-# step. Passing the same version through `term.options` skips the read. A
-# version set by the user is left as it is.
+# Workaround for statnet/ergm#671, to remove with #1148: ergm's term
+# initializers read the ergm version from disk unless it is passed to them
 set_term_version <- function(control) {
   if (is.null(control$term.options$version)) {
     control$term.options$version <- ergm_version()

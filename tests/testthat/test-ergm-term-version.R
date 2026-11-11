@@ -1,8 +1,6 @@
 context("ergm term version")
 
-# simulate_dat() hands ergm's term initializers the installed ergm version
-# through `term.options`, which is the value they would otherwise read from
-# disk as their default.
+# Tests of the workaround for statnet/ergm#671; they go when it does (#1148)
 
 test_that("set_term_version fills in the installed ergm version", {
   control <- tergm::control.simulate.formula.tergm()
