@@ -345,6 +345,18 @@ is left in it. Other files in the directory are kept. The \code{.checkpoint.keep
 set to \code{TRUE} to prevent this removal to inspect the raw simulation objects.
 }
 
+\section{Module Timing}{
+
+Setting \code{.timing = TRUE} records how long each module takes. At every time step, the wall-clock
+time of each module, in seconds, is stored as an epidemic output named \code{timing.} followed by the
+module's name (\code{timing.resim_nets.FUN}, \code{timing.infection.FUN}), and the time of the whole step
+as \code{timing.step}. \code{\link[=as.data.frame.netsim]{as.data.frame.netsim()}} returns them with the other outputs, so the mean of a
+column is that module's time per step. \code{timing.step} also covers what \code{netsim} does around the
+modules (the updaters, the attribute and epidemic trackers, \code{verbose.FUN}), so it is larger than
+the sum of the module columns. The simulation is unchanged: every other output is identical with
+timing on or off.
+}
+
 \section{New Modules}{
 
 Base network models use a set of module functions that specify how the individual nodes in the
