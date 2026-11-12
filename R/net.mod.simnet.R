@@ -128,6 +128,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 
   ## determine formula and coefficients; set discordance_fraction in ergm case
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
+  simulation_control <- set_term_version(simulation_control)
   if (nwparam$coef.diss$duration[1] > 1) {
     formula <- ~Form(nwparam$formation) +
       Persist(nwparam$coef.diss$dissolution)
@@ -495,3 +496,24 @@ update_sim_num <- function(dat) {
   }
   return(dat)
 }
+
+
+# Workaround for statnet/ergm#671, to remove with #1148: ergm's term
+# initializers read the ergm version from disk unless it is passed to them
+set_term_version <- function(control) {
+  if (is.null(control$term.options$version)) {
+    control$term.options$version <- ergm_version()
+  }
+  control
+}
+
+# The version of the installed ergm, read once per session
+ergm_version <- local({
+  version <- NULL
+  function() {
+    if (is.null(version)) {
+      version <<- utils::packageVersion("ergm")
+    }
+    version
+  }
+})
