@@ -69,6 +69,11 @@
   uses to renumber vertex IDs after departures, is now plain C
   registered through R’s native routine interface
   ([\#1140](https://github.com/EpiModel/EpiModel/issues/1140)).
+- [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
+  reads the edgelist of a tergmLite layer from the state the sampler
+  returns, instead of having tergm build a network that is converted
+  straight back to an edgelist, with identical output
+  ([\#1145](https://github.com/EpiModel/EpiModel/issues/1145)).
 - Faster bookkeeping on departures and arrivals in tergmLite
   simulations, with identical output:
   [`remove_node_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
