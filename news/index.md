@@ -57,6 +57,12 @@
   attached after EpiModel and masks
   [`set_attr()`](https://epimodel.github.io/EpiModel/reference/get_attr.md)
   ([\#1120](https://github.com/EpiModel/EpiModel/issues/1120)).
+- [`get_posit_ids()`](https://epimodel.github.io/EpiModel/reference/unique_id-tools.md)
+  and
+  [`is_active_unique_ids()`](https://epimodel.github.io/EpiModel/reference/is_active_unique_ids.md)
+  are faster at 100,000 nodes, with identical output: a few unique IDs
+  are found by binary search
+  ([\#1147](https://github.com/EpiModel/EpiModel/issues/1147)).
 - [`dissolution_coefs()`](https://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
   now warns when a duration is at or above 90% of the departure ceiling,
   `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at

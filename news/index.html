@@ -55,6 +55,8 @@
 <li>
 <code><a href="../reference/netsim.html">netsim()</a></code> now stops with an error naming the module when a module returns <code>dat</code> with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks <code><a href="../reference/get_attr.html">set_attr()</a></code> (<a href="https://github.com/EpiModel/EpiModel/issues/1120" class="external-link">#1120</a>).</li>
 <li>
+<code><a href="../reference/unique_id-tools.html">get_posit_ids()</a></code> and <code><a href="../reference/is_active_unique_ids.html">is_active_unique_ids()</a></code> are faster at 100,000 nodes, with identical output: a few unique IDs are found by binary search (<a href="https://github.com/EpiModel/EpiModel/issues/1147" class="external-link">#1147</a>).</li>
+<li>
 <code><a href="../reference/dissolution_coefs.html">dissolution_coefs()</a></code> now warns when a duration is at or above 90% of the departure ceiling, <code>1 / (2 * d.rate - d.rate^2)</code>, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before <code>d.rate</code> (<a href="https://github.com/EpiModel/EpiModel/issues/1138" class="external-link">#1138</a>).</li>
 <li>
 <code><a href="../reference/simulate_dat.html">simulate_dat()</a></code> passes the installed ergm version to the term initializers through <code>term.options</code>, which otherwise read it from disk every time a term is initialized, with identical output (<a href="https://github.com/EpiModel/EpiModel/issues/1146" class="external-link">#1146</a>).</li>
