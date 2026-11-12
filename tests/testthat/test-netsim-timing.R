@@ -22,7 +22,9 @@ test_that("`.timing = TRUE` records one timing output per module", {
   module_names <- c("resim_nets.FUN", "summary_nets.FUN", "infection.FUN",
                     "recovery.FUN", "departures.FUN", "arrivals.FUN",
                     "nwupdate.FUN", "prevalence.FUN")
-  timing_names <- c(paste0("timing.", module_names), "timing.step")
+  wall_names <- c(paste0("timing.", module_names), "timing.step")
+  cpu_names <- c(paste0("timing.cpu.", module_names), "timing.cpu.step")
+  timing_names <- c(wall_names, cpu_names)
   expect_setequal(grep("^timing\\.", names(epi), value = TRUE), timing_names)
 
   # No module runs at the first time step, which is the initialization
@@ -32,6 +34,10 @@ test_that("`.timing = TRUE` records one timing output per module", {
   expect_true(all(simulated >= 0))
   module_total <- rowSums(simulated[, paste0("timing.", module_names)])
   expect_true(all(simulated$timing.step >= module_total))
+  # `proc.time()` readings are cumulative, so the modules cannot sum to more
+  # CPU time than the step that contains them
+  module_cpu_total <- rowSums(simulated[, paste0("timing.cpu.", module_names)])
+  expect_true(all(simulated$timing.cpu.step >= module_cpu_total - 1e-8))
 })
 
 test_that("timing leaves every other output unchanged", {

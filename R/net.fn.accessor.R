@@ -892,8 +892,17 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
   if (is.null(unique_ids)) {
     return(seq_along(get_attr(dat, "active")))
   }
-  posit_ids <- base::match(unique_ids, get_attr(dat, "unique_id"))
-  if (any(is.na(posit_ids))) {
+  all_unique_ids <- get_attr(dat, "unique_id")
+  if (length(unique_ids) * 16 < length(all_unique_ids)) {
+    # unique IDs are in increasing order: binary search finds a few of them
+    posit_ids <- findInterval(unique_ids, all_unique_ids)
+    posit_ids[posit_ids == 0L] <- NA_integer_
+    posit_ids[all_unique_ids[posit_ids] != unique_ids] <- NA_integer_
+  } else {
+    # match() is several times faster on doubles than on consecutive integers
+    posit_ids <- base::match(as.numeric(unique_ids), as.numeric(all_unique_ids))
+  }
+  if (anyNA(posit_ids)) {
     warning(
       "While converting `unique_ids` to `posit_ids`, some `unique_ids`",
       " correspond to deactivated nodes and NAs were produced"

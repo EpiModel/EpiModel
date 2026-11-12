@@ -2,7 +2,7 @@
 
 ### NEW FEATURES
 
--   `control.net(.timing = TRUE)` records the wall-clock time of each module at each time step as epidemic outputs named `timing.<module>`, in seconds, with `timing.step` for the whole step (EpiModel/EpiModelHIV-p#428).
+-   `control.net(.timing = TRUE)` records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named `timing.<module>` and `timing.cpu.<module>`, in seconds, with `timing.step` and `timing.cpu.step` for the whole step (EpiModel/EpiModelHIV-p#428).
 
 ### BUG FIXES
 
@@ -18,9 +18,13 @@
 -   `inst/bench/sis-10k.R` is a reference case that prints the `netsim()` time per step of each module, and a new test fails when its step time, relative to a CPU reference timed in the same process, exceeds 1.5 times a stored baseline (EpiModel/EpiModelHIV-p#428).
 -   `netsim()` and `netdx()` with `ncores > 1` now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and `?netsim` has a new Parallel Simulation section on making such code self-contained (#1104).
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
+-   `get_posit_ids()` and `is_active_unique_ids()` are faster at 100,000 nodes, with identical output: a few unique IDs are found by binary search (#1147).
 -   `dissolution_coefs()` now warns when a duration is at or above 90% of the departure ceiling, `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before `d.rate` (#1138).
+-   `simulate_dat()` passes the installed ergm version to the term initializers through `term.options`, which otherwise read it from disk every time a term is initialized, with identical output (#1146).
 -   EpiModel no longer imports or links to Rcpp. Its one compiled helper, `shiftVec()`, which `delete_vertices()` uses to renumber vertex IDs after departures, is now plain C registered through R's native routine interface (#1140).
+-   `simulate_dat()` reads the edgelist of a tergmLite layer from the state the sampler returns, instead of having tergm build a network that is converted straight back to an edgelist, with identical output (#1145).
 -   Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: `remove_node_attr()` and `append_attr()` copy plain attribute vectors in C, `delete_vertices()` renumbers the edgelist in one pass without sorting, and `update_cumulative_edgelist()` matches the current edges to the open partnerships on a pair key instead of a join (#1141).
+-   `simulate_dat()` calls `ergm::simulate_formula()` directly, which skips two copies of the network and its vertex attributes per layer per time step that `simulate()` made on the way to the same method, with identical output (#1144).
 
 ## EpiModel 2.7.0
 

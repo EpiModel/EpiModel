@@ -456,7 +456,10 @@ netsim_run_modules <- function(dat, s) {
   dat <- withCallingHandlers(
     expr = {
       current_mod <- "epimodel.internal"
-      if (timing) step_start <- Sys.time()
+      if (timing) {
+        step_start <- Sys.time()
+        step_cpu_start <- proc.time()
+      }
       # Applies updaters, if any
       dat <- input_updater(dat)
       dat <- trigger_end_horizon(dat)
@@ -467,7 +470,10 @@ netsim_run_modules <- function(dat, s) {
 
       for (i in seq_along(modules)) {
         current_mod <- names(modules)[i]
-        if (timing) module_start <- Sys.time()
+        if (timing) {
+          module_start <- Sys.time()
+          module_cpu_start <- proc.time()
+        }
         new_dat <- modules[[i]](dat, at)
         if (!inherits(new_dat, "netsim_dat")) {
           # Don't overwrite `dat` so the error handler can still read
@@ -493,7 +499,11 @@ netsim_run_modules <- function(dat, s) {
         dat <- new_dat
         if (timing) {
           module_seconds <- as.numeric(Sys.time() - module_start, units = "secs")
+          module_cpu <- proc.time() - module_cpu_start
+          # CPU time of this R process: user plus system
+          module_cpu_seconds <- sum(module_cpu[c("user.self", "sys.self")])
           dat <- set_epi(dat, paste0("timing.", current_mod), module_seconds)
+          dat <- set_epi(dat, paste0("timing.cpu.", current_mod), module_cpu_seconds)
         }
       }
 
@@ -514,7 +524,10 @@ netsim_run_modules <- function(dat, s) {
 
       if (timing) {
         step_seconds <- as.numeric(Sys.time() - step_start, units = "secs")
+        step_cpu <- proc.time() - step_cpu_start
+        step_cpu_seconds <- sum(step_cpu[c("user.self", "sys.self")])
         dat <- set_epi(dat, "timing.step", step_seconds)
+        dat <- set_epi(dat, "timing.cpu.step", step_cpu_seconds)
       }
 
       dat

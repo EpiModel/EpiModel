@@ -696,6 +696,12 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' the sum of the module columns. The simulation is unchanged: every other output is identical with
 #' timing on or off.
 #'
+#' The CPU time of each module, user plus system, is stored the same way under `timing.cpu.`
+#' (`timing.cpu.resim_nets.FUN`, `timing.cpu.step`). It counts only the time the R process itself
+#' was running, so a module whose wall-clock time is well above its CPU time was waiting, usually
+#' for a core on a busy machine. CPU time comes from [proc.time()], which rounds to the millisecond,
+#' so read it as a mean over many steps.
+#'
 #' @section New Modules:
 #' Base network models use a set of module functions that specify how the individual nodes in the
 #' network are subjected to infection, recovery, demographics, and other processes. Core modules are
