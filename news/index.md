@@ -62,6 +62,11 @@
   `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at
   the ceiling gives the ceiling and points at the duration before
   `d.rate` ([\#1138](https://github.com/EpiModel/EpiModel/issues/1138)).
+- [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
+  passes the installed ergm version to the term initializers through
+  `term.options`, which otherwise read it from disk every time a term is
+  initialized, with identical output
+  ([\#1146](https://github.com/EpiModel/EpiModel/issues/1146)).
 - EpiModel no longer imports or links to Rcpp. Its one compiled helper,
   [`shiftVec()`](https://epimodel.github.io/EpiModel/reference/shiftVec.md),
   which
