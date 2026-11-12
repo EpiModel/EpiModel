@@ -15,7 +15,9 @@
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
 -   `get_posit_ids()` and `is_active_unique_ids()` are faster at 100,000 nodes, with identical output: a few unique IDs are found by binary search (#1147).
 -   `dissolution_coefs()` now warns when a duration is at or above 90% of the departure ceiling, `1 / (2 * d.rate - d.rate^2)`, naming the duration, and its error at the ceiling gives the ceiling and points at the duration before `d.rate` (#1138).
+-   `simulate_dat()` passes the installed ergm version to the term initializers through `term.options`, which otherwise read it from disk every time a term is initialized, with identical output (#1146).
 -   EpiModel no longer imports or links to Rcpp. Its one compiled helper, `shiftVec()`, which `delete_vertices()` uses to renumber vertex IDs after departures, is now plain C registered through R's native routine interface (#1140).
+-   `simulate_dat()` reads the edgelist of a tergmLite layer from the state the sampler returns, instead of having tergm build a network that is converted straight back to an edgelist, with identical output (#1145).
 -   Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: `remove_node_attr()` and `append_attr()` copy plain attribute vectors in C, `delete_vertices()` renumbers the edgelist in one pass without sorting, and `update_cumulative_edgelist()` matches the current edges to the open partnerships on a pair key instead of a join (#1141).
 
 ## EpiModel 2.7.0

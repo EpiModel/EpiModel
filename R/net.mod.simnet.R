@@ -128,6 +128,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 
   ## determine formula and coefficients; set discordance_fraction in ergm case
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
+  simulation_control <- set_term_version(simulation_control)
   if (nwparam$coef.diss$duration[1] > 1) {
     formula <- ~Form(nwparam$formation) +
       Persist(nwparam$coef.diss$dissolution)
@@ -138,11 +139,14 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     simulation_control$MCMC.prop.args <- list(discordance_fraction = 0)
   }
 
-  ## determine output type
-  if (get_control(dat, "tergmLite") == FALSE) {
+  ## determine output type; a tergmLite layer only needs the sampler's state,
+  ## unless it tracks durations, which are kept as network attributes
+  if (!get_control(dat, "tergmLite")) {
     output <- "networkDynamic"
-  } else {
+  } else if (get_network_control(dat, network, "tergmLite.track.duration")) {
     output <- "final"
+  } else {
+    output <- "ergm_state"
   }
 
   ## determine monitor, if needed; note that we only obtain
@@ -175,7 +179,11 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                                   dynamic = TRUE))
 
   ## update network (and el, if tergmLite) on the dat object
-  dat <- set_network(x = dat, network = network, nw = nw)
+  if (output == "ergm_state") {
+    dat$run$el[[network]] <- ergm_state_edgelist(nw)
+  } else {
+    dat <- set_network(x = dat, network = network, nw = nw)
+  }
 
   ## if monitor was used, record the results
   if (!is.null(monitor)) {
@@ -186,6 +194,22 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   }
 
   return(dat)
+}
+
+# The edgelist of the network an `ergm_state` holds: the same result as
+# `as.edgelist(as.network(state))`, without building the network
+ergm_state_edgelist <- function(state) {
+  state_edges <- as.edgelist(state)
+  tails <- state_edges[[".tail"]]
+  heads <- state_edges[[".head"]]
+  edge_order <- order(tails, heads)
+  edgelist <- matrix(c(tails[edge_order], heads[edge_order]), ncol = 2L)
+  # the network size, vertex names and type, from the state's edgeless network
+  empty_edgelist <- as.edgelist(as.network(state, populate = FALSE))
+  for (name in c("n", "vnames", "bipartite", "directed", "loops", "class")) {
+    attr(edgelist, name) <- attr(empty_edgelist, name)
+  }
+  edgelist
 }
 
 # A model-free layer has no model to simulate from. A clique layer's edges
@@ -470,3 +494,24 @@ update_sim_num <- function(dat) {
   }
   return(dat)
 }
+
+
+# Workaround for statnet/ergm#671, to remove with #1148: ergm's term
+# initializers read the ergm version from disk unless it is passed to them
+set_term_version <- function(control) {
+  if (is.null(control$term.options$version)) {
+    control$term.options$version <- ergm_version()
+  }
+  control
+}
+
+# The version of the installed ergm, read once per session
+ergm_version <- local({
+  version <- NULL
+  function() {
+    if (is.null(version)) {
+      version <<- utils::packageVersion("ergm")
+    }
+    version
+  }
+})
