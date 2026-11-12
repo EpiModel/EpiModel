@@ -47,6 +47,9 @@ epi <- as.data.frame(sim)
 timing_columns <- grep("^timing[.]", names(epi), value = TRUE)
 ms_per_step <- colMeans(epi[epi$time > 2, timing_columns]) * 1000
 names(ms_per_step) <- sub("^timing[.]", "", timing_columns)
+# The table shows wall-clock times; of the CPU times, only the whole step's
+step_cpu_ms <- ms_per_step[["cpu.step"]]
+ms_per_step <- ms_per_step[!startsWith(names(ms_per_step), "cpu.")]
 step_ms <- ms_per_step[["step"]]
 module_ms <- ms_per_step[names(ms_per_step) != "step"]
 
@@ -78,6 +81,8 @@ print(data.frame(
 ))
 cat(
   "\nGarbage collection, inside the times above: ", round(gc_ms, 2), " ms per step\n",
+  "CPU time of the step: ", round(step_cpu_ms, 2), " ms (a step time well above it ",
+  "means the machine was busy)\n",
   "CPU reference: ", round(cpu_reference_ms), " ms; step over reference: ",
   round(step_ms / cpu_reference_ms, 4), "\n",
   sep = ""
