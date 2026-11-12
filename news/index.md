@@ -91,6 +91,14 @@
   matches the current edges to the open partnerships on a pair key
   instead of a join
   ([\#1141](https://github.com/EpiModel/EpiModel/issues/1141)).
+- [`simulate_dat()`](https://epimodel.github.io/EpiModel/reference/simulate_dat.md)
+  calls
+  [`ergm::simulate_formula()`](https://rdrr.io/pkg/ergm/man/simulate.ergm.html)
+  directly, which skips two copies of the network and its vertex
+  attributes per layer per time step that
+  [`simulate()`](https://rdrr.io/r/stats/simulate.html) made on the way
+  to the same method, with identical output
+  ([\#1144](https://github.com/EpiModel/EpiModel/issues/1144)).
 
 ## EpiModel 2.7.0
 

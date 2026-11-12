@@ -62,6 +62,8 @@
 <li>
 <code><a href="../reference/simulate_dat.html">simulate_dat()</a></code> reads the edgelist of a tergmLite layer from the state the sampler returns, instead of having tergm build a network that is converted straight back to an edgelist, with identical output (<a href="https://github.com/EpiModel/EpiModel/issues/1145" class="external-link">#1145</a>).</li>
 <li>Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: <code><a href="../reference/get_attr.html">remove_node_attr()</a></code> and <code><a href="../reference/get_attr.html">append_attr()</a></code> copy plain attribute vectors in C, <code><a href="../reference/delete_vertices.html">delete_vertices()</a></code> renumbers the edgelist in one pass without sorting, and <code><a href="../reference/update_cumulative_edgelist.html">update_cumulative_edgelist()</a></code> matches the current edges to the open partnerships on a pair key instead of a join (<a href="https://github.com/EpiModel/EpiModel/issues/1141" class="external-link">#1141</a>).</li>
+<li>
+<code><a href="../reference/simulate_dat.html">simulate_dat()</a></code> calls <code><a href="https://rdrr.io/pkg/ergm/man/simulate.ergm.html" class="external-link">ergm::simulate_formula()</a></code> directly, which skips two copies of the network and its vertex attributes per layer per time step that <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> made on the way to the same method, with identical output (<a href="https://github.com/EpiModel/EpiModel/issues/1144" class="external-link">#1144</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
