@@ -165,18 +165,23 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     time_offset <- 1L
   }
 
-  ## always TERGM simulation
-  nw <- suppressWarnings(simulate(formula,
-                                  coef = coef,
-                                  basis = get_network(x = dat, network = network),
-                                  constraints = nwparam$constraints,
-                                  time.start = at - time_offset,
-                                  time.offset = time_offset,
-                                  time.slices = nsteps,
-                                  output = output,
-                                  control = simulation_control,
-                                  monitor = monitor,
-                                  dynamic = TRUE))
+  ## always TERGM simulation. `simulate_formula()` is the generic `simulate()`
+  ## ends up in, called here directly: on the way there `simulate()` attaches
+  ## the basis network to the formula and evaluates the formula again, which
+  ## copies the network with all of its vertex attributes twice per call.
+  nw <- suppressWarnings(
+    ergm::simulate_formula(formula,
+                           coef = coef,
+                           basis = get_network(x = dat, network = network),
+                           constraints = nwparam$constraints,
+                           time.start = at - time_offset,
+                           time.offset = time_offset,
+                           time.slices = nsteps,
+                           output = output,
+                           control = simulation_control,
+                           monitor = monitor,
+                           dynamic = TRUE)
+  )
 
   ## update network (and el, if tergmLite) on the dat object
   if (output == "ergm_state") {

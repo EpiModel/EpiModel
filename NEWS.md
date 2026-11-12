@@ -19,6 +19,7 @@
 -   EpiModel no longer imports or links to Rcpp. Its one compiled helper, `shiftVec()`, which `delete_vertices()` uses to renumber vertex IDs after departures, is now plain C registered through R's native routine interface (#1140).
 -   `simulate_dat()` reads the edgelist of a tergmLite layer from the state the sampler returns, instead of having tergm build a network that is converted straight back to an edgelist, with identical output (#1145).
 -   Faster bookkeeping on departures and arrivals in tergmLite simulations, with identical output: `remove_node_attr()` and `append_attr()` copy plain attribute vectors in C, `delete_vertices()` renumbers the edgelist in one pass without sorting, and `update_cumulative_edgelist()` matches the current edges to the open partnerships on a pair key instead of a join (#1141).
+-   `simulate_dat()` calls `ergm::simulate_formula()` directly, which skips two copies of the network and its vertex attributes per layer per time step that `simulate()` made on the way to the same method, with identical output (#1144).
 
 ## EpiModel 2.7.0
 
