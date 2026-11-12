@@ -311,10 +311,8 @@ resim_nets <- function(dat, at) {
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
   if (dat$param$groups == 2) {
     group <- get_attr(dat, "group")
-    groupids.1 <- which(group == 1)
-    groupids.2 <- which(group == 2)
-    nActiveG1 <- length(intersect(groupids.1, idsActive))
-    nActiveG2 <- length(intersect(groupids.2, idsActive))
+    nActiveG1 <- sum(active == 1 & group == 1, na.rm = TRUE)
+    nActiveG2 <- sum(active == 1 & group == 2, na.rm = TRUE)
     anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
