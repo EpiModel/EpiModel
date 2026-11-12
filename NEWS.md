@@ -2,7 +2,7 @@
 
 ### NEW FEATURES
 
--   `control.net(.timing = TRUE)` records the wall-clock time of each module at each time step as epidemic outputs named `timing.<module>`, in seconds, with `timing.step` for the whole step (EpiModel/EpiModelHIV-p#428).
+-   `control.net(.timing = TRUE)` records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named `timing.<module>` and `timing.cpu.<module>`, in seconds, with `timing.step` and `timing.cpu.step` for the whole step (EpiModel/EpiModelHIV-p#428).
 
 ### BUG FIXES
 
