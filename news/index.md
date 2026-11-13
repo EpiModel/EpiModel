@@ -49,6 +49,11 @@
 
 ### OTHER
 
+- `inst/bench/sis-10k.R` is a reference case that prints the
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+  time per step of each module, and a new test fails when its step time,
+  relative to a CPU reference timed in the same process, exceeds 1.5
+  times a stored baseline (EpiModel/EpiModelHIV-p#428).
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   and
   [`netdx()`](https://epimodel.github.io/EpiModel/reference/netdx.md)
