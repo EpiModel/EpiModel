@@ -468,6 +468,24 @@ is left in it. Other files in the directory are kept. The <code>.checkpoint.keep
 set to <code>TRUE</code> to prevent this removal to inspect the raw simulation objects.</p>
     </div>
     <div class="section level2">
+    <h2 id="module-timing">Module Timing<a class="anchor" aria-label="anchor" href="#module-timing"></a></h2>
+
+
+<p>Setting <code>.timing = TRUE</code> records how long each module takes. At every time step, the wall-clock
+time of each module, in seconds, is stored as an epidemic output named <code>timing.</code> followed by the
+module's name (<code>timing.resim_nets.FUN</code>, <code>timing.infection.FUN</code>), and the time of the whole step
+as <code>timing.step</code>. <code><a href="as.data.frame.icm.html">as.data.frame.netsim()</a></code> returns them with the other outputs, so the mean of a
+column is that module's time per step. <code>timing.step</code> also covers what <code>netsim</code> does around the
+modules (the updaters, the attribute and epidemic trackers, <code>verbose.FUN</code>), so it is larger than
+the sum of the module columns. The simulation is unchanged: every other output is identical with
+timing on or off.</p>
+<p>The CPU time of each module, user plus system, is stored the same way under <code>timing.cpu.</code>
+(<code>timing.cpu.resim_nets.FUN</code>, <code>timing.cpu.step</code>). It counts only the time the R process itself
+was running, so a module whose wall-clock time is well above its CPU time was waiting, usually
+for a core on a busy machine. CPU time comes from <code><a href="https://rdrr.io/r/base/proc.time.html" class="external-link">proc.time()</a></code>, which rounds to the millisecond,
+so read it as a mean over many steps.</p>
+    </div>
+    <div class="section level2">
     <h2 id="new-modules">New Modules<a class="anchor" aria-label="anchor" href="#new-modules"></a></h2>
 
 

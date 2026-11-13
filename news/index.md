@@ -2,6 +2,14 @@
 
 ## EpiModel 2.7.1
 
+### NEW FEATURES
+
+- `control.net(.timing = TRUE)` records the wall-clock time and the CPU
+  time of each module at each time step as epidemic outputs named
+  `timing.<module>` and `timing.cpu.<module>`, in seconds, with
+  `timing.step` and `timing.cpu.step` for the whole step
+  (EpiModel/EpiModelHIV-p#428).
+
 ### BUG FIXES
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)

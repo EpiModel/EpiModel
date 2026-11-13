@@ -36,6 +36,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.7.1" id="epimodel-271">EpiModel 2.7.1<a class="anchor" aria-label="anchor" href="#epimodel-271"></a></h2>
 <div class="section level3">
+<h3 id="new-features-2-7-1">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-7-1"></a></h3>
+<ul><li>
+<code>control.net(.timing = TRUE)</code> records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named <code>timing.&lt;module&gt;</code> and <code>timing.cpu.&lt;module&gt;</code>, in seconds, with <code>timing.step</code> and <code>timing.cpu.step</code> for the whole step (EpiModel/EpiModelHIV-p#428).</li>
+</ul></div>
+<div class="section level3">
 <h3 id="bug-fixes-2-7-1">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-7-1"></a></h3>
 <ul><li>
 <code><a href="../reference/netsim.html">netsim()</a></code> no longer deletes the whole <code>.checkpoint.dir</code> after a successful run, only the checkpoint files it wrote and then the directory if it is empty (<a href="https://github.com/EpiModel/EpiModel/issues/1105" class="external-link">#1105</a>).</li>

@@ -501,6 +501,29 @@ it. Other files in the directory are kept. The `.checkpoint.keep`
 argument can be set to `TRUE` to prevent this removal to inspect the raw
 simulation objects.
 
+## Module Timing
+
+Setting `.timing = TRUE` records how long each module takes. At every
+time step, the wall-clock time of each module, in seconds, is stored as
+an epidemic output named `timing.` followed by the module's name
+(`timing.resim_nets.FUN`, `timing.infection.FUN`), and the time of the
+whole step as `timing.step`.
+[`as.data.frame.netsim()`](https://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+returns them with the other outputs, so the mean of a column is that
+module's time per step. `timing.step` also covers what `netsim` does
+around the modules (the updaters, the attribute and epidemic trackers,
+`verbose.FUN`), so it is larger than the sum of the module columns. The
+simulation is unchanged: every other output is identical with timing on
+or off.
+
+The CPU time of each module, user plus system, is stored the same way
+under `timing.cpu.` (`timing.cpu.resim_nets.FUN`, `timing.cpu.step`). It
+counts only the time the R process itself was running, so a module whose
+wall-clock time is well above its CPU time was waiting, usually for a
+core on a busy machine. CPU time comes from
+[`proc.time()`](https://rdrr.io/r/base/proc.time.html), which rounds to
+the millisecond, so read it as a mean over many steps.
+
 ## New Modules
 
 Base network models use a set of module functions that specify how the
