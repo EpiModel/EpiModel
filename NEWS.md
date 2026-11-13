@@ -15,6 +15,7 @@
 
 ### OTHER
 
+-   `inst/bench/sis-10k.R` is a reference case that prints the `netsim()` time per step of each module, and a new test fails when its step time, relative to a CPU reference timed in the same process, exceeds 1.5 times a stored baseline (EpiModel/EpiModelHIV-p#428).
 -   `netsim()` and `netdx()` with `ncores > 1` now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and `?netsim` has a new Parallel Simulation section on making such code self-contained (#1104).
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
 -   `get_posit_ids()` and `is_active_unique_ids()` are faster at 100,000 nodes, with identical output: a few unique IDs are found by binary search (#1147).
