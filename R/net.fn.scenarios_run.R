@@ -24,8 +24,8 @@
 #'   [create_scenario_list()] function
 #' @param ... for compatibility reasons
 #'
-#' @inheritParams internal_run_batch
-#' @inheritSection internal_run_batch Checkpointing
+#' @inheritParams .run_batch
+#' @inheritSection .run_batch Checkpointing
 #'
 #' @return `NULL`, invisibly. The simulations are saved in `output_dir`.
 #'
@@ -33,7 +33,7 @@
 netsim_scenarios <- function(path_to_x, param, init, control,
                              scenarios_list, n_rep, n_cores,
                              output_dir, libraries = NULL, ...) {
-  p_list <- internal_scenarios_setup(
+  p_list <- .scenarios_setup(
     path_to_x = path_to_x,
     param = param,
     init = init,
@@ -53,7 +53,7 @@ netsim_scenarios <- function(path_to_x, param, init, control,
       ),
       p_list$MoreArgs
     )
-    do.call(internal_run_batch, args)
+    do.call(.run_batch, args)
   }
 
   invisible(NULL)
@@ -65,16 +65,16 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' same code on a SLURM cluster; it is not meant to be called directly.
 #'
 #' Expands the scenarios over their batches and builds the `MoreArgs` list
-#' passed to [internal_run_batch()] by [netsim_scenarios()], checking the
+#' passed to [.run_batch()] by [netsim_scenarios()], checking the
 #' `control` settings the scenario runners support.
 #'
 #' @inheritParams netsim_scenarios
 #'
-#' @return a list of arguments for `internal_run_batch`
+#' @return a list of arguments for `.run_batch`
 #'
 #' @keywords internal
 #' @export
-internal_scenarios_setup <- function(path_to_x, param, init, control,
+.scenarios_setup <- function(path_to_x, param, init, control,
                                      scenarios_list, n_rep, n_cores,
                                      output_dir, libraries) {
   if (is.null(scenarios_list)) {
@@ -144,7 +144,7 @@ internal_scenarios_setup <- function(path_to_x, param, init, control,
 #'
 #' @keywords internal
 #' @export
-internal_batch_plan <- function(control, strategy, n_cores) {
+.batch_plan <- function(control, strategy, n_cores) {
   if (inherits(control$future.use.plan, c("tweaked", "future"))) {
     control$future.use.plan
   } else {
@@ -195,7 +195,7 @@ internal_batch_plan <- function(control, strategy, n_cores) {
 #'
 #' @keywords internal
 #' @export
-internal_run_batch <- function(scenario, batch_num,
+.run_batch <- function(scenario, batch_num,
                                path_to_x, param, init, control,
                                libraries, output_dir,
                                n_batch, n_rep, n_cores) {
@@ -219,7 +219,7 @@ internal_run_batch <- function(scenario, batch_num,
 
   # The step templates set a `multicore` plan before reaching here. After the
   # last batch adjustment of `n_cores`, to not start idle workers
-  sim_plan <- internal_batch_plan(control, future::multisession, n_cores)
+  sim_plan <- .batch_plan(control, future::multisession, n_cores)
 
   message("Starting simulation for scenario: ", scenario[["id"]])
   message("Batch number: ", batch_num, " / ", n_batch)

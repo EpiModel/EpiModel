@@ -132,14 +132,14 @@ test_that("the scenario file listings stop on a directory that does not exist", 
   )
 })
 
-test_that("internal_batch_plan keeps a tweaked plan, else tweaks the default", {
+test_that(".batch_plan keeps a tweaked plan, else tweaks the default", {
   user_plan <- future::tweak(future::multisession, workers = 3)
   expect_identical(
-    internal_batch_plan(list(future.use.plan = user_plan), future::multicore, 2),
+    .batch_plan(list(future.use.plan = user_plan), future::multicore, 2),
     user_plan
   )
 
-  default_plan <- internal_batch_plan(
+  default_plan <- .batch_plan(
     list(future.use.plan = FALSE), future::multicore, 2
   )
   expect_s3_class(default_plan, "tweaked")
@@ -148,7 +148,7 @@ test_that("internal_batch_plan keeps a tweaked plan, else tweaks the default", {
 
   # the tweak holds the value of `n_cores`, not a promise on the caller
   n <- 4
-  default_plan <- internal_batch_plan(list(), future::multisession, n)
+  default_plan <- .batch_plan(list(), future::multisession, n)
   n <- 1
   expect_equal(attr(default_plan, "tweaks")$workers, 4)
 })
@@ -178,7 +178,7 @@ test_that("batch files keep the cumulative edgelists of all their simulations", 
 
   # 3 replications over 2 batches: a batch of 2 merged sims, and one of 1
   for (b in 1:2) {
-    internal_run_batch(
+    .run_batch(
       scenario = scenario,
       batch_num = b,
       path_to_x = est_path,
@@ -282,7 +282,7 @@ test_that("the scenario setup rejects `control$future.use.plan = TRUE`", {
   control$future.use.plan <- TRUE
 
   expect_error(
-    internal_scenarios_setup(
+    .scenarios_setup(
       path_to_x = file.path(tempdir(), "scen_plan_setup"),
       param = param.net(inf.prob = 0.3, act.rate = 1),
       init = init.net(i.num = 10),

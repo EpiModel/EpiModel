@@ -250,7 +250,7 @@ test_that("validate_restart_pool checks pools and single files", {
   )
 })
 
-test_that("internal_run_batch restarts simulation k from pool element (k - 1) %% N + 1", {
+test_that(".run_batch restarts simulation k from pool element (k - 1) %% N + 1", {
   skip_on_cran()
   scen_dir <- file.path(tempdir(), "rp_scen_run")
   pool_dir <- file.path(tempdir(), "rp_pool_run")
@@ -267,7 +267,7 @@ test_that("internal_run_batch restarts simulation k from pool element (k - 1) %%
   )[[1]]
   # 6 replications over 3 batches of 2: sims 1 to 6 use elements 1 2 3 4 1 2
   for (b in 1:3) {
-    internal_run_batch(
+    .run_batch(
       scenario = scenario,
       batch_num = b,
       path_to_x = tagged_dir,
@@ -303,7 +303,7 @@ test_that("internal_run_batch restarts simulation k from pool element (k - 1) %%
   expect_equal(tags, c(1, 2, 3, 4, 1, 2))
 })
 
-test_that("internal_run_batch gives each simulation its own checkpoint directory", {
+test_that(".run_batch gives each simulation its own checkpoint directory", {
   skip_on_cran()
   scen_dir <- file.path(tempdir(), "rp_scen_ckpt")
   pool_dir <- file.path(tempdir(), "rp_pool_ckpt")
@@ -323,7 +323,7 @@ test_that("internal_run_batch gives each simulation its own checkpoint directory
   scenario <- create_scenario_list(
     data.frame(.at = 0, .scenario.id = "base")
   )[[1]]
-  internal_run_batch(
+  .run_batch(
     scenario = scenario,
     batch_num = 1,
     path_to_x = pool_dir,
@@ -349,7 +349,7 @@ test_that("internal_run_batch gives each simulation its own checkpoint directory
   # without `.checkpoint.keep`, the batch directory goes once the batch is saved
   unlink(c(out_dir, ckpt_dir), recursive = TRUE)
   control$.checkpoint.keep <- FALSE
-  internal_run_batch(
+  .run_batch(
     scenario = scenario,
     batch_num = 1,
     path_to_x = pool_dir,
@@ -446,10 +446,10 @@ test_that("the scenario runners reject raw.output = TRUE at setup", {
     resimulate.network = TRUE, raw.output = TRUE, verbose = FALSE
   )
 
-  # `internal_scenarios_setup` is called by `netsim_scenarios` and by the
+  # `.scenarios_setup` is called by `netsim_scenarios` and by the
   # EpiModelHPC `slurmworkflow` step templates
   expect_error(
-    internal_scenarios_setup(
+    .scenarios_setup(
       path_to_x = file.path(tempdir(), "rp_pool_raw"),
       param = toy_param,
       init = toy_init,
