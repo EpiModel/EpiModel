@@ -75,8 +75,8 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' @keywords internal
 #' @export
 .scenarios_setup <- function(path_to_x, param, init, control,
-                                     scenarios_list, n_rep, n_cores,
-                                     output_dir, libraries) {
+                             scenarios_list, n_rep, n_cores,
+                             output_dir, libraries) {
   if (is.null(scenarios_list)) {
     scenarios_list <- data.frame(.at = 0, .scenario.id = "empty_scenario")
     scenarios_list <- create_scenario_list(scenarios_list)
@@ -196,9 +196,9 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' @keywords internal
 #' @export
 .run_batch <- function(scenario, batch_num,
-                               path_to_x, param, init, control,
-                               libraries, output_dir,
-                               n_batch, n_rep, n_cores) {
+                       path_to_x, param, init, control,
+                       libraries, output_dir,
+                       n_batch, n_rep, n_cores) {
   start_time <- Sys.time()
   lapply(libraries, function(l) library(l, character.only = TRUE))
 
