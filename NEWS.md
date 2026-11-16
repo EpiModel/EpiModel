@@ -4,15 +4,7 @@
 
 -   `control.net(.timing = TRUE)` records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named `timing.<module>` and `timing.cpu.<module>`, in seconds, with `timing.step` and `timing.cpu.step` for the whole step (EpiModel/EpiModelHIV-p#428).
 
--   The scenario runners and restart pools of EpiModelHPC now live in EpiModel, with no new dependency: `netsim_scenarios()` runs a list of scenarios in batches, `merge_netsim_scenarios()` and `merge_netsim_scenarios_tibble()` merge the batch files, `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` list them, and `make_restart_pool()`, `validate_restart_pool()` and `netsim_path_wrapper()` build, check and run from a pool of single simulation restart points. EpiModelHPC keeps the `slurmworkflow` step templates that run the same code on a SLURM cluster.
-
--   `netsim_scenarios()` runs each batch in the current R session instead of a `callr` subprocess. The simulations of a batch still run in `future` workers, one `netsim()` call each, but the packages in `libraries` are attached to the current session.
-
--   `internal_scenarios_setup()`, `internal_run_batch()` and `internal_batch_plan()` are exported for the EpiModelHPC `slurmworkflow` step templates, which call them on a SLURM cluster; they are not meant to be called directly.
-
--   `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` only list files named `sim__<scenario>__<batch>.rds` and `df__<scenario>.rds`, ignoring other files and directories, and return the `file_path` column as plain character.
-
--   `merge_netsim_scenarios()` saves the merged file once per scenario, after its last batch, instead of after every batch.
+-   `netsim_scenarios()` runs a list of scenarios in batches, `merge_netsim_scenarios()` and `merge_netsim_scenarios_tibble()` merge the batch files, `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` list them, and `make_restart_pool()`, `validate_restart_pool()` and `netsim_path_wrapper()` build, check and run from a pool of single simulation restart points. These functions come from EpiModelHPC and add no new dependency; EpiModelHPC keeps the `slurmworkflow` step templates that run the same code on a SLURM cluster. `internal_scenarios_setup()`, `internal_run_batch()` and `internal_batch_plan()` are exported for those step templates and are not meant to be called directly.
 
 -   Restart points and restart pool elements share a single EpiModel version check, whose error message asks to rebuild the restart object with the current version.
 

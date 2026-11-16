@@ -88,9 +88,9 @@ internal_scenarios_setup <- function(path_to_x, param, init, control,
 
   if (isTRUE(control$future.use.plan)) {
     stop(
-      "`netsim_scenarios` do not accept `control$future.use.plan == TRUE`.\n",
-      "use `control$future.use.plan = future::tweak(<your plan>)` \n",
-      " to setup a custom ."
+      "The scenario runners do not accept `control$future.use.plan = TRUE`. ",
+      "Use `control$future.use.plan <- future::tweak(<your plan>)` to set up ",
+      "a custom plan."
     )
   }
 
@@ -209,7 +209,7 @@ internal_run_batch <- function(scenario, batch_num,
   if (batch_num == n_batch) n_cores <- n_rep - n_cores * (n_batch - 1)
   sim_nums <- sim_nums_offset + seq_len(n_cores)
 
-  param_sc <- use_scenario(param = param, scenario = scenario)
+  param_sc <- use_scenario(param, scenario)
 
   if (!is.null(control[[".checkpoint.dir"]])) {
     control[[".checkpoint.dir"]] <- paste0(
@@ -219,11 +219,7 @@ internal_run_batch <- function(scenario, batch_num,
 
   # The step templates set a `multicore` plan before reaching here. After the
   # last batch adjustment of `n_cores`, to not start idle workers
-  sim_plan <- internal_batch_plan(
-    control = control,
-    strategy = future::multisession,
-    n_cores = n_cores
-  )
+  sim_plan <- internal_batch_plan(control, future::multisession, n_cores)
 
   message("Starting simulation for scenario: ", scenario[["id"]])
   message("Batch number: ", batch_num, " / ", n_batch)
@@ -237,7 +233,7 @@ internal_run_batch <- function(scenario, batch_num,
     control = control,
     sim_nums = sim_nums
   ) |>
-    Reduce(f = \(x, y) merge(x = x, y = y, keep.cumulative.edgelist = TRUE))
+    Reduce(f = \(x, y) merge(x, y, keep.cumulative.edgelist = TRUE))
 
   file_name <- paste0("sim__", scenario[["id"]], "__", batch_num, ".rds")
   message("Saving simulation in file: ", file_name)
@@ -271,6 +267,12 @@ internal_run_batch <- function(scenario, batch_num,
 #'
 #' @export
 get_scenarios_batches_infos <- function(scenario_dir) {
+  if (!dir.exists(scenario_dir)) {
+    stop(
+      "\"", scenario_dir, "\" is not an existing directory: check the path ",
+      "where `netsim_scenarios` saved the simulations"
+    )
+  }
   file_names <- list.files(scenario_dir, pattern = "^sim__.+__[0-9]+\\.rds$")
   file_names <- file_names[!dir.exists(file.path(scenario_dir, file_names))]
 
@@ -299,6 +301,8 @@ get_scenarios_batches_infos <- function(scenario_dir) {
 #'
 #' @inheritParams merge.netsim
 #'
+#' @return `NULL`, invisibly. The merged files are saved in `output_dir`.
+#'
 #' @export
 merge_netsim_scenarios <- function(sim_dir, output_dir,
                                    keep.transmat = TRUE, keep.network = TRUE,
@@ -308,7 +312,7 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
                                    keep.cumulative.edgelist = FALSE,
                                    keep.attr.history = TRUE) {
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
-  batches_infos <- get_scenarios_batches_infos(scenario_dir = sim_dir)
+  batches_infos <- get_scenarios_batches_infos(sim_dir)
 
   future.apply::future_lapply(
     unique(batches_infos$scenario_name),
@@ -322,15 +326,15 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
       for (j in seq_along(file_paths)) {
         current <- readRDS(file_paths[j])
         if (!is.null(truncate.at)) {
-          current <- truncate_sim(x = current, at = truncate.at)
+          current <- truncate_sim(current, truncate.at)
         }
 
         if (j == 1) {
           merged <- current
         } else {
           merged <- merge(
-            x = merged,
-            y = current,
+            merged,
+            current,
             keep.transmat = keep.transmat,
             keep.network = keep.network,
             keep.nwstats = keep.nwstats,
@@ -352,6 +356,8 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
       invisible(NULL)
     }
   )
+
+  invisible(NULL)
 }
 
 #' Create a Single Sim File per Scenarios Using the Files From
@@ -369,12 +375,14 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
 #'
 #' @inheritParams merge_netsim_scenarios
 #'
+#' @return `NULL`, invisibly. The merged files are saved in `output_dir`.
+#'
 #' @export
 merge_netsim_scenarios_tibble <- function(sim_dir, output_dir, steps_to_keep,
                                           cols = dplyr::everything()) {
   expr <- rlang::enquo(cols)
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
-  batches_infos <- get_scenarios_batches_infos(scenario_dir = sim_dir)
+  batches_infos <- get_scenarios_batches_infos(sim_dir)
 
   for (scenario in unique(batches_infos$scenario_name)) {
     scenario_infos <- dplyr::filter(
@@ -409,6 +417,8 @@ merge_netsim_scenarios_tibble <- function(sim_dir, output_dir, steps_to_keep,
       dplyr::select(-c("tmp_max_sim"))
     saveRDS(df_sc, file.path(output_dir, paste0("df__", scenario, ".rds")))
   }
+
+  invisible(NULL)
 }
 
 #' Helper function to access the infos on merged scenarios `data.frame`
@@ -426,6 +436,12 @@ merge_netsim_scenarios_tibble <- function(sim_dir, output_dir, steps_to_keep,
 #'
 #' @export
 get_scenarios_tibble_infos <- function(scenario_dir) {
+  if (!dir.exists(scenario_dir)) {
+    stop(
+      "\"", scenario_dir, "\" is not an existing directory: check the path ",
+      "where `merge_netsim_scenarios_tibble` saved the tibbles"
+    )
+  }
   file_names <- list.files(scenario_dir, pattern = "^df__.+\\.rds$")
   file_names <- file_names[!dir.exists(file.path(scenario_dir, file_names))]
 

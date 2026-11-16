@@ -24,6 +24,9 @@ keep in the \code{data.frame}.}
 columns are kept. And in any case, the \code{batch_number}, \code{sim} and \code{time}
 are always kept.}
 }
+\value{
+\code{NULL}, invisibly. The merged files are saved in \code{output_dir}.
+}
 \description{
 Converts the batch files of each scenario into a single \code{data.frame} of
 simulation output, saved as \verb{df__<scenario>.rds} in \code{output_dir}. The

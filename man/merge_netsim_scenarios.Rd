@@ -67,6 +67,9 @@ default, as these grow with the length of the simulation.}
 \item{keep.attr.history}{If \code{TRUE}, keep the attribute histories (as set by
 \code{\link[=record_attr_history]{record_attr_history()}}) from the original \code{x} and \code{y} elements.}
 }
+\value{
+\code{NULL}, invisibly. The merged files are saved in \code{output_dir}.
+}
 \description{
 Merges the batch files of each scenario into a single \code{netsim} object,
 saved as \verb{merged__<scenario>.rds} in \code{output_dir}.
