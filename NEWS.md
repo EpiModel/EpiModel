@@ -8,6 +8,8 @@
 
 -   `netsim_scenarios()` runs each batch in the current R session instead of a `callr` subprocess. The simulations of a batch still run in `future` workers, one `netsim()` call each, but the packages in `libraries` are attached to the current session.
 
+-   `internal_scenarios_setup()`, `internal_run_batch()` and `internal_batch_plan()` are exported for the EpiModelHPC `slurmworkflow` step templates, which call them on a SLURM cluster; they are not meant to be called directly.
+
 -   `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` only list files named `sim__<scenario>__<batch>.rds` and `df__<scenario>.rds`, ignoring other files and directories, and return the `file_path` column as plain character.
 
 -   `merge_netsim_scenarios()` saves the merged file once per scenario, after its last batch, instead of after every batch.

@@ -24,8 +24,8 @@
 #'   [create_scenario_list()] function
 #' @param ... for compatibility reasons
 #'
-#' @inheritParams netsim_run_one_scenario
-#' @inheritSection netsim_run_one_scenario Checkpointing
+#' @inheritParams internal_run_batch
+#' @inheritSection internal_run_batch Checkpointing
 #'
 #' @return `NULL`, invisibly. The simulations are saved in `output_dir`.
 #'
@@ -33,32 +33,50 @@
 netsim_scenarios <- function(path_to_x, param, init, control,
                              scenarios_list, n_rep, n_cores,
                              output_dir, libraries = NULL, ...) {
-  p_list <- netsim_scenarios_setup(
-    path_to_x, param, init, control,
-    scenarios_list, n_rep, n_cores,
-    output_dir, libraries
+  p_list <- internal_scenarios_setup(
+    path_to_x = path_to_x,
+    param = param,
+    init = init,
+    control = control,
+    scenarios_list = scenarios_list,
+    n_rep = n_rep,
+    n_cores = n_cores,
+    output_dir = output_dir,
+    libraries = libraries
   )
 
   for (i in seq_along(p_list$scenarios_list)) {
-    args <- list(p_list$scenarios_list[[i]], p_list$batchs_list[[i]])
-    args <- c(args, p_list$MoreArgs)
-    do.call(netsim_run_one_scenario, args)
+    args <- c(
+      list(
+        scenario = p_list$scenarios_list[[i]],
+        batch_num = p_list$batchs_list[[i]]
+      ),
+      p_list$MoreArgs
+    )
+    do.call(internal_run_batch, args)
   }
 
   invisible(NULL)
 }
 
-#' Helper function to create the parameters for `netsim_run_one_scenario`
+#' Set Up the Arguments to Run a Batch of Scenario Simulations
+#'
+#' Exported for the EpiModelHPC `slurmworkflow` step templates, which run the
+#' same code on a SLURM cluster; it is not meant to be called directly.
+#'
+#' Expands the scenarios over their batches and builds the `MoreArgs` list
+#' passed to [internal_run_batch()] by [netsim_scenarios()], checking the
+#' `control` settings the scenario runners support.
 #'
 #' @inheritParams netsim_scenarios
 #'
-#' @return a list of arguments for `netsim_run_one_scenario`
+#' @return a list of arguments for `internal_run_batch`
 #'
 #' @keywords internal
 #' @export
-netsim_scenarios_setup <- function(path_to_x, param, init, control,
-                                   scenarios_list, n_rep, n_cores,
-                                   output_dir, libraries) {
+internal_scenarios_setup <- function(path_to_x, param, init, control,
+                                     scenarios_list, n_rep, n_cores,
+                                     output_dir, libraries) {
   if (is.null(scenarios_list)) {
     scenarios_list <- data.frame(.at = 0, .scenario.id = "empty_scenario")
     scenarios_list <- create_scenario_list(scenarios_list)
@@ -104,6 +122,9 @@ netsim_scenarios_setup <- function(path_to_x, param, init, control,
 
 #' Build the `future` Plan to Run the Simulations of a Batch
 #'
+#' Exported for the EpiModelHPC `slurmworkflow` step templates, which run the
+#' same code on a SLURM cluster; it is not meant to be called directly.
+#'
 #' Only builds the plan: `with(future::plan(<plan>), local = TRUE)` must be
 #' called by the function running the simulations, as it resets the plan when
 #' its caller exits.
@@ -123,7 +144,7 @@ netsim_scenarios_setup <- function(path_to_x, param, init, control,
 #'
 #' @keywords internal
 #' @export
-get_batch_plan <- function(control, strategy, n_cores) {
+internal_batch_plan <- function(control, strategy, n_cores) {
   if (inherits(control$future.use.plan, c("tweaked", "future"))) {
     control$future.use.plan
   } else {
@@ -131,13 +152,15 @@ get_batch_plan <- function(control, strategy, n_cores) {
   }
 }
 
-#' Run one batch of `netsim` simulations with a scenario and saves the results
-#' deterministically
+#' Run and Save One Batch of `netsim` Simulations
 #'
-#' This inner function is called by [netsim_scenarios()] and by the EpiModelHPC
-#' `slurmworkflow` step templates. It runs the simulations of batch `batch_num`
-#' with [netsim_path_wrapper()], one `netsim` call per simulation, merges them
-#' and saves them as "sim__<scenario id>__<batch_num>.rds" in `output_dir`.
+#' Exported for the EpiModelHPC `slurmworkflow` step templates, which run the
+#' same code on a SLURM cluster; it is not meant to be called directly.
+#'
+#' This inner function is called by [netsim_scenarios()]. It runs the
+#' simulations of batch `batch_num` with [netsim_path_wrapper()], one `netsim`
+#' call per simulation, merges them and saves them as
+#' "sim__<scenario id>__<batch_num>.rds" in `output_dir`.
 #' The simulations of batch `b` are numbered `(b - 1) * n_cores + 1` to
 #' `b * n_cores` over all the batches of a scenario. With a restart pool of
 #' size `N`, simulation `k` starts from pool element `(k - 1) %% N + 1`, the
@@ -172,10 +195,10 @@ get_batch_plan <- function(control, strategy, n_cores) {
 #'
 #' @keywords internal
 #' @export
-netsim_run_one_scenario <- function(scenario, batch_num,
-                                    path_to_x, param, init, control,
-                                    libraries, output_dir,
-                                    n_batch, n_rep, n_cores) {
+internal_run_batch <- function(scenario, batch_num,
+                               path_to_x, param, init, control,
+                               libraries, output_dir,
+                               n_batch, n_rep, n_cores) {
   start_time <- Sys.time()
   lapply(libraries, function(l) library(l, character.only = TRUE))
 
@@ -186,7 +209,7 @@ netsim_run_one_scenario <- function(scenario, batch_num,
   if (batch_num == n_batch) n_cores <- n_rep - n_cores * (n_batch - 1)
   sim_nums <- sim_nums_offset + seq_len(n_cores)
 
-  param_sc <- use_scenario(param, scenario)
+  param_sc <- use_scenario(param = param, scenario = scenario)
 
   if (!is.null(control[[".checkpoint.dir"]])) {
     control[[".checkpoint.dir"]] <- paste0(
@@ -196,15 +219,25 @@ netsim_run_one_scenario <- function(scenario, batch_num,
 
   # The step templates set a `multicore` plan before reaching here. After the
   # last batch adjustment of `n_cores`, to not start idle workers
-  sim_plan <- get_batch_plan(control, future::multisession, n_cores)
+  sim_plan <- internal_batch_plan(
+    control = control,
+    strategy = future::multisession,
+    n_cores = n_cores
+  )
 
   message("Starting simulation for scenario: ", scenario[["id"]])
   message("Batch number: ", batch_num, " / ", n_batch)
   with(future::plan(sim_plan), local = TRUE)
   # `keep.cumulative.edgelist` is the only `merge.netsim` default that drops an
   # element a single `netsim` call with several simulations keeps
-  sim <- netsim_path_wrapper(path_to_x, param_sc, init, control, sim_nums) |>
-    Reduce(f = \(x, y) merge(x, y, keep.cumulative.edgelist = TRUE))
+  sim <- netsim_path_wrapper(
+    path_to_x = path_to_x,
+    param = param_sc,
+    init = init,
+    control = control,
+    sim_nums = sim_nums
+  ) |>
+    Reduce(f = \(x, y) merge(x = x, y = y, keep.cumulative.edgelist = TRUE))
 
   file_name <- paste0("sim__", scenario[["id"]], "__", batch_num, ".rds")
   message("Saving simulation in file: ", file_name)
@@ -275,10 +308,8 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
                                    keep.cumulative.edgelist = FALSE,
                                    keep.attr.history = TRUE) {
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
-  batches_infos <- get_scenarios_batches_infos(sim_dir)
+  batches_infos <- get_scenarios_batches_infos(scenario_dir = sim_dir)
 
-  oopts <- options(future.globals.maxSize = Inf)
-  on.exit(options(oopts))
   future.apply::future_lapply(
     unique(batches_infos$scenario_name),
     function(scenario) {
@@ -291,14 +322,15 @@ merge_netsim_scenarios <- function(sim_dir, output_dir,
       for (j in seq_along(file_paths)) {
         current <- readRDS(file_paths[j])
         if (!is.null(truncate.at)) {
-          current <- truncate_sim(current, truncate.at)
+          current <- truncate_sim(x = current, at = truncate.at)
         }
 
         if (j == 1) {
           merged <- current
         } else {
           merged <- merge(
-            merged, current,
+            x = merged,
+            y = current,
             keep.transmat = keep.transmat,
             keep.network = keep.network,
             keep.nwstats = keep.nwstats,
@@ -342,10 +374,7 @@ merge_netsim_scenarios_tibble <- function(sim_dir, output_dir, steps_to_keep,
                                           cols = dplyr::everything()) {
   expr <- rlang::enquo(cols)
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
-  batches_infos <- get_scenarios_batches_infos(sim_dir)
-
-  oopts <- options(future.globals.maxSize = Inf)
-  on.exit(options(oopts), add = TRUE)
+  batches_infos <- get_scenarios_batches_infos(scenario_dir = sim_dir)
 
   for (scenario in unique(batches_infos$scenario_name)) {
     scenario_infos <- dplyr::filter(

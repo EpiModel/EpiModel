@@ -142,7 +142,7 @@ make_restart_pool <- function(
     stop("`keep_sims` contains the same simulation more than once")
   }
 
-  b_infos <- get_scenarios_batches_infos(scenarios_dir)
+  b_infos <- get_scenarios_batches_infos(scenario_dir = scenarios_dir)
   b_infos <- b_infos[b_infos$scenario_name == scenario_name, , drop = FALSE]
   missing_batches <- setdiff(keep_sims$batch_number, b_infos$batch_number)
   if (length(missing_batches) > 0) {
@@ -185,7 +185,7 @@ make_restart_pool <- function(
     }
     for (i in rows) {
       restart_point <- make_restart_point(
-        sim_obj,
+        sim_obj = sim_obj,
         time_attrs = time_attrs,
         sim_num = keep_sims$sim_number[i]
       )
@@ -207,8 +207,8 @@ make_restart_pool <- function(
     epimodel_version = epimodel_versions
   )
   utils::write.csv(
-    pool_index,
-    file.path(partial_dir, "pool_index.csv"),
+    x = pool_index,
+    file = file.path(partial_dir, "pool_index.csv"),
     row.names = FALSE
   )
   # a single `rename(2)`: `partial_dir` is on the same filesystem
@@ -429,13 +429,18 @@ netsim_path_wrapper <- function(path_to_x, param, init, control, sim_nums) {
 
   checkpoint_dir <- control[[".checkpoint.dir"]]
   sim_list <- future.apply::future_lapply(
-    seq_along(orig_paths),
-    function(i) {
+    X = seq_along(orig_paths),
+    FUN = function(i) {
       if (!is.null(checkpoint_dir)) {
         control[[".checkpoint.dir"]] <-
           paste0(checkpoint_dir, "/sim_", sim_nums[i])
       }
-      sim <- netsim(readRDS(orig_paths[i]), param, init, control)
+      sim <- netsim(
+        x = readRDS(orig_paths[i]),
+        param = param,
+        init = init,
+        control = control
+      )
 
       # If `sim` is a `netsim` - raw.output = FALSE
       if (inherits(sim, "netsim")) {

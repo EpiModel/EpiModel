@@ -3,9 +3,11 @@
 make_toy_scenario_batches <- function(scen_dir) {
   set.seed(1)
   nw <- network_initialize(n = 100)
-  est <- netest(nw,
-    formation = ~edges, target.stats = 50,
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  est <- netest(
+    nw = nw,
+    formation = ~edges,
+    target.stats = 50,
+    coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 10, d.rate = 0),
     verbose = FALSE
   )
   control <- control.net(
@@ -18,7 +20,7 @@ make_toy_scenario_batches <- function(scen_dir) {
   dir.create(scen_dir, recursive = TRUE)
   for (scen in c("a", "b")) {
     for (b in 1:2) {
-      sim <- netsim(est, param, init, control)
+      sim <- netsim(x = est, param = param, init = init, control = control)
       saveRDS(sim, file.path(scen_dir, paste0("sim__", scen, "__", b, ".rds")))
     }
   }
@@ -32,9 +34,11 @@ test_that("netsim_scenarios runs the batches of each scenario in the current ses
 
   set.seed(10)
   nw <- network_initialize(n = 200)
-  est <- netest(nw,
-    formation = ~edges, target.stats = 60,
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  est <- netest(
+    nw = nw,
+    formation = ~edges,
+    target.stats = 60,
+    coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 10, d.rate = 0),
     verbose = FALSE
   )
   param <- param.net(inf.prob = 0.9, rec.rate = 0.01, act.rate = 2)
@@ -61,9 +65,12 @@ test_that("netsim_scenarios runs the batches of each scenario in the current ses
   res <- withVisible(
     netsim_scenarios(
       path_to_x = est_path,
-      param, init, control,
+      param = param,
+      init = init,
+      control = control,
       scenarios_list = scenarios.list,
-      n_rep = n_rep, n_cores = n_cores,
+      n_rep = n_rep,
+      n_cores = n_cores,
       output_dir = output_dir,
       libraries = NULL
     )
@@ -85,7 +92,7 @@ test_that("get_scenarios_batches_infos sorts by scenario and batch number", {
   file.create(file.path(scen_dir, paste0("sim__b__", 1:12, ".rds")))
   file.create(file.path(scen_dir, paste0("sim__a__", c(10, 2, 1), ".rds")))
 
-  infos <- get_scenarios_batches_infos(scen_dir)
+  infos <- get_scenarios_batches_infos(scenario_dir = scen_dir)
   expect_equal(infos$scenario_name, c(rep("a", 3), rep("b", 12)))
   expect_equal(infos$batch_number, c(1L, 2L, 10L, 1:12))
   expect_type(infos$file_path, "character")
@@ -106,24 +113,30 @@ test_that("the scenario file listings only match the batch file names", {
     c("est.rds", "sim__x.rds", "merged__a.rds", "df__a", "sim__ok__1.rds", "df__ok.rds")
   ))
 
-  b_infos <- get_scenarios_batches_infos(scen_dir)
+  b_infos <- get_scenarios_batches_infos(scenario_dir = scen_dir)
   expect_equal(b_infos$scenario_name, "ok")
   expect_equal(b_infos$batch_number, 1L)
 
-  d_infos <- get_scenarios_tibble_infos(scen_dir)
+  d_infos <- get_scenarios_tibble_infos(scenario_dir = scen_dir)
   expect_equal(d_infos$scenario_name, "ok")
   expect_equal(basename(d_infos$file_path), "df__ok.rds")
 })
 
-test_that("get_batch_plan keeps a tweaked plan, else tweaks the default", {
+test_that("internal_batch_plan keeps a tweaked plan, else tweaks the default", {
   user_plan <- future::tweak(future::multisession, workers = 3)
   expect_identical(
-    get_batch_plan(list(future.use.plan = user_plan), future::multicore, 2),
+    internal_batch_plan(
+      control = list(future.use.plan = user_plan),
+      strategy = future::multicore,
+      n_cores = 2
+    ),
     user_plan
   )
 
-  default_plan <- get_batch_plan(
-    list(future.use.plan = FALSE), future::multicore, 2
+  default_plan <- internal_batch_plan(
+    control = list(future.use.plan = FALSE),
+    strategy = future::multicore,
+    n_cores = 2
   )
   expect_s3_class(default_plan, "tweaked")
   expect_s3_class(default_plan, "multicore")
@@ -131,7 +144,11 @@ test_that("get_batch_plan keeps a tweaked plan, else tweaks the default", {
 
   # the tweak holds the value of `n_cores`, not a promise on the caller
   n <- 4
-  default_plan <- get_batch_plan(list(), future::multisession, n)
+  default_plan <- internal_batch_plan(
+    control = list(),
+    strategy = future::multisession,
+    n_cores = n
+  )
   n <- 1
   expect_equal(attr(default_plan, "tweaks")$workers, 4)
 })
@@ -144,9 +161,11 @@ test_that("batch files keep the cumulative edgelists of all their simulations", 
 
   set.seed(1)
   nw <- network_initialize(n = 100)
-  est <- netest(nw,
-    formation = ~edges, target.stats = 50,
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  est <- netest(
+    nw = nw,
+    formation = ~edges,
+    target.stats = 50,
+    coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 10, d.rate = 0),
     verbose = FALSE
   )
   saveRDS(est, est_path)
@@ -161,11 +180,18 @@ test_that("batch files keep the cumulative edgelists of all their simulations", 
 
   # 3 replications over 2 batches: a batch of 2 merged sims, and one of 1
   for (b in 1:2) {
-    netsim_run_one_scenario(
-      scenario, b, est_path,
-      param.net(inf.prob = 0.3, act.rate = 1), init.net(i.num = 10), control,
-      libraries = NULL, output_dir = out_dir,
-      n_batch = 2, n_rep = 3, n_cores = 2
+    internal_run_batch(
+      scenario = scenario,
+      batch_num = b,
+      path_to_x = est_path,
+      param = param.net(inf.prob = 0.3, act.rate = 1),
+      init = init.net(i.num = 10),
+      control = control,
+      libraries = NULL,
+      output_dir = out_dir,
+      n_batch = 2,
+      n_rep = 3,
+      n_cores = 2
     )
   }
   batches <- lapply(1:2, function(b) {
@@ -174,7 +200,11 @@ test_that("batch files keep the cumulative edgelists of all their simulations", 
   expect_length(batches[[1]]$cumulative.edgelist, 2)
   expect_length(batches[[2]]$cumulative.edgelist, 1)
 
-  merged <- merge(batches[[1]], batches[[2]], keep.cumulative.edgelist = TRUE)
+  merged <- merge(
+    x = batches[[1]],
+    y = batches[[2]],
+    keep.cumulative.edgelist = TRUE
+  )
   expect_length(merged$cumulative.edgelist, 3)
 })
 
@@ -186,7 +216,7 @@ test_that("merge_netsim_scenarios merges the batches of each scenario once", {
   make_toy_scenario_batches(scen_dir)
 
   with(future::plan("sequential"), local = TRUE)
-  merge_netsim_scenarios(scen_dir, merged_dir)
+  merge_netsim_scenarios(sim_dir = scen_dir, output_dir = merged_dir)
 
   expect_setequal(list.files(merged_dir), c("merged__a.rds", "merged__b.rds"))
   merged <- readRDS(file.path(merged_dir, "merged__a.rds"))
@@ -204,7 +234,11 @@ test_that("merge_netsim_scenarios_tibble writes one tibble per scenario", {
   make_toy_scenario_batches(scen_dir)
 
   with(future::plan("sequential"), local = TRUE)
-  merge_netsim_scenarios_tibble(scen_dir, df_dir, steps_to_keep = 1)
+  merge_netsim_scenarios_tibble(
+    sim_dir = scen_dir,
+    output_dir = df_dir,
+    steps_to_keep = 1
+  )
 
   expect_setequal(list.files(df_dir), c("df__a.rds", "df__b.rds"))
   d <- readRDS(file.path(df_dir, "df__a.rds"))
@@ -221,8 +255,10 @@ test_that("merge_netsim_scenarios_tibble writes one tibble per scenario", {
   # `cols` selects among the columns beyond `batch_number`, `sim` and `time`,
   # and can rename them
   merge_netsim_scenarios_tibble(
-    scen_dir, df_sel_dir,
-    steps_to_keep = 1, cols = c(cases = "i.num")
+    sim_dir = scen_dir,
+    output_dir = df_sel_dir,
+    steps_to_keep = 1,
+    cols = c(cases = "i.num")
   )
   d_sel <- readRDS(file.path(df_sel_dir, "df__a.rds"))
   expect_equal(
@@ -230,7 +266,7 @@ test_that("merge_netsim_scenarios_tibble writes one tibble per scenario", {
     c("batch_number", "sim", "time", "cases", "sim_number")
   )
 
-  infos <- get_scenarios_tibble_infos(df_dir)
+  infos <- get_scenarios_tibble_infos(scenario_dir = df_dir)
   expect_setequal(infos$scenario_name, c("a", "b"))
   expect_type(infos$file_path, "character")
   expect_true(all(file.exists(infos$file_path)))

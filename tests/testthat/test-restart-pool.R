@@ -3,8 +3,10 @@ copy_dir <- function(from, to) {
   if (dir.exists(to)) unlink(to, recursive = TRUE)
   dir.create(to, recursive = TRUE)
   file.copy(
-    list.files(from, full.names = TRUE, all.files = TRUE, no.. = TRUE),
-    to,
+    from = list.files(
+      path = from, full.names = TRUE, all.files = TRUE, no.. = TRUE
+    ),
+    to = to,
     recursive = TRUE,
     copy.date = TRUE
   )
@@ -16,9 +18,11 @@ copy_dir <- function(from, to) {
 make_toy_batches <- function(scen_dir) {
   set.seed(1)
   nw <- network_initialize(n = 100)
-  est <- netest(nw,
-    formation = ~edges, target.stats = 50,
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  est <- netest(
+    nw = nw,
+    formation = ~edges,
+    target.stats = 50,
+    coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 10, d.rate = 0),
     verbose = FALSE
   )
   control <- control.net(
@@ -28,7 +32,7 @@ make_toy_batches <- function(scen_dir) {
   )
   dir.create(scen_dir, recursive = TRUE)
   for (b in 1:2) {
-    sim <- netsim(est, toy_param, toy_init, control)
+    sim <- netsim(x = est, param = toy_param, init = toy_init, control = control)
     saveRDS(sim, file.path(scen_dir, paste0("sim__base__", b, ".rds")))
   }
 }
@@ -44,8 +48,10 @@ toy_control_restart <- control.net(
 # Copy a pool and tag each element with its pool number in an extra epi
 # column, copied as is into time step 1 of the simulations restarted from it
 tag_pool <- function(pool_dir, tagged_dir) {
-  copy_dir(pool_dir, tagged_dir)
-  for (f in list.files(tagged_dir, pattern = "^[0-9]+\\.rds$", full.names = TRUE)) {
+  copy_dir(from = pool_dir, to = tagged_dir)
+  for (f in list.files(
+    path = tagged_dir, pattern = "^[0-9]+\\.rds$", full.names = TRUE
+  )) {
     x <- readRDS(f)
     x$epi$pool_tag <- data.frame(sim1 = as.numeric(sub("\\.rds$", "", basename(f))))
     saveRDS(x, f)
@@ -61,7 +67,13 @@ test_that("make_restart_pool makes pool element i from row i of keep_sims", {
   make_toy_batches(scen_dir)
 
   keep_sims <- data.frame(batch_number = c(2, 1, 1, 2), sim_number = c(3, 1, 3, 1))
-  pool_index <- make_restart_pool(pool_dir, scen_dir, "base", keep_sims, "infTime")
+  pool_index <- make_restart_pool(
+    pool_dir = pool_dir,
+    scenarios_dir = scen_dir,
+    scenario_name = "base",
+    keep_sims = keep_sims,
+    time_attrs = "infTime"
+  )
 
   expect_setequal(list.files(pool_dir), c(paste0(1:4, ".rds"), "pool_index.csv"))
   pool_index_csv <- utils::read.csv(file.path(pool_dir, "pool_index.csv"))
@@ -76,7 +88,11 @@ test_that("make_restart_pool makes pool element i from row i of keep_sims", {
 
   for (i in seq_len(nrow(keep_sims))) {
     src <- readRDS(file.path(scen_dir, paste0("sim__base__", keep_sims$batch_number[i], ".rds")))
-    expected <- make_restart_point(src, "infTime", sim_num = keep_sims$sim_number[i])
+    expected <- make_restart_point(
+      sim_obj = src,
+      time_attrs = "infTime",
+      sim_num = keep_sims$sim_number[i]
+    )
     elt <- readRDS(file.path(pool_dir, paste0(i, ".rds")))
     expect_identical(elt$run[[1]]$attr, expected$run[[1]]$attr)
     expect_equal(elt$epi, expected$epi)
@@ -84,7 +100,13 @@ test_that("make_restart_pool makes pool element i from row i of keep_sims", {
   }
 
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base", keep_sims, "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = keep_sims,
+      time_attrs = "infTime"
+    ),
     "already exists"
   )
 })
@@ -97,28 +119,53 @@ test_that("make_restart_pool rejects bad keep_sims without leaving a pool", {
   make_toy_batches(scen_dir)
 
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base",
-                      data.frame(batch_number = 3, sim_number = 1), "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = data.frame(batch_number = 3, sim_number = 1),
+      time_attrs = "infTime"
+    ),
     "No simulation file"
   )
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "other",
-                      data.frame(batch_number = 1, sim_number = 1), "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "other",
+      keep_sims = data.frame(batch_number = 1, sim_number = 1),
+      time_attrs = "infTime"
+    ),
     "No simulation file"
   )
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base",
-                      data.frame(batch_number = 1, sim_number = 4), "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = data.frame(batch_number = 1, sim_number = 4),
+      time_attrs = "infTime"
+    ),
     "out of range"
   )
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base",
-                      data.frame(batch_number = c(1, 1), sim_number = c(2, 2)), "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = data.frame(batch_number = c(1, 1), sim_number = c(2, 2)),
+      time_attrs = "infTime"
+    ),
     "more than once"
   )
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base",
-                      data.frame(batch_number = 1, sim_number = 1), "not_an_attr"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = data.frame(batch_number = 1, sim_number = 1),
+      time_attrs = "not_an_attr"
+    ),
     "not present"
   )
   expect_false(dir.exists(pool_dir))
@@ -132,14 +179,24 @@ test_that("validate_restart_pool checks pools and single files", {
   on.exit(unlink(c(scen_dir, pool_dir, copy_dir_path), recursive = TRUE))
   make_toy_batches(scen_dir)
   keep_sims <- data.frame(batch_number = c(1, 2, 2), sim_number = c(2, 1, 3))
-  make_restart_pool(pool_dir, scen_dir, "base", keep_sims, "infTime")
+  make_restart_pool(
+    pool_dir = pool_dir,
+    scenarios_dir = scen_dir,
+    scenario_name = "base",
+    keep_sims = keep_sims,
+    time_attrs = "infTime"
+  )
   epimodel_ver <- utils::packageVersion("EpiModel")
 
   # each case below starts from a fresh copy of the pool
-  reset_copy <- function() copy_dir(pool_dir, copy_dir_path)
+  reset_copy <- function() copy_dir(from = pool_dir, to = copy_dir_path)
   edit_copy_index <- function(f) {
     index_path <- file.path(copy_dir_path, "pool_index.csv")
-    utils::write.csv(f(utils::read.csv(index_path)), index_path, row.names = FALSE)
+    utils::write.csv(
+      x = f(utils::read.csv(index_path)),
+      file = index_path,
+      row.names = FALSE
+    )
   }
 
   # a valid pool
@@ -181,13 +238,17 @@ test_that("validate_restart_pool checks pools and single files", {
 
   # an element file not listed in the index
   reset_copy()
-  file.copy(file.path(pool_dir, "1.rds"), file.path(copy_dir_path, "4.rds"))
+  file.copy(
+    from = file.path(pool_dir, "1.rds"),
+    to = file.path(copy_dir_path, "4.rds")
+  )
   expect_warning(validate_restart_pool(copy_dir_path), "not listed.*4\\.rds")
 
   # an element holding several simulations
   reset_copy()
   file.copy(
-    file.path(scen_dir, "sim__base__1.rds"), file.path(copy_dir_path, "2.rds"),
+    from = file.path(scen_dir, "sim__base__1.rds"),
+    to = file.path(copy_dir_path, "2.rds"),
     overwrite = TRUE
   )
   expect_error(validate_restart_pool(copy_dir_path), "holds 3 simulations")
@@ -250,7 +311,7 @@ test_that("validate_restart_pool checks pools and single files", {
   )
 })
 
-test_that("netsim_run_one_scenario restarts simulation k from pool element (k - 1) %% N + 1", {
+test_that("internal_run_batch restarts simulation k from pool element (k - 1) %% N + 1", {
   skip_on_cran()
   scen_dir <- file.path(tempdir(), "rp_scen_run")
   pool_dir <- file.path(tempdir(), "rp_pool_run")
@@ -259,7 +320,13 @@ test_that("netsim_run_one_scenario restarts simulation k from pool element (k - 
   on.exit(unlink(c(scen_dir, pool_dir, tagged_dir, out_dir), recursive = TRUE))
   make_toy_batches(scen_dir)
   keep_sims <- data.frame(batch_number = c(2, 1, 2, 1), sim_number = c(1, 3, 2, 2))
-  make_restart_pool(pool_dir, scen_dir, "base", keep_sims, "infTime")
+  make_restart_pool(
+    pool_dir = pool_dir,
+    scenarios_dir = scen_dir,
+    scenario_name = "base",
+    keep_sims = keep_sims,
+    time_attrs = "infTime"
+  )
   tag_pool(pool_dir, tagged_dir)
 
   scenario <- create_scenario_list(
@@ -267,10 +334,18 @@ test_that("netsim_run_one_scenario restarts simulation k from pool element (k - 
   )[[1]]
   # 6 replications over 3 batches of 2: sims 1 to 6 use elements 1 2 3 4 1 2
   for (b in 1:3) {
-    netsim_run_one_scenario(
-      scenario, b, tagged_dir, toy_param, toy_init, toy_control_restart,
-      libraries = NULL, output_dir = out_dir,
-      n_batch = 3, n_rep = 6, n_cores = 2
+    internal_run_batch(
+      scenario = scenario,
+      batch_num = b,
+      path_to_x = tagged_dir,
+      param = toy_param,
+      init = toy_init,
+      control = toy_control_restart,
+      libraries = NULL,
+      output_dir = out_dir,
+      n_batch = 3,
+      n_rep = 6,
+      n_cores = 2
     )
   }
   expect_setequal(
@@ -295,7 +370,7 @@ test_that("netsim_run_one_scenario restarts simulation k from pool element (k - 
   expect_equal(tags, c(1, 2, 3, 4, 1, 2))
 })
 
-test_that("netsim_run_one_scenario gives each simulation its own checkpoint directory", {
+test_that("internal_run_batch gives each simulation its own checkpoint directory", {
   skip_on_cran()
   scen_dir <- file.path(tempdir(), "rp_scen_ckpt")
   pool_dir <- file.path(tempdir(), "rp_pool_ckpt")
@@ -304,8 +379,11 @@ test_that("netsim_run_one_scenario gives each simulation its own checkpoint dire
   on.exit(unlink(c(scen_dir, pool_dir, out_dir, ckpt_dir), recursive = TRUE))
   make_toy_batches(scen_dir)
   make_restart_pool(
-    pool_dir, scen_dir, "base",
-    data.frame(batch_number = 1, sim_number = 1:2), "infTime"
+    pool_dir = pool_dir,
+    scenarios_dir = scen_dir,
+    scenario_name = "base",
+    keep_sims = data.frame(batch_number = 1, sim_number = 1:2),
+    time_attrs = "infTime"
   )
 
   control <- toy_control_restart
@@ -315,10 +393,18 @@ test_that("netsim_run_one_scenario gives each simulation its own checkpoint dire
   scenario <- create_scenario_list(
     data.frame(.at = 0, .scenario.id = "base")
   )[[1]]
-  netsim_run_one_scenario(
-    scenario, 1, pool_dir, toy_param, toy_init, control,
-    libraries = NULL, output_dir = out_dir,
-    n_batch = 1, n_rep = 2, n_cores = 2
+  internal_run_batch(
+    scenario = scenario,
+    batch_num = 1,
+    path_to_x = pool_dir,
+    param = toy_param,
+    init = toy_init,
+    control = control,
+    libraries = NULL,
+    output_dir = out_dir,
+    n_batch = 1,
+    n_rep = 2,
+    n_cores = 2
   )
 
   sim <- readRDS(file.path(out_dir, "sim__base__1.rds"))
@@ -333,10 +419,18 @@ test_that("netsim_run_one_scenario gives each simulation its own checkpoint dire
   # without `.checkpoint.keep`, the batch directory goes once the batch is saved
   unlink(c(out_dir, ckpt_dir), recursive = TRUE)
   control$.checkpoint.keep <- FALSE
-  netsim_run_one_scenario(
-    scenario, 1, pool_dir, toy_param, toy_init, control,
-    libraries = NULL, output_dir = out_dir,
-    n_batch = 1, n_rep = 2, n_cores = 2
+  internal_run_batch(
+    scenario = scenario,
+    batch_num = 1,
+    path_to_x = pool_dir,
+    param = toy_param,
+    init = toy_init,
+    control = control,
+    libraries = NULL,
+    output_dir = out_dir,
+    n_batch = 1,
+    n_rep = 2,
+    n_cores = 2
   )
   expect_true(file.exists(file.path(out_dir, "sim__base__1.rds")))
   expect_false(dir.exists(batch_ckpt_dir))
@@ -353,7 +447,13 @@ test_that("a failure while writing the pool removes the partial directory", {
   # an already partially written pool
   keep_sims <- data.frame(batch_number = c(1, 2), sim_number = c(1, 99))
   expect_error(
-    make_restart_pool(pool_dir, scen_dir, "base", keep_sims, "infTime"),
+    make_restart_pool(
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = keep_sims,
+      time_attrs = "infTime"
+    ),
     "out of range"
   )
   expect_false(dir.exists(pool_dir))
@@ -367,14 +467,21 @@ test_that("netsim_path_wrapper checks versions from the pool index, netsim check
   on.exit(unlink(c(scen_dir, pool_dir), recursive = TRUE))
   make_toy_batches(scen_dir)
   make_restart_pool(
-    pool_dir, scen_dir, "base",
-    data.frame(batch_number = 1, sim_number = 1:3), "infTime"
+    pool_dir = pool_dir,
+    scenarios_dir = scen_dir,
+    scenario_name = "base",
+    keep_sims = data.frame(batch_number = 1, sim_number = 1:3),
+    time_attrs = "infTime"
   )
   index_path <- file.path(pool_dir, "pool_index.csv")
   pool_index <- utils::read.csv(index_path)
   run <- function(sim_nums) {
     netsim_path_wrapper(
-      pool_dir, toy_param, toy_init, toy_control_restart, sim_nums
+      path_to_x = pool_dir,
+      param = toy_param,
+      init = toy_init,
+      control = toy_control_restart,
+      sim_nums = sim_nums
     )
   }
   with(future::plan("sequential"), local = TRUE)
@@ -383,10 +490,10 @@ test_that("netsim_path_wrapper checks versions from the pool index, netsim check
   # version. Only the elements used are checked
   bad_index <- pool_index
   bad_index$epimodel_version[2] <- "2.6.0"
-  utils::write.csv(bad_index, index_path, row.names = FALSE)
+  utils::write.csv(x = bad_index, file = index_path, row.names = FALSE)
   expect_error(run(1:2), "Element 2 of the restart pool .* made with EpiModel v2.6.0")
   expect_length(run(c(1, 3)), 2)
-  utils::write.csv(pool_index, index_path, row.names = FALSE)
+  utils::write.csv(x = pool_index, file = index_path, row.names = FALSE)
 
   # second check, by `netsim`: the element itself was made with another version
   x <- readRDS(file.path(pool_dir, "2.rds"))
@@ -400,7 +507,10 @@ test_that("netsim_path_wrapper checks versions from the pool index, netsim check
   # the pool size comes from the index (3 elements), not from the files:
   # simulation 4 uses element 1 even when element 3 is missing, and the
   # missing element only fails when read
-  file.rename(file.path(pool_dir, "3.rds"), file.path(pool_dir, "3.rds.bak"))
+  file.rename(
+    from = file.path(pool_dir, "3.rds"),
+    to = file.path(pool_dir, "3.rds.bak")
+  )
   expect_equal(
     run(4)[[1]]$restart_point$sim1,
     as.character(file.path(pool_dir, "1.rds"))
@@ -418,13 +528,19 @@ test_that("the scenario runners reject raw.output = TRUE at setup", {
     resimulate.network = TRUE, raw.output = TRUE, verbose = FALSE
   )
 
-  # `netsim_scenarios_setup` is called by `netsim_scenarios` and by the
+  # `internal_scenarios_setup` is called by `netsim_scenarios` and by the
   # EpiModelHPC `slurmworkflow` step templates
   expect_error(
-    netsim_scenarios_setup(
-      file.path(tempdir(), "rp_pool_raw"), toy_param, toy_init, control,
-      scenarios_list = NULL, n_rep = 1, n_cores = 1,
-      output_dir = file.path(tempdir(), "rp_out_raw"), libraries = NULL
+    internal_scenarios_setup(
+      path_to_x = file.path(tempdir(), "rp_pool_raw"),
+      param = toy_param,
+      init = toy_init,
+      control = control,
+      scenarios_list = NULL,
+      n_rep = 1,
+      n_cores = 1,
+      output_dir = file.path(tempdir(), "rp_out_raw"),
+      libraries = NULL
     ),
     "raw.output = TRUE"
   )
@@ -438,8 +554,9 @@ test_that("netsim_path_wrapper turns verbose off for several simulations", {
   x_path <- file.path(scen_dir, "restart.rds")
   saveRDS(
     make_restart_point(
-      readRDS(file.path(scen_dir, "sim__base__1.rds")),
-      time_attrs = "infTime", sim_num = 1
+      sim_obj = readRDS(file.path(scen_dir, "sim__base__1.rds")),
+      time_attrs = "infTime",
+      sim_num = 1
     ),
     x_path
   )
@@ -448,11 +565,23 @@ test_that("netsim_path_wrapper turns verbose off for several simulations", {
 
   with(future::plan("sequential"), local = TRUE)
   expect_output(
-    netsim_path_wrapper(x_path, toy_param, toy_init, control, sim_nums = 1),
+    netsim_path_wrapper(
+      path_to_x = x_path,
+      param = toy_param,
+      init = toy_init,
+      control = control,
+      sim_nums = 1
+    ),
     "Timestep"
   )
   expect_silent(
-    netsim_path_wrapper(x_path, toy_param, toy_init, control, sim_nums = 1:2)
+    netsim_path_wrapper(
+      path_to_x = x_path,
+      param = toy_param,
+      init = toy_init,
+      control = control,
+      sim_nums = 1:2
+    )
   )
 })
 
@@ -472,14 +601,17 @@ test_that("the partial pool left by a killed make_restart_pool is removed", {
 
   expect_message(
     make_restart_pool(
-      pool_dir, scen_dir, "base",
-      data.frame(batch_number = 1, sim_number = 1:2), "infTime"
+      pool_dir = pool_dir,
+      scenarios_dir = scen_dir,
+      scenario_name = "base",
+      keep_sims = data.frame(batch_number = 1, sim_number = 1:2),
+      time_attrs = "infTime"
     ),
     "partial restart pool"
   )
   expect_false(dir.exists(partial_dir))
   expect_setequal(
-    list.files(pool_dir, all.files = TRUE, no.. = TRUE),
+    list.files(path = pool_dir, all.files = TRUE, no.. = TRUE),
     c("1.rds", "2.rds", "pool_index.csv")
   )
   expect_s3_class(readRDS(file.path(pool_dir, "1.rds")), "netsim")
