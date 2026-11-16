@@ -173,9 +173,12 @@
 #' EpiModel is the foundation for a set of extension packages maintained by our
 #' group. `EpiModelHIV` (<https://github.com/EpiModel/EpiModelHIV>) models HIV
 #' and bacterial sexually transmitted infections, and `EpiModelCOVID`
-#' (<https://github.com/EpiModel/EpiModelCOVID>) models SARS-CoV-2. Simulation
-#' on high-performance computing clusters is supported by `EpiModelHPC`
-#' (<https://github.com/EpiModel/EpiModelHPC>).
+#' (<https://github.com/EpiModel/EpiModelCOVID>) models SARS-CoV-2. EpiModel
+#' itself runs scenario batches and restart pools (see [netsim_scenarios()] and
+#' [make_restart_pool()]); `EpiModelHPC`
+#' (<https://github.com/EpiModel/EpiModelHPC>) provides the `slurmworkflow`
+#' step templates that run the same code on high-performance computing
+#' clusters.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel

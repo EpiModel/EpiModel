@@ -124,6 +124,9 @@ reference:
       - get_attr_at
       - make_networkDynamic
       - make_restart_point
+      - make_restart_pool
+      - validate_restart_pool
+      - netsim_path_wrapper
 
   - title: "Transmission & Reachability Analysis"
     desc: >
@@ -174,12 +177,18 @@ reference:
 
   - title: "Scenarios & Sensitivity Analysis"
     desc: >
-      Build parameter scenarios for batch sensitivity analyses and convert
-      between list and tabular parameter formats.
+      Build parameter scenarios for batch sensitivity analyses, run them in
+      batches, merge their output, and convert between list and tabular
+      parameter formats.
     contents:
       - create_scenario_list
       - use_scenario
       - update_params
+      - netsim_scenarios
+      - merge_netsim_scenarios
+      - merge_netsim_scenarios_tibble
+      - get_scenarios_batches_infos
+      - get_scenarios_tibble_infos
       - param.net_from_table
       - param.net_to_table
       - format_param

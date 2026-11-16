@@ -296,7 +296,7 @@ d_unc <- bind_rows(d_list)
 
 The values of `inf.prob` and `act.rate` in `param` are placeholders, since every scenario replaces them before its simulations start. Each `netsim` object also records the parameters it used: `sim$param` holds the base parameters with the scenario values applied, along with the scenario ID in `.scenario.id`.
 
-The two simulations within a draw differ only by stochastic variation, while differences between draws also reflect the parameter uncertainty. Setting `nsims = 1` with a larger number of draws gives one simulation per draw. For large numbers of draws, the [EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package runs a scenario list locally with `netsim_scenarios()` or as an array job on a SLURM cluster with `step_tmpl_netsim_scenarios()`.
+The two simulations within a draw differ only by stochastic variation, while differences between draws also reflect the parameter uncertainty. Setting `nsims = 1` with a larger number of draws gives one simulation per draw. For large numbers of draws, `netsim_scenarios()` runs a scenario list in batches; it is now part of EpiModel. The [EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package still provides `step_tmpl_netsim_scenarios()` to run the same code as an array job on a SLURM cluster.
 
 ### Linking Draws to Outcomes
 
