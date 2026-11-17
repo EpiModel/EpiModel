@@ -61,6 +61,25 @@ checkpoints in its own \verb{<.checkpoint.dir>/sim_<k>} sub directory.
 
 Use \code{\link[=validate_restart_pool]{validate_restart_pool()}} to check a pool before using it.
 }
+\examples{
+nw <- network_initialize(n = 50)
+est <- netest(nw, formation = ~edges, target.stats = 20,
+              coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+              verbose = FALSE)
+est_path <- tempfile(fileext = ".rds")
+saveRDS(est, est_path)
+
+param <- param.net(inf.prob = 0.3, act.rate = 1)
+init <- init.net(i.num = 5)
+control <- control.net(type = "SI", nsteps = 5, verbose = FALSE)
+
+# Two simulations, each its own `netsim` call, on the current `future` plan
+sims <- netsim_path_wrapper(est_path, param, init, control, sim_nums = 1:2)
+length(sims)
+
+unlink(est_path)
+
+}
 \seealso{
 \code{\link[=make_restart_pool]{make_restart_pool()}}, \code{\link[=validate_restart_pool]{validate_restart_pool()}}
 }

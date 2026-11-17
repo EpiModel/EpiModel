@@ -45,6 +45,7 @@ articles:
       - model-parameters
       - network-objects
       - attributes-and-summary-statistics
+      - scenarios-and-restart-pools
 
 reference:
   - title: "Package Overview"
