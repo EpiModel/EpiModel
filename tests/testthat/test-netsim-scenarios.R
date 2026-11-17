@@ -67,8 +67,7 @@ test_that("netsim_scenarios runs the batches of each scenario in the current ses
       scenarios_list = scenarios.list,
       n_rep = n_rep,
       n_cores = n_cores,
-      output_dir = output_dir,
-      libraries = NULL
+      output_dir = output_dir
     )
   )
   expect_false(res$visible)
@@ -185,7 +184,6 @@ test_that("batch files keep the cumulative edgelists of all their simulations", 
       param = param.net(inf.prob = 0.3, act.rate = 1),
       init = init.net(i.num = 10),
       control = control,
-      libraries = NULL,
       output_dir = out_dir,
       n_batch = 2,
       n_rep = 3,
@@ -290,8 +288,7 @@ test_that("the scenario setup rejects `control$future.use.plan = TRUE`", {
       scenarios_list = NULL,
       n_rep = 1,
       n_cores = 1,
-      output_dir = file.path(tempdir(), "scen_plan_setup_out"),
-      libraries = NULL
+      output_dir = file.path(tempdir(), "scen_plan_setup_out")
     ),
     "future::tweak",
     fixed = TRUE

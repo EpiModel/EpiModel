@@ -428,6 +428,9 @@ netsim_path_wrapper <- function(path_to_x, param, init, control, sim_nums) {
   }
 
   checkpoint_dir <- control[[".checkpoint.dir"]]
+  # Each `netsim` call is sequential (`ncores = 1`), so it never makes the
+  # #1104 check, but the simulations run in the current plan's workers
+  warn_worker_globals("netsim_path_wrapper", param = param, init = init, control = control)
   sim_list <- future.apply::future_lapply(
     seq_along(orig_paths),
     function(i) {

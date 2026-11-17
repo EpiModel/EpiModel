@@ -274,7 +274,6 @@ test_that(".run_batch restarts simulation k from pool element (k - 1) %% N + 1",
       param = toy_param,
       init = toy_init,
       control = toy_control_restart,
-      libraries = NULL,
       output_dir = out_dir,
       n_batch = 3,
       n_rep = 6,
@@ -330,7 +329,6 @@ test_that(".run_batch gives each simulation its own checkpoint directory", {
     param = toy_param,
     init = toy_init,
     control = control,
-    libraries = NULL,
     output_dir = out_dir,
     n_batch = 1,
     n_rep = 2,
@@ -356,7 +354,6 @@ test_that(".run_batch gives each simulation its own checkpoint directory", {
     param = toy_param,
     init = toy_init,
     control = control,
-    libraries = NULL,
     output_dir = out_dir,
     n_batch = 1,
     n_rep = 2,
@@ -457,8 +454,7 @@ test_that("the scenario runners reject raw.output = TRUE at setup", {
       scenarios_list = NULL,
       n_rep = 1,
       n_cores = 1,
-      output_dir = file.path(tempdir(), "rp_out_raw"),
-      libraries = NULL
+      output_dir = file.path(tempdir(), "rp_out_raw")
     ),
     "raw.output = TRUE"
   )
@@ -499,6 +495,60 @@ test_that("netsim_path_wrapper turns verbose off for several simulations", {
       control = control,
       sim_nums = 1:2
     )
+  )
+})
+
+test_that("netsim_path_wrapper warns about what multisession workers lack", {
+  skip_on_cran()
+  scen_dir <- file.path(tempdir(), "rp_scen_globals")
+  on.exit(unlink(scen_dir, recursive = TRUE))
+  make_toy_batches(scen_dir)
+  x_path <- file.path(scen_dir, "restart.rds")
+  saveRDS(
+    make_restart_point(
+      readRDS(file.path(scen_dir, "sim__base__1.rds")),
+      time_attrs = "infTime", sim_num = 1
+    ),
+    x_path
+  )
+
+  genv <- globalenv()
+  assign("epimodel_test_rate", function() 0.5, envir = genv)
+  on.exit(rm("epimodel_test_rate", envir = genv), add = TRUE)
+  # a global helper in a branch that never runs, so the simulation completes
+  my_mod <- function(dat, at) {
+    if (at < 0) dat <- set_epi(dat, "rate", epimodel_test_rate())
+    dat
+  }
+  environment(my_mod) <- genv
+  control <- control.net(
+    type = NULL, start = 2, nsteps = 4,
+    tergmLite = TRUE, resimulate.network = TRUE, save.run = TRUE,
+    infection.FUN = infection.net, my.FUN = my_mod, verbose = FALSE
+  )
+
+  with(future::plan("multisession", workers = 2), local = TRUE)
+  expect_warning(
+    netsim_path_wrapper(
+      path_to_x = x_path,
+      param = toy_param,
+      init = toy_init,
+      control = control,
+      sim_nums = 1:2
+    ),
+    "control\\$my.FUN: epimodel_test_rate\\(\\)"
+  )
+
+  future::plan("sequential")
+  expect_no_warning(
+    netsim_path_wrapper(
+      path_to_x = x_path,
+      param = toy_param,
+      init = toy_init,
+      control = control,
+      sim_nums = 1:2
+    ),
+    message = "separate R sessions"
   )
 })
 

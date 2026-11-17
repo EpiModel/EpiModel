@@ -13,7 +13,6 @@ netsim_scenarios(
   n_rep,
   n_cores,
   output_dir,
-  libraries = NULL,
   ...
 )
 }
@@ -49,9 +48,6 @@ For extended models, custom module functions are also passed here.}
 
 \item{output_dir}{The folder where the simulation files are to be stored.}
 
-\item{libraries}{A character vector containing the name of the libraries
-required for the model to run. (e.g. EpiModelHIV or EpiModelCOVID)}
-
 \item{...}{for compatibility reasons}
 }
 \value{
@@ -70,11 +66,14 @@ for this particular scenario. Each scenario is therefore run over
 The batches run one after the other in the current R session, while the
 simulations of a batch run in parallel, one \code{netsim} call per simulation
 (see \code{\link[=netsim_path_wrapper]{netsim_path_wrapper()}}), by default with
-\code{future::plan("multisession", workers = n_cores)}. Each \code{netsim} call still
-runs in a fresh \code{future} process, but the packages listed in \code{libraries} are
-attached to the current session, not to the workers.
+\code{future::plan("multisession", workers = n_cores)}.
 Using \verb{control$future.use.plan <- future::tweak(<your plan>)} will bypass
 the \code{multisession} setting.
+
+The workers do not have the packages attached in the current session, so
+module code written in a script must call package functions with \verb{pkg::},
+such as \code{dplyr::filter()}. Modules from a package find the functions it
+imports. See the Parallel Simulation section of \code{\link[=netsim]{netsim()}}.
 
 The EpiModelHPC package provides \code{slurmworkflow} step templates that run the
 same code on a SLURM cluster.

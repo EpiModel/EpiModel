@@ -11,11 +11,14 @@
 #' The batches run one after the other in the current R session, while the
 #' simulations of a batch run in parallel, one `netsim` call per simulation
 #' (see [netsim_path_wrapper()]), by default with
-#' `future::plan("multisession", workers = n_cores)`. Each `netsim` call still
-#' runs in a fresh `future` process, but the packages listed in `libraries` are
-#' attached to the current session, not to the workers.
+#' `future::plan("multisession", workers = n_cores)`.
 #' Using `control$future.use.plan <- future::tweak(<your plan>)` will bypass
 #' the `multisession` setting.
+#'
+#' The workers do not have the packages attached in the current session, so
+#' module code written in a script must call package functions with `pkg::`,
+#' such as `dplyr::filter()`. Modules from a package find the functions it
+#' imports. See the Parallel Simulation section of [netsim()].
 #'
 #' The EpiModelHPC package provides `slurmworkflow` step templates that run the
 #' same code on a SLURM cluster.
@@ -32,7 +35,15 @@
 #' @export
 netsim_scenarios <- function(path_to_x, param, init, control,
                              scenarios_list, n_rep, n_cores,
-                             output_dir, libraries = NULL, ...) {
+                             output_dir, ...) {
+  if ("libraries" %in% names(list(...))) {
+    warning(
+      "`libraries` was removed and is ignored: the simulations run in ",
+      "workers that do not have the packages attached in this session. ",
+      "Call package functions with `pkg::` in module code.",
+      call. = FALSE
+    )
+  }
   p_list <- .scenarios_setup(
     path_to_x = path_to_x,
     param = param,
@@ -41,8 +52,7 @@ netsim_scenarios <- function(path_to_x, param, init, control,
     scenarios_list = scenarios_list,
     n_rep = n_rep,
     n_cores = n_cores,
-    output_dir = output_dir,
-    libraries = libraries
+    output_dir = output_dir
   )
 
   for (i in seq_along(p_list$scenarios_list)) {
@@ -76,7 +86,7 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' @export
 .scenarios_setup <- function(path_to_x, param, init, control,
                              scenarios_list, n_rep, n_cores,
-                             output_dir, libraries) {
+                             output_dir) {
   if (is.null(scenarios_list)) {
     scenarios_list <- data.frame(.at = 0, .scenario.id = "empty_scenario")
     scenarios_list <- create_scenario_list(scenarios_list)
@@ -111,7 +121,6 @@ netsim_scenarios <- function(path_to_x, param, init, control,
       param = param,
       init = init,
       control = control,
-      libraries = libraries,
       output_dir = output_dir,
       n_batch = n_batch,
       n_rep = n_rep,
@@ -181,8 +190,6 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' @param n_rep The number of replication to be run for each scenario.
 #' @param n_cores The number of CPUs on which the simulations will be run.
 #' @param output_dir The folder where the simulation files are to be stored.
-#' @param libraries A character vector containing the name of the libraries
-#'   required for the model to run. (e.g. EpiModelHIV or EpiModelCOVID)
 #' @inheritParams netsim
 #'
 #' @section Checkpointing:
@@ -197,10 +204,9 @@ netsim_scenarios <- function(path_to_x, param, init, control,
 #' @export
 .run_batch <- function(scenario, batch_num,
                        path_to_x, param, init, control,
-                       libraries, output_dir,
+                       output_dir,
                        n_batch, n_rep, n_cores) {
   start_time <- Sys.time()
-  lapply(libraries, function(l) library(l, character.only = TRUE))
 
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 

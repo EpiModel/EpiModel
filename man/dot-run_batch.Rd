@@ -11,7 +11,6 @@
   param,
   init,
   control,
-  libraries,
   output_dir,
   n_batch,
   n_rep,
@@ -45,9 +44,6 @@ Key settings include \code{type} (disease model: \code{"SI"}, \code{"SIR"}, or
 simulations), \code{tergmLite} (lightweight mode for performance), and
 \code{resimulate.network} (required for models with vital dynamics).
 For extended models, custom module functions are also passed here.}
-
-\item{libraries}{A character vector containing the name of the libraries
-required for the model to run. (e.g. EpiModelHIV or EpiModelCOVID)}
 
 \item{output_dir}{The folder where the simulation files are to be stored.}
 

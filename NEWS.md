@@ -4,9 +4,7 @@
 
 -   `control.net(.timing = TRUE)` records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named `timing.<module>` and `timing.cpu.<module>`, in seconds, with `timing.step` and `timing.cpu.step` for the whole step (EpiModel/EpiModelHIV-p#428).
 
--   `netsim_scenarios()` runs a list of scenarios in batches, `merge_netsim_scenarios()` and `merge_netsim_scenarios_tibble()` merge the batch files, `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` list them, and `make_restart_pool()`, `validate_restart_pool()` and `netsim_path_wrapper()` build, check and run from a pool of single simulation restart points. These functions come from EpiModelHPC and add no new dependency; EpiModelHPC keeps the `slurmworkflow` step templates that run the same code on a SLURM cluster. `.scenarios_setup()`, `.run_batch()` and `.batch_plan()` are exported for those step templates and are not meant to be called directly.
-
--   Restart points and restart pool elements share a single EpiModel version check, whose error message asks to rebuild the restart object with the current version.
+-   `netsim_scenarios()` runs a list of scenarios in batches, `merge_netsim_scenarios()` and `merge_netsim_scenarios_tibble()` merge the batch files, `get_scenarios_batches_infos()` and `get_scenarios_tibble_infos()` list them, and `make_restart_pool()`, `validate_restart_pool()` and `netsim_path_wrapper()` build, check and run from a pool of single simulation restart points. These functions come from EpiModelHPC and add no new dependency; EpiModelHPC keeps the `slurmworkflow` step templates that run the same code on a SLURM cluster. `.scenarios_setup()`, `.run_batch()` and `.batch_plan()` are exported for those step templates and are not meant to be called directly. Compared to EpiModelHPC, `netsim_scenarios()` runs its batches in the current session instead of a `callr` subprocess, and no longer has a `libraries` argument: it attached the packages in the session running the batches, but not in the `multisession` workers running the simulations, so it never worked as intended outside of `multicore` plans. Module code written in a script must call package functions with `pkg::`. Passing `libraries` gives a warning. `netsim_path_wrapper()` now warns, like `netsim()`, when user code refers to global objects or attached packages that the workers do not have (#1104).
 
 ### BUG FIXES
 
@@ -19,6 +17,7 @@
 
 ### OTHER
 
+-   Restart points and restart pool elements share a single EpiModel version check, whose error message asks to rebuild the restart object with the current version.
 -   `inst/bench/sis-10k.R` is a reference case that prints the `netsim()` time per step of each module, and a new test fails when its step time, relative to a CPU reference timed in the same process, exceeds 1.5 times a stored baseline (EpiModel/EpiModelHIV-p#428).
 -   `netsim()` and `netdx()` with `ncores > 1` now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and `?netsim` has a new Parallel Simulation section on making such code self-contained (#1104).
 -   `netsim()` now stops with an error naming the module when a module returns `dat` with an R attribute set on it, which is what happens when magrittr is attached after EpiModel and masks `set_attr()` (#1120).
