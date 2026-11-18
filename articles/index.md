@@ -13,3 +13,5 @@
   EpiModel](https://epimodel.github.io/EpiModel/articles/network-objects.md):
 - [Working with Custom Attributes and Summary Statistics in
   EpiModel](https://epimodel.github.io/EpiModel/articles/attributes-and-summary-statistics.md):
+- [Running Scenarios in Batches and From Restart
+  Pools](https://epimodel.github.io/EpiModel/articles/scenarios-and-restart-pools.md):

@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +56,9 @@
 
       <h1>Working with Model Parameters in EpiModel</h1>
                         <h4 data-toc-skip class="author">EpiModel
-v2.7.0</h4>
+v2.7.1</h4>
             
-            <h4 data-toc-skip class="date">2026-11-13</h4>
+            <h4 data-toc-skip class="date">2026-11-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/vignettes/model-parameters.Rmd" class="external-link"><code>vignettes/model-parameters.Rmd</code></a></small>
       <div class="d-none name"><code>model-parameters.Rmd</code></div>
@@ -777,10 +777,12 @@ in <code>.scenario.id</code>.</p>
 <p>The two simulations within a draw differ only by stochastic
 variation, while differences between draws also reflect the parameter
 uncertainty. Setting <code>nsims = 1</code> with a larger number of
-draws gives one simulation per draw. For large numbers of draws, the <a href="https://github.com/EpiModel/EpiModelHPC" class="external-link">EpiModelHPC</a> package
-runs a scenario list locally with <code>netsim_scenarios()</code> or as
-an array job on a SLURM cluster with
-<code>step_tmpl_netsim_scenarios()</code>.</p>
+draws gives one simulation per draw. For large numbers of draws,
+<code><a href="../reference/netsim_scenarios.html">netsim_scenarios()</a></code> runs a scenario list in batches (see the
+<em>Running Scenarios in Batches and From Restart Pools</em> vignette),
+and the <a href="https://github.com/EpiModel/EpiModelHPC" class="external-link">EpiModelHPC</a> package
+provides <code>step_tmpl_netsim_scenarios()</code> to run the same code
+as an array job on a SLURM cluster.</p>
 </div>
 <div class="section level3">
 <h3 id="linking-draws-to-outcomes">Linking Draws to Outcomes<a class="anchor" aria-label="anchor" href="#linking-draws-to-outcomes"></a>

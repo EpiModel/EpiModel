@@ -165,6 +165,15 @@ restart checkpoints.
 
   Make a Lightweight Restart Point From a `netsim` Object with tergmLite
 
+- [`make_restart_pool()`](https://epimodel.github.io/EpiModel/reference/make_restart_pool.md)
+  : Make a Restart Pool From Simulations Run With Scenarios
+
+- [`validate_restart_pool()`](https://epimodel.github.io/EpiModel/reference/validate_restart_pool.md)
+  : Validate a Restart Pool
+
+- [`netsim_path_wrapper()`](https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.md)
+  : Run Single Simulations From a Restart Pool or a Single Object
+
 ## Transmission & Reachability Analysis
 
 Extract transmission matrices, construct phylogenies from transmission
@@ -257,8 +266,9 @@ Shiny-based explorer.
 
 ## Scenarios & Sensitivity Analysis
 
-Build parameter scenarios for batch sensitivity analyses and convert
-between list and tabular parameter formats.
+Build parameter scenarios for batch sensitivity analyses, run them in
+batches, merge their output, and convert between list and tabular
+parameter formats.
 
 - [`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
   : Make a list of EpiModel scenarios from a data.frame of scenarios
@@ -268,6 +278,29 @@ between list and tabular parameter formats.
 
 - [`update_params()`](https://epimodel.github.io/EpiModel/reference/update_params.md)
   : Update Model Parameters for Stochastic Network Models
+
+- [`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+  : Run EpiModel Network Simulations With Scenarios
+
+- [`merge_netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios.md)
+  :
+
+  Create a Single Sim File per Scenarios Using the Files From
+  `netsim_scenarios`
+
+- [`merge_netsim_scenarios_tibble()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios_tibble.md)
+  :
+
+  Create a Single Sim File per Scenarios Using the Files From
+  `netsim_scenarios`
+
+- [`get_scenarios_batches_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_batches_infos.md)
+  : Helper function to access the file name elements of scenarios
+
+- [`get_scenarios_tibble_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_tibble_infos.md)
+  :
+
+  Helper function to access the infos on merged scenarios `data.frame`
 
 - [`param.net_from_table()`](https://epimodel.github.io/EpiModel/reference/param.net_from_table.md)
   : Parameters List for Stochastic Network Models from a Formatted Data

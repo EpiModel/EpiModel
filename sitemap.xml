@@ -6,6 +6,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/articles/index.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/articles/model-parameters.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/articles/network-objects.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/articles/scenarios-and-restart-pools.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/authors.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/index.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/news/index.html</loc></url>
@@ -62,6 +63,9 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/departures.net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/discord_edgelist.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/dissolution_coefs.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/dot-batch_plan.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/dot-run_batch.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/dot-scenarios_setup.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/edgelist_censor.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/edges_correct.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/edges_correct_eligible.html</loc></url>
@@ -95,6 +99,8 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_nwstats.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_param.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_partners.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_scenarios_batches_infos.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/get_scenarios_tibble_infos.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_sims.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/get_transmat.html</loc></url>
@@ -120,10 +126,13 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_module_list.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_networkDynamic.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_restart_point.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/make_restart_pool.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/make_stats_table.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/mcat.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/merge.icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/merge.netsim.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios_tibble.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/modules.icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/modules.net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/move_to_group.html</loc></url>
@@ -138,6 +147,8 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/netsim.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/netsim_cond_msg.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/netsim_error_logger.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/netsim_scenarios.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/network_initialize.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/nwupdate.net.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/overwrite_attrs.html</loc></url>
@@ -207,6 +218,7 @@
 <url><loc>https://epimodel.github.io/EpiModel/reference/update_params.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/update_unique_ids.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/use_scenario.html</loc></url>
+<url><loc>https://epimodel.github.io/EpiModel/reference/validate_restart_pool.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/verbose.dcm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/verbose.icm.html</loc></url>
 <url><loc>https://epimodel.github.io/EpiModel/reference/verbose.net.html</loc></url>

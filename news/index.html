@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,8 +37,8 @@
 <h2 class="pkg-version" data-toc-text="2.7.1" id="epimodel-271">EpiModel 2.7.1<a class="anchor" aria-label="anchor" href="#epimodel-271"></a></h2>
 <div class="section level3">
 <h3 id="new-features-2-7-1">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-7-1"></a></h3>
-<ul><li>
-<code>control.net(.timing = TRUE)</code> records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named <code>timing.&lt;module&gt;</code> and <code>timing.cpu.&lt;module&gt;</code>, in seconds, with <code>timing.step</code> and <code>timing.cpu.step</code> for the whole step (EpiModel/EpiModelHIV-p#428).</li>
+<ul><li><p><code>control.net(.timing = TRUE)</code> records the wall-clock time and the CPU time of each module at each time step as epidemic outputs named <code>timing.&lt;module&gt;</code> and <code>timing.cpu.&lt;module&gt;</code>, in seconds, with <code>timing.step</code> and <code>timing.cpu.step</code> for the whole step (EpiModel/EpiModelHIV-p#428).</p></li>
+<li><p><code><a href="../reference/netsim_scenarios.html">netsim_scenarios()</a></code> runs a list of scenarios in batches, <code><a href="../reference/merge_netsim_scenarios.html">merge_netsim_scenarios()</a></code> and <code><a href="../reference/merge_netsim_scenarios_tibble.html">merge_netsim_scenarios_tibble()</a></code> merge the batch files, <code><a href="../reference/get_scenarios_batches_infos.html">get_scenarios_batches_infos()</a></code> and <code><a href="../reference/get_scenarios_tibble_infos.html">get_scenarios_tibble_infos()</a></code> list them, and <code><a href="../reference/make_restart_pool.html">make_restart_pool()</a></code>, <code><a href="../reference/validate_restart_pool.html">validate_restart_pool()</a></code> and <code><a href="../reference/netsim_path_wrapper.html">netsim_path_wrapper()</a></code> build, check and run from a pool of single simulation restart points. These functions come from EpiModelHPC and add no new dependency; EpiModelHPC keeps the <code>slurmworkflow</code> step templates that run the same code on a SLURM cluster. <code><a href="../reference/dot-scenarios_setup.html">.scenarios_setup()</a></code>, <code><a href="../reference/dot-run_batch.html">.run_batch()</a></code> and <code><a href="../reference/dot-batch_plan.html">.batch_plan()</a></code> are exported for those step templates and are not meant to be called directly. The new <em>Running Scenarios in Batches and From Restart Pools</em> vignette describes the workflow. Compared to EpiModelHPC, <code><a href="../reference/netsim_scenarios.html">netsim_scenarios()</a></code> runs its batches in the current session instead of a <code>callr</code> subprocess, and no longer has a <code>libraries</code> argument: it attached the packages in the session running the batches, but not in the <code>multisession</code> workers running the simulations, so it never worked as intended outside of <code>multicore</code> plans. Module code written in a script must call package functions with <code>pkg::</code>. Passing <code>libraries</code> gives a warning. <code><a href="../reference/netsim_path_wrapper.html">netsim_path_wrapper()</a></code> now warns, like <code><a href="../reference/netsim.html">netsim()</a></code>, when user code refers to global objects or attached packages that the workers do not have (<a href="https://github.com/EpiModel/EpiModel/issues/1104" class="external-link">#1104</a>).</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-7-1">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-7-1"></a></h3>
@@ -55,7 +55,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-7-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-7-1"></a></h3>
-<ul><li>
+<ul><li>Restart points and restart pool elements share a single EpiModel version check, whose error message asks to rebuild the restart object with the current version.</li>
+<li>
 <code>inst/bench/sis-10k.R</code> is a reference case that prints the <code><a href="../reference/netsim.html">netsim()</a></code> time per step of each module, and a new test fails when its step time, relative to a CPU reference timed in the same process, exceeds 1.5 times a stored baseline (EpiModel/EpiModelHIV-p#428).</li>
 <li>
 <code><a href="../reference/netsim.html">netsim()</a></code> and <code><a href="../reference/netdx.html">netdx()</a></code> with <code>ncores &gt; 1</code> now warn when modules or network model formulas refer to global objects or functions from attached packages, which multisession workers do not have, and <code><a href="../reference/netsim.html">?netsim</a></code> has a new Parallel Simulation section on making such code self-contained (<a href="https://github.com/EpiModel/EpiModel/issues/1104" class="external-link">#1104</a>).</li>

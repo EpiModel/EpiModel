@@ -6,7 +6,8 @@ articles:
   Intro: Intro.html
   model-parameters: model-parameters.html
   network-objects: network-objects.html
-last_built: 2026-11-13T14:23Z
+  scenarios-and-restart-pools: scenarios-and-restart-pools.html
+last_built: 2026-11-18T21:35Z
 urls:
   reference: https://epimodel.github.io/EpiModel/reference
   article: https://epimodel.github.io/EpiModel/articles

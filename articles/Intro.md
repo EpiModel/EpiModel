@@ -346,7 +346,7 @@ interested in stochastic network models, the primary focus of EpiModel.
 
 ## Package Documentation
 
-The current version of EpiModel is v2.7.0. Within the package, consult
+The current version of EpiModel is v2.7.1. Within the package, consult
 the help documentation for each exported function:
 
 ``` r

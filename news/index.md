@@ -10,6 +10,46 @@
   `timing.step` and `timing.cpu.step` for the whole step
   (EpiModel/EpiModelHIV-p#428).
 
+- [`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+  runs a list of scenarios in batches,
+  [`merge_netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios.md)
+  and
+  [`merge_netsim_scenarios_tibble()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios_tibble.md)
+  merge the batch files,
+  [`get_scenarios_batches_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_batches_infos.md)
+  and
+  [`get_scenarios_tibble_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_tibble_infos.md)
+  list them, and
+  [`make_restart_pool()`](https://epimodel.github.io/EpiModel/reference/make_restart_pool.md),
+  [`validate_restart_pool()`](https://epimodel.github.io/EpiModel/reference/validate_restart_pool.md)
+  and
+  [`netsim_path_wrapper()`](https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.md)
+  build, check and run from a pool of single simulation restart points.
+  These functions come from EpiModelHPC and add no new dependency;
+  EpiModelHPC keeps the `slurmworkflow` step templates that run the same
+  code on a SLURM cluster.
+  [`.scenarios_setup()`](https://epimodel.github.io/EpiModel/reference/dot-scenarios_setup.md),
+  [`.run_batch()`](https://epimodel.github.io/EpiModel/reference/dot-run_batch.md)
+  and
+  [`.batch_plan()`](https://epimodel.github.io/EpiModel/reference/dot-batch_plan.md)
+  are exported for those step templates and are not meant to be called
+  directly. The new *Running Scenarios in Batches and From Restart
+  Pools* vignette describes the workflow. Compared to EpiModelHPC,
+  [`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+  runs its batches in the current session instead of a `callr`
+  subprocess, and no longer has a `libraries` argument: it attached the
+  packages in the session running the batches, but not in the
+  `multisession` workers running the simulations, so it never worked as
+  intended outside of `multicore` plans. Module code written in a script
+  must call package functions with `pkg::`. Passing `libraries` gives a
+  warning.
+  [`netsim_path_wrapper()`](https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.md)
+  now warns, like
+  [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md),
+  when user code refers to global objects or attached packages that the
+  workers do not have
+  ([\#1104](https://github.com/EpiModel/EpiModel/issues/1104)).
+
 ### BUG FIXES
 
 - [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
@@ -49,6 +89,9 @@
 
 ### OTHER
 
+- Restart points and restart pool elements share a single EpiModel
+  version check, whose error message asks to rebuild the restart object
+  with the current version.
 - `inst/bench/sis-10k.R` is a reference case that prints the
   [`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
   time per step of each module, and a new test fails when its step time,

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -406,6 +406,27 @@
 
         </dt>
         <dd>Make a Lightweight Restart Point From a <code>netsim</code> Object with tergmLite</dd>
+
+        <dt>
+
+          <code><a href="make_restart_pool.html">make_restart_pool()</a></code>
+
+        </dt>
+        <dd>Make a Restart Pool From Simulations Run With Scenarios</dd>
+
+        <dt>
+
+          <code><a href="validate_restart_pool.html">validate_restart_pool()</a></code>
+
+        </dt>
+        <dd>Validate a Restart Pool</dd>
+
+        <dt>
+
+          <code><a href="netsim_path_wrapper.html">netsim_path_wrapper()</a></code>
+
+        </dt>
+        <dd>Run Single Simulations From a Restart Pool or a Single Object</dd>
       </dl></div><div class="section level2">
       <h2 id="transmission-reachability-analysis">Transmission &amp; Reachability Analysis<a class="anchor" aria-label="anchor" href="#transmission-reachability-analysis"></a></h2>
 
@@ -639,7 +660,7 @@
       </dl></div><div class="section level2">
       <h2 id="scenarios-sensitivity-analysis">Scenarios &amp; Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#scenarios-sensitivity-analysis"></a></h2>
 
-      <div class="section-desc"><p>Build parameter scenarios for batch sensitivity analyses and convert between list and tabular parameter formats.</p></div>
+      <div class="section-desc"><p>Build parameter scenarios for batch sensitivity analyses, run them in batches, merge their output, and convert between list and tabular parameter formats.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -666,6 +687,41 @@
 
         </dt>
         <dd>Update Model Parameters for Stochastic Network Models</dd>
+
+        <dt>
+
+          <code><a href="netsim_scenarios.html">netsim_scenarios()</a></code>
+
+        </dt>
+        <dd>Run EpiModel Network Simulations With Scenarios</dd>
+
+        <dt>
+
+          <code><a href="merge_netsim_scenarios.html">merge_netsim_scenarios()</a></code>
+
+        </dt>
+        <dd>Create a Single Sim File per Scenarios Using the Files From <code>netsim_scenarios</code></dd>
+
+        <dt>
+
+          <code><a href="merge_netsim_scenarios_tibble.html">merge_netsim_scenarios_tibble()</a></code>
+
+        </dt>
+        <dd>Create a Single Sim File per Scenarios Using the Files From <code>netsim_scenarios</code></dd>
+
+        <dt>
+
+          <code><a href="get_scenarios_batches_infos.html">get_scenarios_batches_infos()</a></code>
+
+        </dt>
+        <dd>Helper function to access the file name elements of scenarios</dd>
+
+        <dt>
+
+          <code><a href="get_scenarios_tibble_infos.html">get_scenarios_tibble_infos()</a></code>
+
+        </dt>
+        <dd>Helper function to access the infos on merged scenarios <code>data.frame</code></dd>
 
         <dt>
 

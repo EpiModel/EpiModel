@@ -517,10 +517,13 @@ scenario ID in `.scenario.id`.
 The two simulations within a draw differ only by stochastic variation,
 while differences between draws also reflect the parameter uncertainty.
 Setting `nsims = 1` with a larger number of draws gives one simulation
-per draw. For large numbers of draws, the
-[EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package runs a
-scenario list locally with `netsim_scenarios()` or as an array job on a
-SLURM cluster with `step_tmpl_netsim_scenarios()`.
+per draw. For large numbers of draws,
+[`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+runs a scenario list in batches (see the *Running Scenarios in Batches
+and From Restart Pools* vignette), and the
+[EpiModelHPC](https://github.com/EpiModel/EpiModelHPC) package provides
+`step_tmpl_netsim_scenarios()` to run the same code as an array job on a
+SLURM cluster.
 
 ### Linking Draws to Outcomes
 

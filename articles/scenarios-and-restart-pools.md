@@ -1,0 +1,362 @@
+# Running Scenarios in Batches and From Restart Pools
+
+## Introduction
+
+The *Working with Model Parameters* vignette shows how to define
+scenarios with
+[`create_scenario_list()`](https://epimodel.github.io/EpiModel/reference/create_scenario_list.md)
+and run one with
+[`use_scenario()`](https://epimodel.github.io/EpiModel/reference/use_scenario.md).
+Research projects usually run many scenarios, each with many replicates,
+and often start them all from the end of a calibrated burn-in period.
+This vignette covers the functions for that workflow:
+
+- [`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+  runs every scenario of a list in batches of simulations and saves each
+  batch to a file.
+- [`get_scenarios_batches_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_batches_infos.md),
+  [`merge_netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios.md),
+  [`merge_netsim_scenarios_tibble()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios_tibble.md)
+  and
+  [`get_scenarios_tibble_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_tibble_infos.md)
+  list and merge these files.
+- [`make_restart_pool()`](https://epimodel.github.io/EpiModel/reference/make_restart_pool.md)
+  turns chosen simulations into a pool of restart points,
+  [`validate_restart_pool()`](https://epimodel.github.io/EpiModel/reference/validate_restart_pool.md)
+  checks it, and
+  [`netsim_path_wrapper()`](https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.md)
+  runs simulations from it.
+
+The same code runs on a SLURM cluster through the `slurmworkflow` step
+templates of the [EpiModelHPC](https://github.com/EpiModel/EpiModelHPC)
+package, such as `step_tmpl_netsim_scenarios()`.
+
+## Setup
+
+The scenario functions read the starting point of the simulations from a
+file, so the fitted network model is saved with
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html). Everything here is
+written under a temporary directory.
+
+``` r
+
+set.seed(10)
+
+work_dir <- file.path(tempdir(), "scenarios-vignette")
+dir.create(work_dir)
+
+nw <- network_initialize(n = 200)
+est <- netest(nw,
+  formation = ~edges, target.stats = 60,
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  verbose = FALSE
+)
+est_path <- file.path(work_dir, "est.rds")
+saveRDS(est, est_path)
+
+param <- param.net(inf.prob = 0.5, rec.rate = 0.05, act.rate = 1)
+init <- init.net(i.num = 10)
+control <- control.net(
+  type = "SIS", nsteps = 50,
+  tergmLite = TRUE, resimulate.network = TRUE, save.run = TRUE,
+  verbose = FALSE
+)
+```
+
+`tergmLite = TRUE` and `save.run = TRUE` keep the state needed to
+restart the simulations later, which the restart pool section uses.
+
+## Running Scenarios in Batches
+
+[`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+runs `n_rep` simulations of each scenario, in batches of up to `n_cores`
+simulations. The simulations of a batch run in parallel, each as its own
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+call, and the batch is saved as `sim__<scenario>__<batch>.rds` in
+`output_dir`. Here, 4 simulations on 2 cores make 2 batches per
+scenario.
+
+By default the simulations run on
+`future::plan("multisession", workers = n_cores)`. Another plan can be
+set with
+[`future::tweak()`](https://future.futureverse.org/reference/plan.html)
+in `control$future.use.plan`. This vignette uses a sequential plan, so
+that it starts no R sessions.
+
+``` r
+
+control$future.use.plan <- future::tweak(future::sequential)
+
+scenarios.df <- data.frame(
+  .scenario.id = c("base", "low_inf"),
+  .at = 1,
+  inf.prob = c(0.5, 0.2)
+)
+scenarios.list <- create_scenario_list(scenarios.df)
+
+sims_dir <- file.path(work_dir, "sims")
+netsim_scenarios(
+  path_to_x = est_path,
+  param = param,
+  init = init,
+  control = control,
+  scenarios_list = scenarios.list,
+  n_rep = 4,
+  n_cores = 2,
+  output_dir = sims_dir
+)
+#> Starting simulation for scenario: base
+#> Batch number: 1 / 2
+#> Saving simulation in file: sim__base__1.rds
+#> Done in: 2.700821 secs
+#> Starting simulation for scenario: base
+#> Batch number: 2 / 2
+#> Saving simulation in file: sim__base__2.rds
+#> Done in: 2.374099 secs
+#> Starting simulation for scenario: low_inf
+#> Batch number: 1 / 2
+#> Saving simulation in file: sim__low_inf__1.rds
+#> Done in: 2.360756 secs
+#> Starting simulation for scenario: low_inf
+#> Batch number: 2 / 2
+#> Saving simulation in file: sim__low_inf__2.rds
+#> Done in: 2.366402 secs
+```
+
+With a `multisession` plan, each simulation runs in a separate R session
+that has neither the global objects nor the attached packages of the
+current one. Modules written in a script must therefore call package
+functions with `pkg::fun()`. See the Parallel Simulation section of
+[`?netsim`](https://epimodel.github.io/EpiModel/reference/netsim.md).
+
+## Listing and Merging the Batches
+
+[`get_scenarios_batches_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_batches_infos.md)
+lists the batch files with their scenario and batch number.
+
+``` r
+
+get_scenarios_batches_infos(sims_dir)
+#> # A tibble: 4 × 3
+#>   file_path                                           scenario_name batch_number
+#>   <chr>                                               <chr>                <int>
+#> 1 /tmp/RtmpWJJgkF/scenarios-vignette/sims/sim__base_… base                     1
+#> 2 /tmp/RtmpWJJgkF/scenarios-vignette/sims/sim__base_… base                     2
+#> 3 /tmp/RtmpWJJgkF/scenarios-vignette/sims/sim__low_i… low_inf                  1
+#> 4 /tmp/RtmpWJJgkF/scenarios-vignette/sims/sim__low_i… low_inf                  2
+```
+
+[`merge_netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios.md)
+merges the batches of each scenario into a single `netsim` object, saved
+as `merged__<scenario>.rds`.
+
+``` r
+
+merged_dir <- file.path(work_dir, "merged")
+merge_netsim_scenarios(sims_dir, merged_dir)
+sim_base <- readRDS(file.path(merged_dir, "merged__base.rds"))
+sim_base
+#> EpiModel Simulation
+#> =======================
+#> Model class: netsim
+#> 
+#> Simulation Summary
+#> -----------------------
+#> Model type: SIS
+#> No. simulations: 4
+#> No. time steps: 50
+#> No. NW groups: 1
+#> 
+#> Model Parameters
+#> ---------------------------
+#> inf.prob = 0.5
+#> act.rate = 1
+#> rec.rate = 0.05
+#> .param.updater.list = <list>
+#> .scenario.id = base
+#> groups = 1
+#> 
+#> Model Output
+#> -----------------------
+#> Variables: s.num i.num num si.flow is.flow
+#> Networks: sim1 ... sim4
+#> Transmissions: sim1 ... sim4
+#> 
+#> Formation Statistics
+#> ----------------------- 
+#>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
+#> edges     60    58.01   -3.317  1.298  -1.533         0.343         6.247
+#> 
+#> 
+#> Duration and Dissolution Statistics
+#> ----------------------- 
+#> Not available when:
+#> - `control$tergmLite == TRUE`
+#> - `control$save.network == FALSE`
+#> - `control$save.diss.stats == FALSE`
+#> - dissolution formula is not `~ offset(edges)`
+#> - `keep.diss.stats == FALSE` (if merging)
+#> - the network is a `netclique` or `netcensus` layer
+```
+
+For analysis,
+[`merge_netsim_scenarios_tibble()`](https://epimodel.github.io/EpiModel/reference/merge_netsim_scenarios_tibble.md)
+saves the epidemic output of each scenario as a `data.frame`,
+`df__<scenario>.rds`, with the `batch_number`, `sim_number` (the
+position of the simulation within its batch) and `sim` (over the whole
+scenario) columns first. `steps_to_keep` keeps only the last time steps,
+and `cols` only some columns.
+[`get_scenarios_tibble_infos()`](https://epimodel.github.io/EpiModel/reference/get_scenarios_tibble_infos.md)
+lists the files.
+
+``` r
+
+tibbles_dir <- file.path(work_dir, "tibbles")
+merge_netsim_scenarios_tibble(
+  sim_dir = sims_dir,
+  output_dir = tibbles_dir,
+  steps_to_keep = 50
+)
+infos <- get_scenarios_tibble_infos(tibbles_dir)
+infos
+#> # A tibble: 2 × 2
+#>   file_path                                                  scenario_name
+#>   <chr>                                                      <chr>        
+#> 1 /tmp/RtmpWJJgkF/scenarios-vignette/tibbles/df__base.rds    base         
+#> 2 /tmp/RtmpWJJgkF/scenarios-vignette/tibbles/df__low_inf.rds low_inf
+
+d <- dplyr::bind_rows(lapply(infos$file_path, readRDS), .id = "scenario")
+d$scenario <- infos$scenario_name[as.integer(d$scenario)]
+d_end <- d[d$time == 50, ]
+aggregate(i.num ~ scenario, data = d_end, FUN = mean)
+#>   scenario i.num
+#> 1     base 82.75
+#> 2  low_inf 19.25
+```
+
+## Restart Pools
+
+A common design runs a burn-in once, for example the calibrated model up
+to the start of an intervention, and starts every scenario from its end.
+Restarting all the scenarios from the same set of simulations also makes
+them comparable simulation by simulation.
+
+### Making a Pool
+
+[`make_restart_pool()`](https://epimodel.github.io/EpiModel/reference/make_restart_pool.md)
+builds a pool from the batch files of a run: pool element `i` is made
+from row `i` of `keep_sims`, a `data.frame` with the `batch_number` and
+`sim_number` of the simulations to keep. Each element is a single
+simulation restart point made with
+[`make_restart_point()`](https://epimodel.github.io/EpiModel/reference/make_restart_point.md),
+which keeps only the last time step and makes it step 1. Attributes
+holding time steps are shifted to match: the core ones (`entrTime`,
+`exitTime` and `infTime`) always are, and `time_attrs` lists the model’s
+other ones, such as the time of diagnosis in most extension models. This
+model has none, hence [`c()`](https://rdrr.io/r/base/c.html). Here, the
+pool is made from the 4 simulations of the `"base"` scenario.
+
+``` r
+
+keep_sims <- unique(d[d$scenario == "base", c("batch_number", "sim_number")])
+keep_sims
+#> # A tibble: 4 × 2
+#>   batch_number sim_number
+#>          <int>      <int>
+#> 1            1          1
+#> 2            1          2
+#> 3            2          1
+#> 4            2          2
+
+pool_dir <- file.path(work_dir, "pool")
+make_restart_pool(
+  pool_dir = pool_dir,
+  scenarios_dir = sims_dir,
+  scenario_name = "base",
+  keep_sims = keep_sims,
+  time_attrs = c()
+)
+list.files(pool_dir)
+#> [1] "1.rds"          "2.rds"          "3.rds"          "4.rds"         
+#> [5] "pool_index.csv"
+```
+
+[`validate_restart_pool()`](https://epimodel.github.io/EpiModel/reference/validate_restart_pool.md)
+checks a pool before a long run: that every element exists, holds a
+single simulation that
+[`netsim()`](https://epimodel.github.io/EpiModel/reference/netsim.md)
+can restart from, was made with the installed major.minor version of
+EpiModel, and keeps the same number of time steps as the others.
+
+``` r
+
+pool_infos <- validate_restart_pool(pool_dir)
+pool_infos[, c("pool_num", "n_runs", "nsteps", "epimodel_version")]
+#>   pool_num n_runs nsteps epimodel_version
+#> 1        1      1      1            2.7.1
+#> 2        2      1      1            2.7.1
+#> 3        3      1      1            2.7.1
+#> 4        4      1      1            2.7.1
+```
+
+### Running Scenarios From a Pool
+
+A pool directory is passed as `path_to_x`. Simulation `k` of each
+scenario starts from pool element `(k - 1) %% N + 1` for a pool of `N`
+elements, so simulation `k` starts from the same element in every
+scenario, and the pool is reused in order when there are more
+simulations than elements.
+
+The elements keep a single time step, so the restarted simulations start
+at `start = 2`. Here they run 25 more time steps.
+
+``` r
+
+control_restart <- control.net(
+  type = "SIS", start = 2, nsteps = 26,
+  tergmLite = TRUE, resimulate.network = TRUE,
+  verbose = FALSE
+)
+control_restart$future.use.plan <- future::tweak(future::sequential)
+
+restart_dir <- file.path(work_dir, "sims_restart")
+netsim_scenarios(
+  path_to_x = pool_dir,
+  param = param,
+  init = init,
+  control = control_restart,
+  scenarios_list = scenarios.list,
+  n_rep = 4,
+  n_cores = 2,
+  output_dir = restart_dir
+)
+get_scenarios_batches_infos(restart_dir)
+#> # A tibble: 4 × 3
+#>   file_path                                           scenario_name batch_number
+#>   <chr>                                               <chr>                <int>
+#> 1 /tmp/RtmpWJJgkF/scenarios-vignette/sims_restart/si… base                     1
+#> 2 /tmp/RtmpWJJgkF/scenarios-vignette/sims_restart/si… base                     2
+#> 3 /tmp/RtmpWJJgkF/scenarios-vignette/sims_restart/si… low_inf                  1
+#> 4 /tmp/RtmpWJJgkF/scenarios-vignette/sims_restart/si… low_inf                  2
+```
+
+[`netsim_scenarios()`](https://epimodel.github.io/EpiModel/reference/netsim_scenarios.md)
+runs each batch with
+[`netsim_path_wrapper()`](https://epimodel.github.io/EpiModel/reference/netsim_path_wrapper.md),
+which can also be called directly to run some simulations from a pool or
+from a single file. It returns a list of `netsim` objects with one
+simulation each, and records the restart point used.
+
+``` r
+
+sims <- netsim_path_wrapper(
+  path_to_x = pool_dir,
+  param = param,
+  init = init,
+  control = control_restart,
+  sim_nums = 1:2
+)
+sims[[2]]$restart_point
+#> $sim1
+#> [1] "/tmp/RtmpWJJgkF/scenarios-vignette/pool/2.rds"
+```
