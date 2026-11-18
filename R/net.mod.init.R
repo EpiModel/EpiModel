@@ -56,17 +56,8 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
-    x_ver <- attr(x, "version")
-    pkg_ver <- utils::packageVersion("EpiModel")
-    if (paste0(x_ver$major, ".", x_ver$minor) !=
-          paste0(pkg_ver$major, ".", pkg_ver$minor)) {
-      if (is.null(x_ver)) x_ver <- "(<2.7)"
-      stop(
-        "EpiModel is version v", pkg_ver, " but the restart object comes from ",
-        "version v", x_ver, ". Please rebuild the restart object with the ",
-        "current version"
-      )
-    }
+    # `netsim` only restarts from objects of the same major.minor version
+    check_restart_point_version(attr(x, "version"), "The restart object `x`")
 
     ## check that required names are present
     required_names <- c("nwparam", "epi", "run", "coef.form", "num.nw")

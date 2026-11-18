@@ -604,10 +604,23 @@ test_that("netsim refuses to restart from objects of another EpiModel version", 
 
   # objects from 2.6.x or earlier have no version
   attr(rp, "version") <- NULL
-  expect_error(restart(rp), "comes from version v(<2.7)", fixed = TRUE)
+  expect_error(
+    restart(rp),
+    "was made with EpiModel < 2.7 (no version recorded)",
+    fixed = TRUE
+  )
 
   attr(rp, "version") <- package_version("2.6.2")
-  expect_error(restart(rp), "comes from version v2.6.2", fixed = TRUE)
+  expect_error(
+    restart(rp),
+    "The restart object `x` was made with EpiModel v2.6.2",
+    fixed = TRUE
+  )
+  expect_error(
+    restart(rp),
+    "Please rebuild the restart object with the current version",
+    fixed = TRUE
+  )
 })
 
 test_that("truncate_sim without reset labels the network statistics like the epi trackers", {
